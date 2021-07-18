@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<verify>
+  <version>1.0</version>
+  <contents>
+    <file ver="1.0">Items.xml</file>
+    <file ver="1.0">SizeGroups.xml</file>
+    <file ver="1.0">Sizes.xml</file>
+    <file ver="1.0">Specs.xml</file>
+    <file ver="1.0">Brands.xml</file>
+    <file ver="1.0">Ends.xml</file>
+    <file ver="1.0">CustomSize.xml</file>
+    <file ver="1.0">CustomSpecs.xml</file>
+  </contents>
+</verify>

@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<customSizeDataGroups ver="1.0">
+  <customSizeData dataId="sampleCustomSize">
+    <matchPattern>^\s*[4-9]\s*$</matchPattern>
+    <exactPattern>^[4-9]$</exactPattern>
+    <patterns>
+      <pattern index="1">
+        <exactMatch>^[4-9]$</exactMatch>
+        <nearMatch>^\s*[4-9]\s*$</nearMatch>
+        <structure>
+          <part index="1" occurrence="1" type="number">
+            <pat>[4-9]</pat>
+            <typeDetails decimalPlaces="0" leadingZero="0" />
+          </part>
+        </structure>
+      </pattern>
+    </patterns>
+    <example>4 to 9</example>
+  </customSizeData>
+  <customSizeData dataId="VDmm" skipTrim="">
+    <matchPattern>^\s*Ø*\s*([4-9]\d|[1-9]\d\d|1[0-4]\d\d|1500)\s*mm\s*$</matchPattern>
+    <exactPattern>^Ø ([4-9]\d|[1-9]\d\d|1[0-4]\d\d|1500) mm$</exactPattern>
+    <patterns>
+      <pattern index="1">
+        <exactMatch>^Ø ([4-9]\d|[1-9]\d\d|1[0-4]\d\d|1500) mm$</exactMatch>
+        <nearMatch>^\s*Ø*\s*([4-9]\d|[1-9]\d\d|1[0-4]\d\d|1500)\s*mm\s*$</nearMatch>
+        <structure>
+          <part index="1" occurrence="1" type="number">
+            <pat>\d</pat>
+            <typeDetails decimalPlaces="0" leadingZero="0" />
+          </part>
+          <part index="2" occurrence="1" type="text">
+            <pat>\s*mm</pat>
+            <typeDetails case="lower" space="leading" />
+          </part>
+        </structure>
+      </pattern>
+    </patterns>
+    <operations>
+      <operation type="addOne">
+        <pat>^\s*Ø*\s*</pat>
+        <insert space="trailing">Ø</insert>
+      </operation>
+    </operations>
+    <example>Diameter from 40 to 1500 (mm)
+Example: 550 mm</example>
+  </customSizeData>
+  <customSizeData dataId="VDRECT" skipTrim="">
+    <matchPattern>^\s*((([4-9]|[1-9][0-9])\s*("|''|in)\s*(x|\*)\s*([4-9]|[1-9]\d{1,1})\s*("|''|in))|(([1-9]|[1-9]\d{1,3})\s*(x|\*)\s*([1-9]|[1-9]\d{1,3})\s*(mm|cm)))\s*$</matchPattern>
+    <exactPattern>^((([4-9]|[1-9][0-9])" x ([4-9]|[1-9][0-9])")|(([1-9]|[1-9]\d{1,3}) x ([1-9]|[1-9]\d{1,3}) (mm|cm)))$</exactPattern>
+    <patterns>
+      <pattern index="1">
+        <exactMatch>^\d+" x \d+"$</exactMatch>
+        <nearMatch>^([4-9]|[1-9][0-9])\s*("|''|in)\s*(x|\*)\s*([4-9]|[1-9]\d{1,1})\s*("|''|in)$</nearMatch>
+        <structure>
+          <part index="1" occurrence="1" type="number">
+            <pat>\d+</pat>
+            <typeDetails decimalPlaces="0" leadingZero="0" />
+          </part>
+          <part index="2" occurrence="1" type="text">
+            <pat>\s*("|''|in)</pat>
+            <typeDetails case="lower" space="none">
+              <replacement>"</replacement>
+            </typeDetails>
+          </part>
+          <part index="3" occurrence="1" type="text">
+            <pat>\s*(x|\*)\s*</pat>
+            <typeDetails case="lower" space="both" replace="x">
+              <replacement>x</replacement>
+            </typeDetails>
+          </part>
+          <part index="4" occurrence="2" type="number">
+            <pat>\d+</pat>
+            <typeDetails decimalPlaces="0" leadingZero="0" />
+          </part>
+          <part index="5" occurrence="2" type="text">
+            <pat>\s*("|''|in)\s*</pat>
+            <typeDetails case="lower" space="none">
+              <replacement>"</replacement>
+            </typeDetails>
+          </part>
+        </structure>
+      </pattern>
+      <pattern index="2">
+        <exactMatch>^([1-9]|[1-9]\d{1,3}) x ([1-9]|[1-9]\d{1,3}) (mm|cm)$</exactMatch>
+        <nearMatch>^\s*(([1-9]|[1-9]\d{1,3})\s*(x|\*)\s*([1-9]|[1-9]\d{1,3})\s*(mm|cm))\s*$</nearMatch>
+        <structure>
+          <part index="1" occurrence="1" type="number">
+            <pat>\d+</pat>
+            <typeDetails decimalPlaces="0" leadingZero="0" />
+          </part>
+          <part index="2" occurrence="1" type="text">
+            <pat>\s*(x|\*)\s*</pat>
+            <typeDetails case="lower" space="both" replace="x">
+              <replacement>x</replacement>
+            </typeDetails>
+          </part>
+          <part index="3" occurrence="2" type="number">
+            <pat>\d+</pat>
+            <typeDetails decimalPlaces="0" leadingZero="0" />
+          </part>
+          <part index="4" occurrence="1" type="text">
+            <pat>\s*(mm|cm)</pat>
+            <typeDetails case="lower" space="leading" />
+          </part>
+        </structure>
+      </pattern>
+    </patterns>
+    <example>100 x 50 cm
+12" x 6"</example>
+  </customSizeData>
+</customSizeDataGroups>

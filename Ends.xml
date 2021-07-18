@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<endsLists ver="1.0">
+  <endsList listID="C000" name="Sample Test">
+    <ends>
+      <end>Fine</end>
+      <end>Normal</end>
+      <end>Coarse</end>
+    </ends>
+  </endsList>
+  <endsList listID="C010" name="Pipe Ends">
+    <ends>
+      <end>Plain</end>
+      <end>Threaded</end>
+      <end>Grooved</end>
+      <end>Beveled</end>
+    </ends>
+  </endsList>
+  <endsList listID="C011" name="Fittings (General)">
+    <ends>
+      <end>Threaded</end>
+      <end>Welded</end>
+      <end>Flanged</end>
+    </ends>
+    <end>Grooved</end>
+  </endsList>
+  <endsList listID="CF01" name="Welded">
+    <ends>
+      <end>Welded</end>
+    </ends>
+  </endsList>
+  <endsList listID="CF02" name="Threaded">
+    <ends>
+      <end>Threaded</end>
+    </ends>
+  </endsList>
+  <endsList listID="CF03" name="Flanged">
+    <ends>
+      <end>Flanged</end>
+    </ends>
+  </endsList>
+  <endsList listID="CF04" name="Grooved">
+    <ends>
+      <end>Grooved</end>
+    </ends>
+  </endsList>
+  <endsList listID="C012" name="Flanged/Grooved">
+    <ends>
+      <end>Flanged</end>
+      <end>Grooved</end>
+    </ends>
+  </endsList>
+</endsLists>

@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<brandLists ver="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Brands.xsd">
+  <brandList listID="B010" name="Black Steel Pipes">
+    <brands>
+      <brand>JSC</brand>
+      <brand>Interpipe</brand>
+    </brands>
+  </brandList>
+  <brandList listID="B011" name="Stainless Steel Pipes">
+    <brands>
+      <brand>YC</brand>
+    </brands>
+  </brandList>
+  <brandList listID="B020" name="Fiberglass Insulation">
+    <brands>
+      <brand>Kimmco</brand>
+      <brand>Izocam</brand>
+    </brands>
+  </brandList>
+  <brandList listID="B021" name="Rockwool Insulation">
+    <brands>
+      <brand>Rockal</brand>
+    </brands>
+  </brandList>
+  <brandList listID="B050" name="Cables">
+    <brands>
+      <brand>Elseweedy</brand>
+    </brands>
+  </brandList>
+  <brandList listID="B061" name="Air Outlets and VD">
+    <brands>
+      <brand>Expert</brand>
+    </brands>
+  </brandList>
+  <brandList listID="BF01" name="Welded Fittings">
+    <brands>
+      <brand>TTU</brand>
+    </brands>
+  </brandList>
+  <brandList listID="BF02" name="Threaded Fittings">
+    <brands>
+      <brand>BIS</brand>
+      <brand>Siam</brand>
+      <brand>Thai</brand>
+      <brand>Jinan</brand>
+    </brands>
+  </brandList>
+  <brandList listID="BV01" name="Stainless Steel Ball Valve">
+    <brands>
+      <brand>Fortune</brand>
+    </brands>
+  </brandList>
+  <brandList listID="BS01" name="Safety Shoes">
+    <brands>
+      <brand>Panda</brand>
+      <brand>Red Wing</brand>
+    </brands>
+  </brandList>
+  <brandList listID="BS10" name="Safety Helmets">
+    <brands>
+      <brand>3M</brand>
+      <brand>JSP</brand>
+      <brand>MSA</brand>
+    </brands>
+  </brandList>
+  <brandList listID="BEA1" name="Disconnet Switches">
+    <brands>
+      <brand>KATKO</brand>
+    </brands>
+  </brandList>
+  <brandList listID="BFGV0" name="Grooved Fittings">
+    <brands>
+      <brand>Victaullic</brand>
+      <brand>Grinnell</brand>
+      <brand>Smith Cooper</brand>
+    </brands>
+  </brandList>
+  <brandList listID="B0020" name="Hangers">
+    <brands>
+      <brand>B-Line</brand>
+      <brand>nVent CADDY</brand>
+    </brands>
+  </brandList>
+  <brandList listID="ACV01" name="Alarm Check Valves">
+    <brands>
+      <brand>Kennedy</brand>
+      <brand>Tyco</brand>
+      <brand>Reliable</brand>
+    </brands>
+  </brandList>
+  <brandList listID="B0021" name="Grinders">
+    <brands>
+      <brand>APT</brand>
+      <brand>Crown</brand>
+    </brands>
+  </brandList>
+  <brandList listID="B0022" name="Grinding Wheels">
+    <brands>
+      <brand>Kedas</brand>
+    </brands>
+  </brandList>
+  <brandList listID="B0023" name="Primers">
+    <brands>
+      <brand>CMB</brand>
+    </brands>
+  </brandList>
+</brandLists>

@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<customSpecsDataGroups ver="1.0">
+  <customSpecData dataId="smpleCustSpec" skipTrim="">
+    <matchPattern>^\s*\d+\s*$</matchPattern>
+    <exactPattern>^\d+$</exactPattern>
+    <patterns>
+      <pattern index="1">
+        <exactMatch>^\d+$</exactMatch>
+        <nearMatch>^\s*\d+\s*$</nearMatch>
+        <structure>
+          <part index="1" occurrence="1" type="number">
+            <pat>\d+</pat>
+            <typeDetails decimalPlaces="0" leadingZero="0" />
+          </part>
+        </structure>
+      </pattern>
+    </patterns>
+    <example>Whole number</example>
+  </customSpecData>
+  <customSpecData dataId="LBLTXT" skipTrim="true">
+    <matchPattern>^.{1,40}$</matchPattern>
+    <exactPattern>^.{1,40}$</exactPattern>
+    <patterns>
+      <pattern index="1">
+        <exactMatch>^.{1,40}$</exactMatch>
+        <nearMatch>^.{1,40}$</nearMatch>
+        <structure>
+          <part index="1" occurrence="1" type="text">
+            <pat>.{1,40}</pat>
+            <typeDetails case="any" space="" />
+          </part>
+        </structure>
+      </pattern>
+    </patterns>
+    <example>Any text or number (max length: 40)</example>
+  </customSpecData>
+</customSpecsDataGroups>

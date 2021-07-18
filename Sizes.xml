@@ -1,0 +1,341 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<sizeLists ver="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Sizes.xsd">
+  <sizeList listID="SHLM" name="Helmet Size">
+    <sizes>
+      <size>XX Small</size>
+      <size>X Small</size>
+      <size>Small</size>
+      <size>Medium</size>
+      <size>Large</size>
+      <size>X Large</size>
+      <size>XX Large</size>
+    </sizes>
+  </sizeList>
+  <sizeList listID="SSHO" name="Shoe Size">
+    <sizes>
+      <size>39</size>
+      <size>40</size>
+      <size>41</size>
+      <size>42</size>
+      <size>43</size>
+      <size>44</size>
+      <size>45</size>
+      <size>46</size>
+      <size>47</size>
+      <size>48</size>
+    </sizes>
+  </sizeList>
+  <sizeList listID="PIP1" name="Nominal Pipe Size (NPS)">
+    <sizes>
+      <size>0.75"</size>
+      <size>1"</size>
+      <size>1.25"</size>
+      <size>1.5"</size>
+      <size>2"</size>
+      <size>2.5"</size>
+      <size>3"</size>
+      <size>4"</size>
+      <size>5"</size>
+      <size>6"</size>
+      <size>8"</size>
+      <size>10"</size>
+      <size>12"</size>
+    </sizes>
+  </sizeList>
+  <sizeList listID="PIP2" name="Nominal Pipe Size (NPS)">
+    <sizes>
+      <size>0.75"</size>
+      <size>1"</size>
+      <size>1.25"</size>
+      <size>1.5"</size>
+      <size>2"</size>
+      <size>2.5"</size>
+    </sizes>
+  </sizeList>
+  <sizeList listID="PIP3" name="Diameter (mm)">
+    <sizes>
+      <size>16 mm</size>
+      <size>20 mm</size>
+      <size>25 mm</size>
+      <size>32 mm</size>
+      <size>40 mm</size>
+      <size>50 mm</size>
+      <size>63 mm</size>
+      <size>75 mm</size>
+      <size>90 mm</size>
+      <size>110 mm</size>
+      <size>125 mm</size>
+      <size>140 mm</size>
+      <size>160 mm</size>
+      <size>180 mm</size>
+      <size>200 mm</size>
+      <size>225 mm</size>
+      <size>250 mm</size>
+      <size>280 mm</size>
+      <size>315 mm</size>
+    </sizes>
+  </sizeList>
+  <sizeList listID="SPR" name="Inch">
+    <sizes>
+      <size>0.5"</size>
+      <size>0.75"</size>
+      <size>1"</size>
+    </sizes>
+  </sizeList>
+  <sizeList listID="NPS1" name="Inch">
+    <sizes>
+      <size>0.5"</size>
+      <size>0.75"</size>
+      <size>1"</size>
+      <size>1.25"</size>
+      <size>1.5"</size>
+      <size>2"</size>
+    </sizes>
+  </sizeList>
+  <sizeList listID="NPS2" name="Inch">
+    <sizes>
+      <size>0.5"</size>
+      <size>0.75"</size>
+      <size>1"</size>
+      <size>1.25"</size>
+      <size>1.5"</size>
+      <size>2"</size>
+      <size>2.5"</size>
+      <size>3"</size>
+      <size>4"</size>
+    </sizes>
+  </sizeList>
+  <sizeList listID="UNC" name="UNC Size">
+    <sizes>
+      <size>M6</size>
+      <size>M8</size>
+      <size>M10</size>
+      <size>M12</size>
+      <size>M14</size>
+      <size>M16</size>
+      <size>M18</size>
+      <size>M20</size>
+    </sizes>
+  </sizeList>
+  <sizeList listID="CAB0" name="Multicore">
+    <sizes>
+      <size>2C x 1.5 mm²</size>
+      <size>2C x 2.5 mm²</size>
+      <size>2C x 4 mm²</size>
+      <size>2C x 6 mm²</size>
+      <size>2C x 10 mm²</size>
+      <size>2C x 16 mm²</size>
+      <size>2C x 25 mm²</size>
+      <size>2C x 35 mm²</size>
+      <size>2C x 50 mm²</size>
+      <size>2C x 70 mm²</size>
+      <size>2C x 95 mm²</size>
+      <size>2C x 120 mm²</size>
+      <size>2C x 150 mm²</size>
+      <size>2C x 185 mm²</size>
+      <size>2C x 240 mm²</size>
+      <size>2C x 300 mm²</size>
+      <size>2C x 400 mm²</size>
+      <size>3C x 1.5 mm²</size>
+      <size>3C x 2.5 mm²</size>
+      <size>3C x 4 mm²</size>
+      <size>3C x 6 mm²</size>
+      <size>3C x 10 mm²</size>
+      <size>3C x 16 mm²</size>
+      <size>3C x 25 mm²</size>
+      <size>3C x 35 mm²</size>
+      <size>3C x 50 mm²</size>
+      <size>3C x 70 mm²</size>
+      <size>3C x 95 mm²</size>
+      <size>3C x 120 mm²</size>
+      <size>3C x 150 mm²</size>
+      <size>3C x 185 mm²</size>
+      <size>3C x 240 mm²</size>
+      <size>3C x 300 mm²</size>
+      <size>3C x 400 mm²</size>
+      <size>4C x 1.5 mm²</size>
+      <size>4C x 2.5 mm²</size>
+      <size>4C x 4 mm²</size>
+      <size>4C x 6 mm²</size>
+      <size>4C x 10 mm²</size>
+      <size>4C x 16 mm²</size>
+      <size>4C x 25 mm²</size>
+      <size>4C x 35 mm²</size>
+      <size>4C x 50 mm²</size>
+      <size>4C x 70 mm²</size>
+      <size>4C x 95 mm²</size>
+      <size>4C x 120 mm²</size>
+      <size>4C x 150 mm²</size>
+      <size>4C x 185 mm²</size>
+      <size>4C x 240 mm²</size>
+      <size>4C x 300 mm²</size>
+      <size>4C x 400 mm²</size>
+    </sizes>
+  </sizeList>
+  <sizeList listID="CAB1" name="Multicore with Reduced Neutral">
+    <sizes>
+      <size>3C x 25 mm² + 16 mm²</size>
+      <size>3C x 35 mm² + 16 mm²</size>
+      <size>3C x 50 mm² + 25 mm²</size>
+      <size>3C x 70 mm² + 35 mm²</size>
+      <size>3C x 95 mm² + 50 mm²</size>
+      <size>3C x 120 mm² + 70 mm²</size>
+      <size>3C x 150 mm² + 70 mm²</size>
+      <size>3C x 185 mm² + 95 mm²</size>
+      <size>3C x 240 mm² + 120 mm²</size>
+      <size>3C x 300 mm² + 150 mm²</size>
+      <size>4C x 16 mm² + 16 mm²</size>
+      <size>4C x 120 mm² + 70 mm²</size>
+      <size>4C x 240 mm² + 120 mm²</size>
+    </sizes>
+  </sizeList>
+  <sizeList listID="VDRCinch" name="L x W (inch)">
+    <sizes>
+      <size>6" x 4"</size>
+      <size>8" x 8"</size>
+      <size>12" x 12"</size>
+      <size>16" x 16"</size>
+      <size>20" x 20"</size>
+      <size>24" x 24"</size>
+      <size>28" x 28"</size>
+      <size>32" x 32"</size>
+      <size>36" x 36"</size>
+      <size>40" x 40"</size>
+    </sizes>
+  </sizeList>
+  <sizeList listID="VDRCmm" name="L x W (mm)">
+    <sizes>
+      <size>150 x 100 mm</size>
+      <size>200 x 200 mm</size>
+      <size>300 x 300 mm</size>
+      <size>400 x 400 mm</size>
+      <size>500 x 500 mm</size>
+      <size>600 x 600 mm</size>
+      <size>700 x 700 mm</size>
+      <size>800 x 800 mm</size>
+      <size>900 x 900 mm</size>
+      <size>1000 x 1000 mm</size>
+    </sizes>
+  </sizeList>
+  <sizeList listID="VDRCmm1" name="Less than 1000 mm">
+    <sizes>
+      <size>350 x 150 mm</size>
+      <size>350 x 200 mm</size>
+      <size>400 x 150 mm</size>
+      <size>400 x 250 mm</size>
+      <size>500 x 150 mm</size>
+      <size>500 x 200 mm</size>
+      <size>500 x 300 mm</size>
+      <size>500 x 450 mm</size>
+      <size>550 x 150 mm</size>
+      <size>550 x 200 mm</size>
+      <size>600 x 150 mm</size>
+      <size>600 x 200 mm</size>
+      <size>600 x 250 mm</size>
+      <size>750 x 250 mm</size>
+      <size>800 x 300 mm</size>
+      <size>800 x 450 mm</size>
+    </sizes>
+  </sizeList>
+  <sizeList listID="VDRDmm" name="Diameter (mm)">
+    <sizes>
+      <size>Ø 80 mm</size>
+      <size>Ø 100 mm</size>
+      <size>Ø 125 mm</size>
+      <size>Ø 140 mm</size>
+      <size>Ø 150 mm</size>
+      <size>Ø 160 mm</size>
+      <size>Ø 180 mm</size>
+      <size>Ø 200 mm</size>
+      <size>Ø 225 mm</size>
+      <size>Ø 250 mm</size>
+      <size>Ø 280 mm</size>
+      <size>Ø 315 mm</size>
+      <size>Ø 400 mm</size>
+      <size>Ø 500 mm</size>
+      <size>Ø 630 mm</size>
+    </sizes>
+  </sizeList>
+  <sizeList listID="HSHRK" name="Diameter (mm)">
+    <sizes>
+      <size>Ø 1.5 mm</size>
+      <size>Ø 3 mm</size>
+      <size>Ø 4 mm</size>
+      <size>Ø 5 mm</size>
+      <size>Ø 6 mm</size>
+      <size>Ø 8 mm</size>
+      <size>Ø 10 mm</size>
+      <size>Ø 12 mm</size>
+      <size>Ø 13 mm</size>
+    </sizes>
+  </sizeList>
+  <sizeList listID="NPSR1" name="Reduced NPS">
+    <sizes>
+      <size>0.75" x 0.5"</size>
+      <size>1" x 0.5"</size>
+      <size>1" x 0.75"</size>
+      <size>1.25" x 0.5"</size>
+      <size>1.25" x 0.75"</size>
+      <size>1.25" x 1"</size>
+      <size>1.5" x 0.5"</size>
+      <size>1.5" x 0.75"</size>
+      <size>1.5" x 1"</size>
+      <size>2" x 1"</size>
+      <size>2" x 1.25"</size>
+      <size>2" x 1.5"</size>
+    </sizes>
+  </sizeList>
+  <sizeList listID="SH001" name="Metal Sheets Dimensions">
+    <sizes>
+      <size>2 x 1 mt</size>
+      <size>2 x 1.25 mt</size>
+    </sizes>
+  </sizeList>
+  <sizeList listID="NPS3" name="Grooved Fittings">
+    <sizes>
+      <size>2"</size>
+      <size>2.5"</size>
+      <size>3"</size>
+      <size>4"</size>
+      <size>5"</size>
+      <size>6"</size>
+      <size>8"</size>
+      <size>10"</size>
+      <size>12"</size>
+    </sizes>
+  </sizeList>
+  <sizeList listID="NPSR2" name="Reduced NPS (2.5&quot;+)">
+    <sizes>
+      <size>2.5" x 2"</size>
+      <size>3" x 2"</size>
+      <size>3" x 2.5"</size>
+      <size>4" x 2"</size>
+      <size>4" x 2.5"</size>
+      <size>4" x 3"</size>
+      <size>6" x 2"</size>
+      <size>6" x 2.5"</size>
+      <size>6" x 3"</size>
+      <size>6" x 4" </size>
+      <size>8" x 4"</size>
+      <size>8" x 6"</size>
+      <size>10" x 6"</size>
+      <size>10" x 8"</size>
+    </sizes>
+  </sizeList>
+  <sizeList listID="UNC01" name="Beam Clamp Size">
+    <sizes>
+      <size>M8</size>
+      <size>M10</size>
+      <size>M12</size>
+    </sizes>
+  </sizeList>
+  <sizeList listID="ACV01" name="Alarm Check Valve">
+    <sizes>
+      <size>2.5"</size>
+      <size>3"</size>
+      <size>4"</size>
+      <size>6"</size>
+      <size>8"</size>
+    </sizes>
+  </sizeList>
+</sizeLists>

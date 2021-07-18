@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<sizeGroups ver="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SizeGroups.xsd">
+  <group groupID="G010" groupName="NPS">
+    <defaultListID>PIP1</defaultListID>
+    <altLists></altLists>
+    <customSizeDataID></customSizeDataID>
+  </group>
+  <group groupID="G011" groupName="NPS">
+    <defaultListID>PIP2</defaultListID>
+    <altLists></altLists>
+    <customSizeDataID></customSizeDataID>
+  </group>
+  <group groupID="GP12" groupName="PVC Pipe">
+    <defaultListID>PIP3</defaultListID>
+    <altLists></altLists>
+    <customSizeDataID></customSizeDataID>
+  </group>
+  <group groupID="G030" groupName="UNC Size">
+    <defaultListID>UNC</defaultListID>
+    <altLists></altLists>
+    <customSizeDataID></customSizeDataID>
+  </group>
+  <group groupID="G040" groupName="Sprinklers">
+    <defaultListID>SPR</defaultListID>
+    <altLists></altLists>
+    <customSizeDataID></customSizeDataID>
+  </group>
+  <group groupID="G050" groupName="Cables">
+    <defaultListID>CAB1</defaultListID>
+    <altLists>
+      <listID>CAB0</listID>
+    </altLists>
+    <customSizeDataID></customSizeDataID>
+  </group>
+  <group groupID="G060" groupName="RoundVD">
+    <defaultListID>VDRDmm</defaultListID>
+    <altLists></altLists>
+    <customSizeDataID>VDmm</customSizeDataID>
+  </group>
+  <group groupID="G061" groupName="RectVD">
+    <defaultListID>VDRCinch</defaultListID>
+    <altLists>
+      <listID>VDRDmm</listID>
+      <listID>VDRCmm1</listID>
+    </altLists>
+    <customSizeDataID>VDRECT</customSizeDataID>
+  </group>
+  <group groupID="G070" groupName="Valves">
+    <defaultListID>NPS2</defaultListID>
+    <altLists></altLists>
+    <customSizeDataID></customSizeDataID>
+  </group>
+  <group groupID="G071" groupName="Valves">
+    <defaultListID>NPS1</defaultListID>
+    <altLists></altLists>
+    <customSizeDataID></customSizeDataID>
+  </group>
+  <group groupID="G080" groupName="Heat Shrink">
+    <defaultListID>HSHRK</defaultListID>
+    <altLists></altLists>
+    <customSizeDataID></customSizeDataID>
+  </group>
+  <group groupID="GS01" groupName="Safety Shoes">
+    <defaultListID>SSHO</defaultListID>
+    <altLists></altLists>
+    <customSizeDataID></customSizeDataID>
+  </group>
+  <group groupID="GS10" groupName="Safety Helmet">
+    <defaultListID>SHLM</defaultListID>
+    <altLists></altLists>
+    <customSizeDataID></customSizeDataID>
+  </group>
+  <group groupID="NPSR1" groupName="Reduced NPS">
+    <defaultListID>NPSR1</defaultListID>
+    <altLists />
+    <customSizeDataID />
+  </group>
+  <group groupID="GDCT0" groupName="Galvanized Steel Sheet">
+    <defaultListID>SH001</defaultListID>
+    <altLists />
+    <customSizeDataID />
+  </group>
+  <group groupID="GNPS0" groupName="Grooved NPS">
+    <defaultListID>NPS3</defaultListID>
+    <altLists />
+    <customSizeDataID />
+  </group>
+  <group groupID="NPSR2" groupName="Reduced NPS Grooved">
+    <defaultListID>NPSR2</defaultListID>
+    <altLists />
+    <customSizeDataID />
+  </group>
+  <group groupID="GUNC1" groupName="Beam Clamp">
+    <defaultListID>UNC01</defaultListID>
+    <altLists />
+    <customSizeDataID />
+  </group>
+  <group groupID="ACV01" groupName="Alarm Check Valve">
+    <defaultListID>ACV01</defaultListID>
+    <altLists />
+    <customSizeDataID />
+  </group>
+</sizeGroups>

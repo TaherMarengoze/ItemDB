@@ -1,0 +1,939 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<items ver="1.0" xmlns:catalog="http://www.w3.org/2001/XMLSchema-instance" catalog:noNamespaceSchemaLocation="items.xsd">
+  <category catID="PIP" name="Pipes">
+    <item itemID="BSP01" order="1">
+      <names>
+        <base>Black Steel Pipe</base>
+        <display>Black Steel Pipe</display>
+        <common>
+          <cname>ماسورة حديد اسود</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>BSP01-00.jpg</image>
+      </images>
+      <details>
+        <specs ID="S010" required="true" />
+        <sizeGroup ID="G010" required="true" />
+        <brandList ID="B010" required="false" />
+        <endsList ID="C010" required="false" />
+      </details>
+      <uom>mt</uom>
+    </item>
+    <item itemID="SSP" order="2">
+      <names>
+        <base>Stainless Steel Pipe</base>
+        <display>Stainless Steel Pipe</display>
+        <common>
+          <cname>ماسورة استانلس</cname>
+        </common>
+      </names>
+      <description>n/A</description>
+      <images>
+        <image>SSP-00.jpg</image>
+      </images>
+      <details>
+        <specs ID="S011" required="true" />
+        <sizeGroup ID="G010" required="true" />
+        <brandList ID="B011" required="false" />
+      </details>
+      <uom>mt</uom>
+    </item>
+    <item itemID="PVC">
+      <names>
+        <base>PVC Pipe</base>
+        <display>PVC Pipe</display>
+        <common>
+          <cname>ماسورة بلاستيك</cname>
+          <cname>Poly Vinyl Chloride Pipe</cname>
+        </common>
+      </names>
+      <description>Poly Vinyl Chloride (PVC) Plastic Pipe</description>
+      <images>
+        <image>PVC-00.jpg</image>
+      </images>
+      <details>
+        <specs ID="SP12" required="true" />
+        <sizeGroup ID="GP12" required="true" />
+      </details>
+      <uom>mt</uom>
+    </item>
+    <item itemID="CPRP1" order="0">
+      <names>
+        <base>Copper Pipe</base>
+        <display>Copper Pipe</display>
+        <common>
+          <cname>Copper Tube</cname>
+          <cname>ماسورة نحاس</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>CPRP1-00.jpg</image>
+      </images>
+      <details />
+      <uom>mt</uom>
+    </item>
+  </category>
+  <category catID="PFT" name="Pipe Fittings">
+    <item itemID="EL" order="1">
+      <names>
+        <base>Black Steel Elbow</base>
+        <display>Black Steel Elbow</display>
+        <common>
+          <cname>كوع حديد اسود</cname>
+        </common>
+      </names>
+      <description>n/A</description>
+      <images>
+        <image>EL-00.jpg</image>
+        <image>EL-01.jpg</image>
+      </images>
+      <details>
+        <specs ID="SF01" required="true" />
+        <sizeGroup ID="G010" required="true" />
+        <brandList ID="BF01" required="false" />
+        <endsList ID="CF01" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+    <item itemID="ELT01">
+      <names>
+        <base>Malleable Steel Elbow</base>
+        <display>Malleable Steel Elbow</display>
+        <common>
+          <cname>كوع حديد مرن</cname>
+          <cname>Malleable Steel Elbow</cname>
+        </common>
+      </names>
+      <description>n/A</description>
+      <images>
+        <image>ELT01-00.jpg</image>
+      </images>
+      <details>
+        <specs ID="SF02" required="true" />
+        <sizeGroup ID="G011" required="true" />
+        <brandList ID="BF02" required="false" />
+        <endsList ID="CF02" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+    <item itemID="T10">
+      <names>
+        <base>Black Steel Tee</base>
+        <display>Black Steel Strait Tee</display>
+        <common>
+          <cname>تي حديد اسود متساوية</cname>
+        </common>
+      </names>
+      <description>n/A</description>
+      <images>
+        <image>T10-00.jpg</image>
+      </images>
+      <details>
+        <sizeGroup ID="G010" required="true" />
+        <brandList ID="BF01" required="false" />
+        <endsList ID="CF01" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+    <item itemID="T11">
+      <names>
+        <base>Malleable Steel Tee</base>
+        <display>Malleable Steel Strait Tee</display>
+        <common>
+          <cname>تي حديد مرن متساوية</cname>
+        </common>
+      </names>
+      <description>n/A</description>
+      <images>
+        <image>malleable-steel-tee.jpg</image>
+      </images>
+      <details>
+        <sizeGroup ID="G011" required="true" />
+        <brandList ID="BF02" required="false" />
+        <endsList ID="CF02" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+    <item itemID="CAPS0" order="0">
+      <names>
+        <base>Malleable Steel End Cap</base>
+        <display>Malleable Steel Threaded End Cap</display>
+        <common>
+          <cname>طبة حديد مرن سن</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>CAPS0-00.jpg</image>
+      </images>
+      <details>
+        <sizeGroup ID="G011" required="true" />
+        <brandList ID="BF02" required="false" />
+        <endsList ID="CF02" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+    <item itemID="RDS01" order="0">
+      <names>
+        <base>Malleable Steel Reducer</base>
+        <display>Malleable Steel Threaded Reducer</display>
+        <common>
+          <cname>مسلوب حديد مرن سن مركزي</cname>
+          <cname>مسلوب حديد مرن سن لا مركزي</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>RDS01-00.jpg</image>
+        <image>RDS01-01.jpg</image>
+      </images>
+      <details>
+        <specs ID="SRD01" required="false" />
+        <sizeGroup ID="NPSR1" required="true" />
+        <brandList ID="BF02" required="false" />
+        <endsList ID="CF02" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+    <item itemID="ELBG0" order="0">
+      <names>
+        <base>Black Steel Elbow</base>
+        <display>Black Steel Elbow Grooved</display>
+        <common>
+          <cname>كوع</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>ELBG0-00.jpg</image>
+      </images>
+      <details>
+        <specs ID="SF02" required="true" />
+        <brandList ID="BFGV0" required="false" />
+        <sizeGroup ID="GNPS0" required="true" />
+        <endsList ID="CF04" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+    <item itemID="TEQG0" order="0">
+      <names>
+        <base>Black Steel Tee</base>
+        <display>Grooved Equal Tee</display>
+        <common>
+          <cname>تي متساوية حديد</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>TEQG0-00.jpg</image>
+      </images>
+      <details>
+        <sizeGroup ID="GNPS0" required="true" />
+        <brandList ID="BFGV0" required="false" />
+        <endsList ID="CF04" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+    <item itemID="CPLG0" order="0">
+      <names>
+        <base>Black Steel Coupling</base>
+        <display>Grooved Coupling</display>
+        <common>
+          <cname>كوبلين</cname>
+        </common>
+      </names>
+      <description>Couplings are pipe fittings that connects 2 pipes or other grooved fittings together.</description>
+      <images>
+        <image>CPLG0-00.jpg</image>
+      </images>
+      <details>
+        <sizeGroup ID="GNPS0" required="true" />
+        <brandList ID="BFGV0" required="false" />
+        <endsList ID="CF04" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+    <item itemID="ELSR1" order="0">
+      <names>
+        <base>Malleable Steel Reduced Elbow</base>
+        <display>Steel Reduced Elbow Threaded</display>
+        <common>
+          <cname>كوع حديد مسلوب سن</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>ELSR1-00.jpg</image>
+      </images>
+      <details>
+        <sizeGroup ID="NPSR1" required="true" />
+        <brandList ID="BF02" required="false" />
+        <endsList ID="CF02" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+    <item itemID="TERG1" order="0">
+      <names>
+        <base>Black Steel Reduced Tee</base>
+        <display>Grooved Reduced Tee</display>
+        <common>
+          <cname>تي مسلوبة حديد</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>TERG1-00.jpg</image>
+      </images>
+      <details>
+        <sizeGroup ID="NPSR2" required="true" />
+        <brandList ID="BFGV0" required="false" />
+        <endsList ID="CF04" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+    <item itemID="PLG01" order="0">
+      <names>
+        <base>Black Steel Plug</base>
+        <display>Black Steel Plug</display>
+        <common>
+          <cname>طبة حديد سن</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>PLG01-00.jpg</image>
+        <image>PLG01-01.jpg</image>
+        <image>PLG01-02.jpg</image>
+      </images>
+      <details>
+        <specs ID="SPF01" required="true" />
+        <sizeGroup ID="G071" required="true" />
+        <brandList ID="BF02" required="false" />
+        <endsList ID="CF02" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+    <item itemID="UNN01" order="0">
+      <names>
+        <base>Black Steel Union</base>
+        <display>Black Steel Union</display>
+        <common>
+          <cname>لاكور جمع حديد سن</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>UNN01-00.jpg</image>
+      </images>
+      <details>
+        <sizeGroup ID="G011" required="true" />
+        <brandList ID="BF02" required="false" />
+        <endsList ID="CF02" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+  </category>
+  <category catID="VLV" name="Valves">
+    <item itemID="BVSS1">
+      <names>
+        <base>Stainless Steel Ball Valve</base>
+        <display>Stainless Steel Ball Valve</display>
+        <common />
+      </names>
+      <description></description>
+      <images>
+        <image>BVSS1-00.jpg</image>
+        <image>BVSS1-01.jpg</image>
+        <image>BVSS1-02.jpg</image>
+      </images>
+      <details>
+        <specs ID="SV01" required="true" />
+        <sizeGroup ID="G070" required="true" />
+        <brandList ID="BV01" required="false" />
+        <endsList ID="C011" required="false" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+    <item itemID="BV2">
+      <names>
+        <base>Forged Steel Ball Valve</base>
+        <display>Forged Steel Ball Valve</display>
+        <common>
+          <cname>محبس كورة حديد</cname>
+        </common>
+      </names>
+      <description />
+      <images>
+        <image>1piece_ballvalve_hex.jpg</image>
+      </images>
+      <details>
+        <sizeGroup ID="G071" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+  </category>
+  <category catID="INS" name="Insulation">
+    <item itemID="PNS1" order="3">
+      <names>
+        <base>Fiberglass Insulation Pipe</base>
+        <display>Fiberglass Insulation Pipe</display>
+        <common>
+          <cname>ماسورة عزل صوف زجاجي</cname>
+        </common>
+      </names>
+      <description>n/A</description>
+      <images>
+        <image>PINS-FBR.jpg</image>
+      </images>
+      <details>
+        <specs ID="S020" required="true" />
+        <sizeGroup ID="G010" required="true" />
+        <brandList ID="B020" required="false" />
+      </details>
+      <uom>mt</uom>
+    </item>
+    <item itemID="PNS2" order="4">
+      <names>
+        <base>Rockwool Insulation Pipe</base>
+        <display>Rockwool Insulation Pipe</display>
+        <common>
+          <cname>ماسورة عزل صوف صخري</cname>
+        </common>
+      </names>
+      <description>n/A</description>
+      <images>
+        <image>INS-RKWL-PIP.jpg</image>
+        <image>INS-RKWL-PIP-AFF.jpg</image>
+      </images>
+      <details>
+        <specs ID="S021" required="true" />
+        <sizeGroup ID="G010" required="true" />
+        <brandList ID="B021" required="false" />
+      </details>
+      <uom>mt</uom>
+    </item>
+  </category>
+  <category catID="FST" name="Fastners">
+    <item itemID="BLT01">
+      <names>
+        <base>Bolt</base>
+        <display>Bolt</display>
+        <common>
+          <cname>مسمار قلاووظ</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>BLT01-00.jpg</image>
+      </images>
+      <details>
+        <specs ID="S030" required="true" />
+        <sizeGroup ID="G030" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+    <item itemID="NUT01">
+      <names>
+        <base>Nut</base>
+        <display>Nut</display>
+        <common>
+          <cname>صامولة</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>NUT01-00.jpg</image>
+      </images>
+      <details>
+        <specs ID="S030" required="true" />
+        <sizeGroup ID="G030" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+    <item itemID="CNNT0" order="0">
+      <names>
+        <base>Connection Nut</base>
+        <display>Connection Nut</display>
+        <common>
+          <cname>عقلة</cname>
+          <cname>Extension Nut</cname>
+          <cname>Rod Coupling Nut</cname>
+        </common>
+      </names>
+      <description>Connection nuts are used to connect threaded rods together.</description>
+      <images>
+        <image>CNNT0-00.jpg</image>
+      </images>
+      <details>
+        <sizeGroup ID="G030" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+    <item itemID="UB01" order="0">
+      <names>
+        <base>U Bolt</base>
+        <display>U Bolt</display>
+        <common />
+      </names>
+      <description>A U-bolt is an industrial fastener in the shape of the letter U with two threaded arms (or legs) extending from a curved base. U bolts are typically used to support pipework or to attach a part to a pole, beam or wall, where the "u" shape keeps it firmly in place, adding stability to the support.</description>
+      <images>
+        <image>UB01-00.jpg</image>
+      </images>
+      <details />
+      <uom>Ea</uom>
+    </item>
+    <item itemID="SBC01" order="0">
+      <names>
+        <base>Strapping Band Clip</base>
+        <display>Strapping Band Clip</display>
+        <common>
+          <cname>كلبس شنمبر</cname>
+        </common>
+      </names>
+      <description>Strapping Band Clips are used to seal packing strapping band.</description>
+      <images>
+        <image>SBC01-00.jpg</image>
+      </images>
+      <details />
+      <uom>kg</uom>
+    </item>
+    <item itemID="SASP1" order="0">
+      <names>
+        <base>Self-Adhesive Stick Pin</base>
+        <display>Self-Adhesive Stick Pin</display>
+        <common />
+      </names>
+      <description>Stick pins are used to fasten insulation.</description>
+      <images />
+      <details />
+      <uom>Ea</uom>
+    </item>
+    <item itemID="TAP01" order="0">
+      <names>
+        <base>Duct Tape</base>
+        <display>Duct Tape</display>
+        <common>
+          <cname>لصق فضي</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>TAP01-00.jpg</image>
+        <image>TAP01-01.jpg</image>
+      </images>
+      <details />
+      <uom>Roll</uom>
+    </item>
+  </category>
+  <category catID="SPR" name="Sprinklers">
+    <item itemID="SP1">
+      <names>
+        <base>Sprinkler</base>
+        <display>Sprinkler</display>
+        <common>
+          <cname>رشاش حريق</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>SPR-PNGB.jpg</image>
+        <image>SPR-UPFL.jpg</image>
+        <image>SPR-SQFL.jpg</image>
+        <image>SPR-RCGB.jpg</image>
+        <image>SPR-CNGB.jpg</image>
+      </images>
+      <details>
+        <specs ID="S040" required="true" />
+        <sizeGroup ID="G040" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+  </category>
+  <category catID="DAC" name="Duct Accessories">
+    <item itemID="RVD">
+      <names>
+        <base>Round Volume Damper</base>
+        <display>Round Volume Damper</display>
+        <common>
+          <cname>Round Air Volume Damper</cname>
+        </common>
+      </names>
+      <description>n/A</description>
+      <images>
+        <image>RVD-00.jpg</image>
+      </images>
+      <details>
+        <sizeGroup ID="G060" required="true" />
+        <brandList ID="B061" required="false" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+    <item itemID="SVD">
+      <names>
+        <base>Volume Damper</base>
+        <display>Rectangular Volume Damper</display>
+        <common>
+          <cname>Air Volume Damper</cname>
+        </common>
+      </names>
+      <description>n/A</description>
+      <images>
+        <image>SVD-00.jpg</image>
+      </images>
+      <details>
+        <sizeGroup ID="G061" required="true" />
+        <brandList ID="B061" required="false" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+  </category>
+  <category catID="CAB" name="Cables">
+    <item itemID="PCB">
+      <names>
+        <base>Cable</base>
+        <display>Power Cable</display>
+        <common>
+          <cname>كابل كهرباء</cname>
+        </common>
+      </names>
+      <description>n/A</description>
+      <images>
+        <image>CAB-SHCC.jpg</image>
+      </images>
+      <details>
+        <specs ID="S050" required="true" />
+        <sizeGroup ID="G050" required="true" />
+      </details>
+      <uom>mt</uom>
+    </item>
+  </category>
+  <category catID="CBA" name="Cable Accessories">
+    <item itemID="HTSH">
+      <names>
+        <base>Heat Shrink Tube</base>
+        <display>Heat Shrink Tube</display>
+        <common>
+          <cname>ريكم</cname>
+        </common>
+      </names>
+      <description>Heat shrink tubes are used to insulate exposed parts of electrical power cables.</description>
+      <images>
+        <image>HTSH-00.jpg</image>
+      </images>
+      <details>
+        <specs ID="S080" required="true" />
+        <sizeGroup ID="G080" required="true" />
+      </details>
+      <uom>mt</uom>
+    </item>
+    <item itemID="TRM01" order="0">
+      <names>
+        <base>Wire Terminal</base>
+        <display>Wire Terminal</display>
+        <common>
+          <cname>ترامل</cname>
+          <cname>ترملة</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>TRM01-00.jpg</image>
+        <image>TRM01-01.jpg</image>
+        <image>TRM01-02.jpg</image>
+      </images>
+      <details>
+        <specs ID="S0021" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+  </category>
+  <category catID="PPE" name="Safety Equipment">
+    <item itemID="SSHO1">
+      <names>
+        <base>Safety Shoes</base>
+        <display>Safety Shoes</display>
+        <common>
+          <cname>حذاء سيفتي</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>SSHO1-00.jpg</image>
+        <image>SSHO1-01.jpg</image>
+      </images>
+      <details>
+        <specs ID="SS01" required="true" />
+        <sizeGroup ID="GS01" required="true" />
+        <brandList ID="BS01" required="false" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+    <item itemID="SHLM1">
+      <names>
+        <base>Safety Helmet</base>
+        <display>Safety Helmet</display>
+        <common>
+          <cname>خوذة أمن صناعي</cname>
+          <cname>Hard Hat</cname>
+        </common>
+      </names>
+      <description>Safety helmet made from PVC.</description>
+      <images>
+        <image>SHLM1-00.jpg</image>
+        <image>SHLM1-01.jpg</image>
+        <image>SHLM1-02.jpg</image>
+        <image>SHLM1-03.jpg</image>
+        <image>SHLM1-04.jpg</image>
+      </images>
+      <details>
+        <specs ID="SS10" required="true" />
+        <brandList ID="BS10" required="false" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+  </category>
+  <category catID="LBL" name="Labeling">
+    <item itemID="PLBL1">
+      <names>
+        <base>Pipe Label</base>
+        <display>System Pipe Label</display>
+        <common>
+          <cname>شريط بيان ماسورة</cname>
+          <cname>Defined System Pipe Marker</cname>
+        </common>
+      </names>
+      <description>Pipe labels are used to indicate the system of the pipe.</description>
+      <images />
+      <details>
+        <specs ID="SLB0" required="true" />
+      </details>
+      <uom>Roll</uom>
+    </item>
+    <item itemID="PLBL2">
+      <names>
+        <base>Pipe Label</base>
+        <display>Custom Pipe Label</display>
+        <common>
+          <cname>شريط بيان ماسورة</cname>
+          <cname>Custom Pipe Marker</cname>
+        </common>
+      </names>
+      <description>Pipe labels are used to indicate the system of the pipe.</description>
+      <images />
+      <details>
+        <specs ID="SLB1" required="true" />
+      </details>
+      <uom>Roll</uom>
+    </item>
+  </category>
+  <category catID="DUCT" name="Metal Sheets and Ducts">
+    <item itemID="GDCT0" order="0">
+      <names>
+        <base>Galvanized Steel Sheet</base>
+        <display>Galvanized Steel Sheet</display>
+        <common>
+          <cname>لوح صاج مجلفن</cname>
+        </common>
+      </names>
+      <description>Zinc-coated metal steel sheet.</description>
+      <images>
+        <image>GDCT0-00.jpg</image>
+      </images>
+      <details>
+        <sizeGroup ID="GDCT0" required="true" />
+        <specs ID="SGLV0" required="true" />
+      </details>
+      <uom>Sheet</uom>
+    </item>
+  </category>
+  <category catID="HNGR" name="Hangers">
+    <item itemID="SWIV1" order="0">
+      <names>
+        <base>Swivel Loop Hanger</base>
+        <display>Swivel Hanger</display>
+        <common>
+          <cname>هانجر حلقة</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>SWIV1-00.jpg</image>
+        <image>SWIV1-01.jpg</image>
+        <image>SWIV1-02.jpg</image>
+      </images>
+      <details>
+        <brandList ID="B0020" required="false" />
+        <specs ID="S0020" required="false" />
+        <sizeGroup ID="G011" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+    <item itemID="CLMP1" order="0">
+      <names>
+        <base>Beam Clamp</base>
+        <display>Beam Clamp</display>
+        <common>
+          <cname>C Clamp</cname>
+          <cname>Grider Clamp</cname>
+          <cname>Threaded Rod Beam Clamp</cname>
+        </common>
+      </names>
+      <description>Beam clamps are used to attach hanger rods to structures and objects without the need for drilling or welding.</description>
+      <images>
+        <image>CLMP1-00.jpg</image>
+      </images>
+      <details>
+        <sizeGroup ID="GUNC1" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+    <item itemID="CLVS1" order="0">
+      <names>
+        <base>Clevis Hanger</base>
+        <display>Clevis Hanger</display>
+        <common />
+      </names>
+      <description>A clevis hanger is a pipe attachment providing vertical adjustment, consisting of a clevis type top bolted to a formed steel bottom strap. They are recommended for the suspension of non-insulated, stationary pipe lines.</description>
+      <images>
+        <image>CLVS1-00.jpg</image>
+      </images>
+      <details>
+        <brandList ID="B0020" required="false" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+  </category>
+  <category catID="FVL" name="Fire Valves">
+    <item itemID="ACV01" order="0">
+      <names>
+        <base>Alarm Check Valve</base>
+        <display>Alarm Check Valve</display>
+        <common />
+      </names>
+      <description></description>
+      <images>
+        <image>ACV01-00.jpg</image>
+      </images>
+      <details>
+        <sizeGroup ID="ACV01" required="true" />
+        <endsList ID="C012" required="true" />
+        <brandList ID="ACV01" required="false" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+  </category>
+  <category catID="CNSUM" name="Consumables">
+    <item itemID="GWH01" order="0">
+      <names>
+        <base>طارة صاروخ قطعية</base>
+        <display>طارة صاروخ قطعية</display>
+        <common>
+          <cname>Cutting Disc</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>GWH01-00.jpg</image>
+        <image>GWH01-01.jpg</image>
+      </images>
+      <details>
+        <brandList ID="B0022" required="false" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+    <item itemID="GWH02" order="0">
+      <names>
+        <base>حجر قطعية بسكوتة</base>
+        <display>حجر قطعية بسكوتة</display>
+        <common>
+          <cname>Grinding Wheel</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>GWH02-00.jpg</image>
+      </images>
+      <details>
+        <brandList ID="B0022" required="false" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+  </category>
+  <category catID="TOOLS" name="Tools">
+    <item itemID="ANGR1" order="0">
+      <names>
+        <base>صاروخ</base>
+        <display>صاروخ</display>
+        <common>
+          <cname>Angle Grinder</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>ANGR1-00.jpg</image>
+      </images>
+      <details>
+        <brandList ID="B0021" required="false" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+    <item itemID="DIGR1" order="0">
+      <names>
+        <base>صاروخ اسطمبات</base>
+        <display>صاروخ اسطمبات</display>
+        <common>
+          <cname>Die Grinder</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>DIGR1-00.jpg</image>
+        <image>DIGR1-01.jpg</image>
+      </images>
+      <details>
+        <brandList ID="B0021" required="false" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+  </category>
+  <category catID="CHEM" name="Chemicals / Paints">
+    <item itemID="PNT01" order="0">
+      <names>
+        <base>Red Primer</base>
+        <display>Red Primer</display>
+        <common>
+          <cname>برايمر أحمر</cname>
+          <cname>Red Oxide Metal Primer</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>PNT01-00.jpg</image>
+      </images>
+      <details>
+        <brandList ID="B0023" required="false" />
+      </details>
+      <uom>Liters</uom>
+    </item>
+    <item itemID="PNT02" order="0">
+      <names>
+        <base>Epoxy Primer</base>
+        <display>Epoxy Primer</display>
+        <common>
+          <cname>ايبوكسي</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>PNT02-00.jpg</image>
+      </images>
+      <details>
+        <brandList ID="B0023" required="false" />
+      </details>
+      <uom>Liters</uom>
+    </item>
+  </category>
+</items>

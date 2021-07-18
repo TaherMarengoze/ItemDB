@@ -1,0 +1,274 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A627C197-795E-4AF7-B3AA-127797DE04BE}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>UserInterface</RootNamespace>
+    <AssemblyName>UserInterface</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Win32Resource>
+    </Win32Resource>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Ampeross-Ampola-Folder-documents.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Class1.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CodeFile1.cs" />
+    <Compile Include="Common.cs" />
+    <Compile Include="Controllers\SimpleListController.cs" />
+    <Compile Include="Core\XDataIO.cs" />
+    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="Factory\Delegators.cs" />
+    <Compile Include="Forms\Canvas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Canvas.Designer.cs">
+      <DependentUpon>Canvas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FieldListAdder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FieldListAdder.Designer.cs">
+      <DependentUpon>FieldListAdder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ImagePreviewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ImagePreviewer.Designer.cs">
+      <DependentUpon>ImagePreviewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ItemEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ItemEditor.Designer.cs">
+      <DependentUpon>ItemEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ItemViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ItemViewer.Designer.cs">
+      <DependentUpon>ItemViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\XML Viewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\XML Viewer.Designer.cs">
+      <DependentUpon>XML Viewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\IDataSource.cs" />
+    <Compile Include="Interfaces\ISource.cs" />
+    <Compile Include="Models\BasicListView.cs" />
+    <Compile Include="Models\BasicView.cs" />
+    <Compile Include="Models\CopyOrder.cs" />
+    <Compile Include="Interfaces\IItemView.cs" />
+    <Compile Include="Interfaces\IListStructure.cs" />
+    <Compile Include="Interfaces\IItem.cs" />
+    <Compile Include="Interfaces\IItemRawData.cs" />
+    <Compile Include="Interfaces\IBasicView.cs" />
+    <Compile Include="Models\FieldList.cs" />
+    <Compile Include="Models\IFieldList.cs" />
+    <Compile Include="Models\ItemCategory.cs" />
+    <Compile Include="Models\DataRepos.cs" />
+    <Compile Include="Models\ItemCheckList.cs" />
+    <Compile Include="Models\ItemImage.cs" />
+    <Compile Include="Models\ItemRawData.cs" />
+    <Compile Include="Models\ItemViewObject.cs" />
+    <Compile Include="Models\ItemDetails.cs" />
+    <Compile Include="Models\Validators\FieldList.cs" />
+    <Compile Include="Models\ViewModels.cs" />
+    <Compile Include="Operation\DataService.All.cs" />
+    <Compile Include="Forms\AltListSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AltListSelector.Designer.cs">
+      <DependentUpon>AltListSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FieldEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FieldEditor.Designer.cs">
+      <DependentUpon>FieldEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FieldListEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FieldListEditor.Designer.cs">
+      <DependentUpon>FieldListEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ListEntryEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ListEntryEditor.Designer.cs">
+      <DependentUpon>ListEntryEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Main.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Main.Designer.cs">
+      <DependentUpon>Main.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SizeGroupEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SizeGroupEditor.Designer.cs">
+      <DependentUpon>SizeGroupEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\SizeList.cs" />
+    <Compile Include="Forms\SpecsEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SpecsEditor.Designer.cs">
+      <DependentUpon>SpecsEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SizeGroupDraft.cs" />
+    <Compile Include="Models\ListMetadata.cs" />
+    <Compile Include="Models\ListStructure.cs" />
+    <Compile Include="Models\SizeGroup.cs" />
+    <Compile Include="Models\SpecListEntry.cs" />
+    <Compile Include="Models\Specs.cs" />
+    <Compile Include="Models\Spec.cs" />
+    <Compile Include="Models\XML\FileProcessor.cs" />
+    <Compile Include="Models\XML\XDataDocuments.cs" />
+    <Compile Include="Operation\DataService.Fields.cs" />
+    <Compile Include="Operation\FileCopyService.cs" />
+    <Compile Include="Operation\XDataService.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Forms\ValueEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ValueEdit.Designer.cs">
+      <DependentUpon>ValueEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Runtime\Test.cs" />
+    <Compile Include="Types\EntryMode.cs" />
+    <Compile Include="Types\FieldType.cs" />
+    <Compile Include="Types\SelectionShift.cs" />
+    <Compile Include="Types\SpecType.cs" />
+    <EmbeddedResource Include="Forms\AltListSelector.resx">
+      <DependentUpon>AltListSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Canvas.resx">
+      <DependentUpon>Canvas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FieldEditor.resx">
+      <DependentUpon>FieldEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FieldListAdder.resx">
+      <DependentUpon>FieldListAdder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FieldListEditor.resx">
+      <DependentUpon>FieldListEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ImagePreviewer.resx">
+      <DependentUpon>ImagePreviewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ItemEditor.resx">
+      <DependentUpon>ItemEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ItemViewer.resx">
+      <DependentUpon>ItemViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ListEntryEditor.resx">
+      <DependentUpon>ListEntryEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Main.resx">
+      <DependentUpon>Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SizeGroupEditor.resx">
+      <DependentUpon>SizeGroupEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SpecsEditor.resx">
+      <DependentUpon>SpecsEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\XML Viewer.resx">
+      <DependentUpon>XML Viewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ValueEdit.resx">
+      <DependentUpon>ValueEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Ampeross-Ampola-Folder-data.ico" />
+    <Content Include="Ampeross-Ampola-Folder-documents.ico" />
+    <Content Include="appIcon.ico" />
+    <None Include="Resources\down_arrow 16x.png" />
+    <None Include="Resources\up_arrow 16x.png" />
+    <None Include="Resources\cancel-icon_16x.png" />
+    <None Include="Resources\faq-icon2_16x.png" />
+    <None Include="Resources\FAQ-icon_16x.png" />
+    <None Include="Resources\delete-icon_16x.png" />
+    <None Include="Resources\Edit-icon_16x.png" />
+    <None Include="Resources\Accept-icon_16x.png" />
+    <None Include="Resources\add-icon_16x.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

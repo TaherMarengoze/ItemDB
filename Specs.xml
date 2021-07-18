@@ -1,0 +1,668 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<specsGroups ver="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Specs.xsd">
+  <specs specsID="S000" name="Test" textPattern="{base}{1}">
+    <specsItem index="1" name="Multiple" valuePattern="{val}">
+      <list>
+        <entry valId="1">
+          <val>A</val>
+          <disp>A</disp>
+        </entry>
+        <entry valId="2">
+          <val>B</val>
+          <disp>B</disp>
+        </entry>
+      </list>
+    </specsItem>
+    <specsItem index="2" name="Label" valuePattern="{val}">
+      <custom>LBLTXT</custom>
+    </specsItem>
+    <specsItem index="3" name="Label1" valuePattern="{val}">
+      <custom>LBLTXT</custom>
+    </specsItem>
+    <specsItem index="4" name="Single" valuePattern="{val}">
+      <list>
+        <entry valId="1">
+          <val>C</val>
+          <disp>C</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
+  <specs specsID="S010" name="Black Steel Pipe" textPattern="{1} {base} {2}">
+    <specsItem index="1" name="Type" valuePattern="{val} ">
+      <list>
+        <entry valId="1">
+          <val>Seamless</val>
+          <disp>Seamless (غير ملحوم طوليا)</disp>
+        </entry>
+        <entry valId="2">
+          <val>ERW</val>
+          <disp>ERW (ملحومة طوليا)</disp>
+        </entry>
+      </list>
+    </specsItem>
+    <specsItem index="2" name="Thickness" valuePattern="{val}">
+      <list>
+        <entry valId="1">
+          <val>SCH-10</val>
+          <disp>Schedule-10</disp>
+        </entry>
+        <entry valId="2">
+          <val>SCH-40</val>
+          <disp>Schedule-40</disp>
+        </entry>
+        <entry valId="3">
+          <val>SCH-80</val>
+          <disp>Schedule-80</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
+  <specs specsID="S011" name="Stainless Steel Pipes" textPattern="{1} {base} {2}{3}">
+    <specsItem index="1" name="Type" valuePattern="{val} ">
+      <list>
+        <entry valId="1">
+          <val>Seamless</val>
+          <disp>Seamless</disp>
+        </entry>
+        <entry valId="2">
+          <val>ERW</val>
+          <disp>ERW</disp>
+        </entry>
+      </list>
+    </specsItem>
+    <specsItem index="2" name="Thickness" valuePattern=" {val}">
+      <list>
+        <entry valId="1">
+          <val>SCH-10</val>
+          <disp>SCH-10</disp>
+        </entry>
+        <entry valId="2">
+          <val>SCH-40</val>
+          <disp>SCH-40</disp>
+        </entry>
+      </list>
+    </specsItem>
+    <specsItem index="3" name="Grade" valuePattern=",Grade {val}">
+      <list>
+        <entry valId="1">
+          <val>304</val>
+          <disp>304</disp>
+        </entry>
+        <entry valId="2">
+          <val>304L</val>
+          <disp>304L</disp>
+        </entry>
+        <entry valId="3">
+          <val>316</val>
+          <disp>316</disp>
+        </entry>
+        <entry valId="4">
+          <val>316L</val>
+          <disp>316L</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
+  <specs specsID="SP12" name="Plastic pipes" textPattern="{base}{1}">
+    <specsItem index="1" name="Pressure Rating" valuePattern=", {val}">
+      <list>
+        <entry valId="1">
+          <val>PN16</val>
+          <disp>PN16</disp>
+        </entry>
+        <entry valId="2">
+          <val>PN10</val>
+          <disp>PN10</disp>
+        </entry>
+        <entry valId="3">
+          <val>PN6</val>
+          <disp>PN6</disp>
+        </entry>
+        <entry valId="4">
+          <val>PN4</val>
+          <disp>PN4</disp>
+        </entry>
+        <entry valId="5">
+          <val>PN2</val>
+          <disp>PN2</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
+  <specs specsID="S020" name="Insulation" textPattern="{base}{1}{2} {3}">
+    <specsItem index="1" name="Thickness" valuePattern=", {val} thick">
+      <list>
+        <entry valId="1">
+          <val>25 mm</val>
+          <disp>25 mm</disp>
+        </entry>
+        <entry valId="2">
+          <val>50 mm</val>
+          <disp>50 mm</disp>
+        </entry>
+      </list>
+    </specsItem>
+    <specsItem index="2" name="Density" valuePattern=", D: {val}">
+      <list>
+        <entry valId="1">
+          <val>70~80 kg/m³</val>
+          <disp>70~80 kg/m³</disp>
+        </entry>
+        <entry valId="2">
+          <val>128 kg/m³</val>
+          <disp>128 kg/m³</disp>
+        </entry>
+      </list>
+    </specsItem>
+    <specsItem index="3" name="Facings on Insulation" valuePattern="{val}">
+      <list>
+        <entry valId="1">
+          <val>Unfaced</val>
+          <disp>No facing</disp>
+        </entry>
+        <entry valId="2">
+          <val>FSK facing</val>
+          <disp>Aluminum Foil Facing</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
+  <specs specsID="S021" name="Insulation" textPattern="{base}{1}{2} {3}">
+    <specsItem index="1" name="Thickness" valuePattern=", {val} thick">
+      <list>
+        <entry valId="1">
+          <val>25 mm</val>
+          <disp>25 mm</disp>
+        </entry>
+        <entry valId="2">
+          <val>50 mm</val>
+          <disp>50 mm</disp>
+        </entry>
+      </list>
+    </specsItem>
+    <specsItem index="2" name="Density" valuePattern=", D: {val}">
+      <list>
+        <entry valId="1">
+          <val>70~80 kg/m³</val>
+          <disp>70~80 kg/m³</disp>
+        </entry>
+        <entry valId="2">
+          <val>128 kg/m³</val>
+          <disp>128 kg/m³</disp>
+        </entry>
+      </list>
+    </specsItem>
+    <specsItem index="3" name="Additional" valuePattern="{val}">
+      <list>
+        <entry valId="1">
+          <val>w/o foil</val>
+          <disp>w/o foil</disp>
+        </entry>
+        <entry valId="2">
+          <val>with Aluminum Foil</val>
+          <disp>with Aluminum Foil</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
+  <specs specsID="S030" name="" textPattern="{1} {2} {base}">
+    <specsItem index="1" name="Head" valuePattern="{val}">
+      <list>
+        <entry valId="1">
+          <val>Hexagonal</val>
+          <disp>Hexagonal</disp>
+        </entry>
+        <entry valId="2">
+          <val>Square</val>
+          <disp>Square</disp>
+        </entry>
+      </list>
+    </specsItem>
+    <specsItem index="2" name="Material" valuePattern="{val}">
+      <list>
+        <entry valId="1">
+          <val>Steel</val>
+          <disp>Steel</disp>
+        </entry>
+        <entry valId="2">
+          <val>Stainless Steel</val>
+          <disp>Stainless Steel</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
+  <specs specsID="S040" name="Sprinkler" textPattern="{1} {base}{2}{3}">
+    <specsItem index="1" name="Head" valuePattern="{val}">
+      <list>
+        <entry valId="1">
+          <val>Pendant</val>
+          <disp>Pendant</disp>
+        </entry>
+        <entry valId="2">
+          <val>Upright</val>
+          <disp>Upright</disp>
+        </entry>
+        <entry valId="3">
+          <val>Side Wall</val>
+          <disp>Side Wall</disp>
+        </entry>
+        <entry valId="4">
+          <val>Concealed</val>
+          <disp>Concealed</disp>
+        </entry>
+        <entry valId="5">
+          <val>Reccessed</val>
+          <disp>Reccessed</disp>
+        </entry>
+      </list>
+    </specsItem>
+    <specsItem index="2" name="K-Factor" valuePattern=", K-Factor: {val}">
+      <list>
+        <entry valId="1">
+          <val>5.6</val>
+          <disp>5.6</disp>
+        </entry>
+        <entry valId="2">
+          <val>8.0</val>
+          <disp>8.0</disp>
+        </entry>
+        <entry valId="3">
+          <val>11.2</val>
+          <disp>11.2</disp>
+        </entry>
+        <entry valId="4">
+          <val>14</val>
+          <disp>14</disp>
+        </entry>
+        <entry valId="5">
+          <val>22.4</val>
+          <disp>22.4</disp>
+        </entry>
+        <entry valId="6">
+          <val>25.2</val>
+          <disp>25.2</disp>
+        </entry>
+        <entry valId="7">
+          <val>28</val>
+          <disp>28</disp>
+        </entry>
+      </list>
+    </specsItem>
+    <specsItem index="3" name="Temprature" valuePattern=", Temp: {val} °C">
+      <list>
+        <entry valId="1">
+          <val>68</val>
+          <disp>68</disp>
+        </entry>
+        <entry valId="2">
+          <val>72</val>
+          <disp>72</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
+  <specs specsID="S050" name="Cables" textPattern="{1} {base}">
+    <specsItem index="1" name="Material, Insulation" valuePattern="{val}">
+      <list>
+        <entry valId="1">
+          <val>Cu/XLPE/PVC</val>
+          <disp>Cu/XLPE/PVC</disp>
+        </entry>
+        <entry valId="2">
+          <val>Cu/PVC/PVC</val>
+          <disp>Cu/PVC/PVC</disp>
+        </entry>
+        <entry valId="3">
+          <val>Al/XLPE/PVC</val>
+          <disp>Al/XLPE/PVC</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
+  <specs specsID="SF01" name="Elbow Welded Fitting" textPattern="{base}{2} {1}">
+    <specsItem index="1" name="Radius" valuePattern="({val} Radius)">
+      <list>
+        <entry valId="1">
+          <val>Short</val>
+          <disp>Short</disp>
+        </entry>
+        <entry valId="2">
+          <val>Long</val>
+          <disp>Long</disp>
+        </entry>
+      </list>
+    </specsItem>
+    <specsItem index="2" name="Angle" valuePattern="-{val}">
+      <list>
+        <entry valId="1">
+          <val>90°</val>
+          <disp>90°</disp>
+        </entry>
+        <entry valId="2">
+          <val>45°</val>
+          <disp>45°</disp>
+        </entry>
+        <entry valId="3">
+          <val>22.5°</val>
+          <disp>22.5°</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
+  <specs specsID="SF02" name="Elbow Threaded Fitting" textPattern="{base}{1}">
+    <specsItem index="1" name="Angle" valuePattern="-{val}">
+      <list>
+        <entry valId="1">
+          <val>90°</val>
+          <disp>90°</disp>
+        </entry>
+        <entry valId="2">
+          <val>45°</val>
+          <disp>45°</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
+  <specs specsID="SV01" name="Ball Valve" textPattern="{1} {4} {base}{2} {3}">
+    <specsItem index="1" name="Material" valuePattern="{val}">
+      <list>
+        <entry valId="1">
+          <val>Stainless Steel</val>
+          <disp>Stainless Steel</disp>
+        </entry>
+        <entry valId="2">
+          <val>Carbon Steel</val>
+          <disp>Carbon Steel</disp>
+        </entry>
+      </list>
+    </specsItem>
+    <specsItem index="2" name="Port" valuePattern=", {val} port">
+      <list>
+        <entry valId="1">
+          <val>Full</val>
+          <disp>Full</disp>
+        </entry>
+        <entry valId="2">
+          <val>Standard</val>
+          <disp>Standard</disp>
+        </entry>
+      </list>
+    </specsItem>
+    <specsItem index="3" name="Lock" valuePattern="{val}">
+      <list>
+        <entry valId="1">
+          <val>with Lock Latch</val>
+          <disp>with Lock Latch</disp>
+        </entry>
+        <entry valId="2">
+          <val>w/o Lock Latch</val>
+          <disp>w/o Lock Latch</disp>
+        </entry>
+      </list>
+    </specsItem>
+    <specsItem index="4" name="Pieces" valuePattern="{val}">
+      <list>
+        <entry valId="1">
+          <val>1-Piece</val>
+          <disp>1-Piece</disp>
+        </entry>
+        <entry valId="2">
+          <val>2-Piece</val>
+          <disp>2-Piece</disp>
+        </entry>
+        <entry valId="3">
+          <val>3-Piece</val>
+          <disp>3-Piece</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
+  <specs specsID="S080" name="Heat Shrink" textPattern="{1} {base}">
+    <specsItem index="1" name="Color" valuePattern="{val}">
+      <list>
+        <entry valId="1">
+          <val>Red</val>
+          <disp>Red</disp>
+        </entry>
+        <entry valId="2">
+          <val>Yellow</val>
+          <disp>Yellow</disp>
+        </entry>
+        <entry valId="3">
+          <val>Blue</val>
+          <disp>Blue</disp>
+        </entry>
+        <entry valId="4">
+          <val>Black</val>
+          <disp>Black</disp>
+        </entry>
+        <entry valId="5">
+          <val>Yellow/Green</val>
+          <disp>Yellow/Green</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
+  <specs specsID="SS01" name="Safety Shoes" textPattern="{1} {base}">
+    <specsItem index="1" name="Cut" valuePattern="{val}">
+      <list>
+        <entry valId="1">
+          <val>High Cut</val>
+          <disp>High Cut</disp>
+        </entry>
+        <entry valId="2">
+          <val>Low Cut</val>
+          <disp>Low Cut</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
+  <specs specsID="SS10" name="Safety Helmet" textPattern="{base}{1}{2}">
+    <specsItem index="1" name="Color" valuePattern=", {val} colored">
+      <list>
+        <entry valId="1">
+          <val>White</val>
+          <disp>White</disp>
+        </entry>
+        <entry valId="2">
+          <val>Yellow</val>
+          <disp>Yellow</disp>
+        </entry>
+        <entry valId="3">
+          <val>Red</val>
+          <disp>Red</disp>
+        </entry>
+        <entry valId="4">
+          <val>Green</val>
+          <disp>Green</disp>
+        </entry>
+        <entry valId="5">
+          <val>Blue</val>
+          <disp>Blue</disp>
+        </entry>
+      </list>
+    </specsItem>
+    <specsItem index="2" name="Vented" valuePattern=", {val}">
+      <list>
+        <entry valId="1">
+          <val>Vented</val>
+          <disp>Yes</disp>
+        </entry>
+        <entry valId="2">
+          <val>Non-vented</val>
+          <disp>No</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
+  <specs specsID="SLB0" name="Pipe label" textPattern="{base}{1}">
+    <specsItem index="1" name="System Label" valuePattern=", Text: {val}">
+      <list>
+        <entry valId="1">
+          <val>Sprinkler Water</val>
+          <disp>Sprinkler Water</disp>
+        </entry>
+        <entry valId="2">
+          <val>Chilled Water Supply</val>
+          <disp>Chilled Water Supply</disp>
+        </entry>
+        <entry valId="3">
+          <val>Chilled Water Return</val>
+          <disp>Chilled Water Return</disp>
+        </entry>
+        <entry valId="4">
+          <val>Compressed Air</val>
+          <disp>Compressed Air</disp>
+        </entry>
+        <entry valId="5">
+          <val>CIP Water</val>
+          <disp>CIP Water</disp>
+        </entry>
+        <entry valId="6">
+          <val>Steam</val>
+          <disp>Steam</disp>
+        </entry>
+        <entry valId="7">
+          <val>Steam Condensate</val>
+          <disp>Steam Condensate</disp>
+        </entry>
+        <entry valId="8">
+          <val>Hot Water Supply</val>
+          <disp>Hot Water Supply</disp>
+        </entry>
+        <entry valId="9">
+          <val>Hot Water Return</val>
+          <disp>Hot Water Return</disp>
+        </entry>
+        <entry valId="10">
+          <val>Raw Water</val>
+          <disp>Raw Water</disp>
+        </entry>
+        <entry valId="11">
+          <val>Treated Water</val>
+          <disp>Treated Water</disp>
+        </entry>
+        <entry valId="12">
+          <val>Vegetable Oil</val>
+          <disp>Vegetable Oil</disp>
+        </entry>
+        <entry valId="13">
+          <val>Waste Oil</val>
+          <disp>Waste Oil</disp>
+        </entry>
+        <entry valId="14">
+          <val>Makeup Water</val>
+          <disp>Makeup Water</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
+  <specs specsID="SLB1" name="" textPattern="{base}{1}">
+    <specsItem index="1" name="Label" valuePattern=", Text: {val}">
+      <custom>LBLTXT</custom>
+    </specsItem>
+  </specs>
+  <specs specsID="SRD01" name="Reducer Type" textPattern="{base}{1}">
+    <specsItem index="1" name="Special" valuePattern=" ({val})">
+      <list>
+        <entry valId="1">
+          <val>Eccentric</val>
+          <disp>Eccentric</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
+  <specs specsID="SGLV0" name="" textPattern="{base}{1}{2}">
+    <specsItem index="1" name="Galvanization" valuePattern=", {val} g/m²">
+      <list>
+        <entry valId="1">
+          <val>275</val>
+          <disp>275 g/m²</disp>
+        </entry>
+      </list>
+    </specsItem>
+    <specsItem index="2" name="Thickness" valuePattern=", Thickness: {val}">
+      <list>
+        <entry valId="1">
+          <val>0.6 mm</val>
+          <disp>0.6 mm</disp>
+        </entry>
+        <entry valId="2">
+          <val>0.7 mm</val>
+          <disp>0.7 mm</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
+  <specs specsID="SPF01" name="Pipe Fitting Plug" textPattern="{base}{1}">
+    <specsItem index="1" name="Head" valuePattern=", {val} head">
+      <list>
+        <entry valId="1">
+          <val>Square</val>
+          <disp>Square</disp>
+        </entry>
+        <entry valId="2">
+          <val>Hexagonal</val>
+          <disp>Hexagonal</disp>
+        </entry>
+        <entry valId="3">
+          <val>Socket</val>
+          <disp>Socket</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
+  <specs specsID="S0020" name="Swivel Loop Hanger" textPattern="{base}{1}">
+    <specsItem index="1" name="Additionl" valuePattern=", {val}">
+      <list>
+        <entry valId="1">
+          <val>PVC Coated</val>
+          <disp>PVC Coated</disp>
+        </entry>
+        <entry valId="2">
+          <val>Felt Lined</val>
+          <disp>Felt Lined</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
+  <specs specsID="S0021" name="Wire Terminal" textPattern="{base}{1}{2}">
+    <specsItem index="1" name="Type" valuePattern=", {val} type">
+      <list>
+        <entry valId="1">
+          <val>Fork</val>
+          <disp>U-Shaped / Fork (شوكة)</disp>
+        </entry>
+        <entry valId="2">
+          <val>Ring</val>
+          <disp>Ring</disp>
+        </entry>
+        <entry valId="3">
+          <val>Pin</val>
+          <disp>Pin</disp>
+        </entry>
+      </list>
+    </specsItem>
+    <specsItem index="2" name="Color" valuePattern=", {val} colored">
+      <list>
+        <entry valId="1">
+          <val>Yellow</val>
+          <disp>Yellow</disp>
+        </entry>
+        <entry valId="2">
+          <val>Red</val>
+          <disp>Red</disp>
+        </entry>
+        <entry valId="3">
+          <val>Blue</val>
+          <disp>Blue</disp>
+        </entry>
+        <entry valId="4">
+          <val>Green</val>
+          <disp>Green</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
+</specsGroups>
