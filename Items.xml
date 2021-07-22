@@ -936,4 +936,17 @@
       <uom>Liters</uom>
     </item>
   </category>
+  <category catID="TEST" name="Test Category">
+    <item itemID="TEST" order="0">
+      <names>
+        <base>Test Item</base>
+        <display>Test Item</display>
+        <common />
+      </names>
+      <description></description>
+      <images />
+      <details />
+      <uom>TEST</uom>
+    </item>
+  </category>
 </items>

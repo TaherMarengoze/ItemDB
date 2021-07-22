@@ -73,12 +73,15 @@ namespace UserInterface.Forms
             // Load all the required XML documents.
             Program.xDataDocs = new XDataDocuments(Program.fpr);
 
+            // Instantiate the source reader
+            Program.reader = new XSource(Program.xDataDocs);
+
             PostLoading();
         }
         
         private void PostLoading()
         {
-            DataService.InitializeRepos(new XSource(Program.xDataDocs));
+            DataService.InitializeRepos();
             EnableDisableEditorsLaunchUI(true);
         }
 

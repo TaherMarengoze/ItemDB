@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using UserInterface.Models;
 
 namespace UserInterface
 {
+    using Interfaces;
+    using Models;
+
     static class Program
     {
         public static FilePathReader fpr;
+        public static ISourceReader reader;
         public static XDataDocuments xDataDocs;
 
         public static bool TestAutoLoad = true;

@@ -13,28 +13,28 @@
 
         public static DataRepos TestRepos { get => repos; }
 
-        public static void InitializeRepos(ISourceReader reader)
+        public static void InitializeRepos()
         {
             repos = new DataRepos()
             {
-                Items = reader.GetItems(),
-                Categories = reader.GetCategories(),
-                SpecsList = reader.GetSpecs(),
-                SizeGroups = reader.GetSizeGroups(),
-                SizesList = reader.GetSizes(),
-                BrandsList = reader.GetBrands(),
-                EndsList = reader.GetEnds()
+                Items = Program.reader.GetItems(),
+                Categories = Program.reader.GetCategories(),
+                SpecsList = Program.reader.GetSpecs(),
+                SizeGroups = Program.reader.GetSizeGroups(),
+                SizesList = Program.reader.GetSizes(),
+                BrandsList = Program.reader.GetBrands(),
+                EndsList = Program.reader.GetEnds()
             };
         }
 
-        private static void UpdateItems(XDocument itemsXDoc)
+        private static void UpdateItems()
         {
-            repos.Items = _GetAllItems(itemsXDoc);
+            repos.Items = Program.reader.GetItems();
         }
 
         private static void UpdateCategories(XDocument document)
         {
-            repos.Categories = _GetItemCategories(document);
+            repos.Categories = Program.reader.GetCategories() /*_GetItemCategories(document)*/;
         }
 
         public static void UpdateSpecs(XDocument specsXDoc)
@@ -187,7 +187,7 @@
             CategorizeItem(itemsXDoc, data, item);
 
             // Update Items List and Categories
-            UpdateItems(itemsXDoc);
+            UpdateItems();
             UpdateCategories(itemsXDoc);
         }
 
@@ -248,7 +248,7 @@
             ProcessItemCategory(itemsXDoc, existingId, data, item);
 
             // Update Items List and Categories
-            UpdateItems(itemsXDoc);
+            UpdateItems();
             UpdateCategories(itemsXDoc);
         }
 
