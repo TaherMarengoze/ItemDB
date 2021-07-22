@@ -36,7 +36,7 @@ namespace UserInterface.Forms
 
         #region File Management
         private void Save() =>
-            XDataDocuments.Save(Program.xDataDocs.Items, Program.fp.Items, false);
+            XDataDocuments.Save(Program.xDataDocs.Items, Program.fpr.Items, false);
         #endregion
 
         private void PostLoading()
@@ -342,7 +342,7 @@ namespace UserInterface.Forms
         private void btnAdd_Click(object sender, EventArgs e)
         {
             Hide();
-            ItemEditor itemEditor = new ItemEditor(Program.xDataDocs, Program.fp.ImageRepos);
+            ItemEditor itemEditor = new ItemEditor(Program.xDataDocs, Program.fpr.ImageRepos);
             if (itemEditor.ShowDialog() == DialogResult.OK)
             {
                 DataService.AddItemToXDocument(Program.xDataDocs.Items, itemEditor.DraftItemData);
@@ -359,7 +359,7 @@ namespace UserInterface.Forms
             string id = row.Cells[0].Value.ToString();
 
             Hide();
-            ItemEditor itemEditor = new ItemEditor(Program.xDataDocs, Program.fp.ImageRepos, id);
+            ItemEditor itemEditor = new ItemEditor(Program.xDataDocs, Program.fpr.ImageRepos, id);
             if (itemEditor.ShowDialog() == DialogResult.OK)
             {
                 // Modify edited item with new one
@@ -377,7 +377,7 @@ namespace UserInterface.Forms
         {
             if (lbxImages.SelectedItem != null)
             {
-                string imageFile = Path.Combine(Program.fp.ImageRepos, lbxImages.Text);
+                string imageFile = Path.Combine(Program.fpr.ImageRepos, lbxImages.Text);
 
                 if (File.Exists(imageFile))
                 {

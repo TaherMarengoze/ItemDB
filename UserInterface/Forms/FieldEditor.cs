@@ -8,7 +8,7 @@ using UserInterface.Factory;
 using UserInterface.Interfaces;
 using UserInterface.Models;
 using UserInterface.Operation;
-using UserInterface.Types;
+using UserInterface.Enums;
 
 namespace UserInterface.Forms
 {
@@ -53,7 +53,7 @@ namespace UserInterface.Forms
             //    delegate { fieldFilePath = Program.fp.Brands; fieldXDoc = Program.xDataDocs.Brands; },
             //    delegate { fieldFilePath = Program.fp.Ends; fieldXDoc = Program.xDataDocs.Ends; });
 
-            fieldFilePath = FileProcessor.FieldFilePath(editorField);
+            fieldFilePath = FilePathReader.FieldFilePath(editorField);
 
             Delegators.FieldActionCallback(editorField,
                 delegate { fieldXDoc = Program.xDataDocs.Sizes; },

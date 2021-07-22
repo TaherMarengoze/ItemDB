@@ -1,4 +1,4 @@
-﻿namespace UserInterface.Types
+﻿namespace UserInterface.Enums
 {
     public enum EntryMode
     {

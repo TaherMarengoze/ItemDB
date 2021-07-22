@@ -9,7 +9,7 @@ namespace UserInterface.Models
     /// </summary>
     public class ItemVO : IItemView
     {
-        public ItemVO(Item item)
+        public ItemVO(IItem item)
         {
             ID = item.ItemID;
             Name = item.DisplayName;

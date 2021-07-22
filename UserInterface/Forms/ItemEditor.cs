@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using UserInterface.Interfaces;
 using UserInterface.Models;
 using UserInterface.Operation;
-using UserInterface.Types;
+using UserInterface.Enums;
 
 namespace UserInterface.Forms
 {
@@ -1221,35 +1221,43 @@ namespace UserInterface.Forms
         private void tsmiSizeList_Click(object sender, EventArgs e)
         {
             FieldType fieldType = FieldType.SIZE;
-
-            FieldListAdder listAdder = new FieldListAdder(fieldType);
-            if (listAdder.ShowDialog() == DialogResult.OK)
+            //QuickAddField(fieldType);
+            SizeGroupAdder fieldAdder = new SizeGroupAdder(fieldType);
+            if (fieldAdder.ShowDialog() == DialogResult.OK)
             {
-
+                DataService.AddNewFieldList(fieldType, fieldAdder.FieldListItem);
             }
         }
-
+        
         private void tsmiBrandsList_Click(object sender, EventArgs e)
         {
-            QuickAddField(FieldType.BRAND, cboBrandListId, dgvBrandsLists);
+            FieldType fieldType = FieldType.BRAND;
+            QuickAddField(fieldType);
+            UpdateFieldUI(fieldType, cboBrandListId, dgvBrandsLists);
         }
 
         private void tsmiEndsList_Click(object sender, EventArgs e)
         {
-            QuickAddField(FieldType.ENDS, cboEndsListId, dgvEndsLists);
+            FieldType fieldType = FieldType.ENDS;
+            QuickAddField(fieldType);
+            UpdateFieldUI(fieldType, cboEndsListId, dgvEndsLists);
         }
 
-        void QuickAddField(FieldType fieldType, ComboBox fieldSelector, DataGridView fieldDataView)
+        void QuickAddField(FieldType fieldType)
         {
             FieldListAdder listAdder = new FieldListAdder(fieldType);
             if (listAdder.ShowDialog() == DialogResult.OK)
             {
                 DataService.AddNewFieldList(fieldType, listAdder.FieldListItem);
-                fieldSelector.DataSource = null;
-                fieldDataView.DataSource = null;
-                fieldSelector.DataSource = DataService.GetFieldListsId(fieldType);
-                fieldDataView.DataSource = DataService.GetFieldItems(fieldType);
             }
+        }
+
+        private static void UpdateFieldUI(FieldType fieldType, ComboBox fieldSelector, DataGridView fieldDataView)
+        {
+            fieldSelector.DataSource = null;
+            fieldDataView.DataSource = null;
+            fieldSelector.DataSource = DataService.GetFieldListsId(fieldType);
+            fieldDataView.DataSource = DataService.GetFieldItems(fieldType);
         }
 
 #pragma warning restore IDE1006 // Naming Styles

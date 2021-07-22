@@ -7,7 +7,7 @@
     using UserInterface.Factory;
     using UserInterface.Interfaces;
     using UserInterface.Models;
-    using UserInterface.Types;
+    using UserInterface.Enums;
 
     public static partial class DataService
     {
@@ -55,15 +55,25 @@
         public static object GetFieldListMetadata(FieldType field)
         {
             return Delegators.FieldFunctionCallback(field,
-                sizeCallback: delegate { return null; },
+                sizeCallback: SizesBasicView,
                 brandCallback: BrandsBasicView,
                 endsCallback: delegate { return repos.EndsList.Select(l => new BasicView(l.ID, l.Name)).ToList(); });
+        }
+
+        public static List<BasicView> SizesBasicView()
+        {
+            return
+                repos.SizesList
+                .Select(l => new BasicView(l.ID, l.Name))
+                .ToList();
         }
 
         public static List<BasicView> BrandsBasicView()
         {
             return
-                repos.BrandsList.Select(l => new BasicView(l.ID, l.Name)).ToList();
+                repos.BrandsList
+                .Select(l => new BasicView(l.ID, l.Name))
+                .ToList();
         }
 
         /// <summary>

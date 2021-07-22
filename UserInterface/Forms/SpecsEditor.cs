@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using UserInterface.Models;
 using UserInterface.Operation;
-using UserInterface.Types;
+using UserInterface.Enums;
 
 namespace UserInterface.Forms
 {
@@ -122,7 +122,7 @@ namespace UserInterface.Forms
         #region File Management
         private void SaveXmlFile()
         {
-            XDataDocuments.Save(Program.xDataDocs.Specs, Program.fp.Specs);
+            XDataDocuments.Save(Program.xDataDocs.Specs, Program.fpr.Specs);
             DataService.UpdateSpecs(Program.xDataDocs.Specs);
         }
         #endregion

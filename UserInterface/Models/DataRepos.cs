@@ -3,23 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UserInterface.Interfaces;
 
 namespace UserInterface.Models
 {
     public class DataRepos
     {
-        private List<Item> _items;
-        private List<Specs> _specsList;
-        private List<SizeGroup> _sizeGroups;
-        private List<BasicListView> _brandsList;
-        private List<BasicListView> _endsList;
+        private IEnumerable<IItem> _items;
+        private IEnumerable<Specs> _specsList;
+        private IEnumerable<SizeGroup> _sizeGroups;
+        private IEnumerable<BasicListView> _brandsList;
+        private IEnumerable<BasicListView> _endsList;
 
         public DataRepos()
         {
 
         }
 
-        public List<Item> Items
+        public IEnumerable<IItem> Items
         {
             get => _items;
             set
@@ -40,11 +41,11 @@ namespace UserInterface.Models
 
         public List<ItemVO> ItemsView { get; private set; }
 
-        public List<ItemCategory> Categories { get; set; }
+        public IEnumerable<ItemCategory> Categories { get; set; }
 
 
         // Specs
-        public List<Specs> SpecsList
+        public IEnumerable<Specs> SpecsList
         {
             get => _specsList;
             set
@@ -58,7 +59,7 @@ namespace UserInterface.Models
 
 
         // SizeGroups
-        public List<SizeGroup> SizeGroups
+        public IEnumerable<SizeGroup> SizeGroups
         {
             get => _sizeGroups;
             set
@@ -71,10 +72,10 @@ namespace UserInterface.Models
         public List<string> SizeGroupIdList { get; private set; }
 
         // Sizes
-        public List<BasicListView> SizesList { get; set; }
+        public IEnumerable<BasicListView> SizesList { get; set; }
 
         // Brands
-        public List<BasicListView> BrandsList
+        public IEnumerable<BasicListView> BrandsList
         {
             get => _brandsList;
             set
@@ -88,7 +89,7 @@ namespace UserInterface.Models
 
 
         // Ends
-        public List<BasicListView> EndsList
+        public IEnumerable<BasicListView> EndsList
         {
             get => _endsList;
             set

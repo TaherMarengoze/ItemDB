@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UserInterface.Factory;
-using UserInterface.Types;
+using UserInterface.Enums;
 
 namespace UserInterface.Models
 {
-    public class FileProcessor
+    public class FilePathReader
     {
-        public FileProcessor(string browsedPath)
+        public FilePathReader(string browsedPath)
         {
             //Get the parent directory of this file
             string parentDir = Path.GetDirectoryName(browsedPath);
@@ -42,9 +42,9 @@ namespace UserInterface.Models
         {
             return (string)
                 Delegators.FieldFunctionCallback(fieldType,
-                    delegate { return Program.fp.Sizes; },
-                    delegate { return Program.fp.Brands; },
-                    delegate { return Program.fp.Ends; });
+                    delegate { return Program.fpr.Sizes; },
+                    delegate { return Program.fpr.Brands; },
+                    delegate { return Program.fpr.Ends; });
         }
 
         public static string TestSave(string filePath)

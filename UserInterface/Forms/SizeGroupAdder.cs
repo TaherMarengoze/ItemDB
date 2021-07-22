@@ -16,9 +16,10 @@ using UserInterface.Enums;
 
 namespace UserInterface.Forms
 {
-    public partial class FieldListAdder : Form
+    public partial class SizeGroupAdder : Form
     {
         public IFieldList FieldListItem { get; private set; } = new FieldList();
+        public object MyProperty { get; private set; }
 
         private FieldType fieldType;
         private object existingFieldIds;
@@ -26,7 +27,7 @@ namespace UserInterface.Forms
         private List<string> listEntries = new List<string>();
         private SimpleListController listController;
 
-        public FieldListAdder(FieldType field)
+        public SizeGroupAdder(FieldType field)
         {
             InitializeComponent();
 
@@ -35,7 +36,8 @@ namespace UserInterface.Forms
             existingFieldIds = DataService.GetFieldListMetadata(fieldType);
             SetListItems(existingFieldIds);
 
-            listController = new SimpleListController(btnAddEntry, btnEdit, btnDeleteEntry,
+            listController =
+                new SimpleListController(btnAddEntry, btnEdit, btnDeleteEntry,
                 txtEntryValue, lbxFieldListItems, listEntries);
 
             AddEventListners();
@@ -82,7 +84,7 @@ namespace UserInterface.Forms
         {
             btnAccept.Enabled = false;
         }
-        
+
         private void txtListID_TextChanged(object sender, EventArgs e)
         {
             string input = ((TextBox)sender).Text;

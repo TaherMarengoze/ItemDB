@@ -12,16 +12,16 @@ namespace UserInterface.Models
 {
     public class XDataDocuments : IDataSource
     {
-        public XDataDocuments(FileProcessor fileProcessor)
+        public XDataDocuments(FilePathReader filePathReader)
         {
-            Items = LoadXDocument(fileProcessor.Items);
-            SizeGroups = LoadXDocument(fileProcessor.SizeGroups);
-            Specs = LoadXDocument(fileProcessor.Specs);
-            Sizes = LoadXDocument(fileProcessor.Sizes);
-            Brands = LoadXDocument(fileProcessor.Brands);
-            Ends = LoadXDocument(fileProcessor.Ends);
-            CustomSpecs = LoadXDocument(fileProcessor.CustomSpecs);
-            CustomSizes = LoadXDocument(fileProcessor.CustomSizes);
+            Items = LoadXDocument(filePathReader.Items);
+            SizeGroups = LoadXDocument(filePathReader.SizeGroups);
+            Specs = LoadXDocument(filePathReader.Specs);
+            Sizes = LoadXDocument(filePathReader.Sizes);
+            Brands = LoadXDocument(filePathReader.Brands);
+            Ends = LoadXDocument(filePathReader.Ends);
+            CustomSpecs = LoadXDocument(filePathReader.CustomSpecs);
+            CustomSizes = LoadXDocument(filePathReader.CustomSizes);
         }
 
         public XDocument Items { get; private set; }
@@ -40,7 +40,7 @@ namespace UserInterface.Models
                 string path = savePath;
                 if (test)
                 {
-                    path = FileProcessor.TestSave(savePath);
+                    path = FilePathReader.TestSave(savePath);
                 }
 
                 document.Save(path);

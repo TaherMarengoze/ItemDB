@@ -4,10 +4,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Xml.Linq;
-    using UserInterface.Factory;
     using UserInterface.Interfaces;
     using UserInterface.Models;
-    using UserInterface.Types;
 
     public static partial class DataService
     {
@@ -15,17 +13,17 @@
 
         public static DataRepos TestRepos { get => repos; }
 
-        public static void InitializeRepos(XDataDocuments dataDocs)
+        public static void InitializeRepos(ISourceReader reader)
         {
             repos = new DataRepos()
             {
-                Items = _GetAllItems(dataDocs.Items),
-                Categories = _GetItemCategories(dataDocs.Items),
-                SpecsList = _GetSpecs(dataDocs.Specs),
-                SizeGroups = _GetSizeGroups(dataDocs.SizeGroups),
-                SizesList = _GetSizes(dataDocs.Sizes),
-                BrandsList = _GetBrands(dataDocs.Brands),
-                EndsList = _GetEnds(dataDocs.Ends)
+                Items = reader.GetItems(),
+                Categories = reader.GetCategories(),
+                SpecsList = reader.GetSpecs(),
+                SizeGroups = reader.GetSizeGroups(),
+                SizesList = reader.GetSizes(),
+                BrandsList = reader.GetBrands(),
+                EndsList = reader.GetEnds()
             };
         }
 
@@ -277,7 +275,7 @@
             // Add the item to the category
             category.Add(item);
         }
-        
+
         #region Item Object
         private static List<Item> _GetAllItems(XDocument itemXDoc)
         {
@@ -371,7 +369,7 @@
 
         public static int GetItemsCount()
         {
-            return repos.Items.Count;
+            return repos.Items.Count();
         }
 
         public static IItem GetItem(string itemId)
@@ -433,7 +431,7 @@
 
         public static List<ItemCategory> GetCategories()
         {
-            return repos.Categories;
+            return repos.Categories.ToList();
         }
 
         public static List<ItemCategory> FilterCategoriesById(string filterCatId)
@@ -471,7 +469,7 @@
         #region Specs Object
         internal static List<Specs> GetSpecs()
         {
-            return repos.SpecsList;
+            return repos.SpecsList.ToList();
         }
 
         public static List<Spec> GetSpecsItems(string specsId)
@@ -523,10 +521,10 @@
         #endregion
 
         #region Size Groups Object
-        public static List<SizeGroup> GetSizeGroups()
-        {
-            return repos.SizeGroups;
-        }
+        //public static List<SizeGroup> GetSizeGroups()
+        //{
+        //    return repos.SizeGroups.ToList();
+        //}
 
         public static List<string> GetSizeGroupsId()
         {
@@ -547,8 +545,7 @@
         {
             return
                 (from sg in sizeGroupXDoc.Descendants("group")
-                 let list = sg.Element("altLists").HasElements ?
-                 sg.Element("altLists").Elements("listID").Select(l => l.Value).ToList() : null
+                 let list = sg.Element("altLists").HasElements ? sg.Element("altLists").Elements("listID").Select(l => l.Value).ToList() : null
                  let customId = sg.Element("customSizeDataID").Value
                  select new SizeGroup()
                  {
@@ -564,7 +561,7 @@
         #region Size Lists Object
         public static List<BasicListView> GetSizes()
         {
-            return repos.SizesList;
+            return repos.SizesList.ToList();
         }
 
         /// <summary>
@@ -579,7 +576,7 @@
                  where list.ID == listId
                  select list.List).FirstOrDefault();
         }
-        
+
         private static List<BasicListView> _GetSizes(XDocument sizesXDoc)
         {
             return
@@ -599,14 +596,14 @@
             // Delete Size List Element from the XML Document
             DeleteFieldListFromXDocument(sizesListXDoc, listId, "sizeList");
 
-            return repos.SizesList;
+            return repos.SizesList.ToList();
         }
         #endregion
 
         #region Brand List Object
         public static List<BasicListView> GetBrands()
         {
-            return repos.BrandsList;
+            return repos.BrandsList.ToList();
         }
 
         public static List<string> GetBrandListsId() => repos.BrandsIdList;
@@ -630,14 +627,14 @@
             // Delete Brand List Element from the XML Document
             DeleteFieldListFromXDocument(brandsListXDoc, listId, "brandList");
 
-            return repos.BrandsList;
+            return repos.BrandsList.ToList();
         }
         #endregion
 
         #region Ends List Object
         public static List<BasicListView> GetEnds()
         {
-            return repos.EndsList;
+            return repos.EndsList.ToList();
         }
 
         public static List<string> GetEndsListsId() => repos.EndsIdList;
@@ -661,7 +658,7 @@
             // Delete Ends List Element from the XML Document
             DeleteFieldListFromXDocument(endsXDoc, listId, "endsList");
 
-            return repos.EndsList;
+            return repos.EndsList.ToList();
         }
         #endregion
 

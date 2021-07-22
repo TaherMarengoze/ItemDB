@@ -4,7 +4,7 @@ using System.Xml.Linq;
 using UserInterface.Factory;
 using UserInterface.Interfaces;
 using UserInterface.Models;
-using UserInterface.Types;
+using UserInterface.Enums;
 
 namespace UserInterface.Operation
 {

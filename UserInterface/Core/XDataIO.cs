@@ -9,7 +9,7 @@ using UserInterface.Factory;
 using UserInterface.Interfaces;
 using UserInterface.Models;
 using UserInterface.Operation;
-using UserInterface.Types;
+using UserInterface.Enums;
 
 namespace UserInterface
 {
@@ -31,7 +31,7 @@ namespace UserInterface
             IListStructure ls = GetFieldListStructure(field);
             XElement listNode = SerializeFieldList(ls, fieldListItem);
             XDocument fieldXDoc = XDataService.AddFieldItemToXDocument(field, listNode);
-            XDataDocuments.Save(fieldXDoc, FileProcessor.FieldFilePath(field));
+            XDataDocuments.Save(fieldXDoc, FilePathReader.FieldFilePath(field));
             //DataService.UpdateField(field);
         }
 
@@ -53,6 +53,22 @@ namespace UserInterface
                     new XAttribute(ls.ListId, fieldListItem.ID),
                     new XAttribute(ls.ListName, fieldListItem.Name),
                     new XElement(ls.ChildGroup, xEntries));
+        }
+
+        private static List<SizeGroup> _GetSizeGroups(XDocument sizeGroupXDoc)
+        {
+            return
+                (from sg in sizeGroupXDoc.Descendants("group")
+                 let list = sg.Element("altLists").HasElements ? sg.Element("altLists").Elements("listID").Select(l => l.Value).ToList() : null
+                 let customId = sg.Element("customSizeDataID").Value
+                 select new SizeGroup()
+                 {
+                     ID = sg.Attribute("groupID").Value,
+                     Name = sg.Attribute("groupName").Value,
+                     DefaultListID = sg.Element("defaultListID").Value,
+                     AltIdList = list,
+                     CustomSize = customId != string.Empty ? customId : null
+                 }).ToList();
         }
 
         //public void AddNewBrandList(IFieldList fieldListItem)

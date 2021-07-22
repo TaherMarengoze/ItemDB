@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using UserInterface.Models;
 using UserInterface.Operation;
-using UserInterface.Types;
+using UserInterface.Enums;
 
 namespace UserInterface.Forms
 {
@@ -33,7 +33,7 @@ namespace UserInterface.Forms
 
         private void LauchEditor(Form editor)
         {
-            if (Program.fp != null && Program.xDataDocs != null)
+            if (Program.fpr != null && Program.xDataDocs != null)
             {
                 Hide();
                 editor.ShowDialog(this);
@@ -57,7 +57,7 @@ namespace UserInterface.Forms
 
             tsmiAutoLoad.Checked = Program.TestAutoLoad;
             Runtime.Test.AutoLoad(LoadXmlFile);
-            Runtime.Test.AutoJump(delegate { new ItemEditor(Program.xDataDocs, Program.fp.ImageRepos).ShowDialog(); });
+            Runtime.Test.AutoJump(delegate { new ItemEditor(Program.xDataDocs, Program.fpr.ImageRepos).ShowDialog(); });
         }
 
         private void tsmiLoadAll_Click(object sender, EventArgs e)
@@ -68,18 +68,17 @@ namespace UserInterface.Forms
         private void LoadXmlFile(string filePath)
         {
             // Load all the required XML file paths.
-            Program.fp = new FileProcessor(filePath);
+            Program.fpr = new FilePathReader(filePath);
 
             // Load all the required XML documents.
-            Program.xDataDocs = new XDataDocuments(Program.fp);
+            Program.xDataDocs = new XDataDocuments(Program.fpr);
 
             PostLoading();
         }
-
+        
         private void PostLoading()
         {
-            DataService.InitializeRepos(Program.xDataDocs);
-
+            DataService.InitializeRepos(new XSource(Program.xDataDocs));
             EnableDisableEditorsLaunchUI(true);
         }
 

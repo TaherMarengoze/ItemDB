@@ -10,7 +10,7 @@ namespace UserInterface
 {
     static class Program
     {
-        public static FileProcessor fp;
+        public static FilePathReader fpr;
         public static XDataDocuments xDataDocs;
 
         public static bool TestAutoLoad = true;

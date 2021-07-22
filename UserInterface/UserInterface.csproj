@@ -74,6 +74,12 @@
     <Compile Include="Forms\FieldListAdder.Designer.cs">
       <DependentUpon>FieldListAdder.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\SizeGroupAdder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SizeGroupAdder.Designer.cs">
+      <DependentUpon>SizeGroupAdder.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ImagePreviewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -98,6 +104,7 @@
     <Compile Include="Forms\XML Viewer.Designer.cs">
       <DependentUpon>XML Viewer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\IDataReader.cs" />
     <Compile Include="Interfaces\IDataSource.cs" />
     <Compile Include="Interfaces\ISource.cs" />
     <Compile Include="Models\BasicListView.cs" />
@@ -189,11 +196,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="ReadFromXml.cs" />
     <Compile Include="Runtime\Test.cs" />
-    <Compile Include="Types\EntryMode.cs" />
-    <Compile Include="Types\FieldType.cs" />
-    <Compile Include="Types\SelectionShift.cs" />
-    <Compile Include="Types\SpecType.cs" />
+    <Compile Include="Enums\EntryMode.cs" />
+    <Compile Include="Enums\FieldType.cs" />
+    <Compile Include="Enums\SelectionShift.cs" />
+    <Compile Include="Enums\SpecType.cs" />
     <EmbeddedResource Include="Forms\AltListSelector.resx">
       <DependentUpon>AltListSelector.cs</DependentUpon>
     </EmbeddedResource>
@@ -205,6 +213,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FieldListAdder.resx">
       <DependentUpon>FieldListAdder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SizeGroupAdder.resx">
+      <DependentUpon>SizeGroupAdder.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FieldListEditor.resx">
       <DependentUpon>FieldListEditor.cs</DependentUpon>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UserInterface.Types;
+using UserInterface.Enums;
 
 namespace UserInterface.Factory
 {

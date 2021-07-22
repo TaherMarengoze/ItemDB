@@ -10,7 +10,7 @@
     using System.Text.RegularExpressions;
     using System.Windows.Forms;
     using System.Xml.Linq;
-    using Types;
+    using Enums;
     using UserInterface.Operation;
 
     using MultiColumnCombcs;
@@ -59,7 +59,7 @@
         #region File Management
         private void SaveXmlFile()
         {
-            XDataDocuments.Save(Program.xDataDocs.SizeGroups, Program.fp.SizeGroups);
+            XDataDocuments.Save(Program.xDataDocs.SizeGroups, Program.fpr.SizeGroups);
             DataService.UpdateSizeGroups(Program.xDataDocs.SizeGroups);
         }
         #endregion
