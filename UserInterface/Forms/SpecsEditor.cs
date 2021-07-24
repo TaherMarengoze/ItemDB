@@ -123,7 +123,8 @@ namespace UserInterface.Forms
         private void SaveXmlFile()
         {
             XDataDocuments.Save(Program.xDataDocs.Specs, Program.fpr.Specs);
-            DataService.UpdateSpecs(Program.xDataDocs.Specs);
+            //DataService.UpdateSpecs(Program.xDataDocs.Specs);
+            DataService.UpdateSpecs();
         }
         #endregion
 

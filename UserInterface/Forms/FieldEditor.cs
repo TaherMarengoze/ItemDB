@@ -90,7 +90,7 @@ namespace UserInterface.Forms
             {
                 fieldXDoc.Save(savePath);
                 MessageBox.Show("File saved successfully");
-                DataService.UpdateField(editorField);
+                DataService.UpdateFieldList(editorField);
             }
             catch (Exception)
             {
