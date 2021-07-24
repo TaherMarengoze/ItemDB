@@ -27,25 +27,42 @@
             };
         }
 
+        #region Updater code
         private static void UpdateItems()
         {
             repos.Items = Program.reader.GetItems();
         }
 
-        private static void UpdateCategories(XDocument document)
+        private static void UpdateCategories()
         {
-            repos.Categories = Program.reader.GetCategories() /*_GetItemCategories(document)*/;
+            repos.Categories = Program.reader.GetCategories();
         }
 
-        public static void UpdateSpecs(XDocument specsXDoc)
+        public static void UpdateSpecs()
         {
-            repos.SpecsList = _GetSpecs(specsXDoc);
+            repos.SpecsList = Program.reader.GetSpecs();
         }
 
-        public static void UpdateSizeGroups(XDocument sizeGroupsXDoc)
+        public static void UpdateSizeGroups()
         {
-            repos.SizeGroups = _GetSizeGroups(sizeGroupsXDoc);
+            repos.SizeGroups = Program.reader.GetSizeGroups();
         }
+
+        private static void UpdateSizes()
+        {
+            repos.SizesList = Program.reader.GetSizes();
+        }
+
+        private static void UpdateBrands()
+        {
+            repos.BrandsList = Program.reader.GetBrands();
+        }
+
+        private static void UpdateEnds()
+        {
+            repos.EndsList = Program.reader.GetEnds();
+        }
+        #endregion
 
         public static void ValidateItemRawData(ItemRawData data)
         {
@@ -188,7 +205,7 @@
 
             // Update Items List and Categories
             UpdateItems();
-            UpdateCategories(itemsXDoc);
+            UpdateCategories();
         }
 
         /// <summary>
@@ -249,7 +266,7 @@
 
             // Update Items List and Categories
             UpdateItems();
-            UpdateCategories(itemsXDoc);
+            UpdateCategories();
         }
 
         private static void ProcessItemCategory(XDocument itemsXDoc, string existingId, IItemRawData data, XElement item)
@@ -277,59 +294,7 @@
         }
 
         #region Item Object
-        private static List<Item> _GetAllItems(XDocument itemXDoc)
-        {
-            return
-             (from item in itemXDoc.Descendants("item")
-              let names = item.Element("names")
-              let commonNames = names.Element("common")
-              let images = item.Element("images")
-              let details = item.Element("details")
-              let detailsSpecs = details.Element("specs")
-              let detailsSize = details.Element("sizeGroup")
-              let detailsBrand = details.Element("brandList")
-              let detailsEnds = details.Element("endsList")
-              select new Item()
-              {
-                  CatID = item.Parent.Attribute("catID").Value,
-                  CatName = item.Parent.Attribute("name").Value,
-                  ItemID = item.Attribute("itemID").Value,
-                  BaseName = names.Element("base").Value,
-                  DisplayName = names.Element("display").Value,
-                  CommonNames =
-                    commonNames.HasElements ? commonNames.Elements("cname").Select(cnm => cnm.Value).ToList() : null,
-
-                  Description = item.Element("description").Value,
-                  ImagesFileName =
-                    images.HasElements ? images.Elements("image").Select(img => img.Value).ToList() : null,
-
-                  Details = new ItemDetails()
-                  {
-                      SpecsID = detailsSpecs?.Attribute("ID").Value,
-                      SpecsRequired =
-                        detailsSpecs != null ? (bool)detailsSpecs.Attribute("required") : false,
-
-                      SizeGroupID = detailsSize?.Attribute("ID").Value,
-                      SizeRequired =
-                        detailsSize != null ? (bool)detailsSize.Attribute("required") : false,
-
-                      BrandListID = detailsBrand?.Attribute("ID").Value,
-                      BrandRequired =
-                        detailsBrand != null ? (bool)detailsBrand.Attribute("required") : false,
-
-                      EndsListID = detailsEnds?.Attribute("ID").Value,
-                      EndsRequired =
-                        detailsEnds != null ? (bool)detailsEnds.Attribute("required") : false
-                  },
-                  UoM = item.Element("uom")?.Value
-              }).ToList();
-        }
-
-        public static List<string> GetAllItemsId()
-        {
-            return repos.ItemsID;
-        }
-
+        
         public static List<ItemIdView> GetAllItemsBrief()
         {
             return repos.ItemIdViews;
@@ -348,13 +313,7 @@
         {
             return repos.ItemsView;
         }
-
-        public static List<ItemVO> GetItemViewObjects(List<Item> items)
-        {
-            return
-                items.Select(item => new ItemVO(item)).ToList();
-        }
-
+        
         public static List<ItemVO> GetFilteredItemsView(string itemId, string itemName, bool? image, string catId)
         {
             return
@@ -453,17 +412,6 @@
                 (from cat in repos.Categories where cat.CatID == catId select cat.CatName)
                 .FirstOrDefault();
         }
-
-        private static List<ItemCategory> _GetItemCategories(XDocument itemXDoc)
-        {
-            return
-                (from cat in itemXDoc.Descendants("category")
-                 select new ItemCategory()
-                 {
-                     CatID = cat.Attribute("catID").Value,
-                     CatName = cat.Attribute("name").Value
-                 }).ToList();
-        }
         #endregion
 
         #region Specs Object
@@ -490,41 +438,18 @@
                  select specItem.ListEntries).FirstOrDefault();
         }
 
-        internal static List<BasicView> GetSpecsBrief()
-        {
-            return repos.SpecsList.Select(sp => sp.GetBasicView()).ToList();
-        }
+        //internal static List<BasicView> GetSpecsBrief()
+        //{
+        //    return repos.SpecsList.Select(sp => sp.GetBasicView()).ToList();
+        //}
 
         public static List<string> GetAllSpecsId()
         {
             return repos.SpecsIdList;
         }
-
-        private static List<Specs> _GetSpecs(XDocument specsXDoc)
-        {
-            return
-                (from specs in specsXDoc.Descendants("specs")
-                 select new Specs()
-                 {
-                     ID = specs.Attribute("specsID").Value,
-                     Name = specs.Attribute("name").Value,
-                     TextPattern = specs.Attribute("textPattern").Value,
-                     SpecItems = specs.Descendants("specsItem").Select(spec =>
-                     new Spec((XElement)spec.FirstNode)
-                     {
-                         Index = (int)spec.Attribute("index"),
-                         Name = spec.Attribute("name").Value,
-                         ValuePattern = spec.Attribute("valuePattern").Value
-                     }).ToList()
-                 }).ToList();
-        }
         #endregion
 
         #region Size Groups Object
-        //public static List<SizeGroup> GetSizeGroups()
-        //{
-        //    return repos.SizeGroups.ToList();
-        //}
 
         public static List<string> GetSizeGroupsId()
         {
@@ -539,22 +464,6 @@
         {
             return repos.SizeGroups
                 .Select(grp => new SizeGroupView(grp)).ToList();
-        }
-
-        private static List<SizeGroup> _GetSizeGroups(XDocument sizeGroupXDoc)
-        {
-            return
-                (from sg in sizeGroupXDoc.Descendants("group")
-                 let list = sg.Element("altLists").HasElements ? sg.Element("altLists").Elements("listID").Select(l => l.Value).ToList() : null
-                 let customId = sg.Element("customSizeDataID").Value
-                 select new SizeGroup()
-                 {
-                     ID = sg.Attribute("groupID").Value,
-                     Name = sg.Attribute("groupName").Value,
-                     DefaultListID = sg.Element("defaultListID").Value,
-                     AltIdList = list,
-                     CustomSize = customId != string.Empty ? customId : null
-                 }).ToList();
         }
         #endregion
 
@@ -576,19 +485,7 @@
                  where list.ID == listId
                  select list.List).FirstOrDefault();
         }
-
-        private static List<BasicListView> _GetSizes(XDocument sizesXDoc)
-        {
-            return
-                (from list in sizesXDoc.Descendants("sizeList")
-                 select new BasicListView()
-                 {
-                     ID = list.Attribute("listID").Value,
-                     Name = list.Attribute("name").Value,
-                     List = list.Descendants("size").Select(entry => entry.Value).ToList()
-                 }).ToList();
-        }
-
+        
         private static List<BasicListView> DeleteSizeList(string listId, XDocument sizesListXDoc)
         {
             repos.SizesList = repos.SizesList.Where(list => list.ID != listId).ToList();
@@ -607,19 +504,7 @@
         }
 
         public static List<string> GetBrandListsId() => repos.BrandsIdList;
-
-        private static List<BasicListView> _GetBrands(XDocument brandsXDoc)
-        {
-            return
-                (from brands in brandsXDoc.Descendants("brandList")
-                 select new BasicListView()
-                 {
-                     ID = brands.Attribute("listID").Value,
-                     Name = brands.Attribute("name").Value,
-                     List = brands.Descendants("brand").Select(brand => brand.Value).ToList()
-                 }).ToList();
-        }
-
+        
         private static List<BasicListView> DeleteBrandList(string listId, XDocument brandsListXDoc)
         {
             repos.BrandsList = repos.BrandsList.Where(list => list.ID != listId).ToList();
@@ -638,19 +523,7 @@
         }
 
         public static List<string> GetEndsListsId() => repos.EndsIdList;
-
-        private static List<BasicListView> _GetEnds(XDocument endsXDoc)
-        {
-            return
-                (from ends in endsXDoc.Descendants("endsList")
-                 select new BasicListView()
-                 {
-                     ID = ends.Attribute("listID").Value,
-                     Name = ends.Attribute("name").Value,
-                     List = ends.Descendants("end").Select(end => end.Value).ToList()
-                 }).ToList();
-        }
-
+        
         private static List<BasicListView> DeleteEndsList(string listId, XDocument endsXDoc)
         {
             repos.EndsList = repos.EndsList.Where(list => list.ID != listId).ToList();
@@ -666,5 +539,7 @@
         {
             return repos.ItemsID.Contains(itemId);
         }
+
+
     }
 }

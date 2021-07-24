@@ -126,6 +126,7 @@
     <Compile Include="Models\ItemDetails.cs" />
     <Compile Include="Models\Validators\FieldList.cs" />
     <Compile Include="Models\ViewModels.cs" />
+    <Compile Include="ModifyXml.cs" />
     <Compile Include="Operation\DataService.All.cs" />
     <Compile Include="Forms\AltListSelector.cs">
       <SubType>Form</SubType>

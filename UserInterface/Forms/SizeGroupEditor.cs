@@ -60,7 +60,8 @@
         private void SaveXmlFile()
         {
             XDataDocuments.Save(Program.xDataDocs.SizeGroups, Program.fpr.SizeGroups);
-            DataService.UpdateSizeGroups(Program.xDataDocs.SizeGroups);
+            //DataService.UpdateSizeGroups(Program.xDataDocs.SizeGroups);
+            DataService.UpdateSizeGroups();
         }
         #endregion
 

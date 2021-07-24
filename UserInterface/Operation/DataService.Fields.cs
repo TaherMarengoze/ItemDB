@@ -14,26 +14,25 @@
         /// <summary>
         /// Gets a list containing the ID, Name and Entries for the given field type.
         /// </summary>
-        /// <param name="fieldType">The field type is either a Size type, Brand type or Ends type.</param>
+        /// <param name="field">The field type is either a Size type, Brand type or Ends type.</param>
         /// <returns></returns>
-        public static List<BasicListView> GetFieldLists(FieldType fieldType)
+        public static List<BasicListView> GetFieldLists(FieldType field)
         {
             return (List<BasicListView>)
-                Delegators.FieldFunctionCallback(fieldType,
-                    delegate { return GetSizes(); },
-                    delegate { return GetBrands(); },
-                    delegate { return GetEnds(); });
+                Delegators.FieldFunctionCallback(field,
+                GetSizes, GetBrands, GetEnds);
         }
-
-        public static void ReadFieldXDocument(FieldType field)
+        
+        public static void GetFieldList(FieldType field)
         {
             Delegators.FieldActionCallback(field,
-                delegate { repos.SizesList = _GetSizes(Program.xDataDocs.Sizes); },
-                delegate { repos.BrandsList = _GetBrands(Program.xDataDocs.Brands); },
-                delegate { repos.EndsList = _GetEnds(Program.xDataDocs.Ends); });
+                UpdateSizes, UpdateBrands, UpdateEnds);
         }
 
-        public static void UpdateField(FieldType field) => ReadFieldXDocument(field);
+        public static void UpdateFieldList(FieldType field)
+        {
+            GetFieldList(field);
+        }
 
         public static void DeleteFieldList(FieldType field, string listId, XDocument fieldXDoc)
         {
@@ -84,7 +83,7 @@
         internal static void AddNewFieldList(FieldType fieldType, IFieldList fieldListItem)
         {
             DataRepos.AddNewFieldList(fieldType, fieldListItem);
-            UpdateField(fieldType);
+            UpdateFieldList(fieldType);
         }
 
         public static List<BasicListView> GetFieldItems(FieldType fieldType)
