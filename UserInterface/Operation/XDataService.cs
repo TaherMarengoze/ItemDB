@@ -63,7 +63,7 @@ namespace UserInterface.Operation
         {
             XDocument fieldXdoc = GetFieldXDoc(field);
             fieldXdoc.Root.Add(fieldItem);
-            DataService.GetFieldList(field);
+            DataService.UpdateFieldList(field);
 
             return fieldXdoc;
         }
@@ -80,7 +80,7 @@ namespace UserInterface.Operation
             list.Attribute(xn.ListId).Value = data.ID;
             list.Attribute(xn.ListName).Value = data.Name;
 
-            DataService.GetFieldList(field);
+            DataService.UpdateFieldList(field);
         }
 
         public static void ModifyFieldXElement(XElement itemXElement, XName fieldXName,

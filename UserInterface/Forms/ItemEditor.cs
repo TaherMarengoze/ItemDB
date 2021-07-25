@@ -1257,7 +1257,7 @@ namespace UserInterface.Forms
             fieldSelector.DataSource = null;
             fieldDataView.DataSource = null;
             fieldSelector.DataSource = DataService.GetFieldListsId(fieldType);
-            fieldDataView.DataSource = DataService.GetFieldItems(fieldType);
+            fieldDataView.DataSource = DataService.GetFieldLists(fieldType);
         }
 
 #pragma warning restore IDE1006 // Naming Styles

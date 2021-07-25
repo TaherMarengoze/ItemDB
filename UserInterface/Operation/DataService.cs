@@ -329,7 +329,10 @@ namespace UserInterface.Operation
             return repos.BrandsList.ToList();
         }
 
-        public static List<string> GetBrandListsId() => repos.BrandsIdList;
+        public static List<string> GetBrandListsId()
+        {
+            return repos.BrandsIdList;
+        }
 
         private static List<BasicListView> DeleteBrandList(string listId, XDocument brandsListXDoc)
         {
@@ -366,27 +369,10 @@ namespace UserInterface.Operation
             return repos.ItemsID.Contains(itemId);
         }
 
-        /// <summary>
-        /// Gets a list containing the ID, Name and Entries for the given field type.
-        /// </summary>
-        /// <param name="field">The field type is either a Size type, Brand type or Ends type.</param>
-        /// <returns></returns>
-        public static List<BasicListView> GetFieldLists(FieldType field)
-        {
-            return (List<BasicListView>)
-                Delegators.FieldFunctionCallback(field,
-                GetSizes, GetBrands, GetEnds);
-        }
-
-        public static void GetFieldList(FieldType field)
+        public static void UpdateFieldList(FieldType field)
         {
             Delegators.FieldActionCallback(field,
                 UpdateSizes, UpdateBrands, UpdateEnds);
-        }
-
-        public static void UpdateFieldList(FieldType field)
-        {
-            GetFieldList(field);
         }
 
         public static void DeleteFieldList(FieldType field, string listId, XDocument fieldXDoc)
@@ -409,9 +395,7 @@ namespace UserInterface.Operation
         public static object GetFieldListMetadata(FieldType field)
         {
             return Delegators.FieldFunctionCallback(field,
-                sizeCallback: SizesBasicView,
-                brandCallback: BrandsBasicView,
-                endsCallback: delegate { return repos.EndsList.Select(l => new BasicView(l.ID, l.Name)).ToList(); });
+                 SizesBasicView, BrandsBasicView, EndsBasicView);
         }
 
         public static List<BasicView> SizesBasicView()
@@ -430,6 +414,14 @@ namespace UserInterface.Operation
                 .ToList();
         }
 
+        public static List<BasicView> EndsBasicView()
+        {
+            return
+                repos.EndsList
+                .Select(l => new BasicView(l.ID, l.Name))
+                .ToList();
+        }
+
         /// <summary>
         /// Adds a new field List to data source.
         /// </summary>
@@ -441,16 +433,23 @@ namespace UserInterface.Operation
             UpdateFieldList(fieldType);
         }
 
-        public static List<BasicListView> GetFieldItems(FieldType fieldType)
+        /// <summary>
+        /// Gets a list containing the ID, Name and Entries for the given field type.
+        /// </summary>
+        /// <param name="field">The field type is either a Size type, Brand type or Ends type.</param>
+        /// <returns></returns>
+        public static List<BasicListView> GetFieldLists(FieldType field)
         {
             return (List<BasicListView>)
-                Delegators.FieldFunctionCallback(fieldType, GetSizes, GetBrands, GetEnds);
+                Delegators.FieldFunctionCallback(field,
+                GetSizes, GetBrands, GetEnds);
         }
 
         public static List<string> GetFieldListsId(FieldType fieldType)
         {
             return (List<string>)
-                Delegators.FieldFunctionCallback(fieldType, null, GetBrandListsId, GetEndsListsId);
+                Delegators.FieldFunctionCallback(fieldType,
+                null, GetBrandListsId, GetEndsListsId);
         }
 
         public static ISource DataRepos { get; set; }
