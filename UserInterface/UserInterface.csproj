@@ -127,7 +127,7 @@
     <Compile Include="Models\ItemDetails.cs" />
     <Compile Include="Models\Validators\FieldList.cs" />
     <Compile Include="Models\ViewModels.cs" />
-    <Compile Include="ModifyXml.cs" />
+    <Compile Include="Implementations\ModifyXml.cs" />
     <Compile Include="Operation\DataService.All.cs" />
     <Compile Include="Forms\AltListSelector.cs">
       <SubType>Form</SubType>
@@ -198,7 +198,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ReadFromXml.cs" />
+    <Compile Include="Implementations\ReadFromXml.cs" />
     <Compile Include="Runtime\Test.cs" />
     <Compile Include="Enums\EntryMode.cs" />
     <Compile Include="Enums\FieldType.cs" />
