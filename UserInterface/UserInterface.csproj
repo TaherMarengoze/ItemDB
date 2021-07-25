@@ -128,7 +128,6 @@
     <Compile Include="Models\Validators\FieldList.cs" />
     <Compile Include="Models\ViewModels.cs" />
     <Compile Include="Implementations\ModifyXml.cs" />
-    <Compile Include="Operation\DataService.All.cs" />
     <Compile Include="Forms\AltListSelector.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -182,7 +181,7 @@
     <Compile Include="Models\Spec.cs" />
     <Compile Include="Models\XML\FileProcessor.cs" />
     <Compile Include="Models\XML\XDataDocuments.cs" />
-    <Compile Include="Operation\DataService.Fields.cs" />
+    <Compile Include="Operation\DataService.cs" />
     <Compile Include="Operation\FileCopyService.cs" />
     <Compile Include="Operation\XDataService.cs" />
     <Compile Include="Program.cs" />
