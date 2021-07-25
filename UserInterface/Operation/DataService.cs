@@ -1,17 +1,19 @@
-﻿namespace UserInterface.Operation
+﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Linq;
+
+namespace UserInterface.Operation
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Xml.Linq;
-    using UserInterface.Interfaces;
-    using UserInterface.Models;
+    using Enums;
+    using Factory;
+    using Interfaces;
+    using Models;
 
     public static partial class DataService
     {
         private static DataRepos repos;
-
-        public static DataRepos TestRepos { get => repos; }
 
         public static void InitializeRepos()
         {
@@ -101,20 +103,20 @@
 
             return draftItem;
         }
-        
+
         #region Interface Implementation
         public static void AddNewItem(IItemRawData data)
         {
             Program.modifier.AddItem(ProcessItemRawData(data));
-            
+
             // Update Items List and Categories
             UpdateItems();
             UpdateCategories();
         }
-        
+
         public static void ModifyItem(string refId, IItemRawData data)
         {
-            Program.modifier.ModifyItem(refId, data);
+            Program.modifier.ModifyItem(refId, ProcessItemRawData(data));
 
             // Update Items List and Categories
             UpdateItems();
@@ -122,92 +124,8 @@
         }
         #endregion
 
-        /// <summary>
-        /// Modifies an item in the Items <see cref="XDocument"/>.
-        /// </summary>
-        /// <param name="itemsXDoc">The <see cref="XDocument"/> containing the item being modified.</param>
-        /// <param name="existingId">The ID of the item being modified.</param>
-        /// <param name="data">The input data to replace the modified item data.</param>
-        public static void ModifyItemXDocument(XDocument itemsXDoc, string existingId, IItemRawData data)
-        {
-            #region MyRegion
-            XElement xItem = itemsXDoc.Descendants("item")
-                    .Where(elem => elem.Attribute("itemID").Value == existingId)
-                    .First();
-
-            xItem.SetAttributeValue("itemID", data.ItemID);
-            xItem.Element("names").SetElementValue("base", data.BaseName);
-            xItem.Element("names").SetElementValue("display", data.DisplayName);
-
-            // Common Names
-            // Remove all existing common names
-            xItem.Element("names").Element("common").RemoveNodes();
-
-            // Add the given common names if any
-            if (data.CommonNames != null)
-            {
-                foreach (string commonName in data.CommonNames)
-                {
-                    xItem.Element("names").Element("common").Add(new XElement("cname", commonName));
-                }
-            }
-
-            xItem.SetElementValue("description", data.Description);
-
-            // Unit of Measuring (UoM)
-            xItem.SetElementValue("uom", data.UoM);
-
-            // Images
-            xItem.Element("images").RemoveNodes();
-            if (data.ImagesNames != null)
-            {
-                foreach (string imageName in data.ImagesNames)
-                {
-                    xItem.Element("images").Add(new XElement("image", imageName));
-                }
-            }
-
-            // Go from bottom to top to preserve details order
-            XDataService.ModifyFieldXElement(xItem, "endsList", data.EndsListID, data.EndsRequired);
-            XDataService.ModifyFieldXElement(xItem, "brandList", data.BrandListID, data.BrandRequired);
-            XDataService.ModifyFieldXElement(xItem, "sizeGroup", data.SizeGroupID, data.SizeRequired);
-            XDataService.ModifyFieldXElement(xItem, "specs", data.SpecsID, data.SpecsRequired);
-            #endregion
-
-            // Process Item Category
-            ProcessItemCategory(itemsXDoc, existingId, data, xItem);
-
-            // Update Items List and Categories
-            UpdateItems();
-            UpdateCategories();
-        }
-
-        private static void ProcessItemCategory(XDocument itemsXDoc, string existingId, IItemRawData data, XElement item)
-        {
-            // Get old CatID of edited item
-            string oldCatID = XDataService.GetItemCategoryIdAttribute(itemsXDoc, existingId).Value;
-
-            // Compare categories IDs
-            if (data.CatID != oldCatID)
-            {
-                // Remove the item from the old category
-                item.Remove();
-
-                CategorizeItem(itemsXDoc, data, item);
-            }
-        }
-
-        private static void CategorizeItem(XDocument itemsXDoc, IItemRawData data, XElement item)
-        {
-            // Get the item's new category or create it if not found
-            XElement category = XDataService.GetCategoryAdd(itemsXDoc, data.CatID, data.CatName);
-
-            // Add the item to the category
-            category.Add(item);
-        }
-
         #region Item Object
-        
+
         public static List<ItemIdView> GetAllItemsBrief()
         {
             return repos.ItemIdViews;
@@ -226,7 +144,7 @@
         {
             return repos.ItemsView;
         }
-        
+
         public static List<ItemVO> GetFilteredItemsView(string itemId, string itemName, bool? image, string catId)
         {
             return
@@ -351,11 +269,6 @@
                  select specItem.ListEntries).FirstOrDefault();
         }
 
-        //internal static List<BasicView> GetSpecsBrief()
-        //{
-        //    return repos.SpecsList.Select(sp => sp.GetBasicView()).ToList();
-        //}
-
         public static List<string> GetAllSpecsId()
         {
             return repos.SpecsIdList;
@@ -398,7 +311,7 @@
                  where list.ID == listId
                  select list.List).FirstOrDefault();
         }
-        
+
         private static List<BasicListView> DeleteSizeList(string listId, XDocument sizesListXDoc)
         {
             repos.SizesList = repos.SizesList.Where(list => list.ID != listId).ToList();
@@ -417,7 +330,7 @@
         }
 
         public static List<string> GetBrandListsId() => repos.BrandsIdList;
-        
+
         private static List<BasicListView> DeleteBrandList(string listId, XDocument brandsListXDoc)
         {
             repos.BrandsList = repos.BrandsList.Where(list => list.ID != listId).ToList();
@@ -436,7 +349,7 @@
         }
 
         public static List<string> GetEndsListsId() => repos.EndsIdList;
-        
+
         private static List<BasicListView> DeleteEndsList(string listId, XDocument endsXDoc)
         {
             repos.EndsList = repos.EndsList.Where(list => list.ID != listId).ToList();
@@ -453,6 +366,94 @@
             return repos.ItemsID.Contains(itemId);
         }
 
+        /// <summary>
+        /// Gets a list containing the ID, Name and Entries for the given field type.
+        /// </summary>
+        /// <param name="field">The field type is either a Size type, Brand type or Ends type.</param>
+        /// <returns></returns>
+        public static List<BasicListView> GetFieldLists(FieldType field)
+        {
+            return (List<BasicListView>)
+                Delegators.FieldFunctionCallback(field,
+                GetSizes, GetBrands, GetEnds);
+        }
 
+        public static void GetFieldList(FieldType field)
+        {
+            Delegators.FieldActionCallback(field,
+                UpdateSizes, UpdateBrands, UpdateEnds);
+        }
+
+        public static void UpdateFieldList(FieldType field)
+        {
+            GetFieldList(field);
+        }
+
+        public static void DeleteFieldList(FieldType field, string listId, XDocument fieldXDoc)
+        {
+            Delegators.FieldActionCallback(field,
+                delegate { DeleteSizeList(listId, fieldXDoc); },
+                delegate { DeleteBrandList(listId, fieldXDoc); },
+                delegate { DeleteEndsList(listId, fieldXDoc); });
+        }
+
+        private static void DeleteFieldListFromXDocument(XDocument fieldXDoc, string listId, XName nodeName)
+        {
+            XElement deleteFieldList =
+                fieldXDoc.Descendants(nodeName)
+                .Where(list => list.Attribute("listID").Value == listId).First();
+
+            deleteFieldList.Remove();
+        }
+
+        public static object GetFieldListMetadata(FieldType field)
+        {
+            return Delegators.FieldFunctionCallback(field,
+                sizeCallback: SizesBasicView,
+                brandCallback: BrandsBasicView,
+                endsCallback: delegate { return repos.EndsList.Select(l => new BasicView(l.ID, l.Name)).ToList(); });
+        }
+
+        public static List<BasicView> SizesBasicView()
+        {
+            return
+                repos.SizesList
+                .Select(l => new BasicView(l.ID, l.Name))
+                .ToList();
+        }
+
+        public static List<BasicView> BrandsBasicView()
+        {
+            return
+                repos.BrandsList
+                .Select(l => new BasicView(l.ID, l.Name))
+                .ToList();
+        }
+
+        /// <summary>
+        /// Adds a new field List to data source.
+        /// </summary>
+        /// <param name="fieldType">The field type is either a SIZE, BRAND or ENDS.</param>
+        /// <param name="fieldListItem">The <see cref="IFieldList"/> object that contains the field list data.</param>
+        internal static void AddNewFieldList(FieldType fieldType, IFieldList fieldListItem)
+        {
+            DataRepos.AddNewFieldList(fieldType, fieldListItem);
+            UpdateFieldList(fieldType);
+        }
+
+        public static List<BasicListView> GetFieldItems(FieldType fieldType)
+        {
+            return (List<BasicListView>)
+                Delegators.FieldFunctionCallback(fieldType, GetSizes, GetBrands, GetEnds);
+        }
+
+        public static List<string> GetFieldListsId(FieldType fieldType)
+        {
+            return (List<string>)
+                Delegators.FieldFunctionCallback(fieldType, null, GetBrandListsId, GetEndsListsId);
+        }
+
+        public static ISource DataRepos { get; set; }
+            = new XDataIO();
     }
 }

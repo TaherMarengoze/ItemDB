@@ -3,16 +3,66 @@
 namespace UserInterface
 {
     using Interfaces;
-    using Models;
     using Operation;
     using System.Linq;
 
-    public class ModifyXml : IModifier
+    public class ModifyXml : ISourceModifier
     {
         public void AddItem(IItem item)
         {
             XElement xItem = SerializeItem(item);
             CategorizeItem(xItem, item.CatID, item.CatName);
+        }
+        
+        public void ModifyItem(string existingId, IItem data)
+        {
+            XElement xItem = Program.xDataDocs.Items.Descendants("item")
+                    .Where(elem => elem.Attribute("itemID").Value == existingId)
+                    .SingleOrDefault();
+
+            //xItem.SetAttributeValue("itemID", data.ItemID);
+            xItem.Element("names").SetElementValue("base", data.BaseName);
+            xItem.Element("names").SetElementValue("display", data.DisplayName);
+
+            // Common Names
+            // Remove all existing common names
+            xItem.Element("names").Element("common").RemoveNodes();
+
+            // Add the given common names if any
+            if (data.CommonNames != null)
+            {
+                foreach (string commonName in data.CommonNames)
+                {
+                    xItem.Element("names").Element("common").Add(new XElement("cname", commonName));
+                }
+            }
+
+            xItem.SetElementValue("description", data.Description);
+
+            // Unit of Measuring (UoM)
+            xItem.SetElementValue("uom", data.UoM);
+
+            // Images
+            xItem.Element("images").RemoveNodes();
+            if (data.ImagesFileName != null)
+            {
+                foreach (string imageName in data.ImagesFileName)
+                {
+                    xItem.Element("images").Add(new XElement("image", imageName));
+                }
+            }
+
+            // Go from bottom to top to preserve details order
+            XDataService.ModifyFieldXElement(xItem, "endsList", data.Details.EndsListID, data.Details.EndsRequired);
+            XDataService.ModifyFieldXElement(xItem, "brandList", data.Details.BrandListID, data.Details.BrandRequired);
+            XDataService.ModifyFieldXElement(xItem, "sizeGroup", data.Details.SizeGroupID, data.Details.SizeRequired);
+            XDataService.ModifyFieldXElement(xItem, "specs", data.Details.SpecsID, data.Details.SpecsRequired);
+
+
+            ProcessItemCategory(existingId, xItem, data.CatID, data.CatName);
+
+            // Change the Item ID after any modification
+            xItem.SetAttributeValue("itemID", data.ItemID);
         }
 
         private XElement SerializeItem(IItem item)
@@ -78,66 +128,6 @@ namespace UserInterface
             return draftItem;
         }
 
-        private void CategorizeItem(XElement serializedItem, string catId, string catName)
-        {
-            // Get the item's new category or create it if not found
-            XElement category = XDataService.GetCategoryAdd(Program.xDataDocs.Items, catId, catName);
-
-            // Add the item to the category
-            category.Add(serializedItem);
-        }
-
-        public void ModifyItem(string existingId, IItemRawData data)
-        {
-            XElement xItem = Program.xDataDocs.Items.Descendants("item")
-                    .Where(elem => elem.Attribute("itemID").Value == existingId)
-                    .SingleOrDefault();
-
-            //xItem.SetAttributeValue("itemID", data.ItemID);
-            xItem.Element("names").SetElementValue("base", data.BaseName);
-            xItem.Element("names").SetElementValue("display", data.DisplayName);
-
-            // Common Names
-            // Remove all existing common names
-            xItem.Element("names").Element("common").RemoveNodes();
-
-            // Add the given common names if any
-            if (data.CommonNames != null)
-            {
-                foreach (string commonName in data.CommonNames)
-                {
-                    xItem.Element("names").Element("common").Add(new XElement("cname", commonName));
-                }
-            }
-
-            xItem.SetElementValue("description", data.Description);
-
-            // Unit of Measuring (UoM)
-            xItem.SetElementValue("uom", data.UoM);
-
-            // Images
-            xItem.Element("images").RemoveNodes();
-            if (data.ImagesNames != null)
-            {
-                foreach (string imageName in data.ImagesNames)
-                {
-                    xItem.Element("images").Add(new XElement("image", imageName));
-                }
-            }
-
-            // Go from bottom to top to preserve details order
-            XDataService.ModifyFieldXElement(xItem, "endsList", data.EndsListID, data.EndsRequired);
-            XDataService.ModifyFieldXElement(xItem, "brandList", data.BrandListID, data.BrandRequired);
-            XDataService.ModifyFieldXElement(xItem, "sizeGroup", data.SizeGroupID, data.SizeRequired);
-            XDataService.ModifyFieldXElement(xItem, "specs", data.SpecsID, data.SpecsRequired);
-            
-
-            ProcessItemCategory(existingId, xItem, data.CatID, data.CatName);
-
-            // Change the Item ID after any modification
-            xItem.SetAttributeValue("itemID", data.ItemID);
-        }
-
         private void ProcessItemCategory(string existingId, XElement xItem, string catId, string catName)
         {
             // Get old CatID of edited item
@@ -152,6 +142,15 @@ namespace UserInterface
 
                 CategorizeItem(xItem, catId, catName);
             }
+        }
+
+        private void CategorizeItem(XElement serializedItem, string catId, string catName)
+        {
+            // Get the item's new category or create it if not found
+            XElement category = XDataService.GetCategoryAdd(Program.xDataDocs.Items, catId, catName);
+
+            // Add the item to the category
+            category.Add(serializedItem);
         }
     }
 }

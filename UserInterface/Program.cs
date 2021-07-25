@@ -11,7 +11,7 @@ namespace UserInterface
     {
         public static FilePathReader fpr;
         public static ISourceReader reader;
-        public static IModifier modifier;
+        public static ISourceModifier modifier;
         public static XDataDocuments xDataDocs;
 
         public static bool TestAutoLoad = true;
