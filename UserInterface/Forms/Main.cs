@@ -73,8 +73,9 @@ namespace UserInterface.Forms
             // Load all the required XML documents.
             Program.xDataDocs = new XDataDocuments(Program.fpr);
 
-            // Instantiate the source reader
+            // Instantiate the source reader and modifier
             Program.reader = new XSource(Program.xDataDocs);
+            Program.modifier = new ModifyXml();
 
             PostLoading();
         }

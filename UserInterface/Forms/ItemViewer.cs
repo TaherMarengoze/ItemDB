@@ -345,7 +345,8 @@ namespace UserInterface.Forms
             ItemEditor itemEditor = new ItemEditor(Program.xDataDocs, Program.fpr.ImageRepos);
             if (itemEditor.ShowDialog() == DialogResult.OK)
             {
-                DataService.AddItemToXDocument(Program.xDataDocs.Items, itemEditor.DraftItemData);
+                //DataService.AddItemToXDocument(Program.xDataDocs.Items, itemEditor.DraftItemData);
+                DataService.AddNewItem(itemEditor.DraftItemData);
                 PostLoading();
             }
             Show();
@@ -363,7 +364,8 @@ namespace UserInterface.Forms
             if (itemEditor.ShowDialog() == DialogResult.OK)
             {
                 // Modify edited item with new one
-                DataService.ModifyItemXDocument(Program.xDataDocs.Items, id, itemEditor.DraftItemData);
+                //DataService.ModifyItemXDocument(Program.xDataDocs.Items, id, itemEditor.DraftItemData);
+                DataService.ModifyItem(id, itemEditor.DraftItemData);
                 PostLoading();
             }
             Show();

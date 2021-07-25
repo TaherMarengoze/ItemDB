@@ -8,6 +8,8 @@ namespace UserInterface.Interfaces
 {
     public interface IModifier
     {
+        void AddItem(IItem item);
 
+        void ModifyItem(string existingId, IItemRawData data);
     }
 }

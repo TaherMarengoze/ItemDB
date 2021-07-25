@@ -11,16 +11,19 @@ namespace UserInterface
     {
         public static FilePathReader fpr;
         public static ISourceReader reader;
+        public static IModifier modifier;
         public static XDataDocuments xDataDocs;
 
         public static bool TestAutoLoad = true;
         public static string TestPath =
             Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
 
+        #region WindowsAPI
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern int SystemParametersInfo(int uAction, int uParam, int lpvParam, int fuWinIni);
         private const int SPI_SETKEYBOARDCUES = 4107; //100B
         private const int SPIF_SENDWININICHANGE = 2;
+        #endregion
 
         /// <summary>
         /// The main entry point for the application.
