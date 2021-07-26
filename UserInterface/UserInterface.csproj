@@ -204,6 +204,7 @@
     <Compile Include="Enums\FieldType.cs" />
     <Compile Include="Enums\SelectionShift.cs" />
     <Compile Include="Enums\SpecType.cs" />
+    <Compile Include="SpecsRepoX.cs" />
     <EmbeddedResource Include="Forms\AltListSelector.resx">
       <DependentUpon>AltListSelector.cs</DependentUpon>
     </EmbeddedResource>
