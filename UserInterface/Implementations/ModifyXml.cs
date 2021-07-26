@@ -6,7 +6,7 @@ namespace UserInterface
     using Operation;
     using System.Linq;
 
-    public class ModifyXml : ISourceModifier
+    public class ModifyXml : IModifier
     {
         public void AddItem(IItem item)
         {
@@ -14,10 +14,10 @@ namespace UserInterface
             CategorizeItem(xItem, item.CatID, item.CatName);
         }
         
-        public void ModifyItem(string existingId, IItem data)
+        public void ModifyItem(string refId, IItem data)
         {
             XElement xItem = Program.xDataDocs.Items.Descendants("item")
-                    .Where(elem => elem.Attribute("itemID").Value == existingId)
+                    .Where(elem => elem.Attribute("itemID").Value == refId)
                     .SingleOrDefault();
 
             //xItem.SetAttributeValue("itemID", data.ItemID);
@@ -59,10 +59,19 @@ namespace UserInterface
             XDataService.ModifyFieldXElement(xItem, "specs", data.Details.SpecsID, data.Details.SpecsRequired);
 
 
-            ProcessItemCategory(existingId, xItem, data.CatID, data.CatName);
+            ProcessItemCategory(refId, xItem, data.CatID, data.CatName);
 
             // Change the Item ID after any modification
             xItem.SetAttributeValue("itemID", data.ItemID);
+        }
+
+        public void DeleteItem(string itemId)
+        {
+            XElement deleteItem =
+                Program.xDataDocs.Items.Descendants("item")
+                .Where(item => item.Attribute("itemID").Value == itemId).First();
+
+            deleteItem.Remove();
         }
 
         private XElement SerializeItem(IItem item)
@@ -152,5 +161,6 @@ namespace UserInterface
             // Add the item to the category
             category.Add(serializedItem);
         }
+
     }
 }

@@ -48,11 +48,6 @@ namespace UserInterface.Forms
 
         private void FieldSwitch()
         {
-            //Delegators.FieldActionCallback(editorField,
-            //    delegate { fieldFilePath = Program.fp.Sizes; fieldXDoc = Program.xDataDocs.Sizes; },
-            //    delegate { fieldFilePath = Program.fp.Brands; fieldXDoc = Program.xDataDocs.Brands; },
-            //    delegate { fieldFilePath = Program.fp.Ends; fieldXDoc = Program.xDataDocs.Ends; });
-
             fieldFilePath = FilePathReader.FieldFilePath(editorField);
 
             Delegators.FieldActionCallback(editorField,
@@ -240,12 +235,7 @@ namespace UserInterface.Forms
         {
             if (Common.ShowEntryRemoveConfirmation(false) == DialogResult.OK)
             {
-                //XElement list = GetSpecificList(listId);
-                //list.Remove();
-
-                //TEST: WILL REPLACE ABOVE IF OK
-                DataService.DeleteFieldList(editorField, listId, fieldXDoc);
-                //END_TEST
+                DataService.DeleteFieldList(editorField, listId);
 
                 //PopulateListSelector();
                 PopulateGrid();

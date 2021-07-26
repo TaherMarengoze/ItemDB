@@ -229,7 +229,7 @@ namespace UserInterface.Forms
             //Save Selection Position
             itemSelectionIndex = Common.SaveDataGridViewSelection(dgvItems);
 
-            List<ItemVO> modifiedItemList = DataService.DeleteItem(id, Program.xDataDocs.Items);
+            List<ItemVO> modifiedItemList = DataService.DeleteItem(id);
 
             if (modifiedItemList.Count > 0)
             {

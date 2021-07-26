@@ -108,6 +108,7 @@
     <Compile Include="Interfaces\IDataSource.cs" />
     <Compile Include="Interfaces\IModifier.cs" />
     <Compile Include="Interfaces\ISource.cs" />
+    <Compile Include="Interfaces\ISpecsModifier.cs" />
     <Compile Include="Models\BasicListView.cs" />
     <Compile Include="Models\BasicView.cs" />
     <Compile Include="Models\CopyOrder.cs" />

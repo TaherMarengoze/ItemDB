@@ -107,7 +107,7 @@ namespace UserInterface.Operation
         #region Interface Implementation
         public static void AddNewItem(IItemRawData data)
         {
-            Program.modifier.AddItem(ProcessItemRawData(data));
+            Program.itemModifier.AddItem(ProcessItemRawData(data));
 
             // Update Items List and Categories
             UpdateItems();
@@ -116,11 +116,22 @@ namespace UserInterface.Operation
 
         public static void ModifyItem(string refId, IItemRawData data)
         {
-            Program.modifier.ModifyItem(refId, ProcessItemRawData(data));
+            Program.itemModifier.ModifyItem(refId, ProcessItemRawData(data));
 
             // Update Items List and Categories
             UpdateItems();
             UpdateCategories();
+        }
+
+        public static List<ItemVO> DeleteItem(string itemId)
+        {
+            Program.itemModifier.DeleteItem(itemId);
+
+            // Set the Items property to itself but excluding the item to be
+            // deleted; so that ItemsView property is updated automatically
+            repos.Items = repos.Items.Where(id => id.ItemID != itemId).ToList();
+
+            return repos.ItemsView;
         }
         #endregion
 
@@ -167,26 +178,7 @@ namespace UserInterface.Operation
             return
                 repos.Items.Where(id => id.ItemID == itemId).FirstOrDefault();
         }
-
-        public static List<ItemVO> DeleteItem(string itemId, XDocument itemsXDoc)
-        {
-            repos.Items = repos.Items.Where(id => id.ItemID != itemId).ToList();
-
-            // Delete Item Element from the XML Document
-            DeleteItemFromXDocument(itemsXDoc, itemId);
-
-            return repos.ItemsView;
-        }
-
-        private static void DeleteItemFromXDocument(XDocument itemsXDoc, string itemId)
-        {
-            XElement deleteItem =
-                itemsXDoc.Descendants("item")
-                .Where(item => item.Attribute("itemID").Value == itemId).First();
-
-            deleteItem.Remove();
-        }
-
+        
         private static bool FilterItemImage(bool? image, IItemView item)
         {
             //return image == null ? true : (bool)image ? item.Images != null : item.Images == null;
@@ -312,12 +304,12 @@ namespace UserInterface.Operation
                  select list.List).FirstOrDefault();
         }
 
-        private static List<BasicListView> DeleteSizeList(string listId, XDocument sizesListXDoc)
+        private static List<BasicListView> DeleteSizeList(string listId)
         {
             repos.SizesList = repos.SizesList.Where(list => list.ID != listId).ToList();
 
             // Delete Size List Element from the XML Document
-            DeleteFieldListFromXDocument(sizesListXDoc, listId, "sizeList");
+            DeleteFieldListFromXDocument(Program.xDataDocs.Sizes, listId, "sizeList");
 
             return repos.SizesList.ToList();
         }
@@ -334,12 +326,12 @@ namespace UserInterface.Operation
             return repos.BrandsIdList;
         }
 
-        private static List<BasicListView> DeleteBrandList(string listId, XDocument brandsListXDoc)
+        private static List<BasicListView> DeleteBrandList(string listId)
         {
             repos.BrandsList = repos.BrandsList.Where(list => list.ID != listId).ToList();
 
             // Delete Brand List Element from the XML Document
-            DeleteFieldListFromXDocument(brandsListXDoc, listId, "brandList");
+            DeleteFieldListFromXDocument(Program.xDataDocs.Brands, listId, "brandList");
 
             return repos.BrandsList.ToList();
         }
@@ -353,16 +345,25 @@ namespace UserInterface.Operation
 
         public static List<string> GetEndsListsId() => repos.EndsIdList;
 
-        private static List<BasicListView> DeleteEndsList(string listId, XDocument endsXDoc)
+        private static List<BasicListView> DeleteEndsList(string listId)
         {
             repos.EndsList = repos.EndsList.Where(list => list.ID != listId).ToList();
 
             // Delete Ends List Element from the XML Document
-            DeleteFieldListFromXDocument(endsXDoc, listId, "endsList");
+            DeleteFieldListFromXDocument(Program.xDataDocs.Ends, listId, "endsList");
 
             return repos.EndsList.ToList();
         }
         #endregion
+
+        private static void DeleteFieldListFromXDocument(XDocument fieldXDoc, string listId, XName nodeName)
+        {
+            XElement deleteFieldList =
+                fieldXDoc.Descendants(nodeName)
+                .Where(list => list.Attribute("listID").Value == listId).First();
+
+            deleteFieldList.Remove();
+        }
 
         public static bool IsDuplicateItemId(string itemId)
         {
@@ -375,24 +376,16 @@ namespace UserInterface.Operation
                 UpdateSizes, UpdateBrands, UpdateEnds);
         }
 
-        public static void DeleteFieldList(FieldType field, string listId, XDocument fieldXDoc)
+        public static void DeleteFieldList(FieldType field, string listId)
         {
             Delegators.FieldActionCallback(field,
-                delegate { DeleteSizeList(listId, fieldXDoc); },
-                delegate { DeleteBrandList(listId, fieldXDoc); },
-                delegate { DeleteEndsList(listId, fieldXDoc); });
+                delegate { DeleteSizeList(listId); },
+                delegate { DeleteBrandList(listId); },
+                delegate { DeleteEndsList(listId); });
         }
 
-        private static void DeleteFieldListFromXDocument(XDocument fieldXDoc, string listId, XName nodeName)
-        {
-            XElement deleteFieldList =
-                fieldXDoc.Descendants(nodeName)
-                .Where(list => list.Attribute("listID").Value == listId).First();
-
-            deleteFieldList.Remove();
-        }
-
-        public static object GetFieldListMetadata(FieldType field)
+        #region Basic View
+        public static object GetFieldBasicView(FieldType field)
         {
             return Delegators.FieldFunctionCallback(field,
                  SizesBasicView, BrandsBasicView, EndsBasicView);
@@ -421,6 +414,7 @@ namespace UserInterface.Operation
                 .Select(l => new BasicView(l.ID, l.Name))
                 .ToList();
         }
+        #endregion
 
         /// <summary>
         /// Adds a new field List to data source.
