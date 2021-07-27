@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Windows.Forms;
+using UserInterface.Interfaces;
 using UserInterface.Models;
 
 namespace UserInterface.Forms
 {
     public partial class ListEntryEditor : Form
     {
-        public SpecListEntry ListEntry { get; set; }
+        public ISpecListEntry ListEntry { get; set; }
 
         private bool displayAsValue = true;
         private bool skipEvents = false;
@@ -16,7 +17,7 @@ namespace UserInterface.Forms
             InitializeComponent();
         }
 
-        public ListEntryEditor(SpecListEntry listEntry)
+        public ListEntryEditor(ISpecListEntry listEntry)
         {
             InitializeComponent();
 

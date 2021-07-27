@@ -589,9 +589,10 @@ namespace UserInterface.Forms
             if (dgv.SelectedRows.Count > 0)
             {
                 string specsId = (string)dgv.SelectedRows[0].Cells[1].Value;
-                dgvSpecsItems.DataSource = DataService.GetSpecsItems(specsId);
+                dgvSpecsItems.DataSource = DataService.GetSpecsItems(specsId).ToList();
             }
         }
+
         private void dgvSpecs_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex != -1 && e.ColumnIndex == 0)

@@ -243,7 +243,7 @@ namespace UserInterface.Operation
             return repos.SpecsList.ToList();
         }
 
-        public static List<Spec> GetSpecsItems(string specsId)
+        public static IEnumerable<ISpec> GetSpecsItems(string specsId)
         {
             return
                 (from specs in repos.SpecsList
@@ -251,7 +251,7 @@ namespace UserInterface.Operation
                  select specs.SpecItems).FirstOrDefault();
         }
 
-        public static List<SpecListEntry> GetSpecListEntries(string specsId, int specIndex)
+        public static List<ISpecListEntry> GetSpecListEntries(string specsId, int specIndex)
         {
             return
                 (from specItem in (from specs in repos.SpecsList
