@@ -8,6 +8,6 @@ namespace UserInterface.Interfaces
 {
     public interface ISpecsModifier
     {
-
+        void AddSpecs(Models.Specs specs);
     }
 }

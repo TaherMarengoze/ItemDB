@@ -12,6 +12,12 @@ namespace UserInterface
 
     public class SpecsRepoX : ISpecsModifier
     {
+        public void AddSpecs(Specs specs)
+        {
+            XElement xSpecs = SerializeSpecs(specs);
+            Program.xDataDocs.Specs.Root.Add(xSpecs);
+        }
+
         private XElement SerializeSpecs(Specs specs)
         {
             //XElement specItem;

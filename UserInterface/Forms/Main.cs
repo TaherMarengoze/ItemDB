@@ -57,7 +57,7 @@ namespace UserInterface.Forms
 
             tsmiAutoLoad.Checked = Program.TestAutoLoad;
             Runtime.Test.AutoLoad(LoadXmlFile);
-            Runtime.Test.AutoJump(delegate { new ItemEditor(Program.xDataDocs, Program.fpr.ImageRepos).ShowDialog(); });
+            //Runtime.Test.AutoJump(delegate { new ItemEditor(Program.xDataDocs, Program.fpr.ImageRepos).ShowDialog(); });
         }
 
         private void tsmiLoadAll_Click(object sender, EventArgs e)
@@ -76,6 +76,7 @@ namespace UserInterface.Forms
             // Instantiate the source reader and modifier
             Program.reader = new XSource(Program.xDataDocs);
             Program.itemModifier = new ModifyXml();
+            Program.specsModifier = new SpecsRepoX();
 
             PostLoading();
         }

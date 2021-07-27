@@ -220,26 +220,32 @@ namespace UserInterface.Forms
             btnNewSpecs.Focus();
         }
 
+        // Blank Lines are left for comparison with EditSpecs method
         private void AddNewSpecs()
         {
-            SaveSpecsSelectionPosition();
 
+
+            SaveSpecsSelectionPosition();
             // Instantiate new Specs
             draftSpecs = new Specs();
             // Generate new SpecsID
             draftSpecsId = GenerateNewSpecsID();
             // Sets a flag
             SpecsMode = EntryMode.New;
+
+
             // Disable Specs Selection
             DisableSpecsListSelection();
             // Disable Specs main controls
             DisableSpecsModifyUI();
             // Show mode Accept/Cancel controls
             ShowSpecsReviewUI();
-            btnAccept.Enabled = false;
-            btnSiAdd.Enabled = true;
             // Setup Specs Meta-data controls
             EnableSpecsMetadataEntryUI();
+            btnAccept.Enabled = false;
+            btnSiAdd.Enabled = true;
+
+
 
             // Clear Specs Meta-data conbtrols
             ClearSpecsMetadataEntryUI();
@@ -261,21 +267,42 @@ namespace UserInterface.Forms
         {
             draftSpecsId = GetSelectedSpecsId();
             draftSpecs = GetSpecsData(GetSpecsElement(draftSpecsId));
-
             SaveSpecsSelectionPosition();
 
-            SpecsMode = EntryMode.Edit;
 
+
+
+
+            SpecsMode = EntryMode.Edit;
             CheckSpecsID();
             CheckDraftSpecsItemsCount();
-
+            // Disable Specs Selection
             DisableSpecsListSelection();
+            // Disable Specs main controls
             DisableSpecsModifyUI();
+            // Show mode Accept/Cancel controls
             ShowSpecsReviewUI();
-            btnCancel.Focus();
+            // Setup Specs Meta-data controls
             EnableSpecsMetadataEntryUI();
+
+
+            btnCancel.Focus();
             EnableSpecModifyUI();
             DisableListEntryModifyUI();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
 
         private void RemoveSpecs()
@@ -547,7 +574,9 @@ namespace UserInterface.Forms
             SpecsToXml();
 
             if (SpecsMode == EntryMode.New)
-                AddSpecsToXDocument();
+            {
+                Program.specsModifier.AddSpecs(draftSpecs);
+            }
 
             if (SpecsMode == EntryMode.Edit)
                 ReplaceSpecsInXDocument();
@@ -902,12 +931,7 @@ namespace UserInterface.Forms
             }
 
         }
-
-        private void AddSpecsToXDocument()
-        {
-            Program.xDataDocs.Specs.Root.Add(xSpecs);
-        }
-
+        
         private void ReplaceSpecsInXDocument()
         {
             XElement oldSpecs = GetSpecsElement(draftSpecsId);
