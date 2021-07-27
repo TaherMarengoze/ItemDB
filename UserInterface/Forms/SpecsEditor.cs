@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using UserInterface.Models;
 using UserInterface.Operation;
 using UserInterface.Enums;
+using UserInterface.Interfaces;
 
 namespace UserInterface.Forms
 {
@@ -96,13 +97,13 @@ namespace UserInterface.Forms
         private List<string> filteredspecsIdList;
 
         private Specs selectedSpecs;
-        private Spec selSpec;
+        private ISpec selSpec;
 
         private string draftSpecsId;
         private Specs draftSpecs;
-        private Spec draftSpec;
+        private ISpec draftSpec;
         private SpecType draftSpecType;
-        private List<SpecListEntry> draftEntries;
+        private List<ISpecListEntry> draftEntries;
         private string draftCustomSpecId;
 
         private int specsSelectionIndex = 0;
@@ -395,7 +396,7 @@ namespace UserInterface.Forms
             specMode = EntryMode.Edit;
 
             // Get Spec object being edited
-            draftSpec = draftSpecs.SpecItems[GetSelectedSpecIndex() - 1];
+            draftSpec = draftSpecs.SpecItems.ToList()[GetSelectedSpecIndex() - 1];
             draftSpecType = draftSpec.SpecType;
             switch (draftSpec.SpecType)
             {
@@ -449,7 +450,7 @@ namespace UserInterface.Forms
 
             // Add the created Spec to Spec list of the new Specs
             if (specMode == EntryMode.New)
-                draftSpecs.SpecItems.Add(draftSpec);
+                draftSpecs.SpecItems.ToList().Add(draftSpec);
 
             CheckDraftSpecsItemsCount();
 
@@ -474,7 +475,7 @@ namespace UserInterface.Forms
 
             EnableSpecModifyUI();
 
-            if (draftSpecs.SpecItems.Count <= 1)
+            if (draftSpecs.SpecItems.Count() <= 1)
                 btnSiRemove.Enabled = false;
 
 
@@ -503,7 +504,7 @@ namespace UserInterface.Forms
 
             ResetSpecUI();
 
-            if (draftSpecs.SpecItems.Count <= 0)
+            if (draftSpecs.SpecItems.Count() <= 0)
             {
                 // Set to null to remove columns
                 ClearSpecItemsGrid();
@@ -521,12 +522,12 @@ namespace UserInterface.Forms
         {
             if ((SpecsMode != EntryMode.New || SpecsMode == EntryMode.Edit) && specMode == EntryMode.View)
             {
-                SaveSpecItemSelectionPosition(draftSpecs.SpecItems.Count);
+                SaveSpecItemSelectionPosition(draftSpecs.SpecItems.Count());
 
                 if (ShowSpecRemoveConfirmation() == DialogResult.OK)
                 {
-                    Spec specsItem = draftSpecs.SpecItems.Find(idx => idx.Index == GetSelectedSpecIndex());
-                    draftSpecs.SpecItems.Remove(specsItem);
+                    ISpec specsItem = draftSpecs.SpecItems.ToList().Find(idx => idx.Index == GetSelectedSpecIndex());
+                    draftSpecs.SpecItems.ToList().Remove(specsItem);
 
                     // Renumber SpecItems
                     int i = 0;
@@ -542,7 +543,7 @@ namespace UserInterface.Forms
 
                 RestoreSpecItemSelection();
 
-                if (draftSpecs.SpecItems.Count <= 0)
+                if (draftSpecs.SpecItems.Count() <= 0)
                 {
                     // Set to null to remove columns
                     ClearSpecItemsGrid();
@@ -555,7 +556,7 @@ namespace UserInterface.Forms
                     dgvListEntries.DataSource = null;
                 }
 
-                if (draftSpecs.SpecItems.Count <= 1)
+                if (draftSpecs.SpecItems.Count() <= 1)
                     btnSiRemove.Enabled = false;
             }
         }
@@ -648,7 +649,7 @@ namespace UserInterface.Forms
             // Get Spec ListEntry
             int entryId = GetSelectedListEntryID();
 
-            SpecListEntry editListEntry = draftEntries.Find(id => id.ValueID == entryId);
+            ISpecListEntry editListEntry = draftEntries.Find(id => id.ValueID == entryId);
             ListEntryEditor listEditor = new ListEntryEditor(editListEntry);
 
             if (listEditor.ShowDialog() == DialogResult.OK)
@@ -664,7 +665,7 @@ namespace UserInterface.Forms
             // Get Spec ListEntry
             int entryId = GetSelectedListEntryID();
 
-            SpecListEntry editListEntry = draftEntries.Find(id => id.ValueID == entryId);
+            ISpecListEntry editListEntry = draftEntries.Find(id => id.ValueID == entryId);
 
             if (ShowEntryRemoveConfirmation() == DialogResult.OK)
             {
@@ -765,7 +766,7 @@ namespace UserInterface.Forms
 
         private void CheckDraftSpecsItemsCount()
         {
-            IsSpecsHasItem = draftSpecs.SpecItems.Count > 0;
+            IsSpecsHasItem = draftSpecs.SpecItems.Count() > 0;
         }
 
         private void CheckDraftSpecsReady()
@@ -923,20 +924,20 @@ namespace UserInterface.Forms
             return specs;
         }
 
-        private Spec GetSpecData(Specs specs, int specsItemIndex)
+        private ISpec GetSpecData(Specs specs, int specsItemIndex)
         {
             return
-                specs.SpecItems.Find(si => si.Index == specsItemIndex);
+                specs.SpecItems.ToList().Find(si => si.Index == specsItemIndex);
         }
 
-        private Spec GetNewSpecsItemData(int siIndex)
+        private ISpec GetNewSpecsItemData(int siIndex)
         {
             return
-                draftSpecs.SpecItems.Find(si => si.Index == siIndex);
+                draftSpecs.SpecItems.ToList().Find(si => si.Index == siIndex);
         }
         private int GetLastSpecsItemIndex()
         {
-            return draftSpecs.SpecItems.Count;
+            return draftSpecs.SpecItems.Count();
         }
 
         private string GetSelectedSpecsId()

@@ -1,15 +1,17 @@
-﻿namespace UserInterface.Models
-{
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Xml.Linq;
-    using Enums;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Linq;
 
-    public class Spec
+namespace UserInterface.Models
+{
+    using Enums;
+    using Interfaces;
+
+    public class Spec : ISpec
     {
         public Spec()
         {
-            ListEntries = new List<SpecListEntry>();
+            ListEntries = new List<ISpecListEntry>();
         }
 
         public Spec(XElement specsItemTypeElement)
@@ -23,7 +25,7 @@
                          ValueID = (int)entry.Attribute("valId"),
                          Value = entry.Element("val").Value,
                          Display = entry.Element("disp").Value
-                     }).ToList();
+                     }).ToList<ISpecListEntry>();
                 SpecType = SpecType.List;
             }
             else
@@ -32,7 +34,7 @@
                 SpecType = SpecType.Custom;
             }
         }
-        
+
         public int Index { get; set; }
 
         public string Name { get; set; }
@@ -41,22 +43,22 @@
 
         public SpecType SpecType { get; private set; }
 
-        public List<SpecListEntry> ListEntries { get; private set; } = new List<SpecListEntry>();
+        public List<ISpecListEntry> ListEntries { get; private set; } = new List<ISpecListEntry>();
 
         public string CustomInputID { get; private set; }
 
-        public List<SpecListEntry> CopyEntries()
+        public List<ISpecListEntry> CopyEntries()
         {
-            List<SpecListEntry> copyList = new List<SpecListEntry>();
+            List<ISpecListEntry> copyList = new List<ISpecListEntry>();
 
-            foreach (SpecListEntry entry in ListEntries)
+            foreach (ISpecListEntry entry in ListEntries)
             {
                 copyList.Add(entry?.CopyEntry());
             }
             return copyList;
         }
 
-        public void AddEntries(List<SpecListEntry> entries)
+        public void AddEntries(List<ISpecListEntry> entries)
         {
             ListEntries.Clear();
             ListEntries.AddRange(entries);

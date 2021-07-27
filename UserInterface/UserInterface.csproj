@@ -120,6 +120,8 @@
     <Compile Include="Models\FieldList.cs" />
     <Compile Include="Models\IFieldList.cs" />
     <Compile Include="Interfaces\ISpecs.cs" />
+    <Compile Include="Interfaces\ISpec.cs" />
+    <Compile Include="Interfaces\ISpecListEntry.cs" />
     <Compile Include="Models\ItemCategory.cs" />
     <Compile Include="Models\DataRepos.cs" />
     <Compile Include="Models\ItemCheckList.cs" />
