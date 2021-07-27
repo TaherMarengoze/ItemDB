@@ -11,5 +11,7 @@ namespace UserInterface.Interfaces
         void AddSpecs(Models.Specs specs);
 
         void ModifySpecs(string refId, Models.Specs specs);
+
+        void DeleteSpecs(string specsId);
     }
 }

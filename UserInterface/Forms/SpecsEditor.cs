@@ -319,7 +319,7 @@ namespace UserInterface.Forms
                 specsIdList.Remove(specsId);
                 CheckSpecsCount();
 
-                RemoveSelectedSpecs(specsId);
+                Program.specsModifier.DeleteSpecs(specsId);
                 RefreshSpecsList();
 
                 if (specsIdList.Count <= 0)
@@ -333,7 +333,6 @@ namespace UserInterface.Forms
             }
 
             RestoreSpecsSelection();
-
         }
 
         private void CheckSpecsCount()
@@ -868,15 +867,6 @@ namespace UserInterface.Forms
         #endregion
 
         #region XML Document Manipulation
-        /// <summary>
-        /// Removes a specific Specs from the Specs data file.
-        /// </summary>
-        /// <param name="specsId">The Specs ID to be removed.</param>
-        private void RemoveSelectedSpecs(string specsId)
-        {
-            GetSpecsElement(specsId).Remove();
-        }
-
         /// <summary>
         /// Removes a specific SpecsItem of a specific Specs from the Specs data file.
         /// </summary>

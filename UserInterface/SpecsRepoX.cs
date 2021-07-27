@@ -26,6 +26,11 @@ namespace UserInterface
 
         }
 
+        public void DeleteSpecs(string specsId)
+        {
+            GetSpecsElement(specsId).Remove();
+        }
+
         private XElement SerializeSpecs(Specs specs)
         {
             XElement draftSpecs =
@@ -75,5 +80,6 @@ namespace UserInterface
                 .Where(sp => sp.Attribute("specsID").Value == specsId)
                 .FirstOrDefault();
         }
+
     }
 }
