@@ -1,14 +1,13 @@
-﻿namespace UserInterface.Models
-{
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
+﻿using System.Collections.Generic;
 
-    public class Specs : IView
+namespace UserInterface.Models
+{
+    using Interfaces;
+
+    public class Specs : IView, ISpecs
     {
         //public Specs()
         //{
-            
         //}
 
         public string ID { get; set; }

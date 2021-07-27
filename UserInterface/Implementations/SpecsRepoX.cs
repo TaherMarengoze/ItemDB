@@ -12,13 +12,13 @@ namespace UserInterface
 
     public class SpecsRepoX : ISpecsModifier
     {
-        public void AddSpecs(Specs specs)
+        public void AddSpecs(ISpecs specs)
         {
             XElement content = SerializeSpecs(specs);
             Program.xDataDocs.Specs.Root.Add(content);
         }
 
-        public void ModifySpecs(string refId, Specs specs)
+        public void ModifySpecs(string refId, ISpecs specs)
         {
             XElement content = SerializeSpecs(specs);
             XElement replaceSpecs = GetSpecsElement(refId);
@@ -31,7 +31,7 @@ namespace UserInterface
             GetSpecsElement(specsId).Remove();
         }
 
-        private XElement SerializeSpecs(Specs specs)
+        private XElement SerializeSpecs(ISpecs specs)
         {
             XElement draftSpecs =
                 new XElement("specs",

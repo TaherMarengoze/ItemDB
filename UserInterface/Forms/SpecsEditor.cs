@@ -91,8 +91,6 @@ namespace UserInterface.Forms
         #region Fields
         private EntryMode specMode = EntryMode.View;
 
-        private XElement xSpecs;
-
         private List<string> specsIdList;
         private List<string> cSpecIdList;
         private List<string> filteredspecsIdList;

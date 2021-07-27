@@ -119,6 +119,7 @@
     <Compile Include="Interfaces\IBasicView.cs" />
     <Compile Include="Models\FieldList.cs" />
     <Compile Include="Models\IFieldList.cs" />
+    <Compile Include="Interfaces\ISpecs.cs" />
     <Compile Include="Models\ItemCategory.cs" />
     <Compile Include="Models\DataRepos.cs" />
     <Compile Include="Models\ItemCheckList.cs" />
@@ -204,7 +205,7 @@
     <Compile Include="Enums\FieldType.cs" />
     <Compile Include="Enums\SelectionShift.cs" />
     <Compile Include="Enums\SpecType.cs" />
-    <Compile Include="SpecsRepoX.cs" />
+    <Compile Include="Implementations\SpecsRepoX.cs" />
     <EmbeddedResource Include="Forms\AltListSelector.resx">
       <DependentUpon>AltListSelector.cs</DependentUpon>
     </EmbeddedResource>

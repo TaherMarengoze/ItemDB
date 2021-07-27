@@ -12,14 +12,14 @@ namespace UserInterface.Interfaces
         /// Adds a new specs to a data source
         /// </summary>
         /// <param name="specs"></param>
-        void AddSpecs(Models.Specs specs);
+        void AddSpecs(ISpecs specs);
 
         /// <summary>
         /// Modifies an existing specs in the data source
         /// </summary>
         /// <param name="refId"></param>
         /// <param name="specs"></param>
-        void ModifySpecs(string refId, Models.Specs specs);
+        void ModifySpecs(string refId, ISpecs specs);
 
         /// <summary>
         /// Deletes a specs from its data source
