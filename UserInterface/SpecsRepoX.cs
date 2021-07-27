@@ -14,14 +14,20 @@ namespace UserInterface
     {
         public void AddSpecs(Specs specs)
         {
-            XElement xSpecs = SerializeSpecs(specs);
-            Program.xDataDocs.Specs.Root.Add(xSpecs);
+            XElement content = SerializeSpecs(specs);
+            Program.xDataDocs.Specs.Root.Add(content);
+        }
+
+        public void ModifySpecs(string refId, Specs specs)
+        {
+            XElement content = SerializeSpecs(specs);
+            XElement replaceSpecs = GetSpecsElement(refId);
+            replaceSpecs.ReplaceWith(content);
+
         }
 
         private XElement SerializeSpecs(Specs specs)
         {
-            //XElement specItem;
-            //XElement speclist;
             XElement draftSpecs =
                 new XElement("specs",
                 new XAttribute("specsID", specs.ID),
@@ -60,6 +66,14 @@ namespace UserInterface
             }
 
             return draftSpecs;
+        }
+
+        private XElement GetSpecsElement(string specsId)
+        {
+            return
+                Program.xDataDocs.Specs.Descendants("specs")
+                .Where(sp => sp.Attribute("specsID").Value == specsId)
+                .FirstOrDefault();
         }
     }
 }

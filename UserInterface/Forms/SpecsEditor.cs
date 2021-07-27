@@ -570,16 +570,15 @@ namespace UserInterface.Forms
             draftSpecs.Name = txtSpecsName.Text;
             draftSpecs.TextPattern = txtSpecsPattern.Text;
 
-            // Convert Specs to XML
-            SpecsToXml();
-
             if (SpecsMode == EntryMode.New)
             {
                 Program.specsModifier.AddSpecs(draftSpecs);
             }
 
             if (SpecsMode == EntryMode.Edit)
-                ReplaceSpecsInXDocument();
+            {
+                Program.specsModifier.ModifySpecs(draftSpecsId, draftSpecs);
+            }
 
             // Exit draft (New) mode
             SpecsMode = EntryMode.View;
@@ -887,57 +886,7 @@ namespace UserInterface.Forms
         {
             GetSpecsItemElement(specsId, itemIdx).Remove();
         }
-
-        private void SpecsToXml()
-        {
-            XElement specItem;
-            XElement speclist;
-
-            xSpecs =
-                new XElement("specs",
-                new XAttribute("specsID", draftSpecs.ID),
-                new XAttribute("name", draftSpecs.Name),
-                new XAttribute("textPattern", draftSpecs.TextPattern));
-
-            foreach (Spec spec in draftSpecs.SpecItems)
-            {
-                specItem =
-                    new XElement("specsItem",
-                    new XAttribute("index", spec.Index),
-                    new XAttribute("name", spec.Name),
-                    new XAttribute("valuePattern", spec.ValuePattern));
-
-                if (spec.SpecType == SpecType.List)
-                {
-                    speclist = new XElement("list");
-
-                    foreach (SpecListEntry entry in spec.ListEntries)
-                    {
-                        speclist.Add(
-                            new XElement("entry",
-                            new XAttribute("valId", entry.ValueID),
-                            new XElement("val") { Value = entry.Value },
-                            new XElement("disp") { Value = entry.Display }));
-                    }
-
-                    specItem.Add(speclist);
-                }
-                else
-                {
-                    specItem.Add(new XElement("custom") { Value = spec.CustomInputID });
-                }
-
-                xSpecs.Add(specItem);
-            }
-
-        }
         
-        private void ReplaceSpecsInXDocument()
-        {
-            XElement oldSpecs = GetSpecsElement(draftSpecsId);
-            oldSpecs.ReplaceWith(xSpecs);
-        }
-
         #endregion
 
         #region XML Query

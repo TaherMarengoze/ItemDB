@@ -9,5 +9,7 @@ namespace UserInterface.Interfaces
     public interface ISpecsModifier
     {
         void AddSpecs(Models.Specs specs);
+
+        void ModifySpecs(string refId, Models.Specs specs);
     }
 }
