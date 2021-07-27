@@ -100,7 +100,7 @@ namespace UserInterface.Forms
         private ISpec selSpec;
 
         private string draftSpecsId;
-        private Specs draftSpecs;
+        private ISpecs draftSpecs;
         private ISpec draftSpec;
         private SpecType draftSpecType;
         private List<ISpecListEntry> draftEntries;
@@ -924,10 +924,11 @@ namespace UserInterface.Forms
             return specs;
         }
 
-        private ISpec GetSpecData(Specs specs, int specsItemIndex)
+        private ISpec GetSpecData(ISpecs specs, int specIndex)
         {
             return
-                specs.SpecItems.ToList().Find(si => si.Index == specsItemIndex);
+                specs.SpecItems
+                .FirstOrDefault(spec => spec.Index == specIndex);
         }
 
         private ISpec GetNewSpecsItemData(int siIndex)

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UserInterface.Interfaces
+﻿namespace UserInterface.Interfaces
 {
     public interface ISpecsModifier
     {

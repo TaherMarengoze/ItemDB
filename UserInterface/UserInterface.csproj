@@ -118,7 +118,7 @@
     <Compile Include="Interfaces\IItemRawData.cs" />
     <Compile Include="Interfaces\IBasicView.cs" />
     <Compile Include="Models\FieldList.cs" />
-    <Compile Include="Models\IFieldList.cs" />
+    <Compile Include="Interfaces\IFieldList.cs" />
     <Compile Include="Interfaces\ISpecs.cs" />
     <Compile Include="Interfaces\ISpec.cs" />
     <Compile Include="Interfaces\ISpecListEntry.cs" />

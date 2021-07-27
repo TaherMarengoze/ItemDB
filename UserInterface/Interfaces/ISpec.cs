@@ -3,7 +3,6 @@
 namespace UserInterface.Interfaces
 {
     using Enums;
-    using Models;
 
     public interface ISpec
     {
