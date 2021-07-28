@@ -10,13 +10,13 @@ namespace UserInterface
     using Interfaces;
     using Models;
 
-    public class SpecsProcessor : ISpecsProcessor
+    public class SpecsRepoX : ISpecsRepo
     {
         private readonly XDocument dataSource;
 
-        public SpecsProcessor()
+        public SpecsRepoX(XDocument source)
         {
-            dataSource = Program.xDataDocs.Specs;
+            dataSource = source;
         }
 
         public void CreateSpecs(ISpecs specs)
@@ -53,7 +53,6 @@ namespace UserInterface
             XElement content = SerializeSpecs(specs);
             XElement replaceSpecs = GetSpecs(refId);
             replaceSpecs.ReplaceWith(content);
-
         }
 
         public void DeleteSpecs(string specsId)

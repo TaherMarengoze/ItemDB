@@ -12,7 +12,7 @@ namespace UserInterface
         public static FilePathReader fpr;
         public static ISourceReader reader;
         public static IModifier itemModifier;
-        public static ISpecsProcessor specsProcessor;
+        public static ISpecsRepo specsRepo;
         public static XDataDocuments xDataDocs;
 
         public static bool TestAutoLoad = true;

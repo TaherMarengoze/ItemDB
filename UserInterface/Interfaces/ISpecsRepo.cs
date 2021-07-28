@@ -3,7 +3,7 @@
     /// <summary>
     /// Provides CRUD operations for <see cref="Models.Specs"/> field.
     /// </summary>
-    public interface ISpecsProcessor
+    public interface ISpecsRepo
     {
         /// <summary>
         /// Adds a new specs to a data source.

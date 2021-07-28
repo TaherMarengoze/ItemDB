@@ -4,7 +4,6 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
 namespace UserInterface.Forms
 {
@@ -120,6 +119,7 @@ namespace UserInterface.Forms
         #endregion
 
         #region File Management
+        // To be replaced with more generic method
         private void SaveToDataSource()
         {
             XDataDocuments.Save(Program.xDataDocs.Specs, Program.fpr.Specs);
@@ -132,10 +132,6 @@ namespace UserInterface.Forms
         private void PostLoading()
         {
             RefreshSpecsList();
-            //ReadSpecsIDs();
-            //PopulateSpecsList();
-            //CheckSpecsCount();
-
             ReadCustomSpecsFromXFile();
             // Bind Custom Specs Selector
             cboCustomTypeSelector.DataSource = cSpecIdList;
@@ -151,9 +147,10 @@ namespace UserInterface.Forms
 
         private void ReadSpecsIDs()
         {
-            specsIdList = GetAllSpecsIDs();
+            specsIdList = DataService.GetAllSpecsId();
         }
 
+        // To be replaced
         private void ReadCustomSpecsFromXFile()
         {
             cSpecIdList =
@@ -164,7 +161,7 @@ namespace UserInterface.Forms
         private void ReadSelectedSpecsData()
         {
             string specsId = lbxSpecs.Text;
-            selectedSpecs = Program.specsProcessor.ReadSpecs(specsId);
+            selectedSpecs = Program.specsRepo.ReadSpecs(specsId);
         }
 
         private void CancelSpecsAddOrEdit()
@@ -260,7 +257,7 @@ namespace UserInterface.Forms
         private void EditSpecs()
         {
             draftSpecsId = GetSelectedSpecsId();
-            draftSpecs = Program.specsProcessor.ReadSpecs(draftSpecsId);  //GetSpecsData(draftSpecsId);
+            draftSpecs = Program.specsRepo.ReadSpecs(draftSpecsId);  //GetSpecsData(draftSpecsId);
             SaveSpecsSelectionPosition();
 
 
@@ -313,7 +310,7 @@ namespace UserInterface.Forms
                 specsIdList.Remove(specsId);
                 CheckSpecsCount();
 
-                Program.specsProcessor.DeleteSpecs(specsId);
+                Program.specsRepo.DeleteSpecs(specsId);
                 RefreshSpecsList();
 
                 if (specsIdList.Count <= 0)
@@ -563,10 +560,10 @@ namespace UserInterface.Forms
             draftSpecs.TextPattern = txtSpecsPattern.Text;
 
             if (SpecsMode == EntryMode.New)
-                Program.specsProcessor.CreateSpecs(draftSpecs);
+                Program.specsRepo.CreateSpecs(draftSpecs);
 
             if (SpecsMode == EntryMode.Edit)
-                Program.specsProcessor.UpdateSpecs(draftSpecsId, draftSpecs);
+                Program.specsRepo.UpdateSpecs(draftSpecsId, draftSpecs);
 
             // Exit draft (New) mode
             SpecsMode = EntryMode.View;
@@ -854,13 +851,6 @@ namespace UserInterface.Forms
         #endregion
 
         #region Data Query
-        private List<string> GetAllSpecsIDs()
-        {
-            return
-                (from s in Program.xDataDocs.Specs.Descendants("specs")
-                 select s.Attribute("specsID").Value).ToList();
-        }
-
         private ISpec GetSpecData(ISpecs specs, int specIndex)
         {
             return
