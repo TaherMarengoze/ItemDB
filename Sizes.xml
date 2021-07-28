@@ -338,4 +338,23 @@
       <size>8"</size>
     </sizes>
   </sizeList>
+  <sizeList listID="WRN01" name="Metric">
+    <sizes>
+      <size>M6</size>
+      <size>M8</size>
+      <size>M10</size>
+      <size>M12</size>
+      <size>M14</size>
+      <size>M16</size>
+      <size>M18</size>
+      <size>M20</size>
+      <size>M22</size>
+      <size>M24</size>
+      <size>M30</size>
+      <size>M32</size>
+      <size>M36</size>
+      <size>M38</size>
+      <size>M42</size>
+    </sizes>
+  </sizeList>
 </sizeLists>

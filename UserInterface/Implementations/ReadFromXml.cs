@@ -89,7 +89,7 @@ namespace UserInterface
                         Index = (int)spec.Attribute("index"),
                         Name = spec.Attribute("name").Value,
                         ValuePattern = spec.Attribute("valuePattern").Value
-                    }).ToList()
+                    }).ToList<ISpec>()
                 };
         }
 

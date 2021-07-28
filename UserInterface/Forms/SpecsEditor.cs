@@ -5,13 +5,14 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using UserInterface.Models;
-using UserInterface.Operation;
-using UserInterface.Enums;
-using UserInterface.Interfaces;
 
 namespace UserInterface.Forms
 {
+    using Enums;
+    using Interfaces;
+    using Models;
+    using Operation;
+
     public partial class SpecsEditor : Form
     {
         private enum IdStatus
@@ -96,7 +97,7 @@ namespace UserInterface.Forms
         private List<string> cSpecIdList;
         private List<string> filteredspecsIdList;
 
-        private Specs selectedSpecs;
+        private ISpecs selectedSpecs;
         private ISpec selSpec;
 
         private string draftSpecsId;
@@ -119,10 +120,9 @@ namespace UserInterface.Forms
         #endregion
 
         #region File Management
-        private void SaveXmlFile()
+        private void SaveToDataSource()
         {
             XDataDocuments.Save(Program.xDataDocs.Specs, Program.fpr.Specs);
-            //DataService.UpdateSpecs(Program.xDataDocs.Specs);
             DataService.UpdateSpecs();
         }
         #endregion
@@ -164,16 +164,11 @@ namespace UserInterface.Forms
         private void ReadSelectedSpecsData()
         {
             string specsId = lbxSpecs.Text;
-            selectedSpecs = GetSpecsData(GetSpecsElement(specsId));
+            selectedSpecs = Program.specsProcessor.ReadSpecs(specsId);
         }
 
         private void CancelSpecsAddOrEdit()
         {
-            //string editSpecsId;
-
-            //if (specsMode == EntryMode.Edit)
-            //    editSpecsId = draftSpecsId;
-
             SpecsMode = EntryMode.View;
             specMode = EntryMode.View;
 
@@ -265,7 +260,7 @@ namespace UserInterface.Forms
         private void EditSpecs()
         {
             draftSpecsId = GetSelectedSpecsId();
-            draftSpecs = GetSpecsData(GetSpecsElement(draftSpecsId));
+            draftSpecs = Program.specsProcessor.ReadSpecs(draftSpecsId);  //GetSpecsData(draftSpecsId);
             SaveSpecsSelectionPosition();
 
 
@@ -318,7 +313,7 @@ namespace UserInterface.Forms
                 specsIdList.Remove(specsId);
                 CheckSpecsCount();
 
-                Program.specsModifier.DeleteSpecs(specsId);
+                Program.specsProcessor.DeleteSpecs(specsId);
                 RefreshSpecsList();
 
                 if (specsIdList.Count <= 0)
@@ -341,8 +336,6 @@ namespace UserInterface.Forms
                 btnRemoveSpecs.Enabled = false;
                 btnEditSpecs.Enabled = false;
             }
-            //else if (specsIdList.Count < 1)
-            //    btnEditSpecs.Enabled = false;
             else
             {
                 btnRemoveSpecs.Enabled = true;
@@ -396,7 +389,7 @@ namespace UserInterface.Forms
             specMode = EntryMode.Edit;
 
             // Get Spec object being edited
-            draftSpec = draftSpecs.SpecItems.ToList()[GetSelectedSpecIndex() - 1];
+            draftSpec = draftSpecs.SpecItems[GetSelectedSpecIndex() - 1];
             draftSpecType = draftSpec.SpecType;
             switch (draftSpec.SpecType)
             {
@@ -434,7 +427,7 @@ namespace UserInterface.Forms
 
         private void SaveDraftSpec()
         {
-            // Save new Spec's data
+            // Save new Spec data
             draftSpec.Index = int.Parse(txtSiIndex.Text);
             draftSpec.Name = txtSiName.Text;
             draftSpec.ValuePattern = txtSiValuePattern.Text;
@@ -450,7 +443,9 @@ namespace UserInterface.Forms
 
             // Add the created Spec to Spec list of the new Specs
             if (specMode == EntryMode.New)
-                draftSpecs.SpecItems.ToList().Add(draftSpec);
+            {
+                draftSpecs.SpecItems.Add(draftSpec);
+            }
 
             CheckDraftSpecsItemsCount();
 
@@ -459,9 +454,7 @@ namespace UserInterface.Forms
 
             // Null draft objects
             ClearSpecsDrafts();
-
             ResetSpecUI();
-
             btnSiAdd.Focus();
         }
 
@@ -475,9 +468,8 @@ namespace UserInterface.Forms
 
             EnableSpecModifyUI();
 
-            if (draftSpecs.SpecItems.Count() <= 1)
+            if (draftSpecs.SpecItems.Count <= 1)
                 btnSiRemove.Enabled = false;
-
 
             HideSpecReviewUI();
             DisableSpecMetadataEntryUI();
@@ -504,7 +496,7 @@ namespace UserInterface.Forms
 
             ResetSpecUI();
 
-            if (draftSpecs.SpecItems.Count() <= 0)
+            if (draftSpecs.SpecItems.Count <= 0)
             {
                 // Set to null to remove columns
                 ClearSpecItemsGrid();
@@ -522,12 +514,14 @@ namespace UserInterface.Forms
         {
             if ((SpecsMode != EntryMode.New || SpecsMode == EntryMode.Edit) && specMode == EntryMode.View)
             {
-                SaveSpecItemSelectionPosition(draftSpecs.SpecItems.Count());
+                SaveSpecItemSelectionPosition(draftSpecs.SpecItems.Count);
 
                 if (ShowSpecRemoveConfirmation() == DialogResult.OK)
                 {
-                    ISpec specsItem = draftSpecs.SpecItems.ToList().Find(idx => idx.Index == GetSelectedSpecIndex());
-                    draftSpecs.SpecItems.ToList().Remove(specsItem);
+                    ISpec specsItem = draftSpecs.SpecItems
+                        .Find(idx => idx.Index == GetSelectedSpecIndex());
+
+                    draftSpecs.SpecItems.Remove(specsItem);
 
                     // Renumber SpecItems
                     int i = 0;
@@ -543,7 +537,7 @@ namespace UserInterface.Forms
 
                 RestoreSpecItemSelection();
 
-                if (draftSpecs.SpecItems.Count() <= 0)
+                if (draftSpecs.SpecItems.Count <= 0)
                 {
                     // Set to null to remove columns
                     ClearSpecItemsGrid();
@@ -556,7 +550,7 @@ namespace UserInterface.Forms
                     dgvListEntries.DataSource = null;
                 }
 
-                if (draftSpecs.SpecItems.Count() <= 1)
+                if (draftSpecs.SpecItems.Count <= 1)
                     btnSiRemove.Enabled = false;
             }
         }
@@ -569,14 +563,10 @@ namespace UserInterface.Forms
             draftSpecs.TextPattern = txtSpecsPattern.Text;
 
             if (SpecsMode == EntryMode.New)
-            {
-                Program.specsModifier.AddSpecs(draftSpecs);
-            }
+                Program.specsProcessor.CreateSpecs(draftSpecs);
 
             if (SpecsMode == EntryMode.Edit)
-            {
-                Program.specsModifier.ModifySpecs(draftSpecsId, draftSpecs);
-            }
+                Program.specsProcessor.UpdateSpecs(draftSpecsId, draftSpecs);
 
             // Exit draft (New) mode
             SpecsMode = EntryMode.View;
@@ -595,7 +585,7 @@ namespace UserInterface.Forms
             DisableSpecMetadataEntryUI();
             DisableListEntryModifyUI();
 
-            // Reload XDoc and Repopulate Specs list
+            // Reload and Repopulate Specs list
             RefreshSpecsList();
             SelectSpecs(draftSpecs.ID);
 
@@ -624,7 +614,6 @@ namespace UserInterface.Forms
 
                 // Add the new entry to the draft list
                 draftEntries.Add(listEditor.ListEntry);
-                //draftSpec.ListEntries.Add(listEditor.ListEntry);
 
                 // Enable Edit and Delete buttons
                 EnableListEntryModifyUI();
@@ -633,7 +622,6 @@ namespace UserInterface.Forms
 
                 // Display the list items
                 ClearListEntriesGrid();
-                //dgvListEntries.DataSource = draftSpec.ListEntries;
                 DisplayDraftEntries();
             }
         }
@@ -649,7 +637,9 @@ namespace UserInterface.Forms
             // Get Spec ListEntry
             int entryId = GetSelectedListEntryID();
 
-            ISpecListEntry editListEntry = draftEntries.Find(id => id.ValueID == entryId);
+            ISpecListEntry editListEntry = draftEntries
+                .Find(id => id.ValueID == entryId);
+
             ListEntryEditor listEditor = new ListEntryEditor(editListEntry);
 
             if (listEditor.ShowDialog() == DialogResult.OK)
@@ -676,7 +666,7 @@ namespace UserInterface.Forms
 
                 // Renumber remaining entries ValueID
                 int i = 0;
-                foreach (var entry in draftEntries)
+                foreach (ISpecListEntry entry in draftEntries)
                 {
                     entry.ValueID = ++i;
                 }
@@ -766,7 +756,7 @@ namespace UserInterface.Forms
 
         private void CheckDraftSpecsItemsCount()
         {
-            IsSpecsHasItem = draftSpecs.SpecItems.Count() > 0;
+            IsSpecsHasItem = draftSpecs.SpecItems.Count > 0;
         }
 
         private void CheckDraftSpecsReady()
@@ -782,8 +772,6 @@ namespace UserInterface.Forms
                 btnAccept.Enabled = false;
             }
         }
-
-
 
         private void CheckSpecName()
         {
@@ -865,63 +853,12 @@ namespace UserInterface.Forms
         }
         #endregion
 
-        #region XML Document Manipulation
-        /// <summary>
-        /// Removes a specific SpecsItem of a specific Specs from the Specs data file.
-        /// </summary>
-        /// <param name="specsId">The Specs ID of the SpecsItem to be removed.</param>
-        /// <param name="itemIdx">The index of the SpecsItem to be removed.</param>
-        private void RemoveSelectedSpecsItem(string specsId, int itemIdx)
-        {
-            GetSpecsItemElement(specsId, itemIdx).Remove();
-        }
-        
-        #endregion
-
-        #region XML Query
-        private XElement GetSpecsElement(string specsId)
-        {
-            return
-                Program.xDataDocs.Specs.Descendants("specs")
-                .Where(sp => sp.Attribute("specsID").Value == specsId)
-                .FirstOrDefault();
-        }
-
-        private XElement GetSpecsItemElement(string specsId, int itemIdx)
-        {
-            XElement specs = GetSpecsElement(specsId);
-            return
-                (from si in specs.Descendants("specsItem")
-                 where (int)si.Attribute("index") == itemIdx
-                 select si).FirstOrDefault();
-        }
-        #endregion
-
         #region Data Query
         private List<string> GetAllSpecsIDs()
         {
             return
                 (from s in Program.xDataDocs.Specs.Descendants("specs")
                  select s.Attribute("specsID").Value).ToList();
-        }
-
-        private Specs GetSpecsData(XElement xSpecs)
-        {
-            Specs specs = new Specs()
-            {
-                ID = xSpecs.Attribute("specsID").Value,
-                Name = xSpecs.Attribute("name").Value,
-                TextPattern = xSpecs.Attribute("textPattern").Value,
-                SpecItems = xSpecs.Descendants("specsItem")
-                .Select(si => new Spec((XElement)si.FirstNode)
-                {
-                    Index = (int)si.Attribute("index"),
-                    Name = si.Attribute("name").Value,
-                    ValuePattern = si.Attribute("valuePattern").Value
-                }).ToList()
-            };
-
-            return specs;
         }
 
         private ISpec GetSpecData(ISpecs specs, int specIndex)
@@ -934,7 +871,7 @@ namespace UserInterface.Forms
         private ISpec GetNewSpecsItemData(int siIndex)
         {
             return
-                draftSpecs.SpecItems.ToList().Find(si => si.Index == siIndex);
+                draftSpecs.SpecItems.Find(si => si.Index == siIndex);
         }
         private int GetLastSpecsItemIndex()
         {
@@ -1470,7 +1407,7 @@ namespace UserInterface.Forms
         #region Event Responses
         private void mnuItmSaveFile_Click(object sender, EventArgs e)
         {
-            SaveXmlFile();
+            SaveToDataSource();
         }
 
         private void lbxSpecs_SelectedIndexChanged(object sender, EventArgs e)
@@ -1488,14 +1425,12 @@ namespace UserInterface.Forms
             }
             catch (Exception) { }
         }
-
         private void lbxSpecs_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             int index = lbxSpecs.IndexFromPoint(e.Location);
             if (lbxSpecs.SelectionMode == SelectionMode.None) return;
             if (index != ListBox.NoMatches) EditSpecs();
         }
-
         private void dgvSpecsItems_SelectionChanged(object sender, EventArgs e)
         {
             int rowsCount = dgvSpec.SelectedRows.Count;
@@ -1511,7 +1446,6 @@ namespace UserInterface.Forms
             int idx = (int)row.Cells["Index"].Value;
             ViewSelectedSpecData(idx);
         }
-
         private void dgvSpec_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -1519,7 +1453,6 @@ namespace UserInterface.Forms
                 DoubleClickEditSpec();
             }
         }
-
         private void dgvListEntries_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -1561,18 +1494,15 @@ namespace UserInterface.Forms
         {
             Close();
         }
-
         private void tsmiExitApp_Click(object sender, EventArgs e)
         {
             Close();
             Application.Exit();
         }
-
         private void dgvSpec_MouseClick(object sender, MouseEventArgs e)
         {
 
         }
-
         private void dgvSpec_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -1587,7 +1517,6 @@ namespace UserInterface.Forms
                 }
             }
         }
-
         private void tsmiInsertToken_Click(object sender, EventArgs e)
         {
             // Reference: https://stackoverflow.com/questions/1718389/right-click-context-menu-for-datagridview

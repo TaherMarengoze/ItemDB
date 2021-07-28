@@ -6,7 +6,7 @@ namespace UserInterface.Interfaces
     {
         string ID { get; set; }
         string Name { get; set; }
-        IEnumerable<ISpec> SpecItems { get; set; }
+        List<ISpec> SpecItems { get; set; }
         string TextPattern { get; set; }
     }
 }

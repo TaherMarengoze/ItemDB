@@ -76,7 +76,7 @@ namespace UserInterface.Forms
             // Instantiate the source reader and modifier
             Program.reader = new XSource(Program.xDataDocs);
             Program.itemModifier = new ModifyXml();
-            Program.specsModifier = new SpecsRepoX();
+            Program.specsProcessor = new SpecsProcessor();
 
             PostLoading();
         }

@@ -10,25 +10,55 @@ namespace UserInterface
     using Interfaces;
     using Models;
 
-    public class SpecsRepoX : ISpecsModifier
+    public class SpecsProcessor : ISpecsProcessor
     {
-        public void AddSpecs(ISpecs specs)
+        private readonly XDocument dataSource;
+
+        public SpecsProcessor()
         {
-            XElement content = SerializeSpecs(specs);
-            Program.xDataDocs.Specs.Root.Add(content);
+            dataSource = Program.xDataDocs.Specs;
         }
 
-        public void ModifySpecs(string refId, ISpecs specs)
+        public void CreateSpecs(ISpecs specs)
         {
             XElement content = SerializeSpecs(specs);
-            XElement replaceSpecs = GetSpecsElement(refId);
+            dataSource.Root.Add(content);
+        }
+
+        public ISpecs ReadSpecs(string specsId)
+        {
+            XElement xSpecs = dataSource.Descendants("specs")
+               .Where(sp => sp.Attribute("specsID").Value == specsId)
+               .FirstOrDefault();
+
+            Specs specs = new Specs()
+            {
+                ID = xSpecs.Attribute("specsID").Value,
+                Name = xSpecs.Attribute("name").Value,
+                TextPattern = xSpecs.Attribute("textPattern").Value,
+                SpecItems = xSpecs.Descendants("specsItem")
+                .Select(si => new Spec((XElement)si.FirstNode)
+                {
+                    Index = (int)si.Attribute("index"),
+                    Name = si.Attribute("name").Value,
+                    ValuePattern = si.Attribute("valuePattern").Value
+                }).ToList<ISpec>()
+            };
+
+            return specs;
+        }
+
+        public void UpdateSpecs(string refId, ISpecs specs)
+        {
+            XElement content = SerializeSpecs(specs);
+            XElement replaceSpecs = GetSpecs(refId);
             replaceSpecs.ReplaceWith(content);
 
         }
 
         public void DeleteSpecs(string specsId)
         {
-            GetSpecsElement(specsId).Remove();
+            GetSpecs(specsId).Remove();
         }
 
         private XElement SerializeSpecs(ISpecs specs)
@@ -73,13 +103,12 @@ namespace UserInterface
             return draftSpecs;
         }
 
-        private XElement GetSpecsElement(string specsId)
+        private XElement GetSpecs(string specsId)
         {
             return
-                Program.xDataDocs.Specs.Descendants("specs")
+                dataSource.Descendants("specs")
                 .Where(sp => sp.Attribute("specsID").Value == specsId)
                 .FirstOrDefault();
         }
-
     }
 }
