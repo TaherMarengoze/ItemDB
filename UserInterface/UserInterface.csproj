@@ -106,9 +106,9 @@
     </Compile>
     <Compile Include="Implementations\SpecsRepoX.cs" />
     <Compile Include="Interfaces\IDataReader.cs" />
-    <Compile Include="Interfaces\IDataSource.cs" />
     <Compile Include="Interfaces\IModifier.cs" />
     <Compile Include="Interfaces\ISource.cs" />
+    <Compile Include="Interfaces\ISourceProcessor.cs" />
     <Compile Include="Interfaces\ISpecsRepo.cs" />
     <Compile Include="Models\BasicListView.cs" />
     <Compile Include="Models\BasicView.cs" />
@@ -208,6 +208,7 @@
     <Compile Include="Enums\FieldType.cs" />
     <Compile Include="Enums\SelectionShift.cs" />
     <Compile Include="Enums\SpecType.cs" />
+    <Compile Include="XmlSourceProcessor.cs" />
     <EmbeddedResource Include="Forms\AltListSelector.resx">
       <DependentUpon>AltListSelector.cs</DependentUpon>
     </EmbeddedResource>

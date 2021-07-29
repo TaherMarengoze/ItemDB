@@ -46,5 +46,39 @@ namespace UserInterface.Runtime
                 }
             }
         }
+
+        public static void DoSomething(Action callback)
+        {
+            if (Program.TestAutoLoad)
+            {
+                try
+                {
+                    callback();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Test Error Auto-Load file\n\n{ ex.Message }");
+                }
+            }
+        }
+
+        public static void DoSomething(Action[] callback)
+        {
+            if (Program.TestAutoLoad)
+            {
+                try
+                {
+                    foreach (Action cb in callback)
+                    {
+                        cb();
+                    }
+                    
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Test Error Auto-Load file\n\n{ ex.Message }");
+                }
+            }
+        }
     }
 }

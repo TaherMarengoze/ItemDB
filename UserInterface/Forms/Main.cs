@@ -29,7 +29,8 @@ namespace UserInterface.Forms
         private void EndsEditor_Click(object sender, EventArgs e)
             => LauchEditor(new FieldEditor(FieldType.ENDS));
 
-        private void Exit_Click(object sender, EventArgs e) => Application.Exit();
+        private void Exit_Click(object sender, EventArgs e)
+            => Application.Exit();
 
         private void LauchEditor(Form editor)
         {
@@ -56,13 +57,17 @@ namespace UserInterface.Forms
             EnableDisableEditorsLaunchUI(false);
 
             tsmiAutoLoad.Checked = Program.TestAutoLoad;
-            Runtime.Test.AutoLoad(LoadXmlFile);
+            Runtime.Test.AutoLoad(((XmlSourceProcessor)Program.sourceProcessor).TestLoadXmlFile);
+            Runtime.Test.DoSomething(PostLoading);
             //Runtime.Test.AutoJump(delegate { new ItemEditor(Program.xDataDocs, Program.fpr.ImageRepos).ShowDialog(); });
         }
 
         private void tsmiLoadAll_Click(object sender, EventArgs e)
         {
-            Common.BrowseXmlFile(LoadXmlFile);
+            // TEST
+            Program.sourceProcessor.Load();
+            //Common.BrowseXmlFile(LoadXmlFile);
+            PostLoading();
         }
 
         private void LoadXmlFile(string filePath)

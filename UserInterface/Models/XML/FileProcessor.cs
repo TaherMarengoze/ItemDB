@@ -11,6 +11,10 @@ namespace UserInterface.Models
 {
     public class FilePathReader
     {
+        /// <summary>
+        /// Set the path of all the data documents.
+        /// </summary>
+        /// <param name="browsedPath">The full path of the browsed file.</param>
         public FilePathReader(string browsedPath)
         {
             //Get the parent directory of this file
