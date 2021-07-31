@@ -9,16 +9,20 @@ namespace UserInterface.Models
 
     public class XDataDocuments// : ISourceProcessor
     {
-        public XDataDocuments(FilePathReader filePathReader)
+        /// <summary>
+        /// Loads all XML documents in a specific path.
+        /// </summary>
+        /// <param name="processor">The <see cref="FilePathProcessor"/> containing all files path.</param>
+        public XDataDocuments(FilePathProcessor processor)
         {
-            Items = LoadXDocument(filePathReader.Items);
-            SizeGroups = LoadXDocument(filePathReader.SizeGroups);
-            Specs = LoadXDocument(filePathReader.Specs);
-            Sizes = LoadXDocument(filePathReader.Sizes);
-            Brands = LoadXDocument(filePathReader.Brands);
-            Ends = LoadXDocument(filePathReader.Ends);
-            CustomSpecs = LoadXDocument(filePathReader.CustomSpecs);
-            CustomSizes = LoadXDocument(filePathReader.CustomSizes);
+            Items = LoadXDocument(processor.Items);
+            SizeGroups = LoadXDocument(processor.SizeGroups);
+            Specs = LoadXDocument(processor.Specs);
+            Sizes = LoadXDocument(processor.Sizes);
+            Brands = LoadXDocument(processor.Brands);
+            Ends = LoadXDocument(processor.Ends);
+            CustomSpecs = LoadXDocument(processor.CustomSpecs);
+            CustomSizes = LoadXDocument(processor.CustomSizes);
         }
 
         public XDocument Items { get; private set; }
@@ -37,7 +41,7 @@ namespace UserInterface.Models
                 string path = savePath;
                 if (test)
                 {
-                    path = FilePathReader.TestSave(savePath);
+                    path = FilePathProcessor.TestSave(savePath);
                 }
 
                 document.Save(path);

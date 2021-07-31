@@ -10,13 +10,13 @@ namespace UserInterface
     static class Program
     {
         /// <summary>
-        /// The <see cref="FilePathReader"/> global instance.
+        /// The <see cref="FilePathProcessor"/> global instance.
         /// </summary>
-        public static FilePathReader fpr;
+        public static FilePathProcessor fpp;
         public static ISourceReader reader;
         public static IModifier itemModifier;
         public static ISpecsRepo specsRepo;
-        public static ISourceProcessor sourceProcessor = new XmlSourceProcessor();
+        public static ISourceContext context = new XmlContext();
         public static XDataDocuments xDataDocs;
 
         public static bool TestAutoLoad = true;

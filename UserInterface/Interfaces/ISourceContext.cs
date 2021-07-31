@@ -1,9 +1,11 @@
 ﻿namespace UserInterface.Interfaces
 {
-    public interface ISourceProcessor
+    public interface ISourceContext
     {
         void Load();
 
         void Save();
+
+        void Save(object arg);
     }
 }

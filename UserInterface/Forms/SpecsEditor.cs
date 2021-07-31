@@ -119,10 +119,9 @@ namespace UserInterface.Forms
         #endregion
 
         #region File Management
-        // To be replaced with more generic method
         private void SaveToDataSource()
         {
-            XDataDocuments.Save(Program.xDataDocs.Specs, Program.fpr.Specs);
+            Program.context.Save(ContextEntity.Specs);
             DataService.UpdateSpecs();
         }
         #endregion
@@ -238,7 +237,7 @@ namespace UserInterface.Forms
 
 
 
-            // Clear Specs Meta-data conbtrols
+            // Clear Specs Meta-data controls
             ClearSpecsMetadataEntryUI();
             // Set Specs Meta-data initial/default values
             txtSpecsID.Focus();
@@ -560,10 +559,12 @@ namespace UserInterface.Forms
             draftSpecs.TextPattern = txtSpecsPattern.Text;
 
             if (SpecsMode == EntryMode.New)
-                Program.specsRepo.CreateSpecs(draftSpecs);
+                Program.specsRepo.AddSpecs(draftSpecs);
 
             if (SpecsMode == EntryMode.Edit)
                 Program.specsRepo.UpdateSpecs(draftSpecsId, draftSpecs);
+
+            DataService.UpdateSpecs();
 
             // Exit draft (New) mode
             SpecsMode = EntryMode.View;
@@ -1526,7 +1527,6 @@ namespace UserInterface.Forms
             }
         }
         #endregion
-
 #pragma warning restore IDE1006 // Naming Styles
 
     }

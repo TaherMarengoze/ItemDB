@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using UserInterface.Models;
-using UserInterface.Operation;
-using UserInterface.Enums;
 
 namespace UserInterface.Forms
 {
+    using Enums;
+    using Models;
+    using Operation;
+
     public partial class Main : Form
     {
         public Main() => InitializeComponent();
@@ -34,7 +35,7 @@ namespace UserInterface.Forms
 
         private void LauchEditor(Form editor)
         {
-            if (Program.fpr != null && Program.xDataDocs != null)
+            if (Program.fpp != null && Program.xDataDocs != null)
             {
                 Hide();
                 editor.ShowDialog(this);
@@ -57,7 +58,7 @@ namespace UserInterface.Forms
             EnableDisableEditorsLaunchUI(false);
 
             tsmiAutoLoad.Checked = Program.TestAutoLoad;
-            Runtime.Test.AutoLoad(((XmlSourceProcessor)Program.sourceProcessor).TestLoadXmlFile);
+            Runtime.Test.AutoLoad(((XmlContext)Program.context).TestLoadXmlFile);
             Runtime.Test.DoSomething(PostLoading);
             //Runtime.Test.AutoJump(delegate { new ItemEditor(Program.xDataDocs, Program.fpr.ImageRepos).ShowDialog(); });
         }
@@ -65,7 +66,7 @@ namespace UserInterface.Forms
         private void tsmiLoadAll_Click(object sender, EventArgs e)
         {
             // TEST
-            Program.sourceProcessor.Load();
+            Program.context.Load();
             //Common.BrowseXmlFile(LoadXmlFile);
             PostLoading();
         }
@@ -73,13 +74,13 @@ namespace UserInterface.Forms
         private void LoadXmlFile(string filePath)
         {
             // Load all the required XML file paths.
-            Program.fpr = new FilePathReader(filePath);
+            Program.fpp = new FilePathProcessor(filePath);
 
             // Load all the required XML documents.
-            Program.xDataDocs = new XDataDocuments(Program.fpr);
+            Program.xDataDocs = new XDataDocuments(Program.fpp);
 
             // Instantiate the source reader and modifier
-            Program.reader = new XSource(Program.xDataDocs);
+            Program.reader = new XReader(Program.xDataDocs);
             Program.itemModifier = new ModifyXml();
             Program.specsRepo = new SpecsRepoX(Program.xDataDocs.Specs);
 

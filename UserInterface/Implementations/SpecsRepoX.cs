@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using System.Xml.Linq;
 
 namespace UserInterface
@@ -19,7 +15,7 @@ namespace UserInterface
             dataSource = source;
         }
 
-        public void CreateSpecs(ISpecs specs)
+        public void AddSpecs(ISpecs specs)
         {
             XElement content = SerializeSpecs(specs);
             dataSource.Root.Add(content);

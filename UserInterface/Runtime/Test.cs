@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace UserInterface.Runtime
@@ -62,15 +58,15 @@ namespace UserInterface.Runtime
             }
         }
 
-        public static void DoSomething(Action[] callback)
+        public static void DoSomething(params Action[] callbacks)
         {
             if (Program.TestAutoLoad)
             {
                 try
                 {
-                    foreach (Action cb in callback)
+                    foreach (Action callback in callbacks)
                     {
-                        cb();
+                        callback();
                     }
                     
                 }

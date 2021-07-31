@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UserInterface.Factory;
-using UserInterface.Enums;
+﻿using System.IO;
 
 namespace UserInterface.Models
 {
-    public class FilePathReader
+    using Enums;
+    using Factory;
+
+    public class FilePathProcessor
     {
         /// <summary>
         /// Set the path of all the data documents.
         /// </summary>
         /// <param name="browsedPath">The full path of the browsed file.</param>
-        public FilePathReader(string browsedPath)
+        public FilePathProcessor(string browsedPath)
         {
-            //Get the parent directory of this file
+            //Get the parent directory of the browsed file
             string parentDir = Path.GetDirectoryName(browsedPath);
 
             //Items = browsedPath;
@@ -46,9 +42,9 @@ namespace UserInterface.Models
         {
             return (string)
                 Delegators.FieldFunctionCallback(fieldType,
-                    delegate { return Program.fpr.Sizes; },
-                    delegate { return Program.fpr.Brands; },
-                    delegate { return Program.fpr.Ends; });
+                    delegate { return Program.fpp.Sizes; },
+                    delegate { return Program.fpp.Brands; },
+                    delegate { return Program.fpp.Ends; });
         }
 
         public static string TestSave(string filePath)

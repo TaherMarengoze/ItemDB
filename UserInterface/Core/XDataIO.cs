@@ -31,7 +31,7 @@ namespace UserInterface
             IListStructure ls = GetFieldListStructure(field);
             XElement listNode = SerializeFieldList(ls, fieldListItem);
             XDocument fieldXDoc = XDataService.AddFieldItemToXDocument(field, listNode);
-            XDataDocuments.Save(fieldXDoc, FilePathReader.FieldFilePath(field));
+            XDataDocuments.Save(fieldXDoc, FilePathProcessor.FieldFilePath(field));
             //DataService.UpdateField(field);
         }
 

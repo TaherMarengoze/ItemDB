@@ -9,7 +9,7 @@
         /// Adds a new specs to a data source.
         /// </summary>
         /// <param name="specs">The specs to be added object data.</param>
-        void CreateSpecs(ISpecs specs);
+        void AddSpecs(ISpecs specs);
 
         /// <summary>
         /// Gets a specs from a data source.

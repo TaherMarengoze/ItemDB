@@ -41,18 +41,17 @@ namespace UserInterface.Forms
         /// <param name="path">The path of the images folder.</param>
         public ItemEditor(XDataDocuments xData, string path)
         {
-            CommonInitialization(xData, path);
+            CommonInitialization(path);
         }
 
         /// <summary>
         /// Constructor for editing an existing item.
         /// </summary>
-        /// <param name="xData">The <see cref="XDataDocuments"/> repository.</param>
         /// <param name="path">The path of the images folder.</param>
         /// <param name="editId">The ID of the item being edited.</param>
-        public ItemEditor(XDataDocuments xData, string path, string editId)
+        public ItemEditor(/*XDataDocuments xData,*/ string path, string editId)
         {
-            CommonInitialization(xData, path);
+            CommonInitialization(path);
             IItem item = DataService.GetItem(editId);
 
             //Set variables
@@ -120,16 +119,16 @@ namespace UserInterface.Forms
             //lbxImages.DataSource = itemImages;
         }
 
-        private void CommonInitialization(XDataDocuments xData, string path)
+        private void CommonInitialization(string path)
         {
             InitializeComponent();
             checkList = new ItemCheckList();
             checkList.OnComplete += CheckList_OnComplete;
             checkList.OnIncomplete += CheckList_OnIncomplete;
 
-            existingImages =
-                xData.Items.Descendants("image")
-                .Select(f => Path.GetFileNameWithoutExtension(f.Value)).ToList();
+            existingImages = Program.reader.GetImageNames().ToList();
+            //xData.Items.Descendants("image")
+            //.Select(f => Path.GetFileNameWithoutExtension(f.Value)).ToList();
 
             imagesReposPath = path;
             BindControlsToDatasources();
