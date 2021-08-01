@@ -4,13 +4,14 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml.Linq;
-using UserInterface.Models;
-using UserInterface.Operation;
-using UserInterface.Enums;
 
 namespace UserInterface.Forms
 {
+    using Enums;
+    using Interfaces;
+    using Models;
+    using Operation;
+
     public partial class SpecsEditor : Form
     {
         private enum IdStatus
@@ -91,20 +92,18 @@ namespace UserInterface.Forms
         #region Fields
         private EntryMode specMode = EntryMode.View;
 
-        private XElement xSpecs;
-
         private List<string> specsIdList;
         private List<string> cSpecIdList;
         private List<string> filteredspecsIdList;
 
-        private Specs selectedSpecs;
-        private Spec selSpec;
+        private ISpecs selectedSpecs;
+        private ISpec selSpec;
 
         private string draftSpecsId;
-        private Specs draftSpecs;
-        private Spec draftSpec;
+        private ISpecs draftSpecs;
+        private ISpec draftSpec;
         private SpecType draftSpecType;
-        private List<SpecListEntry> draftEntries;
+        private List<ISpecListEntry> draftEntries;
         private string draftCustomSpecId;
 
         private int specsSelectionIndex = 0;
@@ -120,10 +119,9 @@ namespace UserInterface.Forms
         #endregion
 
         #region File Management
-        private void SaveXmlFile()
+        private void SaveToDataSource()
         {
-            XDataDocuments.Save(Program.xDataDocs.Specs, Program.fpr.Specs);
-            //DataService.UpdateSpecs(Program.xDataDocs.Specs);
+            Program.context.Save(ContextEntity.Specs);
             DataService.UpdateSpecs();
         }
         #endregion
@@ -133,10 +131,6 @@ namespace UserInterface.Forms
         private void PostLoading()
         {
             RefreshSpecsList();
-            //ReadSpecsIDs();
-            //PopulateSpecsList();
-            //CheckSpecsCount();
-
             ReadCustomSpecsFromXFile();
             // Bind Custom Specs Selector
             cboCustomTypeSelector.DataSource = cSpecIdList;
@@ -152,9 +146,10 @@ namespace UserInterface.Forms
 
         private void ReadSpecsIDs()
         {
-            specsIdList = GetAllSpecsIDs();
+            specsIdList = DataService.GetAllSpecsId();
         }
 
+        // To be replaced
         private void ReadCustomSpecsFromXFile()
         {
             cSpecIdList =
@@ -165,16 +160,11 @@ namespace UserInterface.Forms
         private void ReadSelectedSpecsData()
         {
             string specsId = lbxSpecs.Text;
-            selectedSpecs = GetSpecsData(GetSpecsElement(specsId));
+            selectedSpecs = Program.specsRepo.ReadSpecs(specsId);
         }
 
         private void CancelSpecsAddOrEdit()
         {
-            //string editSpecsId;
-
-            //if (specsMode == EntryMode.Edit)
-            //    editSpecsId = draftSpecsId;
-
             SpecsMode = EntryMode.View;
             specMode = EntryMode.View;
 
@@ -220,28 +210,34 @@ namespace UserInterface.Forms
             btnNewSpecs.Focus();
         }
 
+        // Blank Lines are left for comparison with EditSpecs method
         private void AddNewSpecs()
         {
-            SaveSpecsSelectionPosition();
 
+
+            SaveSpecsSelectionPosition();
             // Instantiate new Specs
             draftSpecs = new Specs();
             // Generate new SpecsID
             draftSpecsId = GenerateNewSpecsID();
             // Sets a flag
             SpecsMode = EntryMode.New;
+
+
             // Disable Specs Selection
             DisableSpecsListSelection();
             // Disable Specs main controls
             DisableSpecsModifyUI();
             // Show mode Accept/Cancel controls
             ShowSpecsReviewUI();
-            btnAccept.Enabled = false;
-            btnSiAdd.Enabled = true;
             // Setup Specs Meta-data controls
             EnableSpecsMetadataEntryUI();
+            btnAccept.Enabled = false;
+            btnSiAdd.Enabled = true;
 
-            // Clear Specs Meta-data conbtrols
+
+
+            // Clear Specs Meta-data controls
             ClearSpecsMetadataEntryUI();
             // Set Specs Meta-data initial/default values
             txtSpecsID.Focus();
@@ -260,22 +256,43 @@ namespace UserInterface.Forms
         private void EditSpecs()
         {
             draftSpecsId = GetSelectedSpecsId();
-            draftSpecs = GetSpecsData(GetSpecsElement(draftSpecsId));
-
+            draftSpecs = Program.specsRepo.ReadSpecs(draftSpecsId);  //GetSpecsData(draftSpecsId);
             SaveSpecsSelectionPosition();
 
-            SpecsMode = EntryMode.Edit;
 
+
+
+
+            SpecsMode = EntryMode.Edit;
             CheckSpecsID();
             CheckDraftSpecsItemsCount();
-
+            // Disable Specs Selection
             DisableSpecsListSelection();
+            // Disable Specs main controls
             DisableSpecsModifyUI();
+            // Show mode Accept/Cancel controls
             ShowSpecsReviewUI();
-            btnCancel.Focus();
+            // Setup Specs Meta-data controls
             EnableSpecsMetadataEntryUI();
+
+
+            btnCancel.Focus();
             EnableSpecModifyUI();
             DisableListEntryModifyUI();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
 
         private void RemoveSpecs()
@@ -292,7 +309,7 @@ namespace UserInterface.Forms
                 specsIdList.Remove(specsId);
                 CheckSpecsCount();
 
-                RemoveSelectedSpecs(specsId);
+                Program.specsRepo.DeleteSpecs(specsId);
                 RefreshSpecsList();
 
                 if (specsIdList.Count <= 0)
@@ -306,7 +323,6 @@ namespace UserInterface.Forms
             }
 
             RestoreSpecsSelection();
-
         }
 
         private void CheckSpecsCount()
@@ -316,8 +332,6 @@ namespace UserInterface.Forms
                 btnRemoveSpecs.Enabled = false;
                 btnEditSpecs.Enabled = false;
             }
-            //else if (specsIdList.Count < 1)
-            //    btnEditSpecs.Enabled = false;
             else
             {
                 btnRemoveSpecs.Enabled = true;
@@ -409,7 +423,7 @@ namespace UserInterface.Forms
 
         private void SaveDraftSpec()
         {
-            // Save new Spec's data
+            // Save new Spec data
             draftSpec.Index = int.Parse(txtSiIndex.Text);
             draftSpec.Name = txtSiName.Text;
             draftSpec.ValuePattern = txtSiValuePattern.Text;
@@ -425,7 +439,9 @@ namespace UserInterface.Forms
 
             // Add the created Spec to Spec list of the new Specs
             if (specMode == EntryMode.New)
+            {
                 draftSpecs.SpecItems.Add(draftSpec);
+            }
 
             CheckDraftSpecsItemsCount();
 
@@ -434,9 +450,7 @@ namespace UserInterface.Forms
 
             // Null draft objects
             ClearSpecsDrafts();
-
             ResetSpecUI();
-
             btnSiAdd.Focus();
         }
 
@@ -452,7 +466,6 @@ namespace UserInterface.Forms
 
             if (draftSpecs.SpecItems.Count <= 1)
                 btnSiRemove.Enabled = false;
-
 
             HideSpecReviewUI();
             DisableSpecMetadataEntryUI();
@@ -501,7 +514,9 @@ namespace UserInterface.Forms
 
                 if (ShowSpecRemoveConfirmation() == DialogResult.OK)
                 {
-                    Spec specsItem = draftSpecs.SpecItems.Find(idx => idx.Index == GetSelectedSpecIndex());
+                    ISpec specsItem = draftSpecs.SpecItems
+                        .Find(idx => idx.Index == GetSelectedSpecIndex());
+
                     draftSpecs.SpecItems.Remove(specsItem);
 
                     // Renumber SpecItems
@@ -543,14 +558,13 @@ namespace UserInterface.Forms
             draftSpecs.Name = txtSpecsName.Text;
             draftSpecs.TextPattern = txtSpecsPattern.Text;
 
-            // Convert Specs to XML
-            SpecsToXml();
-
             if (SpecsMode == EntryMode.New)
-                AddSpecsToXDocument();
+                Program.specsRepo.AddSpecs(draftSpecs);
 
             if (SpecsMode == EntryMode.Edit)
-                ReplaceSpecsInXDocument();
+                Program.specsRepo.UpdateSpecs(draftSpecsId, draftSpecs);
+
+            DataService.UpdateSpecs();
 
             // Exit draft (New) mode
             SpecsMode = EntryMode.View;
@@ -569,7 +583,7 @@ namespace UserInterface.Forms
             DisableSpecMetadataEntryUI();
             DisableListEntryModifyUI();
 
-            // Reload XDoc and Repopulate Specs list
+            // Reload and Repopulate Specs list
             RefreshSpecsList();
             SelectSpecs(draftSpecs.ID);
 
@@ -598,7 +612,6 @@ namespace UserInterface.Forms
 
                 // Add the new entry to the draft list
                 draftEntries.Add(listEditor.ListEntry);
-                //draftSpec.ListEntries.Add(listEditor.ListEntry);
 
                 // Enable Edit and Delete buttons
                 EnableListEntryModifyUI();
@@ -607,7 +620,6 @@ namespace UserInterface.Forms
 
                 // Display the list items
                 ClearListEntriesGrid();
-                //dgvListEntries.DataSource = draftSpec.ListEntries;
                 DisplayDraftEntries();
             }
         }
@@ -623,7 +635,9 @@ namespace UserInterface.Forms
             // Get Spec ListEntry
             int entryId = GetSelectedListEntryID();
 
-            SpecListEntry editListEntry = draftEntries.Find(id => id.ValueID == entryId);
+            ISpecListEntry editListEntry = draftEntries
+                .Find(id => id.ValueID == entryId);
+
             ListEntryEditor listEditor = new ListEntryEditor(editListEntry);
 
             if (listEditor.ShowDialog() == DialogResult.OK)
@@ -639,7 +653,7 @@ namespace UserInterface.Forms
             // Get Spec ListEntry
             int entryId = GetSelectedListEntryID();
 
-            SpecListEntry editListEntry = draftEntries.Find(id => id.ValueID == entryId);
+            ISpecListEntry editListEntry = draftEntries.Find(id => id.ValueID == entryId);
 
             if (ShowEntryRemoveConfirmation() == DialogResult.OK)
             {
@@ -650,7 +664,7 @@ namespace UserInterface.Forms
 
                 // Renumber remaining entries ValueID
                 int i = 0;
-                foreach (var entry in draftEntries)
+                foreach (ISpecListEntry entry in draftEntries)
                 {
                     entry.ValueID = ++i;
                 }
@@ -757,8 +771,6 @@ namespace UserInterface.Forms
             }
         }
 
-
-
         private void CheckSpecName()
         {
             if (specMode != EntryMode.View)
@@ -839,143 +851,22 @@ namespace UserInterface.Forms
         }
         #endregion
 
-        #region XML Document Manipulation
-        /// <summary>
-        /// Removes a specific Specs from the Specs data file.
-        /// </summary>
-        /// <param name="specsId">The Specs ID to be removed.</param>
-        private void RemoveSelectedSpecs(string specsId)
-        {
-            GetSpecsElement(specsId).Remove();
-        }
-
-        /// <summary>
-        /// Removes a specific SpecsItem of a specific Specs from the Specs data file.
-        /// </summary>
-        /// <param name="specsId">The Specs ID of the SpecsItem to be removed.</param>
-        /// <param name="itemIdx">The index of the SpecsItem to be removed.</param>
-        private void RemoveSelectedSpecsItem(string specsId, int itemIdx)
-        {
-            GetSpecsItemElement(specsId, itemIdx).Remove();
-        }
-
-        private void SpecsToXml()
-        {
-            XElement specItem;
-            XElement speclist;
-
-            xSpecs =
-                new XElement("specs",
-                new XAttribute("specsID", draftSpecs.ID),
-                new XAttribute("name", draftSpecs.Name),
-                new XAttribute("textPattern", draftSpecs.TextPattern));
-
-            foreach (Spec spec in draftSpecs.SpecItems)
-            {
-                specItem =
-                    new XElement("specsItem",
-                    new XAttribute("index", spec.Index),
-                    new XAttribute("name", spec.Name),
-                    new XAttribute("valuePattern", spec.ValuePattern));
-
-                if (spec.SpecType == SpecType.List)
-                {
-                    speclist = new XElement("list");
-
-                    foreach (SpecListEntry entry in spec.ListEntries)
-                    {
-                        speclist.Add(
-                            new XElement("entry",
-                            new XAttribute("valId", entry.ValueID),
-                            new XElement("val") { Value = entry.Value },
-                            new XElement("disp") { Value = entry.Display }));
-                    }
-
-                    specItem.Add(speclist);
-                }
-                else
-                {
-                    specItem.Add(new XElement("custom") { Value = spec.CustomInputID });
-                }
-
-                xSpecs.Add(specItem);
-            }
-
-        }
-
-        private void AddSpecsToXDocument()
-        {
-            Program.xDataDocs.Specs.Root.Add(xSpecs);
-        }
-
-        private void ReplaceSpecsInXDocument()
-        {
-            XElement oldSpecs = GetSpecsElement(draftSpecsId);
-            oldSpecs.ReplaceWith(xSpecs);
-        }
-
-        #endregion
-
-        #region XML Query
-        private XElement GetSpecsElement(string specsId)
-        {
-            return
-                Program.xDataDocs.Specs.Descendants("specs")
-                .Where(sp => sp.Attribute("specsID").Value == specsId)
-                .FirstOrDefault();
-        }
-
-        private XElement GetSpecsItemElement(string specsId, int itemIdx)
-        {
-            XElement specs = GetSpecsElement(specsId);
-            return
-                (from si in specs.Descendants("specsItem")
-                 where (int)si.Attribute("index") == itemIdx
-                 select si).FirstOrDefault();
-        }
-        #endregion
-
         #region Data Query
-        private List<string> GetAllSpecsIDs()
+        private ISpec GetSpecData(ISpecs specs, int specIndex)
         {
             return
-                (from s in Program.xDataDocs.Specs.Descendants("specs")
-                 select s.Attribute("specsID").Value).ToList();
+                specs.SpecItems
+                .FirstOrDefault(spec => spec.Index == specIndex);
         }
 
-        private Specs GetSpecsData(XElement xSpecs)
-        {
-            Specs specs = new Specs()
-            {
-                ID = xSpecs.Attribute("specsID").Value,
-                Name = xSpecs.Attribute("name").Value,
-                TextPattern = xSpecs.Attribute("textPattern").Value,
-                SpecItems = xSpecs.Descendants("specsItem")
-                .Select(si => new Spec((XElement)si.FirstNode)
-                {
-                    Index = (int)si.Attribute("index"),
-                    Name = si.Attribute("name").Value,
-                    ValuePattern = si.Attribute("valuePattern").Value
-                }).ToList()
-            };
-
-            return specs;
-        }
-
-        private Spec GetSpecData(Specs specs, int specsItemIndex)
-        {
-            return
-                specs.SpecItems.Find(si => si.Index == specsItemIndex);
-        }
-
-        private Spec GetNewSpecsItemData(int siIndex)
+        private ISpec GetNewSpecsItemData(int siIndex)
         {
             return
                 draftSpecs.SpecItems.Find(si => si.Index == siIndex);
         }
         private int GetLastSpecsItemIndex()
         {
-            return draftSpecs.SpecItems.Count;
+            return draftSpecs.SpecItems.Count();
         }
 
         private string GetSelectedSpecsId()
@@ -1507,7 +1398,7 @@ namespace UserInterface.Forms
         #region Event Responses
         private void mnuItmSaveFile_Click(object sender, EventArgs e)
         {
-            SaveXmlFile();
+            SaveToDataSource();
         }
 
         private void lbxSpecs_SelectedIndexChanged(object sender, EventArgs e)
@@ -1525,14 +1416,12 @@ namespace UserInterface.Forms
             }
             catch (Exception) { }
         }
-
         private void lbxSpecs_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             int index = lbxSpecs.IndexFromPoint(e.Location);
             if (lbxSpecs.SelectionMode == SelectionMode.None) return;
             if (index != ListBox.NoMatches) EditSpecs();
         }
-
         private void dgvSpecsItems_SelectionChanged(object sender, EventArgs e)
         {
             int rowsCount = dgvSpec.SelectedRows.Count;
@@ -1548,7 +1437,6 @@ namespace UserInterface.Forms
             int idx = (int)row.Cells["Index"].Value;
             ViewSelectedSpecData(idx);
         }
-
         private void dgvSpec_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -1556,7 +1444,6 @@ namespace UserInterface.Forms
                 DoubleClickEditSpec();
             }
         }
-
         private void dgvListEntries_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -1598,18 +1485,15 @@ namespace UserInterface.Forms
         {
             Close();
         }
-
         private void tsmiExitApp_Click(object sender, EventArgs e)
         {
             Close();
             Application.Exit();
         }
-
         private void dgvSpec_MouseClick(object sender, MouseEventArgs e)
         {
 
         }
-
         private void dgvSpec_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -1624,7 +1508,6 @@ namespace UserInterface.Forms
                 }
             }
         }
-
         private void tsmiInsertToken_Click(object sender, EventArgs e)
         {
             // Reference: https://stackoverflow.com/questions/1718389/right-click-context-menu-for-datagridview
@@ -1644,7 +1527,6 @@ namespace UserInterface.Forms
             }
         }
         #endregion
-
 #pragma warning restore IDE1006 // Naming Styles
 
     }

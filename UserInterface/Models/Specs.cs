@@ -1,20 +1,15 @@
-﻿namespace UserInterface.Models
+﻿using System.Collections.Generic;
+
+namespace UserInterface.Models
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
+    using Interfaces;
 
-    public class Specs : IView
+    public class Specs : IView, ISpecs
     {
-        //public Specs()
-        //{
-            
-        //}
-
         public string ID { get; set; }
         public string Name { get; set; }
         public string TextPattern { get; set; } = "{base}";
-        public List<Spec> SpecItems { get; set; } = new List<Spec>();
+        public List<ISpec> SpecItems { get; set; } = new List<ISpec>();
 
         public BasicView GetBasicView()
         {

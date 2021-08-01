@@ -1,27 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using UserInterface.Interfaces;
 
 namespace UserInterface.Models
 {
-    public class XDataDocuments : IDataSource
+    using Interfaces;
+
+    public class XDataDocuments// : ISourceProcessor
     {
-        public XDataDocuments(FilePathReader filePathReader)
+        /// <summary>
+        /// Loads all XML documents in a specific path.
+        /// </summary>
+        /// <param name="processor">The <see cref="FilePathProcessor"/> containing all files path.</param>
+        public XDataDocuments(FilePathProcessor processor)
         {
-            Items = LoadXDocument(filePathReader.Items);
-            SizeGroups = LoadXDocument(filePathReader.SizeGroups);
-            Specs = LoadXDocument(filePathReader.Specs);
-            Sizes = LoadXDocument(filePathReader.Sizes);
-            Brands = LoadXDocument(filePathReader.Brands);
-            Ends = LoadXDocument(filePathReader.Ends);
-            CustomSpecs = LoadXDocument(filePathReader.CustomSpecs);
-            CustomSizes = LoadXDocument(filePathReader.CustomSizes);
+            Items = LoadXDocument(processor.Items);
+            SizeGroups = LoadXDocument(processor.SizeGroups);
+            Specs = LoadXDocument(processor.Specs);
+            Sizes = LoadXDocument(processor.Sizes);
+            Brands = LoadXDocument(processor.Brands);
+            Ends = LoadXDocument(processor.Ends);
+            CustomSpecs = LoadXDocument(processor.CustomSpecs);
+            CustomSizes = LoadXDocument(processor.CustomSizes);
         }
 
         public XDocument Items { get; private set; }
@@ -40,7 +41,7 @@ namespace UserInterface.Models
                 string path = savePath;
                 if (test)
                 {
-                    path = FilePathReader.TestSave(savePath);
+                    path = FilePathProcessor.TestSave(savePath);
                 }
 
                 document.Save(path);
@@ -61,7 +62,7 @@ namespace UserInterface.Models
             }
         }
 
-        private static XDocument LoadXDocument(string filePath, string errorMessage = "")
+        private static XDocument LoadXDocument(string filePath)
         {
             if (File.Exists(filePath))
             {
@@ -69,18 +70,26 @@ namespace UserInterface.Models
             }
             else
             {
-                if (errorMessage == "")
-                {
-                    string fileName = Path.GetFileName(filePath);
-                    MessageBox.Show(caption: "File not found",
-                        text: $"Unable to load the XML file:\n• {fileName}\n\nFull Path:\n{filePath}",
-                        buttons: MessageBoxButtons.OK,
-                        icon: MessageBoxIcon.Error);
-                }
-                else
-                {
-                    MessageBox.Show(errorMessage, "File not found", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                string fileName = Path.GetFileName(filePath);
+                MessageBox.Show(caption: "File not found",
+                    text: $"Unable to load the XML file:\n• {fileName}\n\nFull Path:\n{filePath}",
+                    buttons: MessageBoxButtons.OK,
+                    icon: MessageBoxIcon.Error);
+
+                return null;
+            }
+        }
+
+        private static XDocument LoadXDocument(string filePath, string errorMessage)
+        {
+            if (File.Exists(filePath))
+            {
+                return XDocument.Load(filePath);
+            }
+            else
+            {
+                MessageBox.Show(errorMessage,
+                    "File not found", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 return null;
             }

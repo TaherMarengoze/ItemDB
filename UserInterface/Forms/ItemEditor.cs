@@ -6,13 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Media;
 using System.Windows.Forms;
-using UserInterface.Interfaces;
-using UserInterface.Models;
-using UserInterface.Operation;
-using UserInterface.Enums;
 
 namespace UserInterface.Forms
 {
+    using Enums;
+    using Interfaces;
+    using Models;
+    using Operation;
+
     public partial class ItemEditor : Form
     {
         public ItemRawData DraftItemData { get; private set; }
@@ -37,22 +38,18 @@ namespace UserInterface.Forms
         /// <summary>
         /// Constructor for a new Item addition.
         /// </summary>
-        /// <param name="xData">The <see cref="XDataDocuments"/> repository.</param>
-        /// <param name="path">The path of the images folder.</param>
-        public ItemEditor(XDataDocuments xData, string path)
+        public ItemEditor()
         {
-            CommonInitialization(xData, path);
+            CommonInitialization();
         }
 
         /// <summary>
         /// Constructor for editing an existing item.
         /// </summary>
-        /// <param name="xData">The <see cref="XDataDocuments"/> repository.</param>
-        /// <param name="path">The path of the images folder.</param>
         /// <param name="editId">The ID of the item being edited.</param>
-        public ItemEditor(XDataDocuments xData, string path, string editId)
+        public ItemEditor(string editId)
         {
-            CommonInitialization(xData, path);
+            CommonInitialization();
             IItem item = DataService.GetItem(editId);
 
             //Set variables
@@ -120,18 +117,15 @@ namespace UserInterface.Forms
             //lbxImages.DataSource = itemImages;
         }
 
-        private void CommonInitialization(XDataDocuments xData, string path)
+        private void CommonInitialization()
         {
             InitializeComponent();
             checkList = new ItemCheckList();
             checkList.OnComplete += CheckList_OnComplete;
             checkList.OnIncomplete += CheckList_OnIncomplete;
 
-            existingImages =
-                xData.Items.Descendants("image")
-                .Select(f => Path.GetFileNameWithoutExtension(f.Value)).ToList();
-
-            imagesReposPath = path;
+            existingImages = Program.reader.GetImageNames().ToList();
+            imagesReposPath = Program.fpp.ImageRepos;
             BindControlsToDatasources();
         }
 
@@ -589,9 +583,10 @@ namespace UserInterface.Forms
             if (dgv.SelectedRows.Count > 0)
             {
                 string specsId = (string)dgv.SelectedRows[0].Cells[1].Value;
-                dgvSpecsItems.DataSource = DataService.GetSpecsItems(specsId);
+                dgvSpecsItems.DataSource = DataService.GetSpecsItems(specsId).ToList();
             }
         }
+
         private void dgvSpecs_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex != -1 && e.ColumnIndex == 0)
@@ -1228,7 +1223,7 @@ namespace UserInterface.Forms
                 DataService.AddNewFieldList(fieldType, fieldAdder.FieldListItem);
             }
         }
-        
+
         private void tsmiBrandsList_Click(object sender, EventArgs e)
         {
             FieldType fieldType = FieldType.BRAND;
@@ -1257,7 +1252,7 @@ namespace UserInterface.Forms
             fieldSelector.DataSource = null;
             fieldDataView.DataSource = null;
             fieldSelector.DataSource = DataService.GetFieldListsId(fieldType);
-            fieldDataView.DataSource = DataService.GetFieldItems(fieldType);
+            fieldDataView.DataSource = DataService.GetFieldLists(fieldType);
         }
 
 #pragma warning restore IDE1006 // Naming Styles

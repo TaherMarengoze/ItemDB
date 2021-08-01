@@ -32,7 +32,7 @@ namespace UserInterface.Forms
 
             fieldType = field;
 
-            existingFieldIds = DataService.GetFieldListMetadata(fieldType);
+            existingFieldIds = DataService.GetFieldBasicView(fieldType);
             SetListItems(existingFieldIds);
 
             listController = new SimpleListController(btnAddEntry, btnEdit, btnDeleteEntry,

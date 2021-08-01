@@ -1,19 +1,16 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+
 namespace UserInterface.Forms
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Data;
-    using System.Drawing;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Windows.Forms;
+    using Enums;
+    using Interfaces;
     using Models;
     using Operation;
-    using UserInterface.Interfaces;
 
     public partial class ItemViewer : Form
     {
@@ -35,14 +32,14 @@ namespace UserInterface.Forms
         }
 
         #region File Management
-        private void Save() =>
-            XDataDocuments.Save(Program.xDataDocs.Items, Program.fpr.Items, false);
+        private void SaveToSource()
+        {
+            Program.context.Save(ContextEntity.Items);
+        }
         #endregion
 
         private void PostLoading()
         {
-            //DataService.LoadItemsDocument(Program.xDataDocs);
-            
             dgvItems.DataSource = DataService.GetAllItemsVO();
             dgvItems.Columns["CatID"].Visible = false;
 
@@ -229,7 +226,7 @@ namespace UserInterface.Forms
             //Save Selection Position
             itemSelectionIndex = Common.SaveDataGridViewSelection(dgvItems);
 
-            List<ItemVO> modifiedItemList = DataService.DeleteItem(id, Program.xDataDocs.Items);
+            List<ItemVO> modifiedItemList = DataService.DeleteItem(id);
 
             if (modifiedItemList.Count > 0)
             {
@@ -277,7 +274,7 @@ namespace UserInterface.Forms
         // Main Menu
         private void tsmiSaveXmlFile_Click(object sender, EventArgs e)
         {
-            Save();
+            SaveToSource();
             CopyService.ExecutePendingCopyOrders();
         }
 
@@ -342,10 +339,10 @@ namespace UserInterface.Forms
         private void btnAdd_Click(object sender, EventArgs e)
         {
             Hide();
-            ItemEditor itemEditor = new ItemEditor(Program.xDataDocs, Program.fpr.ImageRepos);
+            ItemEditor itemEditor = new ItemEditor();
             if (itemEditor.ShowDialog() == DialogResult.OK)
             {
-                DataService.AddItemToXDocument(Program.xDataDocs.Items, itemEditor.DraftItemData);
+                DataService.AddNewItem(itemEditor.DraftItemData);
                 PostLoading();
             }
             Show();
@@ -359,11 +356,11 @@ namespace UserInterface.Forms
             string id = row.Cells[0].Value.ToString();
 
             Hide();
-            ItemEditor itemEditor = new ItemEditor(Program.xDataDocs, Program.fpr.ImageRepos, id);
+            ItemEditor itemEditor = new ItemEditor(id);
             if (itemEditor.ShowDialog() == DialogResult.OK)
             {
                 // Modify edited item with new one
-                DataService.ModifyItemXDocument(Program.xDataDocs.Items, id, itemEditor.DraftItemData);
+                DataService.ModifyItem(id, itemEditor.DraftItemData);
                 PostLoading();
             }
             Show();
@@ -377,7 +374,7 @@ namespace UserInterface.Forms
         {
             if (lbxImages.SelectedItem != null)
             {
-                string imageFile = Path.Combine(Program.fpr.ImageRepos, lbxImages.Text);
+                string imageFile = Path.Combine(Program.fpp.ImageRepos, lbxImages.Text);
 
                 if (File.Exists(imageFile))
                 {

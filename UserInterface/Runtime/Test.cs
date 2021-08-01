@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace UserInterface.Runtime
@@ -39,6 +35,40 @@ namespace UserInterface.Runtime
                 try
                 {
                     callback();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Test Error Auto-Load file\n\n{ ex.Message }");
+                }
+            }
+        }
+
+        public static void DoSomething(Action callback)
+        {
+            if (Program.TestAutoLoad)
+            {
+                try
+                {
+                    callback();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Test Error Auto-Load file\n\n{ ex.Message }");
+                }
+            }
+        }
+
+        public static void DoSomething(params Action[] callbacks)
+        {
+            if (Program.TestAutoLoad)
+            {
+                try
+                {
+                    foreach (Action callback in callbacks)
+                    {
+                        callback();
+                    }
+                    
                 }
                 catch (Exception ex)
                 {

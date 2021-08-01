@@ -19,5 +19,7 @@ namespace UserInterface.Interfaces
         IEnumerable<BasicListView> GetBrands();
 
         IEnumerable<BasicListView> GetEnds();
+
+        IEnumerable<string> GetImageNames();
     }
 }

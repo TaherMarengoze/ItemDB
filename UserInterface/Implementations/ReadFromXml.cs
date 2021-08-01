@@ -1,16 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using UserInterface.Interfaces;
-using UserInterface.Models;
 
 namespace UserInterface
 {
-    public class XSource : ISourceReader
+    using Interfaces;
+    using Models;
+
+    /// <summary>
+    /// Reads and deserializes the XML data from an <see cref="XDataDocuments"/>.
+    /// </summary>
+    public class XReader : ISourceReader
     {
         private readonly XDataDocuments dataDocs;
 
-        public XSource(XDataDocuments documents)
+        public XReader(XDataDocuments documents)
         {
             dataDocs = documents;
         }
@@ -89,7 +93,7 @@ namespace UserInterface
                         Index = (int)spec.Attribute("index"),
                         Name = spec.Attribute("name").Value,
                         ValuePattern = spec.Attribute("valuePattern").Value
-                    }).ToList()
+                    }).ToList<ISpec>()
                 };
         }
 
@@ -99,7 +103,7 @@ namespace UserInterface
                 from sg in dataDocs.SizeGroups.Descendants("group")
                 let list = sg.Element("altLists").HasElements ?
                     sg.Element("altLists").Elements("listID").Select(l => l.Value).ToList() : null
-                
+
                 let customId = sg.Element("customSizeDataID").Value
                 select new SizeGroup()
                 {
@@ -145,6 +149,13 @@ namespace UserInterface
                     Name = ends.Attribute("name").Value,
                     List = ends.Descendants("end").Select(end => end.Value).ToList()
                 };
+        }
+
+        public IEnumerable<string> GetImageNames()
+        {
+            return
+                dataDocs.Items.Descendants("image")
+                .Select(f => System.IO.Path.GetFileNameWithoutExtension(f.Value));
         }
     }
 }

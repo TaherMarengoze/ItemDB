@@ -59,7 +59,7 @@
         #region File Management
         private void SaveXmlFile()
         {
-            XDataDocuments.Save(Program.xDataDocs.SizeGroups, Program.fpr.SizeGroups);
+            XDataDocuments.Save(Program.xDataDocs.SizeGroups, Program.fpp.SizeGroups);
             //DataService.UpdateSizeGroups(Program.xDataDocs.SizeGroups);
             DataService.UpdateSizeGroups();
         }
