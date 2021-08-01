@@ -48,7 +48,7 @@ namespace UserInterface.Forms
 
         private void FieldSwitch()
         {
-            fieldFilePath = FilePathReader.FieldFilePath(editorField);
+            fieldFilePath = FilePathProcessor.FieldFilePath(editorField);
 
             Delegators.FieldActionCallback(editorField,
                 delegate { fieldXDoc = Program.xDataDocs.Sizes; },

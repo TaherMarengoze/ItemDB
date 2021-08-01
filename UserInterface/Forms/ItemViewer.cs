@@ -13,6 +13,7 @@ namespace UserInterface.Forms
     using System.Windows.Forms;
     using Models;
     using Operation;
+    using UserInterface.Enums;
     using UserInterface.Interfaces;
 
     public partial class ItemViewer : Form
@@ -35,8 +36,10 @@ namespace UserInterface.Forms
         }
 
         #region File Management
-        private void Save() =>
-            XDataDocuments.Save(Program.xDataDocs.Items, Program.fpr.Items, false);
+        private void SaveToSource()
+        {
+            Program.context.Save(ContextEntity.Items);
+        }
         #endregion
 
         private void PostLoading()
@@ -277,7 +280,7 @@ namespace UserInterface.Forms
         // Main Menu
         private void tsmiSaveXmlFile_Click(object sender, EventArgs e)
         {
-            Save();
+            SaveToSource();
             CopyService.ExecutePendingCopyOrders();
         }
 
@@ -342,7 +345,7 @@ namespace UserInterface.Forms
         private void btnAdd_Click(object sender, EventArgs e)
         {
             Hide();
-            ItemEditor itemEditor = new ItemEditor(Program.xDataDocs, Program.fpr.ImageRepos);
+            ItemEditor itemEditor = new ItemEditor(Program.xDataDocs, Program.fpp.ImageRepos);
             if (itemEditor.ShowDialog() == DialogResult.OK)
             {
                 //DataService.AddItemToXDocument(Program.xDataDocs.Items, itemEditor.DraftItemData);
@@ -360,7 +363,7 @@ namespace UserInterface.Forms
             string id = row.Cells[0].Value.ToString();
 
             Hide();
-            ItemEditor itemEditor = new ItemEditor(Program.xDataDocs, Program.fpr.ImageRepos, id);
+            ItemEditor itemEditor = new ItemEditor(/*Program.xDataDocs,*/ Program.fpp.ImageRepos, id);
             if (itemEditor.ShowDialog() == DialogResult.OK)
             {
                 // Modify edited item with new one
@@ -379,7 +382,7 @@ namespace UserInterface.Forms
         {
             if (lbxImages.SelectedItem != null)
             {
-                string imageFile = Path.Combine(Program.fpr.ImageRepos, lbxImages.Text);
+                string imageFile = Path.Combine(Program.fpp.ImageRepos, lbxImages.Text);
 
                 if (File.Exists(imageFile))
                 {

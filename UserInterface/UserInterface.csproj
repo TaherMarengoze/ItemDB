@@ -12,6 +12,21 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -60,6 +75,7 @@
     <Compile Include="Common.cs" />
     <Compile Include="Controllers\SimpleListController.cs" />
     <Compile Include="Core\XDataIO.cs" />
+    <Compile Include="Enums\Enums.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Factory\Delegators.cs" />
     <Compile Include="Forms\Canvas.cs">
@@ -104,11 +120,12 @@
     <Compile Include="Forms\XML Viewer.Designer.cs">
       <DependentUpon>XML Viewer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Implementations\SpecsRepoX.cs" />
     <Compile Include="Interfaces\IDataReader.cs" />
-    <Compile Include="Interfaces\IDataSource.cs" />
     <Compile Include="Interfaces\IModifier.cs" />
     <Compile Include="Interfaces\ISource.cs" />
-    <Compile Include="Interfaces\ISpecsModifier.cs" />
+    <Compile Include="Interfaces\ISourceContext.cs" />
+    <Compile Include="Interfaces\ISpecsRepo.cs" />
     <Compile Include="Models\BasicListView.cs" />
     <Compile Include="Models\BasicView.cs" />
     <Compile Include="Models\CopyOrder.cs" />
@@ -118,7 +135,10 @@
     <Compile Include="Interfaces\IItemRawData.cs" />
     <Compile Include="Interfaces\IBasicView.cs" />
     <Compile Include="Models\FieldList.cs" />
-    <Compile Include="Models\IFieldList.cs" />
+    <Compile Include="Interfaces\IFieldList.cs" />
+    <Compile Include="Interfaces\ISpecs.cs" />
+    <Compile Include="Interfaces\ISpec.cs" />
+    <Compile Include="Interfaces\ISpecListEntry.cs" />
     <Compile Include="Models\ItemCategory.cs" />
     <Compile Include="Models\DataRepos.cs" />
     <Compile Include="Models\ItemCheckList.cs" />
@@ -180,7 +200,7 @@
     <Compile Include="Models\SpecListEntry.cs" />
     <Compile Include="Models\Specs.cs" />
     <Compile Include="Models\Spec.cs" />
-    <Compile Include="Models\XML\FileProcessor.cs" />
+    <Compile Include="Models\XML\FilePathProcessor.cs" />
     <Compile Include="Models\XML\XDataDocuments.cs" />
     <Compile Include="Operation\DataService.cs" />
     <Compile Include="Operation\FileCopyService.cs" />
@@ -204,6 +224,7 @@
     <Compile Include="Enums\FieldType.cs" />
     <Compile Include="Enums\SelectionShift.cs" />
     <Compile Include="Enums\SpecType.cs" />
+    <Compile Include="XmlContext.cs" />
     <EmbeddedResource Include="Forms\AltListSelector.resx">
       <DependentUpon>AltListSelector.cs</DependentUpon>
     </EmbeddedResource>
@@ -282,6 +303,17 @@
     <None Include="Resources\Accept-icon_16x.png" />
     <None Include="Resources\add-icon_16x.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

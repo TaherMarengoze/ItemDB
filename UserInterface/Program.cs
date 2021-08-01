@@ -9,9 +9,14 @@ namespace UserInterface
 
     static class Program
     {
-        public static FilePathReader fpr;
+        /// <summary>
+        /// The <see cref="FilePathProcessor"/> global instance.
+        /// </summary>
+        public static FilePathProcessor fpp;
         public static ISourceReader reader;
         public static IModifier itemModifier;
+        public static ISpecsRepo specsRepo;
+        public static ISourceContext context = new XmlContext();
         public static XDataDocuments xDataDocs;
 
         public static bool TestAutoLoad = true;
@@ -31,17 +36,20 @@ namespace UserInterface
         [STAThread]
         static void Main()
         {
-            // always show accelerator underlines
-            //SystemParametersInfo(SPI_SETKEYBOARDCUES, 0, 1, 0);
+            AlwaysShowAccelerator(false);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
-            //Application.Run(new Forms.ItemEditor());
-            //Application.Run(new Forms.ItemViewer());
-            //Application.Run(new Forms.SizeGroupEditor());
-            //Application.Run(new Forms.SpecsEditor());
             Application.Run(new Forms.Main());
+        }
+
+        /// <summary>
+        /// Sets the accelerator underlines to be always shown or hidden and shown on ALT key is press.
+        /// </summary>
+        /// <param name="show">True for always shown and False for hidden.</param>
+        private static void AlwaysShowAccelerator(bool show)
+        {
+            SystemParametersInfo(SPI_SETKEYBOARDCUES, 0, 1, 0);
         }
 
         public static string TestSave(this string filePath)
