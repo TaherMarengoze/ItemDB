@@ -78,7 +78,6 @@
     <Compile Include="Enums\Enums.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Factory\Delegators.cs" />
-    <Compile Include="FieldRepos.cs" />
     <Compile Include="Forms\Canvas.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -223,6 +222,7 @@
     </Compile>
     <Compile Include="Implementations\ReadFromXml.cs" />
     <Compile Include="Runtime\Test.cs" />
+    <Compile Include="Implementations\SizesRepoX.cs" />
     <Compile Include="XmlContext.cs" />
     <EmbeddedResource Include="Forms\AltListSelector.resx">
       <DependentUpon>AltListSelector.cs</DependentUpon>
