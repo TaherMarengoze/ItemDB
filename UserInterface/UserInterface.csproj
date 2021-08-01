@@ -223,10 +223,6 @@
     </Compile>
     <Compile Include="Implementations\ReadFromXml.cs" />
     <Compile Include="Runtime\Test.cs" />
-    <Compile Include="Enums\EntryMode.cs" />
-    <Compile Include="Enums\FieldType.cs" />
-    <Compile Include="Enums\SelectionShift.cs" />
-    <Compile Include="Enums\SpecType.cs" />
     <Compile Include="XmlContext.cs" />
     <EmbeddedResource Include="Forms\AltListSelector.resx">
       <DependentUpon>AltListSelector.cs</DependentUpon>

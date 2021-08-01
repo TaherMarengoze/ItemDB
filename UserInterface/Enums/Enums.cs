@@ -1,5 +1,12 @@
 ﻿namespace UserInterface.Enums
 {
+    public enum EntryMode
+    {
+        View,
+        New,
+        Edit
+    }
+
     public enum ContextEntity
     {
         Items = 1,
@@ -11,4 +18,25 @@
         CustomSpecs = 64,
         CustomSizes = 128
     }
+
+    public enum FieldType
+    {
+        SIZE,
+        BRAND,
+        ENDS
+    }
+
+    public enum SpecType
+    {
+        List = 1,
+        Custom = 2
+    }
+
+    public enum SelectionShift
+    {
+        UP = -1,
+        DOWN = +1
+    }
+
+    
 }
