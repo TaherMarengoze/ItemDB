@@ -2,10 +2,10 @@
 
 namespace UserInterface.Interfaces
 {
-    public interface IFieldList
+    public interface IFieldList : IBasicList
     {
-        string ID { get; set; }
-        List<string> List { get; set; }
-        string Name { get; set; }
+        //string ID { get; set; }
+        //List<string> List { get; set; }
+        //string Name { get; set; }
     }
 }

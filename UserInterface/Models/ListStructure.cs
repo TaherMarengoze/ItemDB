@@ -8,7 +8,7 @@ using UserInterface.Interfaces;
 
 namespace UserInterface.Models
 {
-    public class ListStructure : IListStructure
+    public class ListStructure : ISchema
     {
         public ListStructure(string listId, string listName, string listParentName, string listChildName, string childGroupName)
         {

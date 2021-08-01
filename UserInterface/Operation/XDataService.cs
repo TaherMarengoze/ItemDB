@@ -68,7 +68,7 @@ namespace UserInterface.Operation
             return fieldXdoc;
         }
 
-        public static void ModifyFieldXDocument(FieldType field, string existingId, ListMetadata data, IListStructure xn)
+        public static void ModifyFieldXDocument(FieldType field, string existingId, ListMetadata data, ISchema xn)
         {
             XDocument fieldXdoc = GetFieldXDoc(field);
 

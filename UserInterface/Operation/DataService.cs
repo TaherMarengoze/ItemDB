@@ -139,6 +139,14 @@ namespace UserInterface.Operation
 
             return repos.ItemsView;
         }
+        
+        // Size
+
+        public static void AddNewSizeList(IBasicList content)
+        {
+            Program.sizesRepo.AddFieldList(content);
+            UpdateSizes();
+        }
         #endregion
 
         #region Item Object
@@ -303,7 +311,7 @@ namespace UserInterface.Operation
         /// <summary>
         /// Get a list of entries for the given list ID.
         /// </summary>
-        /// <param name="listId">The ID of the list to retrive its entries.</param>
+        /// <param name="listId">The ID of the list to retrieve its entries.</param>
         /// <returns></returns>
         public static List<string> GetSizeListEntries(string listId)
         {
@@ -315,8 +323,8 @@ namespace UserInterface.Operation
 
         private static List<BasicListView> DeleteSizeList(string listId)
         {
-            Program.sizesRepo.DeleteField(listId);
-            repos.SizesList = repos.SizesList.Where(list => list.ID != listId).ToList();
+            Program.sizesRepo.DeleteFieldList(listId);
+            repos.SizesList = repos.SizesList.Where(list => list.ID != listId);
 
             return repos.SizesList.ToList();
         }

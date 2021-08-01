@@ -28,23 +28,23 @@ namespace UserInterface
 
         public void AddNewFieldList(FieldType field, IFieldList fieldListItem)
         {
-            IListStructure ls = GetFieldListStructure(field);
-            XElement listNode = SerializeFieldList(ls, fieldListItem);
+            ISchema schema = GetFieldSchema(field);
+            XElement listNode = SerializeFieldList(schema, fieldListItem);
             XDocument fieldXDoc = XDataService.AddFieldItemToXDocument(field, listNode);
             XDataDocuments.Save(fieldXDoc, FilePathProcessor.FieldFilePath(field));
             //DataService.UpdateField(field);
         }
 
-        private IListStructure GetFieldListStructure(FieldType field)
+        private ISchema GetFieldSchema(FieldType field)
         {
-            return (IListStructure)
+            return (ISchema)
                 Delegators.FieldFunctionCallback(field,
                     delegate { return new ListStructure("size"); },
                     delegate { return new ListStructure("brand"); },
                     delegate { return new ListStructure("listID", "name", "endsList", "end", "ends"); });
         }
 
-        private XElement SerializeFieldList(IListStructure ls, IFieldList fieldListItem)
+        private XElement SerializeFieldList(ISchema ls, IFieldList fieldListItem)
         {
             IEnumerable<XElement> xEntries = fieldListItem.List.Select(entry => new XElement(ls.ListChild, entry));
 

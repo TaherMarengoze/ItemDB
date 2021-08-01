@@ -124,6 +124,7 @@
     <Compile Include="Interfaces\IDataReader.cs" />
     <Compile Include="Interfaces\IFieldRepos.cs" />
     <Compile Include="Interfaces\IModifier.cs" />
+    <Compile Include="Interfaces\ISchema.cs" />
     <Compile Include="Interfaces\ISource.cs" />
     <Compile Include="Interfaces\ISourceContext.cs" />
     <Compile Include="Interfaces\ISpecsRepo.cs" />
@@ -131,7 +132,6 @@
     <Compile Include="Models\BasicView.cs" />
     <Compile Include="Models\CopyOrder.cs" />
     <Compile Include="Interfaces\IItemView.cs" />
-    <Compile Include="Interfaces\IListStructure.cs" />
     <Compile Include="Interfaces\IItem.cs" />
     <Compile Include="Interfaces\IItemRawData.cs" />
     <Compile Include="Interfaces\IBasicView.cs" />

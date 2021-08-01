@@ -14,7 +14,7 @@ namespace UserInterface.Forms
 {
     public partial class FieldEditor : Form
     {
-        private IListStructure xn;
+        private ISchema xn;
         private XDocument fieldXDoc;
         private List<string> listEntries;
         private string fieldFilePath;

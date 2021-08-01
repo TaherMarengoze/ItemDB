@@ -15,7 +15,7 @@ namespace UserInterface.Forms
 {
     public partial class FieldListEditor : Form
     {
-        private IListStructure xn;
+        private ISchema xn;
         private ListMetadata meta;
         private List<string> IdList;
         private bool validListId = false;
@@ -27,7 +27,7 @@ namespace UserInterface.Forms
         /// </summary>
         /// <param name="parentIdList">List of all IDs to check for duplicate IDs.</param>
         /// <param name="ls">ListStructure object to create new XElement entry.</param>
-        public FieldListEditor(List<string> parentIdList, IListStructure ls)
+        public FieldListEditor(List<string> parentIdList, ISchema ls)
         {
             InitializeComponent();
             IdList = parentIdList;

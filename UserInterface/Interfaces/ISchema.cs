@@ -2,7 +2,7 @@
 
 namespace UserInterface.Interfaces
 {
-    public interface IListStructure
+    public interface ISchema
     {
         XName ChildGroup { get; }
         XName ListChild { get; }
