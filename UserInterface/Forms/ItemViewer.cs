@@ -1,20 +1,16 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+
 namespace UserInterface.Forms
 {
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Data;
-    using System.Drawing;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Windows.Forms;
+    using Enums;
+    using Interfaces;
     using Models;
     using Operation;
-    using UserInterface.Enums;
-    using UserInterface.Interfaces;
 
     public partial class ItemViewer : Form
     {
@@ -44,8 +40,6 @@ namespace UserInterface.Forms
 
         private void PostLoading()
         {
-            //DataService.LoadItemsDocument(Program.xDataDocs);
-            
             dgvItems.DataSource = DataService.GetAllItemsVO();
             dgvItems.Columns["CatID"].Visible = false;
 
@@ -345,10 +339,9 @@ namespace UserInterface.Forms
         private void btnAdd_Click(object sender, EventArgs e)
         {
             Hide();
-            ItemEditor itemEditor = new ItemEditor(Program.xDataDocs, Program.fpp.ImageRepos);
+            ItemEditor itemEditor = new ItemEditor();
             if (itemEditor.ShowDialog() == DialogResult.OK)
             {
-                //DataService.AddItemToXDocument(Program.xDataDocs.Items, itemEditor.DraftItemData);
                 DataService.AddNewItem(itemEditor.DraftItemData);
                 PostLoading();
             }
@@ -363,11 +356,10 @@ namespace UserInterface.Forms
             string id = row.Cells[0].Value.ToString();
 
             Hide();
-            ItemEditor itemEditor = new ItemEditor(/*Program.xDataDocs,*/ Program.fpp.ImageRepos, id);
+            ItemEditor itemEditor = new ItemEditor(id);
             if (itemEditor.ShowDialog() == DialogResult.OK)
             {
                 // Modify edited item with new one
-                //DataService.ModifyItemXDocument(Program.xDataDocs.Items, id, itemEditor.DraftItemData);
                 DataService.ModifyItem(id, itemEditor.DraftItemData);
                 PostLoading();
             }

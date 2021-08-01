@@ -78,6 +78,7 @@
     <Compile Include="Enums\Enums.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Factory\Delegators.cs" />
+    <Compile Include="FieldRepos.cs" />
     <Compile Include="Forms\Canvas.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -122,6 +123,7 @@
     </Compile>
     <Compile Include="Implementations\SpecsRepoX.cs" />
     <Compile Include="Interfaces\IDataReader.cs" />
+    <Compile Include="Interfaces\IFieldRepos.cs" />
     <Compile Include="Interfaces\IModifier.cs" />
     <Compile Include="Interfaces\ISource.cs" />
     <Compile Include="Interfaces\ISourceContext.cs" />
@@ -139,6 +141,7 @@
     <Compile Include="Interfaces\ISpecs.cs" />
     <Compile Include="Interfaces\ISpec.cs" />
     <Compile Include="Interfaces\ISpecListEntry.cs" />
+    <Compile Include="Models\IBasicList.cs" />
     <Compile Include="Models\ItemCategory.cs" />
     <Compile Include="Models\DataRepos.cs" />
     <Compile Include="Models\ItemCheckList.cs" />

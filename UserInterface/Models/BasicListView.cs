@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
-using UserInterface.Interfaces;
 
 namespace UserInterface.Models
 {
-    public class BasicListView
+    using Interfaces;
+
+    public class BasicListView : IBasicList
     {
         public BasicListView() { }
 

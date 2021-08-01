@@ -16,6 +16,7 @@ namespace UserInterface
         public static ISourceReader reader;
         public static IModifier itemModifier;
         public static ISpecsRepo specsRepo;
+        public static IFieldRepos sizesRepo;
         public static ISourceContext context = new XmlContext();
         public static XDataDocuments xDataDocs;
 

@@ -6,13 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Media;
 using System.Windows.Forms;
-using UserInterface.Interfaces;
-using UserInterface.Models;
-using UserInterface.Operation;
-using UserInterface.Enums;
 
 namespace UserInterface.Forms
 {
+    using Enums;
+    using Interfaces;
+    using Models;
+    using Operation;
+
     public partial class ItemEditor : Form
     {
         public ItemRawData DraftItemData { get; private set; }
@@ -37,21 +38,18 @@ namespace UserInterface.Forms
         /// <summary>
         /// Constructor for a new Item addition.
         /// </summary>
-        /// <param name="xData">The <see cref="XDataDocuments"/> repository.</param>
-        /// <param name="path">The path of the images folder.</param>
-        public ItemEditor(XDataDocuments xData, string path)
+        public ItemEditor()
         {
-            CommonInitialization(path);
+            CommonInitialization();
         }
 
         /// <summary>
         /// Constructor for editing an existing item.
         /// </summary>
-        /// <param name="path">The path of the images folder.</param>
         /// <param name="editId">The ID of the item being edited.</param>
-        public ItemEditor(/*XDataDocuments xData,*/ string path, string editId)
+        public ItemEditor(string editId)
         {
-            CommonInitialization(path);
+            CommonInitialization();
             IItem item = DataService.GetItem(editId);
 
             //Set variables
@@ -119,7 +117,7 @@ namespace UserInterface.Forms
             //lbxImages.DataSource = itemImages;
         }
 
-        private void CommonInitialization(string path)
+        private void CommonInitialization()
         {
             InitializeComponent();
             checkList = new ItemCheckList();
@@ -127,10 +125,7 @@ namespace UserInterface.Forms
             checkList.OnIncomplete += CheckList_OnIncomplete;
 
             existingImages = Program.reader.GetImageNames().ToList();
-            //xData.Items.Descendants("image")
-            //.Select(f => Path.GetFileNameWithoutExtension(f.Value)).ToList();
-
-            imagesReposPath = path;
+            imagesReposPath = Program.fpp.ImageRepos;
             BindControlsToDatasources();
         }
 
@@ -1228,7 +1223,7 @@ namespace UserInterface.Forms
                 DataService.AddNewFieldList(fieldType, fieldAdder.FieldListItem);
             }
         }
-        
+
         private void tsmiBrandsList_Click(object sender, EventArgs e)
         {
             FieldType fieldType = FieldType.BRAND;

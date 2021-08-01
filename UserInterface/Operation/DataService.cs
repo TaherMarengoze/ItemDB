@@ -13,8 +13,14 @@ namespace UserInterface.Operation
 
     public static partial class DataService
     {
+        /// <summary>
+        /// The <see cref="DataService"/> local cache for <see cref="DataRepos"/> data.
+        /// </summary>
         private static DataRepos repos;
 
+        /// <summary>
+        /// Caches a new instance of <see cref="DataRepos"/> and set its members.
+        /// </summary>
         public static void InitializeRepos()
         {
             repos = new DataRepos()
@@ -253,12 +259,15 @@ namespace UserInterface.Operation
 
         public static List<ISpecListEntry> GetSpecListEntries(string specsId, int specIndex)
         {
+            List<ISpec> specsItems =
+                (from specs in repos.SpecsList
+                 where specs.ID == specsId
+                 select specs.SpecItems).FirstOrDefault();
+
             return
-                (from specItem in (from specs in repos.SpecsList
-                                   where specs.ID == specsId
-                                   select specs.SpecItems).FirstOrDefault()
-                 where specItem.Index == specIndex
-                 select specItem.ListEntries).FirstOrDefault();
+                (from spec in specsItems
+                 where spec.Index == specIndex
+                 select spec.ListEntries).FirstOrDefault();
         }
 
         public static List<string> GetAllSpecsId()
@@ -306,10 +315,8 @@ namespace UserInterface.Operation
 
         private static List<BasicListView> DeleteSizeList(string listId)
         {
+            Program.sizesRepo.DeleteField(listId);
             repos.SizesList = repos.SizesList.Where(list => list.ID != listId).ToList();
-
-            // Delete Size List Element from the XML Document
-            DeleteFieldListFromXDocument(Program.xDataDocs.Sizes, listId, "sizeList");
 
             return repos.SizesList.ToList();
         }
@@ -423,7 +430,7 @@ namespace UserInterface.Operation
         /// <param name="fieldListItem">The <see cref="IFieldList"/> object that contains the field list data.</param>
         internal static void AddNewFieldList(FieldType fieldType, IFieldList fieldListItem)
         {
-            DataRepos.AddNewFieldList(fieldType, fieldListItem);
+            DataCache.AddNewFieldList(fieldType, fieldListItem);
             UpdateFieldList(fieldType);
         }
 
@@ -446,7 +453,7 @@ namespace UserInterface.Operation
                 null, GetBrandListsId, GetEndsListsId);
         }
 
-        public static ISource DataRepos { get; set; }
+        public static ISource DataCache { get; set; }
             = new XDataIO();
     }
 }

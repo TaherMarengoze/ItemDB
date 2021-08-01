@@ -63,6 +63,7 @@
             Program.reader = new XReader(Program.xDataDocs);
             Program.itemModifier = new ModifyXml();
             Program.specsRepo = new SpecsRepoX(Program.xDataDocs.Specs);
+            Program.sizesRepo = new SizesRepoX();
         }
 
         public void TestLoadXmlFile(string filePath)

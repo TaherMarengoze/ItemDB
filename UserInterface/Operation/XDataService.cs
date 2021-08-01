@@ -124,13 +124,13 @@ namespace UserInterface.Operation
                 endsCallback: delegate { return Program.xDataDocs.Ends; });
         }
 
-        private static void DeleteFieldListFromXDocument(XDocument fieldXDoc, string listId, XName nodeName)
-        {
-            XElement deleteFieldList =
-                fieldXDoc.Descendants(nodeName)
-                .Where(list => list.Attribute("listID").Value == listId).First();
+        //private static void DeleteFieldListFromXDocument(XDocument fieldXDoc, string listId, XName nodeName)
+        //{
+        //    XElement deleteFieldList =
+        //        fieldXDoc.Descendants(nodeName)
+        //        .Where(list => list.Attribute("listID").Value == listId).First();
 
-            deleteFieldList.Remove();
-        }
+        //    deleteFieldList.Remove();
+        //}
     }
 }
