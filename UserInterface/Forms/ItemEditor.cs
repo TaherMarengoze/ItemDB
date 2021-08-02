@@ -1215,12 +1215,9 @@ namespace UserInterface.Forms
 
         private void tsmiSizeList_Click(object sender, EventArgs e)
         {
-            FieldType fieldType = FieldType.SIZE;
-            //QuickAddField(fieldType);
-            SizeGroupAdder fieldAdder = new SizeGroupAdder(fieldType);
+            SizeGroupAdder fieldAdder = new SizeGroupAdder(FieldType.SIZE);
             if (fieldAdder.ShowDialog() == DialogResult.OK)
             {
-                //DataService.AddNewFieldList(fieldType, fieldAdder.FieldListItem);
                 DataService.AddNewSizeList(fieldAdder.FieldListItem);
             }
         }
@@ -1241,10 +1238,11 @@ namespace UserInterface.Forms
 
         void QuickAddField(FieldType fieldType)
         {
-            FieldListAdder listAdder = new FieldListAdder(fieldType);
-            if (listAdder.ShowDialog() == DialogResult.OK)
+            FieldListAdder adder = new FieldListAdder(fieldType);
+            if (adder.ShowDialog() == DialogResult.OK)
             {
-                DataService.AddNewFieldList(fieldType, listAdder.FieldListItem);
+                //DataService.AddNewFieldList(fieldType, adder.FieldListItem);
+                DataService.AddFieldList(fieldType, adder.FieldListItem);
             }
         }
 

@@ -58,6 +58,7 @@ namespace UserInterface.Forms
         }
 
         public XElement ListItem { get; internal set; }
+        public IBasicList FieldList { get; private set; }
 
         public ListMetadata ListMetadata { get; internal set; }
 
@@ -153,7 +154,14 @@ namespace UserInterface.Forms
                 ListItem.Add(
                     new XElement(xn.ListChild) { Value = entry1 });
             }
-            
+
+            // Apply design pattern fixes
+            FieldList = new BasicListView
+            {
+                ID = listId,
+                Name = listName,
+                List = new List<string>() { entry1 }
+            };
         }
 
         private void EditExistingList()

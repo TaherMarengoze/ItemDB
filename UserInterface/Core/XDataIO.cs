@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Xml.Linq;
 using UserInterface.Factory;
 using UserInterface.Interfaces;
@@ -13,26 +9,14 @@ using UserInterface.Enums;
 
 namespace UserInterface
 {
-    public class XDataIO : ISource
+    public class XDataIO
     {
-
-        public XDataIO()
-        {
-
-        }
-
-        public XDataIO(XDataDocuments documents)
-        {
-
-        }
-
         public void AddNewFieldList(FieldType field, IFieldList fieldListItem)
         {
             ISchema schema = GetFieldSchema(field);
             XElement listNode = SerializeFieldList(schema, fieldListItem);
-            XDocument fieldXDoc = XDataService.AddFieldItemToXDocument(field, listNode);
-            XDataDocuments.Save(fieldXDoc, FilePathProcessor.FieldFilePath(field));
-            //DataService.UpdateField(field);
+            //XDocument fieldXDoc = XDataService.AddFieldItemToXDocument(field, listNode);
+            //XDataDocuments.Save(fieldXDoc, FilePathProcessor.FieldFilePath(field));
         }
 
         private ISchema GetFieldSchema(FieldType field)
@@ -70,25 +54,5 @@ namespace UserInterface
                      CustomSize = customId != string.Empty ? customId : null
                  }).ToList();
         }
-
-        //public void AddNewBrandList(IFieldList fieldListItem)
-        //{
-        //    XElement listNode = CreateNewBrandList(fieldListItem);
-        //    XDocument fieldXDoc = XDataService.AddFieldItemToXDocument(FieldType.BRAND, listNode);
-        //    XDataDocuments.Save(fieldXDoc, FileProcessor.FieldFilePath(FieldType.BRAND));
-        //    DataService.UpdateField(FieldType.BRAND);
-        //}
-
-        //private XElement CreateNewBrandList(IFieldList fieldListItem)
-        //{
-        //    IListStructure ls = new ListStructure("listID", "name", "brandList", "brand", "brands");
-        //    IEnumerable<XElement> xEntries = fieldListItem.List.Select(entry => new XElement(ls.ListChild, entry));
-
-        //    return
-        //        new XElement(ls.ListParent,
-        //            new XAttribute(ls.ListId, fieldListItem.ID),
-        //            new XAttribute(ls.ListName, fieldListItem.Name),
-        //            new XElement(ls.ChildGroup, xEntries));
-        //}
     }
 }

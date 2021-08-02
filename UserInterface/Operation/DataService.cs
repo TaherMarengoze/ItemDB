@@ -139,13 +139,20 @@ namespace UserInterface.Operation
 
             return repos.ItemsView;
         }
-        
-        // Size
 
+        public static void AddFieldList(FieldType fieldType, IBasicList fieldList)
+        {
+            Delegators.FieldActionCallback(fieldType,
+                delegate { AddNewSizeList(fieldList); },
+                null,
+                null);
+        }
+
+        // Size
         public static void AddNewSizeList(IBasicList content)
         {
             Program.sizesRepo.AddFieldList(content);
-            UpdateSizes();
+            //UpdateSizes();
         }
         #endregion
 
@@ -213,7 +220,6 @@ namespace UserInterface.Operation
             }
         }
         #endregion
-
         #region Category Object
         public static List<ItemCategory> GetAllCategories()
         {
@@ -250,7 +256,6 @@ namespace UserInterface.Operation
                 .FirstOrDefault();
         }
         #endregion
-
         #region Specs Object
         internal static List<Specs> GetSpecs()
         {
@@ -283,7 +288,6 @@ namespace UserInterface.Operation
             return repos.SpecsIdList;
         }
         #endregion
-
         #region Size Groups Object
 
         public static List<string> GetSizeGroupsId()
@@ -301,7 +305,6 @@ namespace UserInterface.Operation
                 .Select(grp => new SizeGroupView(grp)).ToList();
         }
         #endregion
-
         #region Size Lists Object
         public static List<BasicListView> GetSizes()
         {
@@ -329,7 +332,6 @@ namespace UserInterface.Operation
             return repos.SizesList.ToList();
         }
         #endregion
-
         #region Brand List Object
         public static List<BasicListView> GetBrands()
         {
@@ -351,7 +353,6 @@ namespace UserInterface.Operation
             return repos.BrandsList.ToList();
         }
         #endregion
-
         #region Ends List Object
         public static List<BasicListView> GetEnds()
         {
@@ -435,11 +436,11 @@ namespace UserInterface.Operation
         /// Adds a new field List to data source.
         /// </summary>
         /// <param name="fieldType">The field type is either a SIZE, BRAND or ENDS.</param>
-        /// <param name="fieldListItem">The <see cref="IFieldList"/> object that contains the field list data.</param>
-        internal static void AddNewFieldList(FieldType fieldType, IFieldList fieldListItem)
+        /// <param name="fieldList">The <see cref="IFieldList"/> object that contains the field list data.</param>
+        internal static void AddNewFieldList(FieldType fieldType, IFieldList fieldList)
         {
-            DataCache.AddNewFieldList(fieldType, fieldListItem);
-            UpdateFieldList(fieldType);
+            //DataCache.AddNewFieldList(fieldType, fieldList);
+            //UpdateFieldList(fieldType);
         }
 
         /// <summary>
@@ -460,8 +461,5 @@ namespace UserInterface.Operation
                 Delegators.FieldFunctionCallback(fieldType,
                 null, GetBrandListsId, GetEndsListsId);
         }
-
-        public static ISource DataCache { get; set; }
-            = new XDataIO();
     }
 }

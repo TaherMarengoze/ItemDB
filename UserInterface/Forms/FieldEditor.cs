@@ -14,29 +14,29 @@ namespace UserInterface.Forms
 {
     public partial class FieldEditor : Form
     {
-        private ISchema xn;
+        private ISchema schema;
         private XDocument fieldXDoc;
         private List<string> listEntries;
         private string fieldFilePath;
 
-        FieldType editorField;
+        FieldType fieldType;
 
         public FieldEditor(FieldType type)
         {
             InitializeComponent();
-            editorField = type;
+            fieldType = type;
             switch (type)
             {
                 case FieldType.SIZE:
-                    xn = new ListStructure("listID", "name", "sizeList", "size", "sizes");
+                    schema = new ListStructure("listID", "name", "sizeList", "size", "sizes");
                     Text = "Size List Editor";
                     break;
                 case FieldType.BRAND:
-                    xn = new ListStructure("listID", "name", "brandList", "brand", "brands");
+                    schema = new ListStructure("listID", "name", "brandList", "brand", "brands");
                     Text = "Brand List Editor";
                     break;
                 case FieldType.ENDS:
-                    xn = new ListStructure("listID", "name", "endsList", "end", "ends");
+                    schema = new ListStructure("listID", "name", "endsList", "end", "ends");
                     Text = "Ends List Editor";
                     break;
                 default:
@@ -48,9 +48,9 @@ namespace UserInterface.Forms
 
         private void FieldSwitch()
         {
-            fieldFilePath = FilePathProcessor.FieldFilePath(editorField);
+            fieldFilePath = FilePathProcessor.FieldFilePath(fieldType);
 
-            Delegators.FieldActionCallback(editorField,
+            Delegators.FieldActionCallback(fieldType,
                 delegate { fieldXDoc = Program.xDataDocs.Sizes; },
                 delegate { fieldXDoc = Program.xDataDocs.Brands; },
                 delegate { fieldXDoc = Program.xDataDocs.Ends; });
@@ -85,7 +85,7 @@ namespace UserInterface.Forms
             {
                 fieldXDoc.Save(savePath);
                 MessageBox.Show("File saved successfully");
-                DataService.UpdateFieldList(editorField);
+                DataService.UpdateFieldList(fieldType);
             }
             catch (Exception)
             {
@@ -96,7 +96,7 @@ namespace UserInterface.Forms
         private void PopulateGrid()
         {
             dgvListDetails.DataSource = null;
-            object newDataSource = DataService.GetFieldLists(editorField);
+            object newDataSource = DataService.GetFieldLists(fieldType);
             dgvListDetails.DataSource = newDataSource;
 
             // Auto-Size Columns and Rows
@@ -164,15 +164,15 @@ namespace UserInterface.Forms
 
         private List<string> GetAllListIDs()
         {
-            return fieldXDoc.Descendants(xn.ListParent)
-                .Select(id => id.Attribute(xn.ListId).Value).ToList();
+            return fieldXDoc.Descendants(schema.ListParent)
+                .Select(id => id.Attribute(schema.ListId).Value).ToList();
         }
 
         private string GetListName(string listId)
         {
             try
             {
-                XAttribute xaListName = GetSpecificList(listId).Attribute(xn.ListName);
+                XAttribute xaListName = GetSpecificList(listId).Attribute(schema.ListName);
                 if (xaListName != null)
                     return xaListName.Value;
 
@@ -184,26 +184,26 @@ namespace UserInterface.Forms
 
         private List<string> GetListEntries(string listId)
         {
-            return (from itm in fieldXDoc.Descendants(xn.ListChild)
-                    where itm.Ancestors(xn.ListParent).First().Attribute(xn.ListId).Value == listId
+            return (from itm in fieldXDoc.Descendants(schema.ListChild)
+                    where itm.Ancestors(schema.ListParent).First().Attribute(schema.ListId).Value == listId
                     select itm.Value).ToList();
         }
 
         private void AddNewEntry(string fieldId, string entryValue)
         {
             XElement dataNode =
-                (from listSizes in fieldXDoc.Descendants(xn.ListParent)
-                 where listSizes.Attribute(xn.ListId).Value == fieldId
+                (from listSizes in fieldXDoc.Descendants(schema.ListParent)
+                 where listSizes.Attribute(schema.ListId).Value == fieldId
                  select listSizes).First();
 
-            dataNode.Element(xn.ChildGroup).Add(new XElement(xn.ListChild) { Value = entryValue });
+            dataNode.Element(schema.ChildGroup).Add(new XElement(schema.ListChild) { Value = entryValue });
         }
 
         private XElement GetSpecificList(string listId)
         {
             return
-                (from fieldList in fieldXDoc.Descendants(xn.ListParent)
-                 where fieldList.Attribute(xn.ListId).Value == listId
+                (from fieldList in fieldXDoc.Descendants(schema.ListParent)
+                 where fieldList.Attribute(schema.ListId).Value == listId
                  select fieldList).First();
         }
 
@@ -211,23 +211,20 @@ namespace UserInterface.Forms
         {
             XElement fieldList = GetSpecificList(listId);
             return
-                (from entry in fieldList.Descendants(xn.ListChild)
+                (from entry in fieldList.Descendants(schema.ListChild)
                  where entry.Value == item
                  select entry).First();
         }
 
         private void AddNewList()
         {
-            FieldListEditor listEditor = new FieldListEditor(GetAllListIDs(), xn);
+            FieldListEditor listEditor = new FieldListEditor(GetAllListIDs(), schema);
 
             if (listEditor.ShowDialog() == DialogResult.OK)
             {
-                //fieldXDoc.Root.Add(listEditor.ListItem);
-                fieldXDoc = XDataService.AddFieldItemToXDocument(editorField, listEditor.ListItem);
-                //PopulateListSelector();
+                //fieldXDoc = XDataService.AddFieldItemToXDocument(fieldType, listEditor.ListItem);
+                DataService.AddFieldList(fieldType, listEditor.FieldList);
                 PopulateGrid();
-                //SelectComboboxItem(listEditor.ListItem.Attribute(xn.ListId).Value);
-                //CheckAvailableLists();
             }
         }
 
@@ -235,13 +232,10 @@ namespace UserInterface.Forms
         {
             if (Common.ShowEntryRemoveConfirmation(false) == DialogResult.OK)
             {
-                DataService.DeleteFieldList(editorField, listId);
+                DataService.DeleteFieldList(fieldType, listId);
 
-                //PopulateListSelector();
                 PopulateGrid();
                 SelectFirstListItem();
-                //CheckAvailableLists();
-                //
             }
         }
 
@@ -253,7 +247,7 @@ namespace UserInterface.Forms
             if (listEditor.ShowDialog() == DialogResult.OK)
             {
                 // Modify the list metadata
-                XDataService.ModifyFieldXDocument(editorField, editMeta.ID, listEditor.ListMetadata, xn);
+                XDataService.ModifyFieldXDocument(fieldType, editMeta.ID, listEditor.ListMetadata, schema);
 
                 PopulateGrid();
             }

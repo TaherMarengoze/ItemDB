@@ -59,6 +59,7 @@ namespace UserInterface.Operation
                     new XAttribute("name", catName));
         }
 
+        /*
         public static XDocument AddFieldItemToXDocument(FieldType field, XElement fieldItem)
         {
             XDocument fieldXdoc = GetFieldXDoc(field);
@@ -67,6 +68,7 @@ namespace UserInterface.Operation
 
             return fieldXdoc;
         }
+        */
 
         public static void ModifyFieldXDocument(FieldType field, string existingId, ListMetadata data, ISchema xn)
         {
