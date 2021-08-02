@@ -10,16 +10,16 @@ namespace UserInterface.Interfaces
 
     public interface IFieldRepos
     {
-        void AddFieldList(IBasicList fieldList);
+        void AddFieldList(IBasicList list);
 
-        IBasicList ReadFieldList(string fieldItemId);
+        IBasicList ReadFieldList(string listId);
 
-        void UpdateFieldList(string refId, IBasicList fieldList);
+        void UpdateFieldList(string refId, IBasicList list);
 
         /// <summary>
         /// Deletes a field from its data source.
         /// </summary>
-        /// <param name="fieldListId">The ID of the field item to be deleted.</param>
-        void DeleteFieldList(string fieldListId);
+        /// <param name="listId">The ID of the field item to be deleted.</param>
+        void DeleteFieldList(string listId);
     }
 }

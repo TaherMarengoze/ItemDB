@@ -7,7 +7,6 @@ namespace UserInterface
 {
     using Interfaces;
 
-
     public class SizesRepoX : IFieldRepos
     {
         private readonly XDocument dataSource;
@@ -22,6 +21,23 @@ namespace UserInterface
             XElement content = SerializeSizeList(sizeList);
             dataSource.Root.Add(content);
         }
+        
+        public IBasicList ReadFieldList(string listId) => throw new NotImplementedException();
+
+        public void UpdateFieldList(string refId, IBasicList list) => throw new NotImplementedException();
+
+        public void DeleteFieldList(string listId)
+        {
+            GetFieldList(listId).Remove();
+        }
+
+        private XElement GetFieldList(string listId)
+        {
+            return
+                Program.xDataDocs.Sizes.Descendants("sizeList")
+                .Where(list => list.Attribute("listID").Value == listId)
+                .FirstOrDefault();
+        }
 
         private XElement SerializeSizeList(IBasicList field)
         {
@@ -34,25 +50,8 @@ namespace UserInterface
                     new XAttribute(schema.ListId, field.ID),
                     new XAttribute(schema.ListName, field.Name),
                     new XElement(schema.ChildGroup, entries));
-            
+
             return draftSizeList;
-        }
-
-        public IBasicList ReadFieldList(string fieldItemId) => throw new NotImplementedException();
-
-        public void UpdateFieldList(string refId, IBasicList field) => throw new NotImplementedException();
-
-        public void DeleteFieldList(string fieldId)
-        {
-            GetField(fieldId).Remove();
-        }
-
-        private XElement GetField(string fieldId)
-        {
-            return
-                Program.xDataDocs.Sizes.Descendants("sizeList")
-                .Where(list => list.Attribute("listID").Value == fieldId)
-                .FirstOrDefault();
         }
     }
 }

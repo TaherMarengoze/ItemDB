@@ -16,7 +16,7 @@ namespace UserInterface.Operation
         /// <summary>
         /// The <see cref="DataService"/> local cache for <see cref="DataRepos"/> data.
         /// </summary>
-        private static DataRepos repos;
+        public static DataRepos repos;
 
         /// <summary>
         /// Caches a new instance of <see cref="DataRepos"/> and set its members.
@@ -143,13 +143,13 @@ namespace UserInterface.Operation
         public static void AddFieldList(FieldType fieldType, IBasicList fieldList)
         {
             Delegators.FieldActionCallback(fieldType,
-                delegate { AddNewSizeList(fieldList); },
+                delegate { AddSizesList(fieldList); },
                 null,
                 null);
         }
 
         // Size
-        public static void AddNewSizeList(IBasicList content)
+        public static void AddSizesList(IBasicList content)
         {
             Program.sizesRepo.AddFieldList(content);
             //UpdateSizes();

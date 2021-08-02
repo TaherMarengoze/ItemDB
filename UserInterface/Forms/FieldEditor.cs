@@ -222,7 +222,6 @@ namespace UserInterface.Forms
 
             if (listEditor.ShowDialog() == DialogResult.OK)
             {
-                //fieldXDoc = XDataService.AddFieldItemToXDocument(fieldType, listEditor.ListItem);
                 DataService.AddFieldList(fieldType, listEditor.FieldList);
                 PopulateGrid();
             }

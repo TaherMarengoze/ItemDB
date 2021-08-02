@@ -72,7 +72,7 @@ namespace UserInterface.Models
         public List<string> SizeGroupIdList { get; private set; }
 
         // Sizes
-        public IEnumerable<BasicListView> SizesList { get; set; }
+        public IEnumerable<BasicListView> SizesList{ get; set; }
 
         // Brands
         public IEnumerable<BasicListView> BrandsList

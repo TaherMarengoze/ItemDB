@@ -1218,7 +1218,7 @@ namespace UserInterface.Forms
             SizeGroupAdder fieldAdder = new SizeGroupAdder(FieldType.SIZE);
             if (fieldAdder.ShowDialog() == DialogResult.OK)
             {
-                DataService.AddNewSizeList(fieldAdder.FieldListItem);
+                DataService.AddSizesList(fieldAdder.FieldListItem);
             }
         }
 
@@ -1241,7 +1241,6 @@ namespace UserInterface.Forms
             FieldListAdder adder = new FieldListAdder(fieldType);
             if (adder.ShowDialog() == DialogResult.OK)
             {
-                //DataService.AddNewFieldList(fieldType, adder.FieldListItem);
                 DataService.AddFieldList(fieldType, adder.FieldListItem);
             }
         }
