@@ -29,7 +29,7 @@ namespace UserInterface.Operation
                 Categories = Program.reader.GetCategories(),
                 SpecsList = Program.reader.GetSpecs(),
                 SizeGroups = Program.reader.GetSizeGroups(),
-                SizesList = Program.reader.GetSizes(),
+                SizesList = Program.reader.GetSizes().ToList(),
                 BrandsList = Program.reader.GetBrands(),
                 EndsList = Program.reader.GetEnds()
             };
@@ -58,7 +58,7 @@ namespace UserInterface.Operation
 
         private static void UpdateSizes()
         {
-            repos.SizesList = Program.reader.GetSizes();
+            repos.SizesList = Program.reader.GetSizes().ToList();
         }
 
         private static void UpdateBrands()
@@ -148,11 +148,21 @@ namespace UserInterface.Operation
                 null);
         }
 
+        public static void FieldListAddEntry()
+        {
+            
+        }
+
+        public static void SizeListAddEntry(string listId, string entry)
+        {
+            repos.SizesList.Where(list => list.ID == listId).First().List.Add(entry);
+        }
+
         // Size
         public static void AddSizesList(IBasicList content)
         {
             Program.sizesRepo.AddFieldList(content);
-            //UpdateSizes();
+            UpdateSizes();
         }
         #endregion
 
@@ -327,7 +337,7 @@ namespace UserInterface.Operation
         private static List<BasicListView> DeleteSizeList(string listId)
         {
             Program.sizesRepo.DeleteFieldList(listId);
-            repos.SizesList = repos.SizesList.Where(list => list.ID != listId);
+            repos.SizesList = repos.SizesList.Where(list => list.ID != listId).ToList();
 
             return repos.SizesList.ToList();
         }

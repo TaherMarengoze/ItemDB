@@ -112,7 +112,9 @@ namespace UserInterface.Forms
         private void PopulateFieldEntryList()
         {
             string listId = GetSelectedListId();
-            listEntries = GetListEntries(listId);
+            //listEntries = GetListEntries(listId);
+            listEntries = DataService.GetSizeListEntries(listId);
+            lbxFieldListItems.DataSource = null;
             lbxFieldListItems.DataSource = listEntries;
         }
 
@@ -189,15 +191,15 @@ namespace UserInterface.Forms
                     select itm.Value).ToList();
         }
 
-        private void AddNewEntry(string fieldId, string entryValue)
-        {
-            XElement dataNode =
-                (from listSizes in fieldXDoc.Descendants(schema.ListParent)
-                 where listSizes.Attribute(schema.ListId).Value == fieldId
-                 select listSizes).First();
+        //private void AddNewEntry(string fieldId, string entryValue)
+        //{
+        //    XElement dataNode =
+        //        (from listSizes in fieldXDoc.Descendants(schema.ListParent)
+        //         where listSizes.Attribute(schema.ListId).Value == fieldId
+        //         select listSizes).First();
 
-            dataNode.Element(schema.ChildGroup).Add(new XElement(schema.ListChild) { Value = entryValue });
-        }
+        //    dataNode.Element(schema.ChildGroup).Add(new XElement(schema.ListChild) { Value = entryValue });
+        //}
 
         private XElement GetSpecificList(string listId)
         {
@@ -266,7 +268,7 @@ namespace UserInterface.Forms
 
         #endregion
 
-        #region Events Reponses
+        #region Events Responses
 #pragma warning disable IDE1006 // Naming Styles
         private void Form_Load(object sender, EventArgs e)
         {
@@ -281,7 +283,13 @@ namespace UserInterface.Forms
             if (entryValue != string.Empty)
             {
                 string fieldId = GetSelectedListId();
-                AddNewEntry(fieldId, entryValue);
+
+                #region Test
+                DataService.SizeListAddEntry(fieldId, entryValue);
+                #endregion
+
+                //AddNewEntry(fieldId, entryValue);
+
                 txtEntryValue.Text = string.Empty;
                 PopulateFieldEntryList();
                 SelectListItem(entryValue);

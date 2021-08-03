@@ -121,6 +121,7 @@
       <DependentUpon>XML Viewer.cs</DependentUpon>
     </Compile>
     <Compile Include="Implementations\SpecsRepoX.cs" />
+    <Compile Include="Implementations\XReader.cs" />
     <Compile Include="Interfaces\IDataReader.cs" />
     <Compile Include="Interfaces\IFieldRepos.cs" />
     <Compile Include="Interfaces\IModifier.cs" />
@@ -219,7 +220,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Implementations\ReadFromXml.cs" />
     <Compile Include="Runtime\Test.cs" />
     <Compile Include="Implementations\SizesRepoX.cs" />
     <Compile Include="XmlContext.cs" />

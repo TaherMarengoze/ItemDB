@@ -140,7 +140,7 @@
             this.btnAddNewList.Name = "btnAddNewList";
             this.btnAddNewList.Size = new System.Drawing.Size(75, 23);
             this.btnAddNewList.TabIndex = 11;
-            this.btnAddNewList.Text = "Add List";
+            this.btnAddNewList.Text = "&Add List";
             this.btnAddNewList.UseVisualStyleBackColor = true;
             this.btnAddNewList.Click += new System.EventHandler(this.btnAddNewList_Click);
             // 
