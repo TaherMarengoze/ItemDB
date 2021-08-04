@@ -148,9 +148,9 @@ namespace UserInterface.Operation
                 null);
         }
 
-        public static void FieldListAddEntry()
+        public static void FieldListAddEntry(FieldType field, string listId, string entry)
         {
-            
+
         }
 
         public static void SizeListAddEntry(string listId, string entry)
@@ -163,6 +163,16 @@ namespace UserInterface.Operation
         {
             Program.sizesRepo.AddFieldList(content);
             UpdateSizes();
+        }
+
+        /// <summary>
+        /// Returns a specific size list object by its ID
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <returns></returns>
+        public static IBasicList GetSizeList(string listId)
+        {
+            return repos.SizesList.Find(list => list.ID == listId);
         }
         #endregion
 
@@ -209,7 +219,7 @@ namespace UserInterface.Operation
             return
                 repos.Items.Where(id => id.ItemID == itemId).FirstOrDefault();
         }
-        
+
         private static bool FilterItemImage(bool? image, IItemView item)
         {
             //return image == null ? true : (bool)image ? item.Images != null : item.Images == null;
@@ -316,10 +326,7 @@ namespace UserInterface.Operation
         }
         #endregion
         #region Size Lists Object
-        public static List<BasicListView> GetSizes()
-        {
-            return repos.SizesList.ToList();
-        }
+        public static List<BasicListView> GetSizes() => repos.SizesList;
 
         /// <summary>
         /// Get a list of entries for the given list ID.

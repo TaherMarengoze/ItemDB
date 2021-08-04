@@ -109,18 +109,22 @@ namespace UserInterface.Forms
             dgvListDetails.Columns["colDelete"].DisplayIndex = bindDataCount;
         }
 
-        private void PopulateFieldEntryList()
+        private void UpdateEntriesList()
         {
             string listId = GetSelectedListId();
-            //listEntries = GetListEntries(listId);
-            listEntries = DataService.GetSizeListEntries(listId);
+
+            listEntries = //GetListEntries(listId);
+                DataService.GetSizeListEntries(listId);
+
             lbxFieldListItems.DataSource = null;
             lbxFieldListItems.DataSource = listEntries;
         }
 
-        private void PopulateFieldEntryList(string listId)
+        private void PopulateEntryList(string listId)
         {
-            listEntries = GetListEntries(listId);
+            listEntries = //GetListEntries(listId);
+                DataService.GetSizeListEntries(listId);
+
             lbxFieldListItems.DataSource = listEntries;
         }
 
@@ -170,26 +174,12 @@ namespace UserInterface.Forms
                 .Select(id => id.Attribute(schema.ListId).Value).ToList();
         }
 
-        private string GetListName(string listId)
-        {
-            try
-            {
-                XAttribute xaListName = GetSpecificList(listId).Attribute(schema.ListName);
-                if (xaListName != null)
-                    return xaListName.Value;
-
-                return string.Empty;
-            }
-            catch (Exception) { return string.Empty; }
-
-        }
-
-        private List<string> GetListEntries(string listId)
-        {
-            return (from itm in fieldXDoc.Descendants(schema.ListChild)
-                    where itm.Ancestors(schema.ListParent).First().Attribute(schema.ListId).Value == listId
-                    select itm.Value).ToList();
-        }
+        //private List<string> GetListEntries(string listId)
+        //{
+        //    return (from itm in fieldXDoc.Descendants(schema.ListChild)
+        //            where itm.Ancestors(schema.ListParent).First().Attribute(schema.ListId).Value == listId
+        //            select itm.Value).ToList();
+        //}
 
         //private void AddNewEntry(string fieldId, string entryValue)
         //{
@@ -291,7 +281,7 @@ namespace UserInterface.Forms
                 //AddNewEntry(fieldId, entryValue);
 
                 txtEntryValue.Text = string.Empty;
-                PopulateFieldEntryList();
+                UpdateEntriesList();
                 SelectListItem(entryValue);
                 CheckAvailableEntries();
                 txtEntryValue.Focus();
@@ -310,7 +300,7 @@ namespace UserInterface.Forms
                 string selectedItem = lbxFieldListItems.Text;
 
                 GetListEntry(listId, selectedItem).Remove();
-                PopulateFieldEntryList();
+                UpdateEntriesList();
                 SelectFirstListItem();
                 CheckAvailableEntries();
             }
@@ -331,7 +321,7 @@ namespace UserInterface.Forms
                 if (valueEditBox.ShowDialog() == DialogResult.OK)
                 {
                     dataItem.Value = valueEditBox.NewValue;
-                    PopulateFieldEntryList();
+                    UpdateEntriesList();
                     lbxFieldListItems.Text = valueEditBox.NewValue;
                 }
             }
@@ -402,7 +392,7 @@ namespace UserInterface.Forms
             XElement moveXItem = GetListEntry(listId, item);
             moveXItem.PreviousNode.AddBeforeSelf(moveXItem);
             moveXItem.Remove();
-            PopulateFieldEntryList();
+            UpdateEntriesList();
             SelectShiftedItem(selecIndex, SelectionShift.UP);
             ViewXmlText(listId);
             ViewXmlTextAll();
@@ -416,7 +406,7 @@ namespace UserInterface.Forms
             XElement moveXItem = GetListEntry(listId, item);
             moveXItem.NextNode.AddAfterSelf(moveXItem);
             moveXItem.Remove();
-            PopulateFieldEntryList();
+            UpdateEntriesList();
             SelectShiftedItem(selecIndex, SelectionShift.DOWN);
             ViewXmlText(listId);
             ViewXmlTextAll();
@@ -464,7 +454,7 @@ namespace UserInterface.Forms
             if (dgvListDetails.SelectedRows.Count > 0)
             {
                 string selectedListId = (string)dgvListDetails.SelectedRows[0].Cells["ID"].Value;
-                PopulateFieldEntryList(selectedListId);
+                PopulateEntryList(selectedListId);
             }
         }
 
