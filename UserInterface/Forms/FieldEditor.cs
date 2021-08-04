@@ -202,6 +202,10 @@ namespace UserInterface.Forms
         private XElement GetListEntry(string listId, string item)
         {
             XElement fieldList = GetSpecificList(listId);
+
+            IBasicList list = DataService.GetSizeList(listId);
+            string listEntry = list.List.Find(e => e == item);
+
             return
                 (from entry in fieldList.Descendants(schema.ListChild)
                  where entry.Value == item
