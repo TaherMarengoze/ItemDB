@@ -17,6 +17,7 @@ namespace UserInterface
         public static IModifier itemModifier;
         public static ISpecsRepo specsRepo;
         public static IFieldRepos sizesRepo;
+        public static IFieldManipulator sizeManipulator;
         public static ISourceContext context = new XmlContext();
         public static XDataDocuments xDataDocs;
 

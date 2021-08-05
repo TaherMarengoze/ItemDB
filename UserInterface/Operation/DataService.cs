@@ -155,7 +155,28 @@ namespace UserInterface.Operation
 
         public static void SizeListAddEntry(string listId, string entry)
         {
+            // Add to local cache
             repos.SizesList.Where(list => list.ID == listId).First().List.Add(entry);
+
+            // TODO: Add to data source
+        }
+
+        public static void SizeListEditEntry(string listId, string oldValue, string newValue)
+        {
+            // Edit local cache
+            int index = GetSizeListEntries(listId).IndexOf(oldValue);
+            GetSizeListEntries(listId)[index] = newValue;
+
+            // TODO: Edit data source
+        }
+
+        public static void SizeListDeleteEntry(string listId, string entry)
+        {
+            // Remove from local cache
+            GetSizeList(listId).List.Remove(entry);
+
+            // Remove from data source
+            Program.sizeManipulator.DeleteEntry(listId, entry);
         }
 
         // Size
@@ -170,10 +191,11 @@ namespace UserInterface.Operation
         /// </summary>
         /// <param name="listId"></param>
         /// <returns></returns>
-        public static IBasicList GetSizeList(string listId)
+        private static IBasicList GetSizeList(string listId)
         {
             return repos.SizesList.Find(list => list.ID == listId);
         }
+        
         #endregion
 
         #region Item Object

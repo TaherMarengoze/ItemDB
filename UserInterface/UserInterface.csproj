@@ -68,6 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppFactory.cs" />
     <Compile Include="Class1.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -120,9 +121,11 @@
     <Compile Include="Forms\XML Viewer.Designer.cs">
       <DependentUpon>XML Viewer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Implementations\SizesManipulator.cs" />
     <Compile Include="Implementations\SpecsRepoX.cs" />
     <Compile Include="Implementations\XReader.cs" />
     <Compile Include="Interfaces\IDataReader.cs" />
+    <Compile Include="Interfaces\IFieldManipulator.cs" />
     <Compile Include="Interfaces\IFieldRepos.cs" />
     <Compile Include="Interfaces\IModifier.cs" />
     <Compile Include="Interfaces\ISchema.cs" />

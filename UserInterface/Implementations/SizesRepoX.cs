@@ -34,7 +34,7 @@ namespace UserInterface
         private XElement GetFieldList(string listId)
         {
             return
-                Program.xDataDocs.Sizes.Descendants("sizeList")
+                dataSource.Descendants("sizeList")
                 .Where(list => list.Attribute("listID").Value == listId)
                 .FirstOrDefault();
         }
@@ -53,5 +53,6 @@ namespace UserInterface
 
             return draftSizeList;
         }
+
     }
 }

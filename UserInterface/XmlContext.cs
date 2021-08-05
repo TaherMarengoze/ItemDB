@@ -64,6 +64,8 @@
             Program.itemModifier = new ModifyXml();
             Program.specsRepo = new SpecsRepoX(Program.xDataDocs.Specs);
             Program.sizesRepo = new SizesRepoX(Program.xDataDocs.Sizes);
+
+            Program.sizeManipulator = new SizesManipulator(Program.xDataDocs.Sizes);
         }
 
         public void TestLoadXmlFile(string filePath)

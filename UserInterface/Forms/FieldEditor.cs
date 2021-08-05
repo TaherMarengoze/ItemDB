@@ -174,37 +174,11 @@ namespace UserInterface.Forms
                 .Select(id => id.Attribute(schema.ListId).Value).ToList();
         }
 
-        //private List<string> GetListEntries(string listId)
-        //{
-        //    return (from itm in fieldXDoc.Descendants(schema.ListChild)
-        //            where itm.Ancestors(schema.ListParent).First().Attribute(schema.ListId).Value == listId
-        //            select itm.Value).ToList();
-        //}
-
-        //private void AddNewEntry(string fieldId, string entryValue)
-        //{
-        //    XElement dataNode =
-        //        (from listSizes in fieldXDoc.Descendants(schema.ListParent)
-        //         where listSizes.Attribute(schema.ListId).Value == fieldId
-        //         select listSizes).First();
-
-        //    dataNode.Element(schema.ChildGroup).Add(new XElement(schema.ListChild) { Value = entryValue });
-        //}
-
-        private XElement GetSpecificList(string listId)
-        {
-            return
-                (from fieldList in fieldXDoc.Descendants(schema.ListParent)
-                 where fieldList.Attribute(schema.ListId).Value == listId
-                 select fieldList).First();
-        }
-
         private XElement GetListEntry(string listId, string item)
         {
-            XElement fieldList = GetSpecificList(listId);
-
-            IBasicList list = DataService.GetSizeList(listId);
-            string listEntry = list.List.Find(e => e == item);
+            XElement fieldList = (from list in fieldXDoc.Descendants(schema.ListParent)
+                                  where list.Attribute(schema.ListId).Value == listId
+                                  select list).First();
 
             return
                 (from entry in fieldList.Descendants(schema.ListChild)
@@ -259,7 +233,6 @@ namespace UserInterface.Forms
             string entryValue = txtEntryValue.Text;
             btnAddEntry.Enabled = !listEntries.Contains(entryValue);
         }
-
         #endregion
 
         #region Events Responses
@@ -301,9 +274,9 @@ namespace UserInterface.Forms
             else
             {
                 string listId = GetSelectedListId();
-                string selectedItem = lbxFieldListItems.Text;
+                string selectedEntry = lbxFieldListItems.Text;
+                DataService.SizeListDeleteEntry(listId, selectedEntry);
 
-                GetListEntry(listId, selectedItem).Remove();
                 UpdateEntriesList();
                 SelectFirstListItem();
                 CheckAvailableEntries();
@@ -318,13 +291,19 @@ namespace UserInterface.Forms
             }
             else
             {
-                string dataId = GetSelectedListId();
-                XElement dataItem = GetListEntry(dataId, lbxFieldListItems.Text);
+                string listId = GetSelectedListId();
+                string selectedEntry = lbxFieldListItems.Text;
+                XElement dataItem = GetListEntry(listId, selectedEntry);
 
-                ValueEdit valueEditBox = new ValueEdit(dataItem.Value);
+                
+                ValueEdit valueEditBox = //new ValueEdit(dataItem.Value);
+                    new ValueEdit(selectedEntry);
                 if (valueEditBox.ShowDialog() == DialogResult.OK)
                 {
                     dataItem.Value = valueEditBox.NewValue;
+                    /* TEST */
+                    DataService.SizeListEditEntry(listId, selectedEntry, valueEditBox.NewValue);
+
                     UpdateEntriesList();
                     lbxFieldListItems.Text = valueEditBox.NewValue;
                 }

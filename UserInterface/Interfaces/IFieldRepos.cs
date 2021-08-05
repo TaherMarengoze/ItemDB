@@ -17,9 +17,9 @@ namespace UserInterface.Interfaces
         void UpdateFieldList(string refId, IBasicList list);
 
         /// <summary>
-        /// Deletes a field from its data source.
+        /// Deletes a field list from its data source.
         /// </summary>
-        /// <param name="listId">The ID of the field item to be deleted.</param>
+        /// <param name="listId">The ID of the field list to be deleted.</param>
         void DeleteFieldList(string listId);
     }
 }
