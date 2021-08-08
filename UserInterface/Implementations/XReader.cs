@@ -6,6 +6,7 @@ namespace UserInterface
 {
     using Interfaces;
     using Models;
+    using System.Collections.ObjectModel;
 
     /// <summary>
     /// Reads and deserializes the XML data from an <see cref="XDataDocuments"/>.
@@ -123,7 +124,9 @@ namespace UserInterface
                 {
                     ID = list.Attribute("listID").Value,
                     Name = list.Attribute("name").Value,
-                    List = list.Descendants("size").Select(entry => entry.Value).ToList()
+                    List = new ObservableCollection<string>
+                        (list.Descendants("size")
+                        .Select(entry => entry.Value).ToList())
                 };
         }
 
@@ -135,7 +138,9 @@ namespace UserInterface
                 {
                     ID = brands.Attribute("listID").Value,
                     Name = brands.Attribute("name").Value,
-                    List = brands.Descendants("brand").Select(brand => brand.Value).ToList()
+                    List = new ObservableCollection<string>
+                        (brands.Descendants("brand")
+                        .Select(brand => brand.Value).ToList())
                 };
         }
 
@@ -147,7 +152,9 @@ namespace UserInterface
                 {
                     ID = ends.Attribute("listID").Value,
                     Name = ends.Attribute("name").Value,
-                    List = ends.Descendants("end").Select(end => end.Value).ToList()
+                    List = new ObservableCollection<string>
+                        (ends.Descendants("end")
+                        .Select(end => end.Value).ToList())
                 };
         }
 

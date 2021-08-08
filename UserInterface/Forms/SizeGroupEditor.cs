@@ -1102,7 +1102,7 @@
             //{
 
             // Display selected size list entries
-            listBox1.DataSource = DataService.GetSizeListEntries(cboDefaultID.Text);
+            listBox1.DataSource = DataService.SizeListGetEntries(cboDefaultID.Text);
 
             ChangeDefaultListID();
             //}

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace UserInterface.Models
 {
@@ -12,7 +13,7 @@ namespace UserInterface.Models
         {
             ID = fieldList.ID;
             Name = fieldList.Name;
-            List = new List<string>(fieldList.List);
+            List = new ObservableCollection<string>(fieldList.List);
         }
 
         public string ID { get; set; }
@@ -21,6 +22,8 @@ namespace UserInterface.Models
 
         public int Entries => List.Count;
 
-        public List<string> List { get; set; }
+        //public List<string> List { get; set; }
+
+        public ObservableCollection<string> List { get; set; }
     }
 }

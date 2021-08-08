@@ -121,6 +121,7 @@
     <Compile Include="Forms\XML Viewer.Designer.cs">
       <DependentUpon>XML Viewer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Implementations\BrandsManipulator.cs" />
     <Compile Include="Implementations\SizesManipulator.cs" />
     <Compile Include="Implementations\SpecsRepoX.cs" />
     <Compile Include="Implementations\XReader.cs" />

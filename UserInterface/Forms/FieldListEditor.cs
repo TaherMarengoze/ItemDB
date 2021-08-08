@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -27,10 +28,10 @@ namespace UserInterface.Forms
         /// </summary>
         /// <param name="parentIdList">List of all IDs to check for duplicate IDs.</param>
         /// <param name="ls">ListStructure object to create new XElement entry.</param>
-        public FieldListEditor(List<string> parentIdList, ISchema ls)
+        public FieldListEditor(IEnumerable<string> parentIdList, ISchema ls)
         {
             InitializeComponent();
-            IdList = parentIdList;
+            IdList = parentIdList.ToList();
 
             xn = ls; /*new ListStructure()
             {
@@ -45,10 +46,10 @@ namespace UserInterface.Forms
             ModeUISetup();
         }
 
-        public FieldListEditor(List<string> parentIdList, ListMetadata listMetadata)
+        public FieldListEditor(IEnumerable<string> parentIdList, ListMetadata listMetadata)
         {
             InitializeComponent();
-            IdList = parentIdList;
+            IdList = parentIdList.ToList();
 
             meta = new ListMetadata(listMetadata.ID, listMetadata.Name);
 
@@ -160,7 +161,7 @@ namespace UserInterface.Forms
             {
                 ID = listId,
                 Name = listName,
-                List = new List<string>() { entry1 }
+                List = new ObservableCollection<string>() { entry1 }
             };
         }
 

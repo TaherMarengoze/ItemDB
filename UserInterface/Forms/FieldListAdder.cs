@@ -137,6 +137,11 @@ namespace UserInterface.Forms
             FieldListItem.ID = txtListID.Text;
             FieldListItem.Name = txtListName.Text.Trim();
             FieldListItem.List.AddRange(listEntries);
+
+            //foreach (var item in listEntries)
+            //{
+            //    FieldListItem.List.Add(item);
+            //}
         }
 
         #region Custom

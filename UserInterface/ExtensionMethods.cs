@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -30,6 +32,14 @@ namespace UserInterface
         {
             textBox.SelectAll();
             textBox.Focus();
+        }
+
+        public static void AddRange<T>(this ObservableCollection<T> collection, IEnumerable<T> range)
+        {
+            foreach (var item in range)
+            {
+                collection.Add(item);
+            }
         }
     }
 }

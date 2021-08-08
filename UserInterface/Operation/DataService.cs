@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -138,62 +139,6 @@ namespace UserInterface.Operation
             repos.Items = repos.Items.Where(id => id.ItemID != itemId).ToList();
 
             return repos.ItemsView;
-        }
-
-        public static void AddFieldList(FieldType fieldType, IBasicList fieldList)
-        {
-            Delegators.FieldActionCallback(fieldType,
-                delegate { AddSizesList(fieldList); },
-                null,
-                null);
-        }
-
-        public static void FieldListAddEntry(FieldType field, string listId, string entry)
-        {
-
-        }
-
-        public static void SizeListAddEntry(string listId, string entry)
-        {
-            // Add to local cache
-            repos.SizesList.Where(list => list.ID == listId).First().List.Add(entry);
-
-            // TODO: Add to data source
-        }
-
-        public static void SizeListEditEntry(string listId, string oldValue, string newValue)
-        {
-            // Edit local cache
-            int index = GetSizeListEntries(listId).IndexOf(oldValue);
-            GetSizeListEntries(listId)[index] = newValue;
-
-            // TODO: Edit data source
-        }
-
-        public static void SizeListDeleteEntry(string listId, string entry)
-        {
-            // Remove from local cache
-            GetSizeList(listId).List.Remove(entry);
-
-            // Remove from data source
-            Program.sizeManipulator.DeleteEntry(listId, entry);
-        }
-
-        // Size
-        public static void AddSizesList(IBasicList content)
-        {
-            Program.sizesRepo.AddFieldList(content);
-            UpdateSizes();
-        }
-
-        /// <summary>
-        /// Returns a specific size list object by its ID
-        /// </summary>
-        /// <param name="listId"></param>
-        /// <returns></returns>
-        private static IBasicList GetSizeList(string listId)
-        {
-            return repos.SizesList.Find(list => list.ID == listId);
         }
         
         #endregion
@@ -347,20 +292,61 @@ namespace UserInterface.Operation
                 .Select(grp => new SizeGroupView(grp)).ToList();
         }
         #endregion
-        #region Size Lists Object
+
+        #region Fields (Sizes, Brands or Ends)
+        public static IEnumerable<string> GetFieldIds(FieldType field)
+        {
+            return (IEnumerable<string>)
+                Delegators.FieldFunctionCallback(field,
+                GetSizesId, null, null);
+        }
+
+        public static void AddFieldList(FieldType field, IBasicList fieldList)
+        {
+            Delegators.FieldActionCallback(field,
+                delegate { AddSizeList(fieldList); },
+                null,
+                null);
+        }
+
+        public static void DeleteFieldList(FieldType field, string listId)
+        {
+            Delegators.FieldActionCallback(field,
+                delegate { DeleteSizeList(listId); },
+                delegate { DeleteBrandList(listId); },
+                delegate { DeleteEndsList(listId); });
+        }
+
+        /* Field List Entries */
+
+        public static void FieldListAddEntry(FieldType field, string listId, string entry)
+        {
+            Delegators.FieldActionCallback(field,
+                delegate { SizeListAddEntry(listId, entry); },
+                null, null);
+        }
+        #endregion
+
+        #region Size Lists
+
         public static List<BasicListView> GetSizes() => repos.SizesList;
 
-        /// <summary>
-        /// Get a list of entries for the given list ID.
-        /// </summary>
-        /// <param name="listId">The ID of the list to retrieve its entries.</param>
-        /// <returns></returns>
-        public static List<string> GetSizeListEntries(string listId)
+        private static IEnumerable<string> GetSizesId() => repos.SizesIdList;
+
+        public static void AddSizeList(IBasicList content)
         {
-            return
-                (from list in repos.SizesList
-                 where list.ID == listId
-                 select list.List).FirstOrDefault();
+            Program.sizesRepo.AddFieldList(content);
+            UpdateSizes();
+        }
+
+        /// <summary>
+        /// Returns a specific size list object by its ID
+        /// </summary>
+        /// <param name="listId"></param>
+        /// <returns></returns>
+        private static IBasicList GetSizeList(string listId)
+        {
+            return repos.SizesList.Find(list => list.ID == listId);
         }
 
         private static List<BasicListView> DeleteSizeList(string listId)
@@ -370,6 +356,64 @@ namespace UserInterface.Operation
 
             return repos.SizesList.ToList();
         }
+
+        /* Size List Entries */
+        
+        /// <summary>
+        /// Get a list of entries for the given list ID.
+        /// </summary>
+        /// <param name="listId">The ID of the list to retrieve its entries.</param>
+        /// <returns></returns>
+        public static ObservableCollection<string> SizeListGetEntries(string listId)
+        {
+            return
+                (from list in repos.SizesList
+                 where list.ID == listId
+                 select list).FirstOrDefault().List;
+            //select list.List).FirstOrDefault();
+        }
+
+        public static void SizeListAddEntry(string listId, string entry)
+        {
+            // Add to local cache
+            repos.SizesList.Where(list => list.ID == listId).First().List.Add(entry);
+
+            // TODO: Add to data source
+        }
+
+        public static void SizeListEditEntry(string listId, string oldValue, string newValue)
+        {
+            // Edit local cache
+            int index = SizeListGetEntries(listId).IndexOf(oldValue);
+            SizeListGetEntries(listId)[index] = newValue;
+
+            // Edit data source
+            Program.sizeManipulator.EditEntry(listId, oldValue, newValue);
+        }
+
+        public static void SizeListDeleteEntry(string listId, string entry)
+        {
+            // Remove from local cache
+            GetSizeList(listId).List.Remove(entry);
+
+            // Remove from data source
+            Program.sizeManipulator.DeleteEntry(listId, entry);
+        }
+
+        public static void SizeListMoveEntry(string listId, string entryValue, ShiftDirection direction)
+        {
+            // Move entry in local cache
+            ObservableCollection<string> listEntries =
+                repos.SizesList.Where(list => list.ID == listId)
+                .FirstOrDefault().List;
+
+            int n = listEntries.IndexOf(entryValue);
+            listEntries.Move(n, n + (int)direction);
+
+            // TODO: Move entry in data source
+            Program.sizeManipulator.MoveEntry(listId, entryValue, direction);
+        }
+        
         #endregion
         #region Brand List Object
         public static List<BasicListView> GetBrands()
@@ -429,14 +473,6 @@ namespace UserInterface.Operation
         {
             Delegators.FieldActionCallback(field,
                 UpdateSizes, UpdateBrands, UpdateEnds);
-        }
-
-        public static void DeleteFieldList(FieldType field, string listId)
-        {
-            Delegators.FieldActionCallback(field,
-                delegate { DeleteSizeList(listId); },
-                delegate { DeleteBrandList(listId); },
-                delegate { DeleteEndsList(listId); });
         }
 
         #region Basic View

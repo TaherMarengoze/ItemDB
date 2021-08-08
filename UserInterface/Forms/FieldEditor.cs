@@ -1,30 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
+using System.Collections.ObjectModel;
 using System.Windows.Forms;
-using System.Xml.Linq;
-using UserInterface.Factory;
-using UserInterface.Interfaces;
-using UserInterface.Models;
-using UserInterface.Operation;
-using UserInterface.Enums;
+
 
 namespace UserInterface.Forms
 {
+    using Enums;
+    using Interfaces;
+    using Models;
+    using Operation;
+    using System.Linq;
+
     public partial class FieldEditor : Form
     {
         private ISchema schema;
-        private XDocument fieldXDoc;
-        private List<string> listEntries;
-        private string fieldFilePath;
+        private ObservableCollection<string> listEntries;
 
-        FieldType fieldType;
+        FieldType field;
 
         public FieldEditor(FieldType type)
         {
             InitializeComponent();
-            fieldType = type;
+            field = type;
             switch (type)
             {
                 case FieldType.SIZE:
@@ -48,12 +45,12 @@ namespace UserInterface.Forms
 
         private void FieldSwitch()
         {
-            fieldFilePath = FilePathProcessor.FieldFilePath(fieldType);
+            //fieldFilePath = FilePathProcessor.FieldFilePath(fieldType);
 
-            Delegators.FieldActionCallback(fieldType,
-                delegate { fieldXDoc = Program.xDataDocs.Sizes; },
-                delegate { fieldXDoc = Program.xDataDocs.Brands; },
-                delegate { fieldXDoc = Program.xDataDocs.Ends; });
+            //Delegators.FieldActionCallback(fieldType,
+            //    delegate { fieldXDoc = Program.xDataDocs.Sizes; },
+            //    delegate { fieldXDoc = Program.xDataDocs.Brands; },
+            //    delegate { fieldXDoc = Program.xDataDocs.Ends; });
         }
 
         private void PostLoading()
@@ -63,7 +60,6 @@ namespace UserInterface.Forms
             //PopulateListSelector();
             PopulateGrid();
             DisableEntryAdd();
-            ViewXmlTextAll();
         }
 
         private void AskSaveBeforeClose()
@@ -75,28 +71,19 @@ namespace UserInterface.Forms
                          icon: MessageBoxIcon.Exclamation,
                 defaultButton: MessageBoxDefaultButton.Button1) == DialogResult.Yes)
             {
-                SaveXmlFile(fieldFilePath);
+                SaveToSource();
             }
         }
 
-        private void SaveXmlFile(string savePath)
+        private void SaveToSource()
         {
-            try
-            {
-                fieldXDoc.Save(savePath);
-                MessageBox.Show("File saved successfully");
-                DataService.UpdateFieldList(fieldType);
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Error saving the file.");
-            }
+            Program.context.Save(ContextEntity.Sizes);
         }
-
+        
         private void PopulateGrid()
         {
             dgvListDetails.DataSource = null;
-            object newDataSource = DataService.GetFieldLists(fieldType);
+            object newDataSource = DataService.GetFieldLists(field);
             dgvListDetails.DataSource = newDataSource;
 
             // Auto-Size Columns and Rows
@@ -112,9 +99,7 @@ namespace UserInterface.Forms
         private void UpdateEntriesList()
         {
             string listId = GetSelectedListId();
-
-            listEntries = //GetListEntries(listId);
-                DataService.GetSizeListEntries(listId);
+            listEntries = DataService.SizeListGetEntries(listId);
 
             lbxFieldListItems.DataSource = null;
             lbxFieldListItems.DataSource = listEntries;
@@ -122,22 +107,20 @@ namespace UserInterface.Forms
 
         private void PopulateEntryList(string listId)
         {
-            listEntries = //GetListEntries(listId);
-                DataService.GetSizeListEntries(listId);
-
+            listEntries = DataService.SizeListGetEntries(listId);
             lbxFieldListItems.DataSource = listEntries;
         }
 
         private void EnableControls()
         {
             grpListData.Enabled = true;
-            mnuItmSaveFile.Enabled = true;
+            tsmiSave.Enabled = true;
         }
 
         private void DisableControls()
         {
             grpListData.Enabled = false;
-            mnuItmSaveFile.Enabled = false;
+            tsmiSave.Enabled = false;
         }
 
         private void SelectFirstListItem()
@@ -168,31 +151,14 @@ namespace UserInterface.Forms
 
         #region File-Specific
 
-        private List<string> GetAllListIDs()
-        {
-            return fieldXDoc.Descendants(schema.ListParent)
-                .Select(id => id.Attribute(schema.ListId).Value).ToList();
-        }
-
-        private XElement GetListEntry(string listId, string item)
-        {
-            XElement fieldList = (from list in fieldXDoc.Descendants(schema.ListParent)
-                                  where list.Attribute(schema.ListId).Value == listId
-                                  select list).First();
-
-            return
-                (from entry in fieldList.Descendants(schema.ListChild)
-                 where entry.Value == item
-                 select entry).First();
-        }
-
         private void AddNewList()
         {
-            FieldListEditor listEditor = new FieldListEditor(GetAllListIDs(), schema);
+            FieldListEditor listEditor =
+                new FieldListEditor(DataService.GetFieldIds(field), schema);
 
             if (listEditor.ShowDialog() == DialogResult.OK)
             {
-                DataService.AddFieldList(fieldType, listEditor.FieldList);
+                DataService.AddFieldList(field, listEditor.FieldList);
                 PopulateGrid();
             }
         }
@@ -201,7 +167,7 @@ namespace UserInterface.Forms
         {
             if (Common.ShowEntryRemoveConfirmation(false) == DialogResult.OK)
             {
-                DataService.DeleteFieldList(fieldType, listId);
+                DataService.DeleteFieldList(field, listId);
 
                 PopulateGrid();
                 SelectFirstListItem();
@@ -212,11 +178,13 @@ namespace UserInterface.Forms
         {
             ListMetadata editMeta = new ListMetadata(listId, listName);
 
-            FieldListEditor listEditor = new FieldListEditor(GetAllListIDs(), editMeta);
+            FieldListEditor listEditor =
+                new FieldListEditor(DataService.GetFieldIds(field), editMeta);
+
             if (listEditor.ShowDialog() == DialogResult.OK)
             {
                 // Modify the list metadata
-                XDataService.ModifyFieldXDocument(fieldType, editMeta.ID, listEditor.ListMetadata, schema);
+                XDataService.ModifyFieldXDocument(field, editMeta.ID, listEditor.ListMetadata, schema);
 
                 PopulateGrid();
             }
@@ -239,7 +207,7 @@ namespace UserInterface.Forms
 #pragma warning disable IDE1006 // Naming Styles
         private void Form_Load(object sender, EventArgs e)
         {
-            FieldSwitch();
+            //FieldSwitch();
             PostLoading();
         }
 
@@ -250,13 +218,8 @@ namespace UserInterface.Forms
             if (entryValue != string.Empty)
             {
                 string fieldId = GetSelectedListId();
-
-                #region Test
-                DataService.SizeListAddEntry(fieldId, entryValue);
-                #endregion
-
-                //AddNewEntry(fieldId, entryValue);
-
+                DataService.FieldListAddEntry(field, fieldId, entryValue);
+                
                 txtEntryValue.Text = string.Empty;
                 UpdateEntriesList();
                 SelectListItem(entryValue);
@@ -293,17 +256,12 @@ namespace UserInterface.Forms
             {
                 string listId = GetSelectedListId();
                 string selectedEntry = lbxFieldListItems.Text;
-                XElement dataItem = GetListEntry(listId, selectedEntry);
-
                 
-                ValueEdit valueEditBox = //new ValueEdit(dataItem.Value);
-                    new ValueEdit(selectedEntry);
+                ValueEdit valueEditBox = new ValueEdit(selectedEntry);
+
                 if (valueEditBox.ShowDialog() == DialogResult.OK)
                 {
-                    dataItem.Value = valueEditBox.NewValue;
-                    /* TEST */
                     DataService.SizeListEditEntry(listId, selectedEntry, valueEditBox.NewValue);
-
                     UpdateEntriesList();
                     lbxFieldListItems.Text = valueEditBox.NewValue;
                 }
@@ -315,10 +273,9 @@ namespace UserInterface.Forms
             AddNewList();
         }
 
-        private void mnuItmSaveFile_Click(object sender, EventArgs e)
+        private void tsmiSave_Click(object sender, EventArgs e)
         {
-            SaveXmlFile(fieldFilePath);
-            ViewXmlTextAll();
+            SaveToSource();
         }
 
         private void tsmiClose_Click(object sender, EventArgs e)
@@ -372,13 +329,11 @@ namespace UserInterface.Forms
             string listId = GetSelectedListId();
             string item = (string)lbxFieldListItems.SelectedValue;
             int selecIndex = lbxFieldListItems.SelectedIndex;
-            XElement moveXItem = GetListEntry(listId, item);
-            moveXItem.PreviousNode.AddBeforeSelf(moveXItem);
-            moveXItem.Remove();
+
+            DataService.SizeListMoveEntry(listId, item, ShiftDirection.UP);
+            
             UpdateEntriesList();
-            SelectShiftedItem(selecIndex, SelectionShift.UP);
-            ViewXmlText(listId);
-            ViewXmlTextAll();
+            SelectShiftedItem(selecIndex, ShiftDirection.UP);
         }
 
         private void btnDown_Click(object sender, EventArgs e)
@@ -386,16 +341,14 @@ namespace UserInterface.Forms
             string listId = GetSelectedListId();
             string item = (string)lbxFieldListItems.SelectedValue;
             int selecIndex = lbxFieldListItems.SelectedIndex;
-            XElement moveXItem = GetListEntry(listId, item);
-            moveXItem.NextNode.AddAfterSelf(moveXItem);
-            moveXItem.Remove();
+
+            DataService.SizeListMoveEntry(listId, item, ShiftDirection.DOWN);
+
             UpdateEntriesList();
-            SelectShiftedItem(selecIndex, SelectionShift.DOWN);
-            ViewXmlText(listId);
-            ViewXmlTextAll();
+            SelectShiftedItem(selecIndex, ShiftDirection.DOWN);
         }
 
-        private void SelectShiftedItem(int selectionIndex, SelectionShift shift)
+        private void SelectShiftedItem(int selectionIndex, ShiftDirection shift)
         {
             if (lbxFieldListItems.Focused)
                 lbxFieldListItems.SelectedIndex = selectionIndex;
@@ -461,26 +414,6 @@ namespace UserInterface.Forms
                 }
             }
         }
-
-        XML_Viewer viewer = new XML_Viewer();
-        private void ViewXmlTextAll()
-        {
-            //viewer.rtbViewerAll.Text = fieldXDoc.ToString();
-        }
-        private void ViewXmlText(string listId)
-        {
-            //if (!viewer.Visible)
-            //{
-            //    viewer.Show();
-            //}
-
-            //viewer.rtbViewerPart.Text = GetSpecificList(listId).ToString();
-        }
-        private void FieldEditor_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            viewer.Close();
-        }
-
 #pragma warning restore IDE1006 // Naming Styles
         #endregion
 

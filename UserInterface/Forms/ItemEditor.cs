@@ -612,7 +612,7 @@ namespace UserInterface.Forms
             if (dgvSizeGroup.SelectedRows.Count > 0)
             {
                 string sizeId = dgvSizeGroup.SelectedRows[0].Cells["DefaultListID"].Value.ToString();
-                lbxSizeListEntries.DataSource = DataService.GetSizeListEntries(sizeId);
+                lbxSizeListEntries.DataSource = DataService.SizeListGetEntries(sizeId);
 
                 SizeGroupView sgv = dgvSizeGroup.SelectedRows[0].DataBoundItem as SizeGroupView;
                 cboAltListSelector.DataSource = sgv.AltIdList;
@@ -841,7 +841,7 @@ namespace UserInterface.Forms
             if (cboAltListSelector.SelectedIndex != -1)
             {
                 string sizeId = cboAltListSelector.Text;
-                lbxAltSizeListEntries.DataSource = DataService.GetSizeListEntries(sizeId);
+                lbxAltSizeListEntries.DataSource = DataService.SizeListGetEntries(sizeId);
             }
             else
             {
@@ -1218,7 +1218,7 @@ namespace UserInterface.Forms
             SizeGroupAdder fieldAdder = new SizeGroupAdder(FieldType.SIZE);
             if (fieldAdder.ShowDialog() == DialogResult.OK)
             {
-                DataService.AddSizesList(fieldAdder.FieldListItem);
+                DataService.AddSizeList(fieldAdder.FieldListItem);
             }
         }
 

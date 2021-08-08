@@ -12,6 +12,7 @@ namespace UserInterface.Models
         private IEnumerable<IItem> _items;
         private IEnumerable<Specs> _specsList;
         private IEnumerable<SizeGroup> _sizeGroups;
+        private List<BasicListView> _sizesList;
         private IEnumerable<BasicListView> _brandsList;
         private IEnumerable<BasicListView> _endsList;
 
@@ -43,8 +44,7 @@ namespace UserInterface.Models
 
         public IEnumerable<ItemCategory> Categories { get; set; }
 
-
-        // Specs
+        #region Specs
         public IEnumerable<Specs> SpecsList
         {
             get => _specsList;
@@ -56,9 +56,9 @@ namespace UserInterface.Models
         }
 
         public List<string> SpecsIdList { get; private set; }
+        #endregion
 
-
-        // SizeGroups
+        #region Size Groups
         public IEnumerable<SizeGroup> SizeGroups
         {
             get => _sizeGroups;
@@ -70,11 +70,22 @@ namespace UserInterface.Models
         }
 
         public List<string> SizeGroupIdList { get; private set; }
+        #endregion
 
-        // Sizes
-        public List<BasicListView> SizesList{ get; set; }
+        #region Sizes
+        public List<BasicListView> SizesList
+        {
+            get => _sizesList; set
+            {
+                _sizesList = value;
+                SizesIdList = value.Select(sizes => sizes.ID);
+            }
+        }
 
-        // Brands
+        public IEnumerable<string> SizesIdList { get; private set; }
+        #endregion
+
+        #region Brands
         public IEnumerable<BasicListView> BrandsList
         {
             get => _brandsList;
@@ -86,9 +97,9 @@ namespace UserInterface.Models
         }
 
         public List<string> BrandsIdList { get; private set; }
+        #endregion
 
-
-        // Ends
+        #region Ends
         public IEnumerable<BasicListView> EndsList
         {
             get => _endsList;
@@ -100,5 +111,6 @@ namespace UserInterface.Models
         }
 
         public List<string> EndsIdList { get; private set; }
+        #endregion
     }
 }

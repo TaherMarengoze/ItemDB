@@ -32,7 +32,7 @@
         Custom = 2
     }
 
-    public enum SelectionShift
+    public enum ShiftDirection
     {
         UP = -1,
         DOWN = +1
