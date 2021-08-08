@@ -6,15 +6,15 @@ namespace UserInterface
     using Enums;
     using Interfaces;
 
-    public class SizesManipulator : IFieldManipulator
+    public class EndsManipulator : IFieldManipulator
     {
         private readonly XDocument dataSource;
         private readonly ISchema schema;
 
-        public SizesManipulator(XDocument source)
+        public EndsManipulator(XDocument source)
         {
             dataSource = source;
-            schema = new Models.FieldSchema(FieldType.SIZE);
+            schema = new Models.FieldSchema(FieldType.ENDS);
         }
 
         public void AddEntry(string listId, string entry)

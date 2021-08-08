@@ -27,6 +27,9 @@ namespace UserInterface
         public static IFieldRepos brandsRepo;
         public static IFieldManipulator brandManipulator;
 
+        public static IFieldRepos endsRepo;
+        public static IFieldManipulator endsManipulator;
+
         public static XDataDocuments xDataDocs;
 
         public static bool TestAutoLoad = true;

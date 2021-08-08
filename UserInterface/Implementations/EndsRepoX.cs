@@ -7,15 +7,15 @@ namespace UserInterface
 {
     using Interfaces;
 
-    public class BrandsRepoX : IFieldRepos
+    public class EndsRepoX : IFieldRepos
     {
         private readonly XDocument dataSource;
         private readonly ISchema schema;
 
-        public BrandsRepoX(XDocument source)
+        public EndsRepoX(XDocument source)
         {
             dataSource = source;
-            schema = new Models.FieldSchema(Enums.FieldType.BRAND);
+            schema = new Models.FieldSchema(Enums.FieldType.ENDS);
         }
 
         public void AddFieldList(IBasicList listData)

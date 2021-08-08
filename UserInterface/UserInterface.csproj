@@ -72,7 +72,6 @@
     <Compile Include="Class1.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CodeFile1.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="Controllers\SimpleListController.cs" />
     <Compile Include="Enums\Enums.cs" />
@@ -122,6 +121,8 @@
     </Compile>
     <Compile Include="Implementations\BrandsManipulator.cs" />
     <Compile Include="Implementations\BrandsRepoX.cs" />
+    <Compile Include="Implementations\EndsManipulator.cs" />
+    <Compile Include="Implementations\EndsRepoX.cs" />
     <Compile Include="Implementations\SizesManipulator.cs" />
     <Compile Include="Implementations\SpecsRepoX.cs" />
     <Compile Include="Implementations\XReader.cs" />
@@ -144,6 +145,7 @@
     <Compile Include="Interfaces\ISpecs.cs" />
     <Compile Include="Interfaces\ISpec.cs" />
     <Compile Include="Interfaces\ISpecListEntry.cs" />
+    <Compile Include="Models\FieldSchema.cs" />
     <Compile Include="Models\IBasicList.cs" />
     <Compile Include="Models\ItemCategory.cs" />
     <Compile Include="Models\DataRepos.cs" />
@@ -201,7 +203,6 @@
     </Compile>
     <Compile Include="Models\SizeGroupDraft.cs" />
     <Compile Include="Models\ListMetadata.cs" />
-    <Compile Include="Models\ListStructure.cs" />
     <Compile Include="Models\SizeGroup.cs" />
     <Compile Include="Models\SpecListEntry.cs" />
     <Compile Include="Models\Specs.cs" />

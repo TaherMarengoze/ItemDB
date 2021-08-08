@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Xml.Linq;
 
 namespace UserInterface.Operation
 {
@@ -300,13 +299,23 @@ namespace UserInterface.Operation
         /// <param name="field">The field type is either a Size type, Brand type or Ends type.</param>
         /// <returns></returns>
         public static List<BasicListView> GetFieldLists(FieldType field)
-            => (List<BasicListView>)Delegators.FieldFunctionCallback(field, GetSizes, GetBrands, GetEnds);
+        {
+            return (List<BasicListView>)
+                Delegators.FieldFunctionCallback(field,
+                GetSizes, GetBrands, GetEnds);
+        }
+
         public static IEnumerable<string> GetFieldIds(FieldType field)
-            => (IEnumerable<string>)Delegators.FieldFunctionCallback(field, GetSizesId, GetBrandsId, GetEndsId);
+        {
+            return (IEnumerable<string>)
+                Delegators.FieldFunctionCallback(field,
+                GetSizesId, GetBrandsId, GetEndsId);
+        }
+
         public static void AddFieldList(FieldType field, IBasicList fieldList)
         {
             Delegators.FieldActionCallback(field,
-            AddSizeList, AddBrandList, null,
+            AddSizeList, AddBrandList, AddEndsList,
             fieldList);
         }
         public static void DeleteFieldList(FieldType field, string listId)
@@ -319,28 +328,39 @@ namespace UserInterface.Operation
         {
             return (ObservableCollection<string>)
                 Delegators.FieldFunctionCallback(field,
-                SizeListGetEntries, BrandListGetEntries, null,
+                SizeListGetEntries, BrandListGetEntries, EndsListGetEntries,
                 listId);
         }
         public static void FieldListAddEntry(FieldType field, string listId, string entry)
-            => Delegators.FieldActionCallback(field,
-                SizeListAddEntry, BrandListAddEntry, null,
+        {
+            Delegators.FieldActionCallback(field,
+                SizeListAddEntry, BrandListAddEntry, EndsListAddEntry,
                 listId, entry);
+        }
+
         public static void FieldListEditEntry(FieldType field, string listId, string oldValue, string newValue)
-            => Delegators.FieldActionCallback(field,
-                SizeListEditEntry, BrandListEditEntry, null,
+        {
+            Delegators.FieldActionCallback(field,
+                SizeListEditEntry, BrandListEditEntry, EndsListEditEntry,
                 listId, oldValue, newValue);
+        }
+
         public static void FieldListDeleteEntry(FieldType field, string listId, string entry)
-            => Delegators.FieldActionCallback(field,
-                SizeListDeleteEntry, BrandListDeleteEntry, null,
+        {
+            Delegators.FieldActionCallback(field,
+                SizeListDeleteEntry, BrandListDeleteEntry, EndsListDeleteEntry,
                 listId, entry);
+        }
+
         public static void FieldListMoveEntry(FieldType field, string listId, string entryValue, ShiftDirection direction)
-            => Delegators.FieldActionCallback(field,
+        {
+            Delegators.FieldActionCallback(field,
                 delegate { SizeListMoveEntry(listId, entryValue, direction); },
                 delegate { BrandListMoveEntry(listId, entryValue, direction); },
-                null);
+                delegate { EndsListMoveEntry(listId, entryValue, direction); });
+    }
         #endregion
-        
+
         #region Size Lists
         private static List<BasicListView> GetSizes() => repos.SizesList;
         private static IEnumerable<string> GetSizesId() => repos.SizesIdList;
@@ -431,8 +451,7 @@ namespace UserInterface.Operation
             // Delete from data source
             Program.brandsRepo.DeleteFieldList(listId); 
         }
-        private static IBasicList GetBrandList(string listId)
-            => repos.BrandsList.Find(list => list.ID == listId);
+        private static IBasicList GetBrandList(string listId) => repos.BrandsList.Find(list => list.ID == listId);
         private static ObservableCollection<string> BrandListGetEntries(string listId)
         {
             return
@@ -480,33 +499,69 @@ namespace UserInterface.Operation
         }
         #endregion
 
-        #region Ends List Object
+        #region Ends Lists
         private static List<BasicListView> GetEnds() => repos.EndsList;
         private static IEnumerable<string> GetEndsId() => repos.EndsIdList;
-        //private static void AddEndsList(IBasicList content)
+        private static void AddEndsList(IBasicList content)
+        {
+            Program.endsRepo.AddFieldList(content);
+            UpdateEnds();
+        }
         private static void DeleteEndsList(string listId)
         {
+            // Delete from local cache
             repos.EndsList = repos.EndsList.Where(list => list.ID != listId).ToList();
 
-            // Delete Ends List Element from the XML Document
-            DeleteFieldListFromXDocument(Program.xDataDocs.Ends, listId, "endsList");
+            // Delete from data source
+            Program.endsRepo.DeleteFieldList(listId);
         }
-        //private static IBasicList GetEndsList(string listId)
-        //private static ObservableCollection<string> EndsListGetEntries(string listId)
-        //private static void EndsListAddEntry(string listId, string entry)
-        //private static void EndsListEditEntry(string listId, string oldValue, string newValue)
-        //private static void EndsListDeleteEntry(string listId, string entry)
-        //private static void EndsListMoveEntry(string listId, string entryValue, ShiftDirection direction)
-        #endregion
-
-        private static void DeleteFieldListFromXDocument(XDocument fieldXDoc, string listId, XName nodeName)
+        private static IBasicList GetEndsList(string listId) => repos.EndsList.Find(list => list.ID == listId);
+        private static ObservableCollection<string> EndsListGetEntries(string listId)
         {
-            XElement deleteFieldList =
-                fieldXDoc.Descendants(nodeName)
-                .Where(list => list.Attribute("listID").Value == listId).First();
-
-            deleteFieldList.Remove();
+            return
+                (from list in repos.EndsList
+                 where list.ID == listId
+                 select list).FirstOrDefault().List;
         }
+        private static void EndsListAddEntry(string listId, string entry)
+        {
+            // Add to local cache
+            repos.EndsList.Where(list => list.ID == listId).First().List.Add(entry);
+
+            // Add to data source
+            Program.endsManipulator.AddEntry(listId, entry);
+        }
+        private static void EndsListEditEntry(string listId, string oldValue, string newValue)
+        {
+            // Edit local cache
+            int index = EndsListGetEntries(listId).IndexOf(oldValue);
+            EndsListGetEntries(listId)[index] = newValue;
+
+            // Edit data source
+            Program.endsManipulator.EditEntry(listId, oldValue, newValue);
+        }
+        private static void EndsListDeleteEntry(string listId, string entry)
+        {
+            // Remove from local cache
+            GetEndsList(listId).List.Remove(entry);
+
+            // Remove from data source
+            Program.endsManipulator.DeleteEntry(listId, entry);
+        }
+        private static void EndsListMoveEntry(string listId, string entryValue, ShiftDirection direction)
+        {
+            // Move entry in local cache
+            ObservableCollection<string> listEntries =
+                repos.EndsList.Where(list => list.ID == listId)
+                .FirstOrDefault().List;
+
+            int n = listEntries.IndexOf(entryValue);
+            listEntries.Move(n, n + (int)direction);
+
+            // Move entry in data source
+            Program.endsManipulator.MoveEntry(listId, entryValue, direction);
+        }
+        #endregion
 
         public static bool IsDuplicateItemId(string itemId)
         {

@@ -69,6 +69,9 @@
 
             Program.brandsRepo = new BrandsRepoX(Program.xDataDocs.Brands);
             Program.brandManipulator = new BrandsManipulator(Program.xDataDocs.Brands);
+
+            Program.endsRepo = new EndsRepoX(Program.xDataDocs.Ends);
+            Program.endsManipulator = new EndsManipulator(Program.xDataDocs.Ends);
         }
 
         public void TestLoadXmlFile(string filePath)

@@ -14,7 +14,7 @@ namespace UserInterface
         public BrandsManipulator(XDocument source)
         {
             dataSource = source;
-            schema = new Models.ListStructure("brand");
+            schema = new Models.FieldSchema(FieldType.BRAND);
         }
 
         public void AddEntry(string listId, string entry)

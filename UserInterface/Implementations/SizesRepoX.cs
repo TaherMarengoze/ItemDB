@@ -15,7 +15,7 @@ namespace UserInterface
         public SizesRepoX(XDocument source)
         {
             dataSource = source;
-            schema = new Models.ListStructure("size");
+            schema = new Models.FieldSchema(Enums.FieldType.SIZE);
         }
 
         public void AddFieldList(IBasicList listData)
