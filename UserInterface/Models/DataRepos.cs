@@ -13,8 +13,8 @@ namespace UserInterface.Models
         private IEnumerable<Specs> _specsList;
         private IEnumerable<SizeGroup> _sizeGroups;
         private List<BasicListView> _sizesList;
-        private IEnumerable<BasicListView> _brandsList;
-        private IEnumerable<BasicListView> _endsList;
+        private List<BasicListView> _brandsList;
+        private List<BasicListView> _endsList;
 
         public DataRepos()
         {
@@ -86,31 +86,31 @@ namespace UserInterface.Models
         #endregion
 
         #region Brands
-        public IEnumerable<BasicListView> BrandsList
+        public List<BasicListView> BrandsList
         {
             get => _brandsList;
             set
             {
                 _brandsList = value;
-                BrandsIdList = value.Select(brands => brands.ID).ToList();
+                BrandsIdList = value.Select(brands => brands.ID);
             }
         }
 
-        public List<string> BrandsIdList { get; private set; }
+        public IEnumerable<string> BrandsIdList { get; private set; }
         #endregion
 
         #region Ends
-        public IEnumerable<BasicListView> EndsList
+        public List<BasicListView> EndsList
         {
             get => _endsList;
             set
             {
                 _endsList = value;
-                EndsIdList = value.Select(ends => ends.ID).ToList();
+                EndsIdList = value.Select(ends => ends.ID);
             }
         }
 
-        public List<string> EndsIdList { get; private set; }
+        public IEnumerable<string> EndsIdList { get; private set; }
         #endregion
     }
 }

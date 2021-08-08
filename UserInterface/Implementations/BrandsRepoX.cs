@@ -7,15 +7,15 @@ namespace UserInterface
 {
     using Interfaces;
 
-    public class SizesRepoX : IFieldRepos
+    public class BrandsRepoX : IFieldRepos
     {
         private readonly XDocument dataSource;
         private readonly ISchema schema;
 
-        public SizesRepoX(XDocument source)
+        public BrandsRepoX(XDocument source)
         {
             dataSource = source;
-            schema = new Models.ListStructure("size");
+            schema = new Models.ListStructure("brand");
         }
 
         public void AddFieldList(IBasicList listData)
@@ -23,7 +23,7 @@ namespace UserInterface
             XElement content = SerializeSizeList(listData);
             dataSource.Root.Add(content);
         }
-        
+
         public IBasicList ReadFieldList(string listId) => throw new NotImplementedException();
 
         public void UpdateFieldList(string refId, IBasicList list) => throw new NotImplementedException();

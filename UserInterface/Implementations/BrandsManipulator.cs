@@ -19,7 +19,7 @@ namespace UserInterface
 
         public void AddEntry(string listId, string entry)
         {
-
+            GetList(listId).Element(schema.ChildGroup).Add(new XElement(schema.ListChild, entry));
         }
 
         public void EditEntry(string listId, string oldValue, string newValue)

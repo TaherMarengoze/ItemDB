@@ -14,16 +14,23 @@ namespace UserInterface
         /// </summary>
         public static FilePathProcessor fpp;
         public static ISourceReader reader;
+
+        public static ISourceContext context = new XmlContext();
+
         public static IModifier itemModifier;
+
         public static ISpecsRepo specsRepo;
+
         public static IFieldRepos sizesRepo;
         public static IFieldManipulator sizeManipulator;
-        public static ISourceContext context = new XmlContext();
+
+        public static IFieldRepos brandsRepo;
+        public static IFieldManipulator brandManipulator;
+
         public static XDataDocuments xDataDocs;
 
         public static bool TestAutoLoad = true;
-        public static string TestPath =
-            Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
+        public static string TestPath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
 
         #region WindowsAPI
         [System.Runtime.InteropServices.DllImport("user32.dll")]

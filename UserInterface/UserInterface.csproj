@@ -75,7 +75,6 @@
     <Compile Include="CodeFile1.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="Controllers\SimpleListController.cs" />
-    <Compile Include="Core\XDataIO.cs" />
     <Compile Include="Enums\Enums.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Factory\Delegators.cs" />
@@ -122,6 +121,7 @@
       <DependentUpon>XML Viewer.cs</DependentUpon>
     </Compile>
     <Compile Include="Implementations\BrandsManipulator.cs" />
+    <Compile Include="Implementations\BrandsRepoX.cs" />
     <Compile Include="Implementations\SizesManipulator.cs" />
     <Compile Include="Implementations\SpecsRepoX.cs" />
     <Compile Include="Implementations\XReader.cs" />

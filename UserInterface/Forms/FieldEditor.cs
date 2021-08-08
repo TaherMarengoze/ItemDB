@@ -99,7 +99,8 @@ namespace UserInterface.Forms
         private void UpdateEntriesList()
         {
             string listId = GetSelectedListId();
-            listEntries = DataService.SizeListGetEntries(listId);
+            listEntries = //DataService.SizeListGetEntries(listId);
+                DataService.FieldListGetEntries(field, listId);
 
             lbxFieldListItems.DataSource = null;
             lbxFieldListItems.DataSource = listEntries;
@@ -107,7 +108,9 @@ namespace UserInterface.Forms
 
         private void PopulateEntryList(string listId)
         {
-            listEntries = DataService.SizeListGetEntries(listId);
+            listEntries = //DataService.SizeListGetEntries(listId);
+                DataService.FieldListGetEntries(field, listId);
+
             lbxFieldListItems.DataSource = listEntries;
         }
 
@@ -238,7 +241,8 @@ namespace UserInterface.Forms
             {
                 string listId = GetSelectedListId();
                 string selectedEntry = lbxFieldListItems.Text;
-                DataService.SizeListDeleteEntry(listId, selectedEntry);
+                //DataService.SizeListDeleteEntry(listId, selectedEntry);
+                DataService.FieldListDeleteEntry(field, listId, selectedEntry);
 
                 UpdateEntriesList();
                 SelectFirstListItem();
@@ -261,7 +265,9 @@ namespace UserInterface.Forms
 
                 if (valueEditBox.ShowDialog() == DialogResult.OK)
                 {
-                    DataService.SizeListEditEntry(listId, selectedEntry, valueEditBox.NewValue);
+                    //DataService.SizeListEditEntry(listId, selectedEntry, valueEditBox.NewValue);
+                    DataService.FieldListEditEntry(field, listId, selectedEntry, valueEditBox.NewValue);
+
                     UpdateEntriesList();
                     lbxFieldListItems.Text = valueEditBox.NewValue;
                 }
@@ -330,7 +336,8 @@ namespace UserInterface.Forms
             string item = (string)lbxFieldListItems.SelectedValue;
             int selecIndex = lbxFieldListItems.SelectedIndex;
 
-            DataService.SizeListMoveEntry(listId, item, ShiftDirection.UP);
+            //DataService.SizeListMoveEntry(listId, item, ShiftDirection.UP);
+            DataService.FieldListMoveEntry(field, listId, item, ShiftDirection.UP);
             
             UpdateEntriesList();
             SelectShiftedItem(selecIndex, ShiftDirection.UP);
@@ -342,7 +349,8 @@ namespace UserInterface.Forms
             string item = (string)lbxFieldListItems.SelectedValue;
             int selecIndex = lbxFieldListItems.SelectedIndex;
 
-            DataService.SizeListMoveEntry(listId, item, ShiftDirection.DOWN);
+            //DataService.SizeListMoveEntry(listId, item, ShiftDirection.DOWN);
+            DataService.FieldListMoveEntry(field, listId, item, ShiftDirection.DOWN);
 
             UpdateEntriesList();
             SelectShiftedItem(selecIndex, ShiftDirection.DOWN);

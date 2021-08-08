@@ -58,18 +58,7 @@ namespace UserInterface.Operation
                     new XAttribute("catID", catId),
                     new XAttribute("name", catName));
         }
-
-        /*
-        public static XDocument AddFieldItemToXDocument(FieldType field, XElement fieldItem)
-        {
-            XDocument fieldXdoc = GetFieldXDoc(field);
-            fieldXdoc.Root.Add(fieldItem);
-            DataService.UpdateFieldList(field);
-
-            return fieldXdoc;
-        }
-        */
-
+        
         public static void ModifyFieldXDocument(FieldType field, string existingId, ListMetadata data, ISchema xn)
         {
             XDocument fieldXdoc = GetFieldXDoc(field);
@@ -125,14 +114,5 @@ namespace UserInterface.Operation
                 brandCallback: delegate { return Program.xDataDocs.Brands; },
                 endsCallback: delegate { return Program.xDataDocs.Ends; });
         }
-
-        //private static void DeleteFieldListFromXDocument(XDocument fieldXDoc, string listId, XName nodeName)
-        //{
-        //    XElement deleteFieldList =
-        //        fieldXDoc.Descendants(nodeName)
-        //        .Where(list => list.Attribute("listID").Value == listId).First();
-
-        //    deleteFieldList.Remove();
-        //}
     }
 }

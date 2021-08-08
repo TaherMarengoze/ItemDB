@@ -149,14 +149,14 @@ namespace UserInterface.Forms
             dgvSizeGroup.DataSource = DataService.GetSizeGroupsVO();
 
             // Bind Brands ID selector combobox
-            cboBrandListId.DataSource = DataService.GetBrandListsId();
+            cboBrandListId.DataSource = DataService.GetFieldIds(FieldType.BRAND);
             cboBrandListId.SelectedIndex = -1;
-            dgvBrandsLists.DataSource = DataService.GetBrands();
+            dgvBrandsLists.DataSource = DataService.GetFieldLists(FieldType.BRAND);
 
             // Bind Ends List ID selector combobox
-            cboEndsListId.DataSource = DataService.GetEndsListsId();
+            cboEndsListId.DataSource = DataService.GetFieldIds(FieldType.ENDS);
             cboEndsListId.SelectedIndex = -1;
-            dgvEndsLists.DataSource = DataService.GetEnds();
+            dgvEndsLists.DataSource = DataService.GetFieldLists(FieldType.ENDS);
 
             // Images Listbox
             lbxImages.DisplayMember = "DraftDisplayName";
@@ -612,7 +612,8 @@ namespace UserInterface.Forms
             if (dgvSizeGroup.SelectedRows.Count > 0)
             {
                 string sizeId = dgvSizeGroup.SelectedRows[0].Cells["DefaultListID"].Value.ToString();
-                lbxSizeListEntries.DataSource = DataService.SizeListGetEntries(sizeId);
+                lbxSizeListEntries.DataSource = //DataService.SizeListGetEntries(sizeId);
+                    DataService.FieldListGetEntries(FieldType.SIZE, sizeId);
 
                 SizeGroupView sgv = dgvSizeGroup.SelectedRows[0].DataBoundItem as SizeGroupView;
                 cboAltListSelector.DataSource = sgv.AltIdList;
@@ -841,7 +842,8 @@ namespace UserInterface.Forms
             if (cboAltListSelector.SelectedIndex != -1)
             {
                 string sizeId = cboAltListSelector.Text;
-                lbxAltSizeListEntries.DataSource = DataService.SizeListGetEntries(sizeId);
+                lbxAltSizeListEntries.DataSource = //DataService.SizeListGetEntries(sizeId);
+                    DataService.FieldListGetEntries(FieldType.SIZE, sizeId);
             }
             else
             {
@@ -1218,7 +1220,7 @@ namespace UserInterface.Forms
             SizeGroupAdder fieldAdder = new SizeGroupAdder(FieldType.SIZE);
             if (fieldAdder.ShowDialog() == DialogResult.OK)
             {
-                DataService.AddSizeList(fieldAdder.FieldListItem);
+                DataService.AddFieldList(FieldType.SIZE, fieldAdder.FieldListItem);
             }
         }
 
@@ -1249,7 +1251,7 @@ namespace UserInterface.Forms
         {
             fieldSelector.DataSource = null;
             fieldDataView.DataSource = null;
-            fieldSelector.DataSource = DataService.GetFieldListsId(fieldType);
+            fieldSelector.DataSource = DataService.GetFieldIds(fieldType);
             fieldDataView.DataSource = DataService.GetFieldLists(fieldType);
         }
 
