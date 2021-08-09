@@ -145,7 +145,7 @@ namespace UserInterface.Forms
         private void AddNewList()
         {
             FieldListEditor listEditor =
-                new FieldListEditor(DataService.GetFieldIds(fieldType), schema);
+                new FieldListEditor(DataService.GetFieldIds(fieldType));
 
             if (listEditor.ShowDialog() == DialogResult.OK)
             {
@@ -167,15 +167,14 @@ namespace UserInterface.Forms
 
         private void EditExistingList(string listId, string listName)
         {
-            ListMetadata editMeta = new ListMetadata(listId, listName);
+            IBasicList editList = DataService.GetFieldList(fieldType, listId);
 
             FieldListEditor listEditor =
-                new FieldListEditor(DataService.GetFieldIds(fieldType), editMeta);
+                new FieldListEditor(DataService.GetFieldIds(fieldType), editList);
 
             if (listEditor.ShowDialog() == DialogResult.OK)
             {
-                // Modify the list metadata
-                XDataService.ModifyFieldXDocument(fieldType, editMeta.ID, listEditor.ListMetadata, schema);
+                DataService.EditFieldList(fieldType, listId, listEditor.FieldList);
 
                 PopulateGrid();
             }

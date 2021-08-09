@@ -1,10 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Xml.Linq;
-using UserInterface.Factory;
-using UserInterface.Interfaces;
-using UserInterface.Models;
-using UserInterface.Enums;
 
 namespace UserInterface.Operation
 {
@@ -58,21 +53,6 @@ namespace UserInterface.Operation
                     new XAttribute("catID", catId),
                     new XAttribute("name", catName));
         }
-        
-        public static void ModifyFieldXDocument(FieldType field, string existingId, ListMetadata data, ISchema xn)
-        {
-            XDocument fieldXdoc = GetFieldXDoc(field);
-
-            XElement list =
-                (from fieldList in fieldXdoc.Descendants(xn.ListParent)
-                 where fieldList.Attribute(xn.ListId).Value == existingId
-                 select fieldList).First();
-
-            list.Attribute(xn.ListId).Value = data.ID;
-            list.Attribute(xn.ListName).Value = data.Name;
-
-            DataService.UpdateFieldList(field);
-        }
 
         public static void ModifyFieldXElement(XElement itemXElement, XName fieldXName,
             string fieldId, bool fieldRequired)
@@ -105,14 +85,6 @@ namespace UserInterface.Operation
                     fieldXElement.SetAttributeValue("required", fieldRequired);
                 }
             }
-        }
-
-        public static XDocument GetFieldXDoc(FieldType field)
-        {
-            return (XDocument) Delegators.FieldFunctionCallback(field,
-                sizeCallback: delegate { return Program.xDataDocs.Sizes; },
-                brandCallback: delegate { return Program.xDataDocs.Brands; },
-                endsCallback: delegate { return Program.xDataDocs.Ends; });
         }
     }
 }

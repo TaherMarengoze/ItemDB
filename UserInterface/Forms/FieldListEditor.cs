@@ -1,24 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Linq;
-using UserInterface.Interfaces;
-using UserInterface.Models;
 
 namespace UserInterface.Forms
 {
+    using Interfaces;
+    using Models;
+
     public partial class FieldListEditor : Form
     {
-        private ISchema xn;
-        private ListMetadata meta;
-        private List<string> IdList;
+        private List<string> existingIds;
         private bool validListId = false;
         private bool validEntry = false;
         private bool editMode;
@@ -26,51 +20,39 @@ namespace UserInterface.Forms
         /// <summary>
         /// Constructor in case of new list.
         /// </summary>
-        /// <param name="parentIdList">List of all IDs to check for duplicate IDs.</param>
+        /// <param name="idList">List of all IDs to check for duplicate IDs.</param>
         /// <param name="ls">ListStructure object to create new XElement entry.</param>
-        public FieldListEditor(IEnumerable<string> parentIdList, ISchema ls)
+        public FieldListEditor(IEnumerable<string> idList)
         {
             InitializeComponent();
-            IdList = parentIdList.ToList();
-
-            xn = ls; /*new ListStructure()
-            {
-                ListId = ls.ListId,
-                ListName = ls.ListName,
-                ListParent = ls.ListParent,
-                ListChild = ls.ListChild,
-                ChildGroup = ls.ChildGroup
-            };*/
+            existingIds = idList.ToList();
 
             editMode = false;
             ModeUISetup();
         }
 
-        public FieldListEditor(IEnumerable<string> parentIdList, ListMetadata listMetadata)
+        public FieldListEditor(IEnumerable<string> idList, IBasicList editList)
         {
             InitializeComponent();
-            IdList = parentIdList.ToList();
+            existingIds = idList.ToList();
 
-            meta = new ListMetadata(listMetadata.ID, listMetadata.Name);
+            FieldList = editList;
 
             editMode = true;
             validEntry = true;
             ModeUISetup();
         }
 
-        public XElement ListItem { get; internal set; }
         public IBasicList FieldList { get; private set; }
-
-        public ListMetadata ListMetadata { get; internal set; }
 
         private void ModeUISetup()
         {
             if (editMode)
             {
-                Text = Text + $": Editing {meta.ID}";
+                Text = Text + $": Editing {FieldList.ID}";
                 btnAdd.Text = "Accept Changes";
-                txtListID.Text = meta.ID;
-                txtListName.Text = meta.Name;
+                txtListID.Text = FieldList.ID;
+                txtListName.Text = FieldList.Name;
                 lblInitialEntry.Visible = false;
                 txtInitialEntry.Visible = false;
             }
@@ -83,12 +65,12 @@ namespace UserInterface.Forms
         
         private void PopulateExistingId()
         {
-            lbxExistingCodes.DataSource = IdList;
+            lbxExistingCodes.DataSource = existingIds;
         }
 
         private void CheckIdValidity(string inputId)
         {
-            if (IdList.Contains(inputId) == true && (!editMode || inputId != meta.ID))
+            if (existingIds.Contains(inputId) == true && (!editMode || inputId != FieldList.ID))
             {
                 //if (!editMode || inputId != meta.ID)
                 //{
@@ -137,26 +119,6 @@ namespace UserInterface.Forms
             string listName = txtListName.Text;
             string entry1 = txtInitialEntry.Text;
             
-            ListItem = new XElement(xn.ListParent);
-
-            ListItem.Add(new XAttribute(xn.ListId, listId));
-
-            if (listName != string.Empty)
-                ListItem.Add(new XAttribute(xn.ListName, listName));
-
-            if (xn.ChildGroup != null)
-            {
-                ListItem.Add(
-                    new XElement(xn.ChildGroup,
-                        new XElement(xn.ListChild) { Value = entry1 }));
-            }
-            else
-            {
-                ListItem.Add(
-                    new XElement(xn.ListChild) { Value = entry1 });
-            }
-
-            // Apply design pattern fixes
             FieldList = new BasicListView
             {
                 ID = listId,
@@ -170,7 +132,8 @@ namespace UserInterface.Forms
             string listId = txtListID.Text;
             string listName = txtListName.Text;
 
-            ListMetadata = new ListMetadata(listId, listName);
+            FieldList.ID = listId;
+            FieldList.Name = listName;
         }
         
         private void btnAdd_Click(object sender, EventArgs e)
@@ -197,12 +160,12 @@ namespace UserInterface.Forms
         {
             if (inputId != string.Empty)
             {
-                List<string> filteredList = IdList.Where(id => id.Contains(inputId)).ToList();
+                List<string> filteredList = existingIds.Where(id => id.Contains(inputId)).ToList();
                 lbxExistingCodes.DataSource = filteredList;
             }
             else
             {
-                lbxExistingCodes.DataSource = IdList;
+                lbxExistingCodes.DataSource = existingIds;
             }
         }
 

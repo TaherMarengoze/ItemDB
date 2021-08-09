@@ -5,17 +5,18 @@ using System.Xml.Linq;
 
 namespace UserInterface
 {
+    using Enums;
     using Interfaces;
 
-    public class BrandsRepoX : IFieldRepos
+    public class FieldXmlRepository : IFieldRepos
     {
         private readonly XDocument dataSource;
         private readonly ISchema schema;
 
-        public BrandsRepoX(XDocument source)
+        public FieldXmlRepository(XDocument source, FieldType field)
         {
             dataSource = source;
-            schema = new Models.FieldSchema(Enums.FieldType.BRAND);
+            schema = new Models.FieldSchema(field);
         }
 
         public void AddFieldList(IBasicList listData)
@@ -26,7 +27,12 @@ namespace UserInterface
 
         public IBasicList ReadFieldList(string listId) => throw new NotImplementedException();
 
-        public void UpdateFieldList(string refId, IBasicList list) => throw new NotImplementedException();
+        public void UpdateFieldList(string refId, IBasicList list)
+        {
+            XElement content = GetFieldList(refId);
+            content.Attribute(schema.ListId).Value = list.ID;
+            content.SetAttributeValue(schema.ListName, list.Name);
+        }
 
         public void DeleteFieldList(string listId)
         {

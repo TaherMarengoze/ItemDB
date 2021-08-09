@@ -318,12 +318,29 @@ namespace UserInterface.Operation
             AddSizeList, AddBrandList, AddEndsList,
             fieldList);
         }
+        public static void EditFieldList(FieldType field, string refId, IBasicList content)
+        {
+            Delegators.FieldActionCallback(field,
+                delegate { EditSizeList(refId, content); },
+                delegate { EditBrandList(refId, content); },
+                delegate { EditEndsList(refId, content); });
+        }
         public static void DeleteFieldList(FieldType field, string listId)
         {
             Delegators.FieldActionCallback(field,
             DeleteSizeList, DeleteBrandList, DeleteEndsList,
             listId);
         }
+
+        public static IBasicList GetFieldList(FieldType field, string listId)
+        {
+            return (IBasicList)
+                Delegators.FieldFunctionCallback(field,
+                delegate { return GetSizeList(listId); },
+                delegate { return GetBrandList(listId); },
+                delegate { return GetEndsList(listId); });
+        }
+
         public static ObservableCollection<string> FieldListGetEntries(FieldType field, string listId)
         {
             return (ObservableCollection<string>)
@@ -358,7 +375,7 @@ namespace UserInterface.Operation
                 delegate { SizeListMoveEntry(listId, entryValue, direction); },
                 delegate { BrandListMoveEntry(listId, entryValue, direction); },
                 delegate { EndsListMoveEntry(listId, entryValue, direction); });
-    }
+        }
         #endregion
 
         #region Size Lists
@@ -366,8 +383,17 @@ namespace UserInterface.Operation
         private static IEnumerable<string> GetSizesId() => repos.SizesIdList;
         private static void AddSizeList(IBasicList content)
         {
+            // Add to data source
             Program.sizesRepo.AddFieldList(content);
+
+            // Updating will automatically refresh the local cache
             UpdateSizes();
+        }
+        private static void EditSizeList(string refId, IBasicList content)
+        {
+            // Modify local cache (no need because changes are made on local cache)
+            // Modify data source
+            Program.sizesRepo.UpdateFieldList(refId, content);
         }
         private static void DeleteSizeList(string listId)
         {
@@ -443,13 +469,19 @@ namespace UserInterface.Operation
             Program.brandsRepo.AddFieldList(content);
             UpdateBrands();
         }
+        private static void EditBrandList(string refId, IBasicList content)
+        {
+            // Modify local cache (no need because changes are made on local cache)
+            // Modify data source
+            Program.brandsRepo.UpdateFieldList(refId, content);
+        }
         private static void DeleteBrandList(string listId)
         {
             // Delete from local cache
             repos.BrandsList = repos.BrandsList.Where(list => list.ID != listId).ToList();
 
             // Delete from data source
-            Program.brandsRepo.DeleteFieldList(listId); 
+            Program.brandsRepo.DeleteFieldList(listId);
         }
         private static IBasicList GetBrandList(string listId) => repos.BrandsList.Find(list => list.ID == listId);
         private static ObservableCollection<string> BrandListGetEntries(string listId)
@@ -506,6 +538,12 @@ namespace UserInterface.Operation
         {
             Program.endsRepo.AddFieldList(content);
             UpdateEnds();
+        }
+        private static void EditEndsList(string refId, IBasicList content)
+        {
+            // Modify local cache (no need because changes are made on local cache)
+            // Modify data source
+            Program.endsRepo.UpdateFieldList(refId, content);
         }
         private static void DeleteEndsList(string listId)
         {

@@ -119,11 +119,8 @@
     <Compile Include="Forms\XML Viewer.Designer.cs">
       <DependentUpon>XML Viewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Implementations\BrandsManipulator.cs" />
-    <Compile Include="Implementations\BrandsRepoX.cs" />
-    <Compile Include="Implementations\EndsManipulator.cs" />
-    <Compile Include="Implementations\EndsRepoX.cs" />
-    <Compile Include="Implementations\SizesManipulator.cs" />
+    <Compile Include="Implementations\FieldXmlManipulator.cs" />
+    <Compile Include="Implementations\FieldXmlRepository.cs" />
     <Compile Include="Implementations\SpecsRepoX.cs" />
     <Compile Include="Implementations\XReader.cs" />
     <Compile Include="Interfaces\IDataReader.cs" />
@@ -226,7 +223,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Runtime\Test.cs" />
-    <Compile Include="Implementations\SizesRepoX.cs" />
     <Compile Include="XmlContext.cs" />
     <EmbeddedResource Include="Forms\AltListSelector.resx">
       <DependentUpon>AltListSelector.cs</DependentUpon>

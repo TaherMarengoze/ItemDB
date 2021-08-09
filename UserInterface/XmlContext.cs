@@ -64,14 +64,14 @@
             Program.itemModifier = new ModifyXml();
             Program.specsRepo = new SpecsRepoX(Program.xDataDocs.Specs);
 
-            Program.sizesRepo = new SizesRepoX(Program.xDataDocs.Sizes);
-            Program.sizeManipulator = new SizesManipulator(Program.xDataDocs.Sizes);
+            Program.sizesRepo = new FieldXmlRepository(Program.xDataDocs.Sizes, FieldType.SIZE);
+            Program.sizeManipulator = new FieldXmlManipulator(Program.xDataDocs.Sizes.Document, FieldType.SIZE);
 
-            Program.brandsRepo = new BrandsRepoX(Program.xDataDocs.Brands);
-            Program.brandManipulator = new BrandsManipulator(Program.xDataDocs.Brands);
+            Program.brandsRepo = new FieldXmlRepository(Program.xDataDocs.Brands, FieldType.BRAND);
+            Program.brandManipulator = new FieldXmlManipulator(Program.xDataDocs.Brands, FieldType.BRAND);
 
-            Program.endsRepo = new EndsRepoX(Program.xDataDocs.Ends);
-            Program.endsManipulator = new EndsManipulator(Program.xDataDocs.Ends);
+            Program.endsRepo = new FieldXmlRepository(Program.xDataDocs.Ends, FieldType.ENDS);
+            Program.endsManipulator = new FieldXmlManipulator(Program.xDataDocs.Ends, FieldType.ENDS);
         }
 
         public void TestLoadXmlFile(string filePath)
