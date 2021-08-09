@@ -1,25 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UserInterface.Interfaces
+﻿namespace UserInterface.Interfaces
 {
-    using Enums;
-
     public interface IFieldRepos
     {
-        void AddFieldList(IBasicList list);
+        void AddList(IBasicList list);
 
-        IBasicList ReadFieldList(string listId);
+        IBasicList GetList(string listId);
 
-        void UpdateFieldList(string refId, IBasicList list);
+        void UpdateList(string refId, IBasicList list);
 
         /// <summary>
         /// Deletes a field list from its data source.
         /// </summary>
         /// <param name="listId">The ID of the field list to be deleted.</param>
-        void DeleteFieldList(string listId);
+        void DeleteList(string listId);
     }
 }

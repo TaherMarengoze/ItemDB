@@ -384,7 +384,7 @@ namespace UserInterface.Operation
         private static void AddSizeList(IBasicList content)
         {
             // Add to data source
-            Program.sizesRepo.AddFieldList(content);
+            Program.sizesRepo.AddList(content);
 
             // Updating will automatically refresh the local cache
             UpdateSizes();
@@ -393,7 +393,7 @@ namespace UserInterface.Operation
         {
             // Modify local cache (no need because changes are made on local cache)
             // Modify data source
-            Program.sizesRepo.UpdateFieldList(refId, content);
+            Program.sizesRepo.UpdateList(refId, content);
         }
         private static void DeleteSizeList(string listId)
         {
@@ -401,19 +401,9 @@ namespace UserInterface.Operation
             repos.SizesList = repos.SizesList.Where(list => list.ID != listId).ToList();
 
             // Delete from data source
-            Program.sizesRepo.DeleteFieldList(listId);
+            Program.sizesRepo.DeleteList(listId);
         }
-        /// <summary>
-        /// Returns a specific size list object by its ID
-        /// </summary>
-        /// <param name="listId"></param>
-        /// <returns></returns>
         private static IBasicList GetSizeList(string listId) => repos.SizesList.Find(list => list.ID == listId);
-        /// <summary>
-        /// Get a list of entries for the given list ID.
-        /// </summary>
-        /// <param name="listId">The ID of the list to retrieve its entries.</param>
-        /// <returns></returns>
         private static ObservableCollection<string> SizeListGetEntries(string listId)
         {
             return
@@ -466,14 +456,17 @@ namespace UserInterface.Operation
         private static IEnumerable<string> GetBrandsId() => repos.BrandsIdList;
         private static void AddBrandList(IBasicList content)
         {
-            Program.brandsRepo.AddFieldList(content);
+            // Add to data source
+            Program.brandsRepo.AddList(content);
+
+            // Updating will automatically refresh the local cache
             UpdateBrands();
         }
         private static void EditBrandList(string refId, IBasicList content)
         {
             // Modify local cache (no need because changes are made on local cache)
             // Modify data source
-            Program.brandsRepo.UpdateFieldList(refId, content);
+            Program.brandsRepo.UpdateList(refId, content);
         }
         private static void DeleteBrandList(string listId)
         {
@@ -481,7 +474,7 @@ namespace UserInterface.Operation
             repos.BrandsList = repos.BrandsList.Where(list => list.ID != listId).ToList();
 
             // Delete from data source
-            Program.brandsRepo.DeleteFieldList(listId);
+            Program.brandsRepo.DeleteList(listId);
         }
         private static IBasicList GetBrandList(string listId) => repos.BrandsList.Find(list => list.ID == listId);
         private static ObservableCollection<string> BrandListGetEntries(string listId)
@@ -536,14 +529,14 @@ namespace UserInterface.Operation
         private static IEnumerable<string> GetEndsId() => repos.EndsIdList;
         private static void AddEndsList(IBasicList content)
         {
-            Program.endsRepo.AddFieldList(content);
+            Program.endsRepo.AddList(content);
             UpdateEnds();
         }
         private static void EditEndsList(string refId, IBasicList content)
         {
             // Modify local cache (no need because changes are made on local cache)
             // Modify data source
-            Program.endsRepo.UpdateFieldList(refId, content);
+            Program.endsRepo.UpdateList(refId, content);
         }
         private static void DeleteEndsList(string listId)
         {
@@ -551,7 +544,7 @@ namespace UserInterface.Operation
             repos.EndsList = repos.EndsList.Where(list => list.ID != listId).ToList();
 
             // Delete from data source
-            Program.endsRepo.DeleteFieldList(listId);
+            Program.endsRepo.DeleteList(listId);
         }
         private static IBasicList GetEndsList(string listId) => repos.EndsList.Find(list => list.ID == listId);
         private static ObservableCollection<string> EndsListGetEntries(string listId)

@@ -19,22 +19,22 @@ namespace UserInterface
             schema = new Models.FieldSchema(field);
         }
 
-        public void AddFieldList(IBasicList listData)
+        public void AddList(IBasicList listData)
         {
             XElement content = SerializeSizeList(listData);
             dataSource.Root.Add(content);
         }
 
-        public IBasicList ReadFieldList(string listId) => throw new NotImplementedException();
+        public IBasicList GetList(string listId) => throw new NotImplementedException();
 
-        public void UpdateFieldList(string refId, IBasicList list)
+        public void UpdateList(string refId, IBasicList list)
         {
             XElement content = GetFieldList(refId);
             content.Attribute(schema.ListId).Value = list.ID;
             content.SetAttributeValue(schema.ListName, list.Name);
         }
 
-        public void DeleteFieldList(string listId)
+        public void DeleteList(string listId)
         {
             GetFieldList(listId).Remove();
         }
