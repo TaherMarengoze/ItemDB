@@ -12,6 +12,7 @@ namespace UserInterface.Models
         private IEnumerable<IItem> _items;
         private IEnumerable<Specs> _specsList;
         private IEnumerable<SizeGroup> _sizeGroups;
+
         private List<BasicListView> _sizesList;
         private List<BasicListView> _brandsList;
         private List<BasicListView> _endsList;

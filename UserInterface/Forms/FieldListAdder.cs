@@ -7,18 +7,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using UserInterface.Controllers;
-using UserInterface.Interfaces;
-using UserInterface.Models;
-using UserInterface.Models.Validators;
-using UserInterface.Operation;
-using UserInterface.Enums;
 
 namespace UserInterface.Forms
 {
+    using Controllers;
+    using Interfaces;
+    using Models;
+    using Models.Validators;
+    using Operation;
+    using Enums;
+
     public partial class FieldListAdder : Form
     {
         public IFieldList FieldListItem { get; private set; } = new FieldList();
+
 
         private FieldType fieldType;
         private object existingFieldIds;
@@ -35,7 +37,8 @@ namespace UserInterface.Forms
             existingFieldIds = DataService.GetFieldBasicView(fieldType);
             SetListItems(existingFieldIds);
 
-            listController = new SimpleListController(btnAddEntry, btnEdit, btnDeleteEntry,
+            listController =
+                new SimpleListController(btnAddEntry, btnEdit, btnDeleteEntry,
                 txtEntryValue, lbxFieldListItems, listEntries);
 
             AddEventListners();
@@ -82,7 +85,7 @@ namespace UserInterface.Forms
         {
             btnAccept.Enabled = false;
         }
-        
+
         private void txtListID_TextChanged(object sender, EventArgs e)
         {
             string input = ((TextBox)sender).Text;
@@ -137,11 +140,6 @@ namespace UserInterface.Forms
             FieldListItem.ID = txtListID.Text;
             FieldListItem.Name = txtListName.Text.Trim();
             FieldListItem.List.AddRange(listEntries);
-
-            //foreach (var item in listEntries)
-            //{
-            //    FieldListItem.List.Add(item);
-            //}
         }
 
         #region Custom

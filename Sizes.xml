@@ -357,4 +357,9 @@
       <size>M42</size>
     </sizes>
   </sizeList>
+  <sizeList listID="WROPE" name="Wire Rope Size">
+    <sizes>
+      <size>6 x 7</size>
+    </sizes>
+  </sizeList>
 </sizeLists>

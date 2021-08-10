@@ -7,15 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using UserInterface.Controllers;
-using UserInterface.Interfaces;
-using UserInterface.Models;
-using UserInterface.Models.Validators;
-using UserInterface.Operation;
-using UserInterface.Enums;
 
 namespace UserInterface.Forms
 {
+    using Controllers;
+    using Interfaces;
+    using Models;
+    using Models.Validators;
+    using Operation;
+    using Enums;
+
     public partial class SizeGroupAdder : Form
     {
         public IFieldList FieldListItem { get; private set; } = new FieldList();
@@ -60,6 +61,8 @@ namespace UserInterface.Forms
         {
             dgvExistingCodes.AutoResizeColumns();
             dgvExistingCodes.AutoResizeRows();
+
+            new SizeGroupController(this);
         }
 
         private void ListController_OnEntryAdd(object sender, EventArgs e)
@@ -163,5 +166,26 @@ namespace UserInterface.Forms
             }
         }
         #endregion
+
+        class SizeGroupController
+        {
+            SizeGroupAdder parent;
+
+            public SizeGroupController(SizeGroupAdder source)
+            {
+                parent = source;
+
+                source.txtListID.TextChanged += TxtListID_TextChanged;
+            }
+
+            private void TxtListID_TextChanged(object sender, EventArgs e)
+            {
+                if (parent.chkAutoId.Checked)
+                {
+                    parent.txtSizeGroupId.Text = ((TextBox)sender).Text;
+                }
+            }
+            
+        }
     }
 }

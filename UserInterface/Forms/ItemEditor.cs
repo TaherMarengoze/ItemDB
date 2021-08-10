@@ -149,12 +149,12 @@ namespace UserInterface.Forms
             dgvSizeGroup.DataSource = DataService.GetSizeGroupsVO();
 
             // Bind Brands ID selector combobox
-            cboBrandListId.DataSource = DataService.GetFieldIds(FieldType.BRAND);
+            cboBrandListId.DataSource = DataService.GetFieldIds(FieldType.BRAND).ToList();
             cboBrandListId.SelectedIndex = -1;
             dgvBrandsLists.DataSource = DataService.GetFieldLists(FieldType.BRAND);
 
             // Bind Ends List ID selector combobox
-            cboEndsListId.DataSource = DataService.GetFieldIds(FieldType.ENDS);
+            cboEndsListId.DataSource = DataService.GetFieldIds(FieldType.ENDS).ToList();
             cboEndsListId.SelectedIndex = -1;
             dgvEndsLists.DataSource = DataService.GetFieldLists(FieldType.ENDS);
 
@@ -1251,7 +1251,7 @@ namespace UserInterface.Forms
         {
             fieldSelector.DataSource = null;
             fieldDataView.DataSource = null;
-            fieldSelector.DataSource = DataService.GetFieldIds(fieldType);
+            fieldSelector.DataSource = DataService.GetFieldIds(fieldType).ToList();
             fieldDataView.DataSource = DataService.GetFieldLists(fieldType);
         }
 

@@ -49,11 +49,11 @@
             this.dgvExistingCodes = new System.Windows.Forms.DataGridView();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.chkAutoId = new System.Windows.Forms.CheckBox();
+            this.chkAutoName = new System.Windows.Forms.CheckBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.txtSizeGroupId = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -68,7 +68,7 @@
             this.lbxExistingCodes.FormattingEnabled = true;
             this.lbxExistingCodes.Location = new System.Drawing.Point(3, 16);
             this.lbxExistingCodes.Name = "lbxExistingCodes";
-            this.lbxExistingCodes.Size = new System.Drawing.Size(169, 73);
+            this.lbxExistingCodes.Size = new System.Drawing.Size(123, 73);
             this.lbxExistingCodes.TabIndex = 17;
             // 
             // lblValidID
@@ -86,7 +86,7 @@
             this.lblInitialEntry.AutoSize = true;
             this.lblInitialEntry.Location = new System.Drawing.Point(12, 67);
             this.lblInitialEntry.Name = "lblInitialEntry";
-            this.lblInitialEntry.Size = new System.Drawing.Size(50, 13);
+            this.lblInitialEntry.Size = new System.Drawing.Size(52, 13);
             this.lblInitialEntry.TabIndex = 15;
             this.lblInitialEntry.Text = "List Entry";
             // 
@@ -95,7 +95,7 @@
             this.lblListName.AutoSize = true;
             this.lblListName.Location = new System.Drawing.Point(17, 41);
             this.lblListName.Name = "lblListName";
-            this.lblListName.Size = new System.Drawing.Size(54, 13);
+            this.lblListName.Size = new System.Drawing.Size(53, 13);
             this.lblListName.TabIndex = 13;
             this.lblListName.Text = "List Name";
             // 
@@ -222,7 +222,7 @@
             this.btnAccept.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAccept.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnAccept.Enabled = false;
-            this.btnAccept.Location = new System.Drawing.Point(356, 399);
+            this.btnAccept.Location = new System.Drawing.Point(310, 399);
             this.btnAccept.Name = "btnAccept";
             this.btnAccept.Size = new System.Drawing.Size(107, 50);
             this.btnAccept.TabIndex = 26;
@@ -234,7 +234,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(356, 370);
+            this.btnCancel.Location = new System.Drawing.Point(310, 370);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(107, 23);
             this.btnCancel.TabIndex = 27;
@@ -249,7 +249,7 @@
             this.groupBox2.Controls.Add(this.lbxExistingCodes);
             this.groupBox2.Location = new System.Drawing.Point(288, 12);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(175, 92);
+            this.groupBox2.Size = new System.Drawing.Size(129, 92);
             this.groupBox2.TabIndex = 28;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Existing Lists ID";
@@ -261,7 +261,7 @@
             this.dgvExistingCodes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvExistingCodes.Location = new System.Drawing.Point(288, 110);
             this.dgvExistingCodes.Name = "dgvExistingCodes";
-            this.dgvExistingCodes.Size = new System.Drawing.Size(175, 254);
+            this.dgvExistingCodes.Size = new System.Drawing.Size(129, 254);
             this.dgvExistingCodes.TabIndex = 29;
             // 
             // groupBox3
@@ -269,13 +269,13 @@
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox3.Controls.Add(this.dataGridView1);
-            this.groupBox3.Controls.Add(this.checkBox2);
-            this.groupBox3.Controls.Add(this.checkBox1);
+            this.groupBox3.Controls.Add(this.chkAutoId);
+            this.groupBox3.Controls.Add(this.chkAutoName);
             this.groupBox3.Controls.Add(this.textBox2);
             this.groupBox3.Controls.Add(this.label2);
-            this.groupBox3.Controls.Add(this.textBox1);
+            this.groupBox3.Controls.Add(this.txtSizeGroupId);
             this.groupBox3.Controls.Add(this.label1);
-            this.groupBox3.Location = new System.Drawing.Point(469, 12);
+            this.groupBox3.Location = new System.Drawing.Point(423, 12);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(218, 352);
             this.groupBox3.TabIndex = 30;
@@ -290,29 +290,29 @@
             this.dataGridView1.Size = new System.Drawing.Size(206, 150);
             this.dataGridView1.TabIndex = 7;
             // 
-            // checkBox2
+            // chkAutoId
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Checked = true;
-            this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox2.Location = new System.Drawing.Point(6, 68);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(196, 17);
-            this.checkBox2.TabIndex = 6;
-            this.checkBox2.Text = "Auto generate based on Size List ID";
-            this.checkBox2.UseVisualStyleBackColor = true;
+            this.chkAutoId.AutoSize = true;
+            this.chkAutoId.Checked = true;
+            this.chkAutoId.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkAutoId.Location = new System.Drawing.Point(6, 68);
+            this.chkAutoId.Name = "chkAutoId";
+            this.chkAutoId.Size = new System.Drawing.Size(198, 17);
+            this.chkAutoId.TabIndex = 6;
+            this.chkAutoId.Text = "Auto generate based on Size List ID";
+            this.chkAutoId.UseVisualStyleBackColor = true;
             // 
-            // checkBox1
+            // chkAutoName
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(6, 153);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(140, 17);
-            this.checkBox1.TabIndex = 5;
-            this.checkBox1.Text = "Same as Size List Name";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.chkAutoName.AutoSize = true;
+            this.chkAutoName.Checked = true;
+            this.chkAutoName.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkAutoName.Location = new System.Drawing.Point(6, 153);
+            this.chkAutoName.Name = "chkAutoName";
+            this.chkAutoName.Size = new System.Drawing.Size(137, 17);
+            this.chkAutoName.TabIndex = 5;
+            this.chkAutoName.Text = "Same as Size List Name";
+            this.chkAutoName.UseVisualStyleBackColor = true;
             // 
             // textBox2
             // 
@@ -326,23 +326,23 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(6, 111);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(72, 13);
+            this.label2.Size = new System.Drawing.Size(69, 13);
             this.label2.TabIndex = 2;
             this.label2.Text = "SG List Name";
             // 
-            // textBox1
+            // txtSizeGroupId
             // 
-            this.textBox1.Location = new System.Drawing.Point(6, 42);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
-            this.textBox1.TabIndex = 1;
+            this.txtSizeGroupId.Location = new System.Drawing.Point(6, 42);
+            this.txtSizeGroupId.Name = "txtSizeGroupId";
+            this.txtSizeGroupId.Size = new System.Drawing.Size(100, 20);
+            this.txtSizeGroupId.TabIndex = 1;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(6, 26);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(55, 13);
+            this.label1.Size = new System.Drawing.Size(53, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "SG List ID";
             // 
@@ -351,7 +351,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(699, 461);
+            this.ClientSize = new System.Drawing.Size(653, 461);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.dgvExistingCodes);
             this.Controls.Add(this.groupBox2);
@@ -402,11 +402,11 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.DataGridView dgvExistingCodes;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox chkAutoId;
+        private System.Windows.Forms.CheckBox chkAutoName;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox txtSizeGroupId;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridView dataGridView1;
     }

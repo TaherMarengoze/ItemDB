@@ -14,7 +14,7 @@ namespace UserInterface.Operation
     public static partial class DataService
     {
         /// <summary>
-        /// The <see cref="DataService"/> local cache for <see cref="DataRepos"/> data.
+        /// Local cache for <see cref="DataRepos"/> members.
         /// </summary>
         public static DataRepos repos;
 
@@ -36,40 +36,13 @@ namespace UserInterface.Operation
         }
 
         #region Updater code
-        private static void UpdateItems()
-        {
-            repos.Items = Program.reader.GetItems();
-        }
-
-        private static void UpdateCategories()
-        {
-            repos.Categories = Program.reader.GetCategories();
-        }
-
-        public static void UpdateSpecs()
-        {
-            repos.SpecsList = Program.reader.GetSpecs();
-        }
-
-        public static void UpdateSizeGroups()
-        {
-            repos.SizeGroups = Program.reader.GetSizeGroups();
-        }
-
-        private static void UpdateSizes()
-        {
-            repos.SizesList = Program.reader.GetSizes().ToList();
-        }
-
-        private static void UpdateBrands()
-        {
-            repos.BrandsList = Program.reader.GetBrands().ToList();
-        }
-
-        private static void UpdateEnds()
-        {
-            repos.EndsList = Program.reader.GetEnds().ToList();
-        }
+        private static void UpdateItems() => repos.Items = Program.reader.GetItems();
+        private static void UpdateCategories() => repos.Categories = Program.reader.GetCategories();
+        public static void UpdateSpecs() => repos.SpecsList = Program.reader.GetSpecs();
+        public static void UpdateSizeGroups() => repos.SizeGroups = Program.reader.GetSizeGroups();
+        private static void UpdateSizes() => repos.SizesList = Program.reader.GetSizes().ToList();
+        private static void UpdateBrands() => repos.BrandsList = Program.reader.GetBrands().ToList();
+        private static void UpdateEnds() => repos.EndsList = Program.reader.GetEnds().ToList();
         #endregion
 
         public static void ValidateItemRawData(ItemRawData data)
@@ -597,12 +570,6 @@ namespace UserInterface.Operation
         public static bool IsDuplicateItemId(string itemId)
         {
             return repos.ItemsID.Contains(itemId);
-        }
-
-        public static void UpdateFieldList(FieldType field)
-        {
-            Delegators.FieldActionCallback(field,
-                UpdateSizes, UpdateBrands, UpdateEnds);
         }
 
         #region Basic View
