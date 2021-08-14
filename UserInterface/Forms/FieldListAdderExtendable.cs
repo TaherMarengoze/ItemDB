@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace UserInterface.Forms
     using Models.Validators;
     using Operation;
 
-    public partial class SizeGroupAdder : Form
+    public partial class FieldListAdderExtendable : Form
     {
         public IFieldList FieldListItem { get; private set; } = new FieldList();
         public object MyProperty { get; private set; }
@@ -24,9 +25,28 @@ namespace UserInterface.Forms
         private List<string> listEntries = new List<string>();
         private SimpleListController listController;
 
-        public SizeGroupAdder(FieldType field)
+        public FieldListAdderExtendable(FieldType field)
         {
             InitializeComponent();
+
+            fieldType = field;
+
+            existingFieldIds = DataService.GetFieldBasicView(fieldType);
+            SetListItems(existingFieldIds);
+
+            listController =
+                new SimpleListController(btnAddEntry, btnEdit, btnDeleteEntry,
+                txtEntryValue, lbxFieldListItems, listEntries);
+
+            AddEventListners();
+        }
+
+        public FieldListAdderExtendable(FieldType field, bool extend)
+        {
+            InitializeComponent();
+
+            // TEST \\
+            new SizeGroupExt(this);
 
             fieldType = field;
 

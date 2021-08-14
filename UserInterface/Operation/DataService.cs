@@ -254,6 +254,12 @@ namespace UserInterface.Operation
             return repos.SizeGroupIdList;
         }
 
+        public static IEnumerable<BasicView> GetSizeGroupsBasic()
+        {
+            return
+                repos.SizeGroups.Select(grp => new BasicView(grp.ID, grp.Name));
+        }
+
         /// <summary>
         /// Gets view object list of size groups.
         /// </summary>
@@ -379,10 +385,10 @@ namespace UserInterface.Operation
         private static IBasicList GetSizeList(string listId) => repos.SizesList.Find(list => list.ID == listId);
         private static ObservableCollection<string> SizeListGetEntries(string listId)
         {
-            return
-                (from list in repos.SizesList
-                 where list.ID == listId
-                 select list).FirstOrDefault().List;
+            IEnumerable<ObservableCollection<string>> qry =
+                from list in repos.SizesList where list.ID == listId select list.List;
+
+            return qry.FirstOrDefault();
         }
         private static void SizeListAddEntry(string listId, string entry)
         {
@@ -455,7 +461,7 @@ namespace UserInterface.Operation
             return
                 (from list in repos.BrandsList
                  where list.ID == listId
-                 select list).FirstOrDefault().List;
+                 select list.List).FirstOrDefault();
         }
         private static void BrandListAddEntry(string listId, string entry)
         {
@@ -525,7 +531,7 @@ namespace UserInterface.Operation
             return
                 (from list in repos.EndsList
                  where list.ID == listId
-                 select list).FirstOrDefault().List;
+                 select list.List).FirstOrDefault();
         }
         private static void EndsListAddEntry(string listId, string entry)
         {

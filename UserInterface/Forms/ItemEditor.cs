@@ -71,7 +71,7 @@ namespace UserInterface.Forms
             txtDescription.Text = item.Description;
             txtUom.Text = item.UoM;
 
-            // Set images listbox
+            // Set images ListBox
             lbxNameCommon.DataSource = commonNames;
 
             if (!string.IsNullOrEmpty(item.Details.SpecsID))
@@ -158,7 +158,7 @@ namespace UserInterface.Forms
             cboEndsListId.SelectedIndex = -1;
             dgvEndsLists.DataSource = DataService.GetFieldLists(FieldType.ENDS);
 
-            // Images Listbox
+            // Images ListBox
             lbxImages.DisplayMember = "DraftDisplayName";
         }
 
@@ -947,12 +947,12 @@ namespace UserInterface.Forms
                 //ItemImage image = (ItemImage)selectedImage;
                 itemImages.Remove((ItemImage)selectedImage);
 
-                // Save Listbox selection
+                // Save ListBox selection
                 int selIdx = Common.SaveListboxSelection(lbxImages);
 
                 UpdateImagesList();
 
-                // Restore Listbox selection
+                // Restore ListBox selection
                 Common.RestoreListboxSelection(lbxImages, selIdx);
 
                 // Disable Edit & Remove buttons if no image remains
@@ -1217,7 +1217,9 @@ namespace UserInterface.Forms
 
         private void tsmiSizeList_Click(object sender, EventArgs e)
         {
-            SizeGroupAdder fieldAdder = new SizeGroupAdder(FieldType.SIZE);
+            var fieldAdder = //new SizeGroupAdder(FieldType.SIZE);
+                new FieldListAdderExtendable(FieldType.SIZE, true);
+
             if (fieldAdder.ShowDialog() == DialogResult.OK)
             {
                 DataService.AddFieldList(FieldType.SIZE, fieldAdder.FieldListItem);
@@ -1240,7 +1242,9 @@ namespace UserInterface.Forms
 
         void QuickAddField(FieldType fieldType)
         {
-            FieldListAdder adder = new FieldListAdder(fieldType);
+            var adder = new FieldListAdder(fieldType);
+                //new FieldListAdderExtendable(fieldType);
+
             if (adder.ShowDialog() == DialogResult.OK)
             {
                 DataService.AddFieldList(fieldType, adder.FieldListItem);

@@ -179,9 +179,8 @@
         {
             cboDefaultID.DataSource = sizesList.Select(id => id.ID).ToList();
             cboCustomSizeID.DataSource = custSizesList;
-            skipEvents = true;
             cboDefaultID.SelectedIndex = -1;
-            skipEvents = false;
+            
         }
 
         private void DisplaySelectedGroupData(string groupId)

@@ -74,6 +74,7 @@
     </Compile>
     <Compile Include="Common.cs" />
     <Compile Include="Controllers\SimpleListController.cs" />
+    <Compile Include="Controllers\SizeGroupExt.cs" />
     <Compile Include="Enums\Enums.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Factory\Delegators.cs" />
@@ -112,6 +113,12 @@
     </Compile>
     <Compile Include="Forms\ItemViewer.Designer.cs">
       <DependentUpon>ItemViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FieldListAdderExtendable.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FieldListAdderExtendable.Designer.cs">
+      <DependentUpon>FieldListAdderExtendable.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\XML Viewer.cs">
       <SubType>Form</SubType>
@@ -256,6 +263,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FieldListAdderExtendable.resx">
+      <DependentUpon>FieldListAdderExtendable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SizeGroupEditor.resx">
       <DependentUpon>SizeGroupEditor.cs</DependentUpon>
