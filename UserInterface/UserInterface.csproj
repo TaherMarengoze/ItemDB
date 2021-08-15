@@ -158,7 +158,7 @@
     <Compile Include="Models\ItemRawData.cs" />
     <Compile Include="Models\ItemViewObject.cs" />
     <Compile Include="Models\ItemDetails.cs" />
-    <Compile Include="Models\Validators\FieldList.cs" />
+    <Compile Include="Models\Validators\FieldListValidator.cs" />
     <Compile Include="Models\ViewModels.cs" />
     <Compile Include="Implementations\ModifyXml.cs" />
     <Compile Include="Forms\AltListSelector.cs">

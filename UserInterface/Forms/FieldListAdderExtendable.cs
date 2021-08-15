@@ -46,7 +46,7 @@ namespace UserInterface.Forms
             InitializeComponent();
 
             // TEST \\
-            new SizeGroupExt(this);
+            //new SizeGroupExt(this, inputValidator);
 
             fieldType = field;
 
@@ -58,6 +58,8 @@ namespace UserInterface.Forms
                 txtEntryValue, lbxFieldListItems, listEntries);
 
             AddEventListners();
+
+            new SizeGroupExt(this, inputValidator);
         }
 
         private void AddEventListners()

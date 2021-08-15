@@ -1,21 +1,25 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace UserInterface
 {
     using Forms;
-    using System.Collections.Generic;
-    using System.Linq;
-    using UserInterface.Models;
-    using UserInterface.Operation;
+    using Models;
+    using Models.Validators;
+    using Operation;
 
     public class SizeGroupExt
     {
         readonly FieldListAdderExtendable host;
         private IEnumerable<BasicView> existSizeGroupIds;
+        private readonly FieldListValidator hostValidator;
+        private bool validId;
+        private bool validName;
 
         #region Host components fields
         private TextBox txtListID;
@@ -30,17 +34,21 @@ namespace UserInterface
         private TextBox txtSizeGroupName;
         private Label label1;
         private Label label2;
+        private Label lblValidID;
         private DataGridView dgvSizeGroupIdList;
         #endregion
 
-        public SizeGroupExt(FieldListAdderExtendable source)
+        public SizeGroupExt(FieldListAdderExtendable source, FieldListValidator validator)
         {
             host = source;
+            hostValidator = validator;
+            hostValidator.ValidParam = false;
+            
             ParentComponentPreSetting();
             InitializeComponent();
             ParentComponentPostSetting();
         }
-
+        
         private void ParentComponentPreSetting()
         {
             host.Load += Host_Load;
@@ -63,6 +71,7 @@ namespace UserInterface
             label2 = new Label();
             txtSizeGroupId = new TextBox();
             label1 = new Label();
+            lblValidID = new Label();
             #endregion
 
             int w0 = host.ClientSize.Width;
@@ -86,6 +95,7 @@ namespace UserInterface
             grpSizeGroup.Controls.Add(label2);
             grpSizeGroup.Controls.Add(txtSizeGroupId);
             grpSizeGroup.Controls.Add(label1);
+            grpSizeGroup.Controls.Add(lblValidID);
             grpSizeGroup.Location = new Point(w0, 12);
             grpSizeGroup.Name = "grpSizeGroup";
             grpSizeGroup.Size = new Size(218, 352);
@@ -176,6 +186,7 @@ namespace UserInterface
             txtSizeGroupName.Size = new Size(206, 20);
             txtSizeGroupName.TabIndex = 3;
             txtSizeGroupName.Enabled = false;
+            txtSizeGroupName.TextChanged += TxtSizeGroupName_TextChanged;
             #endregion
 
             #region label1
@@ -190,9 +201,16 @@ namespace UserInterface
             label1.Text = "SG List ID";
             #endregion
 
+            #region lblValidID
+            lblValidID.AutoSize = true;
+            lblValidID.Location = new Point(txtSizeGroupId.Location.X + txtSizeGroupId.Size.Width + 2, txtSizeGroupId.Location.Y);
+            lblValidID.Name = "lblValidID";
+            lblValidID.Text = "•";
             #endregion
 
-            
+            #endregion
+
+
             host.ClientSize = new Size(w0 + 224, 461);
             host.Controls.Add(grpSizeGroup);
 
@@ -273,32 +291,37 @@ namespace UserInterface
 
             // if Auto-Generate ID is enabled and a duplicate was found then generate new ID
 
+            // Implement the Auto-Generation code here
+
 
             #region Validation Indication
-            //if (input != string.Empty)
-            //{
-            //    if (duplicateFound)
-            //    {
-            //        inputValidator.ValidID = false;
-            //        lblValidID.Text = "• Duplicate ID";
-            //        if (input.Length >= txtListID.MaxLength)
-            //        {
-            //            txtListID.SelectAll();
-            //            txtListID.Focus();
-            //        }
-            //    }
-            //    else
-            //    {
-            //        inputValidator.ValidID = true;
-            //        lblValidID.Text = string.Empty;
-            //    }
-            //}
-            //else
-            //{
-            //    inputValidator.ValidID = false;
-            //    lblValidID.Text = string.Empty;
-            //}
+            if (input != string.Empty)
+            {
+                if (duplicateFound)
+                {
+                    validId = false;
+                    lblValidID.Text = "• Duplicate ID";
+
+                    if (chkAutoId.Checked == false && input.Length >= txtSizeGroupId.MaxLength)
+                    {
+                        txtSizeGroupId.FocusSelectAll();
+                    }
+
+                }
+                else
+                {
+                    validId = true;
+                    lblValidID.Text = string.Empty;
+                }
+            }
+            else
+            {
+                validId = false;
+                lblValidID.Text = string.Empty;
+            }
             #endregion
+
+            CheckValidation();
 
             if (input != string.Empty)
             {
@@ -310,6 +333,33 @@ namespace UserInterface
             else
             {
                 SetListItems(existSizeGroupIds.ToList());
+            }
+        }
+
+        private void TxtSizeGroupName_TextChanged(object sender, EventArgs e)
+        {
+            string input = ((TextBox)sender).Text;
+
+            if (input != string.Empty)
+            {
+                validName = true;
+            }
+            else
+            {
+                validName = false;
+            }
+            CheckValidation();
+        }
+
+        private void CheckValidation()
+        {
+            if (validId && validName)
+            {
+                hostValidator.ValidParam = true;
+            }
+            else
+            {
+                hostValidator.ValidParam = false;
             }
         }
 

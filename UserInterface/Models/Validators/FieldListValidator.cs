@@ -1,5 +1,7 @@
 ﻿
 
+using System;
+
 namespace UserInterface.Models.Validators
 {
     public class FieldListValidator
@@ -7,6 +9,7 @@ namespace UserInterface.Models.Validators
         private bool _validID;
         private bool _validName;
         private bool _validEntries;
+        private bool _validParam = true;
 
         public delegate void CheckArgs();
         public event CheckArgs OnComplete;
@@ -14,7 +17,8 @@ namespace UserInterface.Models.Validators
 
         public bool ValidID
         {
-            get => _validID; set
+            get => _validID;
+            set
             {
                 _validID = value;
                 CheckCompletion();
@@ -39,11 +43,22 @@ namespace UserInterface.Models.Validators
             }
         }
 
+        public bool ValidParam
+        {
+            get => _validParam;
+            set
+            {
+                _validParam = value;
+                CheckCompletion();
+            }
+        }
+
         private void CheckCompletion()
         {
             if (_validID &&
                 _validName &&
-                _validEntries)
+                _validEntries &&
+                _validParam)
             {
                 OnComplete?.Invoke();
             }

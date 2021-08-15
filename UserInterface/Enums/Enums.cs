@@ -21,8 +21,17 @@
 
     public enum FieldType
     {
+        /// <summary>
+        /// Size list field of an item.
+        /// </summary>
         SIZE,
+        /// <summary>
+        /// Brand list field of an item.
+        /// </summary>
         BRAND,
+        /// <summary>
+        /// Ends list field of an item
+        /// </summary>
         ENDS
     }
 

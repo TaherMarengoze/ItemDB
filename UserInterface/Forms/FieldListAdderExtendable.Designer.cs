@@ -59,7 +59,7 @@
             this.lbxExistingCodes.Location = new System.Drawing.Point(3, 16);
             this.lbxExistingCodes.Name = "lbxExistingCodes";
             this.lbxExistingCodes.Size = new System.Drawing.Size(123, 73);
-            this.lbxExistingCodes.TabIndex = 17;
+            this.lbxExistingCodes.TabIndex = 0;
             // 
             // lblValidID
             // 
@@ -69,15 +69,15 @@
             this.lblValidID.Location = new System.Drawing.Point(182, 15);
             this.lblValidID.Name = "lblValidID";
             this.lblValidID.Size = new System.Drawing.Size(0, 12);
-            this.lblValidID.TabIndex = 16;
+            this.lblValidID.TabIndex = 11;
             // 
             // lblInitialEntry
             // 
             this.lblInitialEntry.AutoSize = true;
             this.lblInitialEntry.Location = new System.Drawing.Point(12, 67);
             this.lblInitialEntry.Name = "lblInitialEntry";
-            this.lblInitialEntry.Size = new System.Drawing.Size(50, 13);
-            this.lblInitialEntry.TabIndex = 15;
+            this.lblInitialEntry.Size = new System.Drawing.Size(52, 13);
+            this.lblInitialEntry.TabIndex = 4;
             this.lblInitialEntry.Text = "List Entry";
             // 
             // lblListName
@@ -85,16 +85,16 @@
             this.lblListName.AutoSize = true;
             this.lblListName.Location = new System.Drawing.Point(17, 41);
             this.lblListName.Name = "lblListName";
-            this.lblListName.Size = new System.Drawing.Size(54, 13);
-            this.lblListName.TabIndex = 13;
-            this.lblListName.Text = "List Name";
+            this.lblListName.Size = new System.Drawing.Size(53, 13);
+            this.lblListName.TabIndex = 2;
+            this.lblListName.Text = "List &Name";
             // 
             // txtListName
             // 
             this.txtListName.Location = new System.Drawing.Point(76, 38);
             this.txtListName.Name = "txtListName";
             this.txtListName.Size = new System.Drawing.Size(206, 20);
-            this.txtListName.TabIndex = 12;
+            this.txtListName.TabIndex = 3;
             this.txtListName.TextChanged += new System.EventHandler(this.txtListName_TextChanged);
             // 
             // txtListID
@@ -104,7 +104,7 @@
             this.txtListID.MaxLength = 5;
             this.txtListID.Name = "txtListID";
             this.txtListID.Size = new System.Drawing.Size(100, 20);
-            this.txtListID.TabIndex = 11;
+            this.txtListID.TabIndex = 1;
             this.txtListID.TextChanged += new System.EventHandler(this.txtListID_TextChanged);
             // 
             // lblListID
@@ -113,8 +113,8 @@
             this.lblListID.Location = new System.Drawing.Point(33, 15);
             this.lblListID.Name = "lblListID";
             this.lblListID.Size = new System.Drawing.Size(37, 13);
-            this.lblListID.TabIndex = 10;
-            this.lblListID.Text = "List ID";
+            this.lblListID.TabIndex = 0;
+            this.lblListID.Text = "List &ID";
             // 
             // btnDeleteEntry
             // 
@@ -123,7 +123,7 @@
             this.btnDeleteEntry.Location = new System.Drawing.Point(161, 310);
             this.btnDeleteEntry.Name = "btnDeleteEntry";
             this.btnDeleteEntry.Size = new System.Drawing.Size(75, 23);
-            this.btnDeleteEntry.TabIndex = 19;
+            this.btnDeleteEntry.TabIndex = 2;
             this.btnDeleteEntry.Text = "Delete Entry";
             this.btnDeleteEntry.UseVisualStyleBackColor = true;
             // 
@@ -134,7 +134,7 @@
             this.btnEdit.Location = new System.Drawing.Point(3, 310);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(75, 23);
-            this.btnEdit.TabIndex = 20;
+            this.btnEdit.TabIndex = 1;
             this.btnEdit.Text = "Edit Entry";
             this.btnEdit.UseVisualStyleBackColor = true;
             // 
@@ -150,7 +150,7 @@
             this.groupBox1.Location = new System.Drawing.Point(12, 110);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(270, 339);
-            this.groupBox1.TabIndex = 21;
+            this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "List Entries";
             // 
@@ -164,7 +164,7 @@
             this.lbxFieldListItems.Location = new System.Drawing.Point(3, 16);
             this.lbxFieldListItems.Name = "lbxFieldListItems";
             this.lbxFieldListItems.Size = new System.Drawing.Size(233, 288);
-            this.lbxFieldListItems.TabIndex = 2;
+            this.lbxFieldListItems.TabIndex = 0;
             // 
             // btnUp
             // 
@@ -175,7 +175,7 @@
             this.btnUp.Margin = new System.Windows.Forms.Padding(0);
             this.btnUp.Name = "btnUp";
             this.btnUp.Size = new System.Drawing.Size(28, 28);
-            this.btnUp.TabIndex = 22;
+            this.btnUp.TabIndex = 3;
             this.btnUp.UseVisualStyleBackColor = true;
             // 
             // btnDown
@@ -187,7 +187,7 @@
             this.btnDown.Margin = new System.Windows.Forms.Padding(0);
             this.btnDown.Name = "btnDown";
             this.btnDown.Size = new System.Drawing.Size(28, 28);
-            this.btnDown.TabIndex = 23;
+            this.btnDown.TabIndex = 4;
             this.btnDown.UseVisualStyleBackColor = true;
             // 
             // btnAddEntry
@@ -196,7 +196,7 @@
             this.btnAddEntry.Location = new System.Drawing.Point(207, 81);
             this.btnAddEntry.Name = "btnAddEntry";
             this.btnAddEntry.Size = new System.Drawing.Size(75, 23);
-            this.btnAddEntry.TabIndex = 25;
+            this.btnAddEntry.TabIndex = 6;
             this.btnAddEntry.Text = "Add Entry";
             this.btnAddEntry.UseVisualStyleBackColor = true;
             // 
@@ -205,7 +205,7 @@
             this.txtEntryValue.Location = new System.Drawing.Point(15, 83);
             this.txtEntryValue.Name = "txtEntryValue";
             this.txtEntryValue.Size = new System.Drawing.Size(186, 20);
-            this.txtEntryValue.TabIndex = 24;
+            this.txtEntryValue.TabIndex = 5;
             // 
             // btnAccept
             // 
@@ -215,7 +215,7 @@
             this.btnAccept.Location = new System.Drawing.Point(381, 399);
             this.btnAccept.Name = "btnAccept";
             this.btnAccept.Size = new System.Drawing.Size(107, 50);
-            this.btnAccept.TabIndex = 26;
+            this.btnAccept.TabIndex = 10;
             this.btnAccept.Text = "Accept";
             this.btnAccept.UseVisualStyleBackColor = true;
             this.btnAccept.Click += new System.EventHandler(this.btnAccept_Click);
@@ -227,7 +227,7 @@
             this.btnCancel.Location = new System.Drawing.Point(381, 370);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(107, 23);
-            this.btnCancel.TabIndex = 27;
+            this.btnCancel.TabIndex = 9;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -239,7 +239,7 @@
             this.groupBox2.Location = new System.Drawing.Point(288, 12);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(129, 92);
-            this.groupBox2.TabIndex = 28;
+            this.groupBox2.TabIndex = 12;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Existing Lists ID";
             // 
@@ -254,7 +254,7 @@
             this.dgvExistingCodes.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dgvExistingCodes.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvExistingCodes.Size = new System.Drawing.Size(200, 254);
-            this.dgvExistingCodes.TabIndex = 29;
+            this.dgvExistingCodes.TabIndex = 8;
             // 
             // FieldListAdderExtendable
             // 
