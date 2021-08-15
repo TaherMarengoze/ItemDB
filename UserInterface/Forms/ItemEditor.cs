@@ -1217,12 +1217,14 @@ namespace UserInterface.Forms
 
         private void tsmiSizeList_Click(object sender, EventArgs e)
         {
+
             var fieldAdder = //new SizeGroupAdder(FieldType.SIZE);
-                new FieldListAdderExtendable(FieldType.SIZE, true);
+                new FieldListAdderExtendable(FieldType.SIZE, out SizeGroupExt groupExt);
 
             if (fieldAdder.ShowDialog() == DialogResult.OK)
             {
                 DataService.AddFieldList(FieldType.SIZE, fieldAdder.FieldListItem);
+                MessageBox.Show($"{ groupExt.ListData.ID } : { groupExt.ListData.Name }");
             }
         }
 

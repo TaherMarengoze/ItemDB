@@ -40,13 +40,10 @@ namespace UserInterface.Forms
 
             AddEventListners();
         }
-
-        public FieldListAdderExtendable(FieldType field, bool extend)
+        
+        public FieldListAdderExtendable(FieldType field, out SizeGroupExt extension)
         {
             InitializeComponent();
-
-            // TEST \\
-            //new SizeGroupExt(this, inputValidator);
 
             fieldType = field;
 
@@ -59,7 +56,7 @@ namespace UserInterface.Forms
 
             AddEventListners();
 
-            new SizeGroupExt(this, inputValidator);
+            extension = new SizeGroupExt(this, inputValidator);
         }
 
         private void AddEventListners()

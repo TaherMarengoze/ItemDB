@@ -15,7 +15,7 @@ namespace UserInterface.Models
 
         public override string ToString()
         {
-            return $"{ ID }\t:\t{ Name }";
+            return $"{ ID } : { Name }";
         }
     }
 }

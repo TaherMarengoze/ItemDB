@@ -150,7 +150,8 @@
     <Compile Include="Interfaces\ISpec.cs" />
     <Compile Include="Interfaces\ISpecListEntry.cs" />
     <Compile Include="Models\FieldSchema.cs" />
-    <Compile Include="Models\IBasicList.cs" />
+    <Compile Include="Interfaces\IBasicList.cs" />
+    <Compile Include="Models\IdName.cs" />
     <Compile Include="Models\ItemCategory.cs" />
     <Compile Include="Models\DataRepos.cs" />
     <Compile Include="Models\ItemCheckList.cs" />

@@ -15,6 +15,8 @@ namespace UserInterface
 
     public class SizeGroupExt
     {
+        public IdName ListData { get; private set; } = new IdName();
+
         readonly FieldListAdderExtendable host;
         private IEnumerable<BasicView> existSizeGroupIds;
         private readonly FieldListValidator hostValidator;
@@ -203,9 +205,10 @@ namespace UserInterface
 
             #region lblValidID
             lblValidID.AutoSize = true;
-            lblValidID.Location = new Point(txtSizeGroupId.Location.X + txtSizeGroupId.Size.Width + 2, txtSizeGroupId.Location.Y);
+            lblValidID.Font = new Font("Tahoma", 7F, FontStyle.Italic);
+            lblValidID.ForeColor = Color.Red;
+            lblValidID.Location = new Point(108, 45);
             lblValidID.Name = "lblValidID";
-            lblValidID.Text = "•";
             #endregion
 
             #endregion
@@ -355,10 +358,16 @@ namespace UserInterface
         {
             if (validId && validName)
             {
+                ListData.ID = txtSizeGroupId.Text;
+                ListData.Name = txtSizeGroupName.Text;
+
                 hostValidator.ValidParam = true;
             }
             else
             {
+                ListData.ID = null;
+                ListData.Name = null;
+
                 hostValidator.ValidParam = false;
             }
         }
