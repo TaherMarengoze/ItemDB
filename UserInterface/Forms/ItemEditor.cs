@@ -1218,14 +1218,21 @@ namespace UserInterface.Forms
         private void tsmiSizeList_Click(object sender, EventArgs e)
         {
 
-            var fieldAdder = //new SizeGroupAdder(FieldType.SIZE);
+            var adder = //new SizeGroupAdder(FieldType.SIZE);
                 new FieldListAdderExtendable(FieldType.SIZE, out SizeGroupExt groupExt);
 
-            if (fieldAdder.ShowDialog() == DialogResult.OK)
+            if (adder.ShowDialog() == DialogResult.OK)
             {
-                DataService.AddFieldList(FieldType.SIZE, fieldAdder.FieldListItem);
-                MessageBox.Show($"{ groupExt.ListData.ID } : { groupExt.ListData.Name }");
+                DataService.AddFieldList(FieldType.SIZE, adder.FieldListItem);
+                DataService.AddSizeGroup(new SizeGroup()
+                {
+                    ID = groupExt.ListData.ID,
+                    Name = groupExt.ListData.Name,
+                    DefaultListID = adder.FieldListItem.ID
+                });
             }
+
+            UpdateSizeGroupUI();
         }
 
         private void tsmiBrandsList_Click(object sender, EventArgs e)
@@ -1244,8 +1251,8 @@ namespace UserInterface.Forms
 
         void QuickAddField(FieldType fieldType)
         {
-            var adder = new FieldListAdder(fieldType);
-                //new FieldListAdderExtendable(fieldType);
+            var adder = //new FieldListAdder(fieldType);
+                new FieldListAdderExtendable(fieldType);
 
             if (adder.ShowDialog() == DialogResult.OK)
             {
@@ -1253,7 +1260,15 @@ namespace UserInterface.Forms
             }
         }
 
-        private static void UpdateFieldUI(FieldType fieldType, ComboBox fieldSelector, DataGridView fieldDataView)
+        private void UpdateSizeGroupUI()
+        {
+            cboSizeGroupId.DataSource = null;
+            dgvSizeGroup.DataSource = null;
+            cboSizeGroupId.DataSource = DataService.GetSizeGroupsId();
+            dgvSizeGroup.DataSource = DataService.GetSizeGroupsVO();
+        }
+
+        private void UpdateFieldUI(FieldType fieldType, ComboBox fieldSelector, DataGridView fieldDataView)
         {
             fieldSelector.DataSource = null;
             fieldDataView.DataSource = null;

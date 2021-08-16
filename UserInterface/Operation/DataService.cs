@@ -269,6 +269,18 @@ namespace UserInterface.Operation
             return repos.SizeGroups
                 .Select(grp => new SizeGroupView(grp)).ToList();
         }
+        
+        public static void AddSizeGroup(SizeGroup group)
+        {
+            // Add to local cache
+
+
+            // Add to data source
+            Program.sizeGroupRepo.Create(group);
+
+            // Update to refresh local cache
+            UpdateSizeGroups();
+        }
         #endregion
 
         #region Fields (Sizes, Brands or Ends)

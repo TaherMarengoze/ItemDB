@@ -29,28 +29,28 @@
         {
             ContextEntity entity = (ContextEntity)options;
 
-            if ((entity & Enums.ContextEntity.Items) != 0)
+            if ((entity & ContextEntity.Items) != 0)
                 XDataDocuments.Save(Program.xDataDocs.Items, Program.fpp.Items);
 
-            if ((entity & Enums.ContextEntity.Specs) != 0)
+            if ((entity & ContextEntity.Specs) != 0)
                 XDataDocuments.Save(Program.xDataDocs.Specs, Program.fpp.Specs);
 
-            if ((entity & Enums.ContextEntity.SizeGroups) != 0)
+            if ((entity & ContextEntity.SizeGroups) != 0)
                 XDataDocuments.Save(Program.xDataDocs.SizeGroups, Program.fpp.SizeGroups);
 
-            if ((entity & Enums.ContextEntity.Sizes) != 0)
+            if ((entity & ContextEntity.Sizes) != 0)
                 XDataDocuments.Save(Program.xDataDocs.Sizes, Program.fpp.Sizes);
 
-            if ((entity & Enums.ContextEntity.Brands) != 0)
+            if ((entity & ContextEntity.Brands) != 0)
                 XDataDocuments.Save(Program.xDataDocs.Brands, Program.fpp.Brands);
 
-            if ((entity & Enums.ContextEntity.Ends) != 0)
+            if ((entity & ContextEntity.Ends) != 0)
                 XDataDocuments.Save(Program.xDataDocs.Ends, Program.fpp.Ends);
 
-            if ((entity & Enums.ContextEntity.CustomSpecs) != 0)
+            if ((entity & ContextEntity.CustomSpecs) != 0)
                 XDataDocuments.Save(Program.xDataDocs.CustomSpecs, Program.fpp.CustomSpecs);
 
-            if ((entity & Enums.ContextEntity.CustomSizes) != 0)
+            if ((entity & ContextEntity.CustomSizes) != 0)
                 XDataDocuments.Save(Program.xDataDocs.CustomSizes, Program.fpp.CustomSizes);
         }
 
@@ -62,7 +62,10 @@
             // Instantiate the source reader and modifier
             Program.reader = new XReader(Program.xDataDocs);
             Program.itemModifier = new ModifyXml();
+
             Program.specsRepo = new SpecsRepoX(Program.xDataDocs.Specs);
+
+            Program.sizeGroupRepo = new SizeGroupsXmlRepository(Program.xDataDocs.SizeGroups);
 
             Program.sizesRepo = new FieldXmlRepository(Program.xDataDocs.Sizes, FieldType.SIZE);
             Program.sizeManipulator = new FieldXmlManipulator(Program.xDataDocs.Sizes.Document, FieldType.SIZE);

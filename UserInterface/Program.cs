@@ -21,6 +21,8 @@ namespace UserInterface
 
         public static ISpecsRepo specsRepo;
 
+        public static ISizeGroupRepos sizeGroupRepo;
+
         public static IFieldRepos sizesRepo;
         public static IFieldManipulator sizeManipulator;
 
