@@ -155,6 +155,7 @@
     <Compile Include="Models\ItemRawData.cs" />
     <Compile Include="Models\ItemViewObject.cs" />
     <Compile Include="Models\ItemDetails.cs" />
+    <Compile Include="Models\SelectionSizeList.cs" />
     <Compile Include="Models\Validators\FieldListValidator.cs" />
     <Compile Include="Models\ViewModels.cs" />
     <Compile Include="Implementations\ModifyXml.cs" />
@@ -195,7 +196,6 @@
       <DependentUpon>SizeGroupEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Item.cs" />
-    <Compile Include="Models\SizeList.cs" />
     <Compile Include="Forms\SpecsEditor.cs">
       <SubType>Form</SubType>
     </Compile>

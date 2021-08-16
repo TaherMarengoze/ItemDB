@@ -11,7 +11,7 @@ namespace UserInterface.Models
     {
         private IEnumerable<IItem> _items;
         private IEnumerable<Specs> _specsList;
-        private IEnumerable<SizeGroup> _sizeGroups;
+        private List<SizeGroup> _sizeGroups;
 
         private List<BasicListView> _sizesList;
         private List<BasicListView> _brandsList;
@@ -60,7 +60,7 @@ namespace UserInterface.Models
         #endregion
 
         #region Size Groups
-        public IEnumerable<SizeGroup> SizeGroups
+        public List<SizeGroup> SizeGroups
         {
             get => _sizeGroups;
             set
@@ -76,7 +76,8 @@ namespace UserInterface.Models
         #region Sizes
         public List<BasicListView> SizesList
         {
-            get => _sizesList; set
+            get => _sizesList;
+            set
             {
                 _sizesList = value;
                 SizesIdList = value.Select(sizes => sizes.ID);
@@ -112,6 +113,10 @@ namespace UserInterface.Models
         }
 
         public IEnumerable<string> EndsIdList { get; private set; }
+        #endregion
+
+        #region Custom Sizes
+        public List<string> CustomSizes { get; set; }
         #endregion
     }
 }

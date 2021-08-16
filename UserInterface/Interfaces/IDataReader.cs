@@ -21,5 +21,7 @@ namespace UserInterface.Interfaces
         IEnumerable<BasicListView> GetEnds();
 
         IEnumerable<string> GetImageNames();
+
+        IEnumerable<string> GetCustomSizes();
     }
 }

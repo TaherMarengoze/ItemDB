@@ -28,10 +28,11 @@ namespace UserInterface.Operation
                 Items = Program.reader.GetItems(),
                 Categories = Program.reader.GetCategories(),
                 SpecsList = Program.reader.GetSpecs(),
-                SizeGroups = Program.reader.GetSizeGroups(),
+                SizeGroups = Program.reader.GetSizeGroups().ToList(),
                 SizesList = Program.reader.GetSizes().ToList(),
                 BrandsList = Program.reader.GetBrands().ToList(),
-                EndsList = Program.reader.GetEnds().ToList()
+                EndsList = Program.reader.GetEnds().ToList(),
+                CustomSizes = Program.reader.GetCustomSizes().ToList()
             };
         }
 
@@ -39,7 +40,7 @@ namespace UserInterface.Operation
         private static void UpdateItems() => repos.Items = Program.reader.GetItems();
         private static void UpdateCategories() => repos.Categories = Program.reader.GetCategories();
         public static void UpdateSpecs() => repos.SpecsList = Program.reader.GetSpecs();
-        public static void UpdateSizeGroups() => repos.SizeGroups = Program.reader.GetSizeGroups();
+        public static void UpdateSizeGroups() => repos.SizeGroups = Program.reader.GetSizeGroups().ToList();
         private static void UpdateSizes() => repos.SizesList = Program.reader.GetSizes().ToList();
         private static void UpdateBrands() => repos.BrandsList = Program.reader.GetBrands().ToList();
         private static void UpdateEnds() => repos.EndsList = Program.reader.GetEnds().ToList();
@@ -248,7 +249,7 @@ namespace UserInterface.Operation
         }
         #endregion
         #region Size Groups Object
-
+        public static List<SizeGroup> GetSizeGroups() => repos.SizeGroups;
         public static List<string> GetSizeGroupsId()
         {
             return repos.SizeGroupIdList;
@@ -368,7 +369,7 @@ namespace UserInterface.Operation
                 delegate { EndsListMoveEntry(listId, entryValue, direction); });
         }
         #endregion
-
+        
         #region Size Lists
         private static List<BasicListView> GetSizes() => repos.SizesList;
         private static IEnumerable<string> GetSizesId() => repos.SizesIdList;
@@ -583,6 +584,10 @@ namespace UserInterface.Operation
             // Move entry in data source
             Program.endsManipulator.MoveEntry(listId, entryValue, direction);
         }
+        #endregion
+
+        #region Custom Sizes
+        public static List<string> GetCustomSizes() => repos.CustomSizes;
         #endregion
 
         public static bool IsDuplicateItemId(string itemId)

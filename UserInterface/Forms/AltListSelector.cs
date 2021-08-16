@@ -5,6 +5,7 @@ namespace UserInterface.Forms
     using Models;
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Windows.Forms;
 
@@ -19,7 +20,7 @@ namespace UserInterface.Forms
         /// Constructor for creating a new size ID list.
         /// </summary>
         /// <param name="lists">The size list passed from the caller parent.</param>
-        public AltListSelector(List<SizeList> lists)
+        public AltListSelector(List<BasicListView/*SizeList*/> lists)
         {
             InitializeComponent();
             selSizeLists = NewSelectionSizeList(lists);
@@ -31,7 +32,7 @@ namespace UserInterface.Forms
         /// </summary>
         /// <param name="lists">The size list passed from the caller parent.</param>
         /// <param name="selectionList">The list of the selected size list IDs.</param>
-        public AltListSelector(List<SizeList> lists, List<string> selectionList)
+        public AltListSelector(List<BasicListView/*SizeList*/> lists, List<string> selectionList)
         {
             InitializeComponent();
             selSizeLists = ModifiedSelectionSizeList(lists, selectionList);
@@ -41,7 +42,7 @@ namespace UserInterface.Forms
         /// Creates a new list of SelectionSizeList, with all IDs unselected to pick from.
         /// </summary>
         /// <param name="lists">The base SizeList to create this one upon.</param>
-        private List<SelectionSizeList> NewSelectionSizeList(List<SizeList> lists)
+        private List<SelectionSizeList> NewSelectionSizeList(List<BasicListView/*SizeList*/> lists)
         {
             return
                 (from sl in lists
@@ -49,8 +50,8 @@ namespace UserInterface.Forms
                  {
                      //Include=true,
                      ID = sl.ID,
-                     ListName = sl.ListName,
-                     Sizes = sl.Sizes.Select(sz => sz).ToList()
+                     Name = sl.Name,
+                     List = new ObservableCollection<string>( sl.List.Select(sz => sz))
                  }).ToList();
         }
 
@@ -60,7 +61,7 @@ namespace UserInterface.Forms
         /// <param name="lists">The base SizeList to create this one upon.</param>
         /// <param name="selectionList">The list of the selected size list IDs.</param>
         /// <returns></returns>
-        private List<SelectionSizeList> ModifiedSelectionSizeList(List<SizeList> lists, List<string> selectionList)
+        private List<SelectionSizeList> ModifiedSelectionSizeList(List<BasicListView/*SizeList*/> lists, List<string> selectionList)
         {
             return
                 (from sl in lists
@@ -69,8 +70,8 @@ namespace UserInterface.Forms
                  {
                      Include = included,
                      ID = sl.ID,
-                     ListName = sl.ListName,
-                     Sizes = sl.Sizes.Select(sz => sz).ToList()
+                     Name = sl.Name,
+                     List = new ObservableCollection<string>( sl.List.Select(sz => sz))
                  }).ToList();
         }
 
@@ -100,7 +101,7 @@ namespace UserInterface.Forms
         /// <param name="listId">The size list ID to display its size items.</param>
         private void DisplaySizeListItems(string listId)
         {
-            lstSizeListItems.DataSource = selSizeLists.Find(id => id.ID == listId).Sizes;
+            lstSizeListItems.DataSource = selSizeLists.Find(id => id.ID == listId).List;
         }
 
         private void FilterSizeLists()
@@ -115,7 +116,7 @@ namespace UserInterface.Forms
                     (from sz in selSizeLists
                      let c1 = included ? sz.Include == true : true
                      let c2 = filterId != string.Empty ? sz.ID.Contains(filterId) : true
-                     let c3 = filterName != string.Empty ? sz.ListName.ToLower().Contains(filterName.ToLower()) : true
+                     let c3 = filterName != string.Empty ? sz.Name.ToLower().Contains(filterName.ToLower()) : true
                      where c1 && c2 && c3
                      select sz).ToList();
 

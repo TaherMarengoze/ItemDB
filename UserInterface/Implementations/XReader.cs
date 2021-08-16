@@ -164,5 +164,12 @@ namespace UserInterface
                 dataDocs.Items.Descendants("image")
                 .Select(f => System.IO.Path.GetFileNameWithoutExtension(f.Value));
         }
+
+        public IEnumerable<string> GetCustomSizes()
+        {
+            return
+                dataDocs.CustomSizes.Descendants("customSizeData")
+                .Select(csz => csz.Attribute("dataId").Value);
+        }
     }
 }

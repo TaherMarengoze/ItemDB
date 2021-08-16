@@ -34,7 +34,7 @@ namespace UserInterface.Forms
         }
 
         #region Field Variables
-        private List<SizeList> sizesList;
+        private List<BasicListView> sizesList;
         private List<SizeGroup> sizeGroups;
         private List<string> sizeGroupsIDs;
         private List<string> custSizesList;
@@ -58,64 +58,7 @@ namespace UserInterface.Forms
         private void SaveXmlFile()
         {
             XDataDocuments.Save(Program.xDataDocs.SizeGroups, Program.fpp.SizeGroups);
-            //DataService.UpdateSizeGroups(Program.xDataDocs.SizeGroups);
             DataService.UpdateSizeGroups();
-        }
-        #endregion
-
-        #region XML Serialization / Deserialization
-        private List<SizeGroup> ReadSizeGroups()
-        {
-            return
-                (from sg in Program.xDataDocs.SizeGroups.Descendants("group")
-                 let list = sg.Element("altLists").HasElements ?
-                 sg.Element("altLists").Elements("listID").Select(l => l.Value).ToList() : null
-                 let customId = sg.Element("customSizeDataID").Value
-                 select new SizeGroup()
-                 {
-                     ID = sg.Attribute("groupID").Value,
-                     Name = sg.Attribute("groupName").Value,
-                     DefaultListID = sg.Element("defaultListID").Value,
-                     AltIdList = list,
-                     CustomSize = customId != string.Empty ? customId : null
-                 }).ToList();
-        }
-
-        private List<SizeList> ReadSizes()
-        {
-            return
-                (from sz in Program.xDataDocs.Sizes.Descendants("sizeList")
-                 select new SizeList()
-                 {
-                     ID = sz.Attribute("listID").Value,
-                     ListName = sz.Attribute("name").Value,
-                     Sizes = sz.Descendants("size").Select(item => item.Value).ToList()
-                 }
-                    ).ToList();
-        }
-
-        private List<string> ReadCustomSizes()
-        {
-            return
-                (from csz in Program.xDataDocs.CustomSizes.Descendants("customSizeData")
-                 select csz.Attribute("dataId").Value)
-                .ToList();
-        }
-
-        private XElement SerializeSavedGroup()
-        {
-            //Create XElement
-            XElement xAltList = new XElement("altLists");
-            draft.SavedGroup.AltIdList?.ForEach(id => xAltList.Add(new XElement("listID", id)));
-
-            XElement xGroup =
-                new XElement("group",
-                new XAttribute("groupID", draft.SavedGroup.ID),
-                new XAttribute("groupName", draft.SavedGroup.Name),
-                    new XElement("defaultListID", draft.SavedGroup.DefaultListID),
-                    xAltList,
-                    new XElement("customSizeDataID", draft.SavedGroup.CustomSize));
-            return xGroup;
         }
         #endregion
 
@@ -139,9 +82,9 @@ namespace UserInterface.Forms
 
         private void PostLoading()
         {
-            sizeGroups = ReadSizeGroups();
-            sizesList = ReadSizes();
-            custSizesList = ReadCustomSizes();
+            sizeGroups = DataService.GetSizeGroups();
+            sizesList = DataService.GetFieldLists(FieldType.SIZE);
+            custSizesList = DataService.GetCustomSizes();
 
             ReadSizeGroupsIDs();
             BindSizeSelectors();
@@ -529,7 +472,7 @@ namespace UserInterface.Forms
                 .FirstOrDefault();
         }
 
-        private List<SizeList> GetSizeListExcludeId(string excludeId)
+        private List<BasicListView> GetSizeListExcludeId(string excludeId)
         {
             return sizesList.Where(s => s.ID != excludeId).ToList();
         }
@@ -898,7 +841,7 @@ namespace UserInterface.Forms
         private void ShowListSelector()
         {
             AltListSelector listSelector;
-            List<SizeList> sizeListExcluded = GetSizeListExcludeId(draft.DefaultListID);
+            List<BasicListView> sizeListExcluded = GetSizeListExcludeId(draft.DefaultListID);
 
             if (draft.AltList == null)
             {

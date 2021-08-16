@@ -60,7 +60,7 @@ namespace UserInterface.Forms
             tsmiAutoLoad.Checked = Program.TestAutoLoad;
             Runtime.Test.AutoLoad(((XmlContext)Program.context).TestLoadXmlFile);
             Runtime.Test.DoSomething(PostLoading);
-            Runtime.Test.AutoJump(delegate { new ItemEditor(/*Program.xDataDocs, Program.fpr.ImageRepos*/).ShowDialog(); });
+            //Runtime.Test.AutoJump(delegate { new ItemEditor(/*Program.xDataDocs, Program.fpr.ImageRepos*/).ShowDialog(); });
         }
 
         private void tsmiLoadAll_Click(object sender, EventArgs e)

@@ -30,6 +30,8 @@ namespace UserInterface.Models
         {
             SavedGroup = group;
 
+            // Copy data in the SizeGroup object being edited to a new draft object so that
+            // if editing was cancelled the original object will not be affected and can be restored
             GroupID = group.ID;
             GroupName = group.Name;
             DefaultListID = group.DefaultListID;
