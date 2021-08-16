@@ -39,7 +39,7 @@ namespace UserInterface.Forms
         private List<string> sizeGroupsIDs;
         private List<string> custSizesList;
 
-        private SizeGroupDraft draft;
+        private SizeGroupDrafter drafter;
 
         private bool draft_idGiven = false;
         private bool draft_nameGiven = false;
@@ -99,6 +99,9 @@ namespace UserInterface.Forms
             ResizeGrid();
         }
 
+        /// <summary>
+        /// البتاعة دي فاشلة تبقى شيلها
+        /// </summary>
         private void RefreshSizeGroups()
         {
             object dataSource = dgvGroups.DataSource;
@@ -170,7 +173,9 @@ namespace UserInterface.Forms
                 draft_idGiven = IsGroupIdGiven(inputId) && IsGroupIdUnique(inputId);
 
                 if (draft_idGiven)
-                    draft.GroupID = inputId;
+                {
+                    drafter.groupID = inputId;
+                }
 
                 CheckDraftValidity();
             }
@@ -193,7 +198,7 @@ namespace UserInterface.Forms
                 draft_nameGiven = IsGroupNameGiven(inputName);
 
                 if (draft_nameGiven)
-                    draft.GroupName = inputName.Trim();
+                    drafter.groupName = inputName.Trim();
 
                 CheckDraftValidity();
             }
@@ -208,7 +213,7 @@ namespace UserInterface.Forms
 
                 if (draft_defListGiven)
                 {
-                    draft.DefaultListID = cboDefaultID.Text;
+                    drafter.groupDefaultListID = cboDefaultID.Text;
                     EnableAltListSelection();
                 }
 
@@ -221,7 +226,7 @@ namespace UserInterface.Forms
             // only in non view mode
             if (Mode != EntryMode.View)
             {
-                draft.CustomSizeID = cboCustomSizeID.Text;
+                drafter.groupCustomSizeID = cboCustomSizeID.Text;
                 CheckDraftValidity();
             }
         }
@@ -229,7 +234,7 @@ namespace UserInterface.Forms
         private void NewGroup()
         {
             // Create draft objects
-            draft = new SizeGroupDraft();
+            drafter = new SizeGroupDrafter();
 
             // Set Entry Mode
             EnterNewMode();
@@ -258,7 +263,7 @@ namespace UserInterface.Forms
 
             string groupId = row.Cells[0].Value.ToString();
 
-            draft = new SizeGroupDraft(GetSizeGroup(groupId))
+            drafter = new SizeGroupDrafter(GetSizeGroup(groupId))
             {
                 DraftGroupXElement = GetSizeGroupXElement(groupId)
             };
@@ -272,8 +277,8 @@ namespace UserInterface.Forms
             // Setup User Interface
             NewEditSetupUI();
 
-            // Set checkbox for Alt List & Custom Size, if any.
-            if (draft.AltList != null)
+            // Set CheckBox for Alt List & Custom Size, if any.
+            if (drafter.groupAltList != null)
             {
                 chkAltList.Checked = true;
                 btnClearAltList.Enabled = true;
@@ -284,7 +289,7 @@ namespace UserInterface.Forms
                 btnClearAltList.Enabled = false;
             }
             //chkAltList.Checked = draft.AltList?.Count > 0;
-            chkCustomSize.Checked = draft.CustomSizeID != null;
+            chkCustomSize.Checked = drafter.groupCustomSizeID != null;
         }
 
         private void NewEditSetupUI()
@@ -324,7 +329,7 @@ namespace UserInterface.Forms
             // Detect modification in case of edit
             if (Mode == EntryMode.Edit)
             {
-                draftDataModified = draft.IsModified();
+                draftDataModified = drafter.IsModified();
             }
 
             btnAccept.Enabled = requiredDataGiven && draftDataModified;
@@ -333,28 +338,32 @@ namespace UserInterface.Forms
         private void SaveDraftGroup()
         {
             // Save Draft Object
-            draft.SaveData();
+            drafter.ConfirmChanges();
 
             if (Mode == EntryMode.New)
             {
-                //SaveNewGroup();
-                sizeGroups.Add(draft.SavedGroup);
-                Program.xDataDocs.SizeGroups.Root.Add(draft.DraftGroupXElement);
+                //sizeGroups.Add(drafter.DraftSizeGroup);
+                //Program.xDataDocs.SizeGroups.Root.Add(drafter.DraftGroupXElement);
+
+                // TEST
+                DataService.AddSizeGroup(drafter.DraftSizeGroup);
+                sizeGroups = DataService.GetSizeGroups();
             }
 
             // Reset UI and settings
             EnterViewMode();
 
             // Clear draft object
-            draft = null;
+            drafter = null;
 
             // Update SizeGroup ID List
-            UpdateSizeGroupsIDs();
-
+            //UpdateSizeGroupsIDs();
+            
             // Refresh or Set Size Groups List
             if (sizeGroups.Count > 1)
             {
                 RefreshSizeGroups();
+                Common.SetDataGridViewDataSource(dgvGroups, sizeGroups);
             }
             else
             {
@@ -374,7 +383,7 @@ namespace UserInterface.Forms
         private void CancelDrafting()
         {
             // Clear draft object
-            draft = null;
+            drafter = null;
 
             EnterViewMode();
 
@@ -531,7 +540,7 @@ namespace UserInterface.Forms
 
                 case EntryMode.Edit:
                     bool duplicate = sizeGroupsIDs.Contains(inputId) /*|| inputId == draft.SizeGroup.ID*/;
-                    bool different = inputId != draft.SavedGroup.ID;
+                    bool different = inputId != drafter.DraftSizeGroup.ID;
 
                     if (duplicate)
                     {
@@ -668,7 +677,7 @@ namespace UserInterface.Forms
             txtGroupID.ReadOnly = true;
             txtGroupName.ReadOnly = true;
 
-            // Clear validator labels
+            // Clear validation labels
             lblValidatorGroupId.Text = string.Empty;
             lblValidatorGroupName.Text = string.Empty;
         }
@@ -769,13 +778,13 @@ namespace UserInterface.Forms
 
             if (chkAltList.Checked)
             {
-                draft.HasAltList = true;
+                drafter.HasAltList = true;
                 EnableAltListUI();
             }
             else
             {
                 //if (draft != null)
-                draft.HasAltList = false;
+                drafter.HasAltList = false;
                 DisableAltListUI();
             }
             CheckDraftValidity();
@@ -788,13 +797,13 @@ namespace UserInterface.Forms
 
             if (chkCustomSize.Checked)
             {
-                draft.HasCustomSize = true;
+                drafter.HasCustomSize = true;
                 EnableCustomSizeUI();
             }
             else
             {
                 //if (draft != null)
-                draft.HasCustomSize = false;
+                drafter.HasCustomSize = false;
                 DisableCustomSizeUI();
             }
             CheckDraftValidity();
@@ -841,15 +850,15 @@ namespace UserInterface.Forms
         private void ShowListSelector()
         {
             AltListSelector listSelector;
-            List<BasicListView> sizeListExcluded = GetSizeListExcludeId(draft.DefaultListID);
+            List<BasicListView> sizeListExcluded = GetSizeListExcludeId(drafter.groupDefaultListID);
 
-            if (draft.AltList == null)
+            if (drafter.groupAltList == null)
             {
                 listSelector = new AltListSelector(sizeListExcluded);
             }
             else
             {
-                listSelector = new AltListSelector(sizeListExcluded, draft.AltList);
+                listSelector = new AltListSelector(sizeListExcluded, drafter.groupAltList);
             }
 
             if (listSelector.ShowDialog() == DialogResult.OK)
@@ -857,14 +866,14 @@ namespace UserInterface.Forms
                 switch (Mode)
                 {
                     case EntryMode.New:
-                        draft.AltList = listSelector.OutputAltSizesIDs;
-                        lstAltListIDs.DataSource = draft.AltList;
+                        drafter.groupAltList = listSelector.OutputAltSizesIDs;
+                        lstAltListIDs.DataSource = drafter.groupAltList;
                         CheckDraftValidity();
                         break;
 
                     case EntryMode.Edit:
-                        draft.AltList = listSelector.OutputAltSizesIDs;
-                        lstAltListIDs.DataSource = draft.AltList;
+                        drafter.groupAltList = listSelector.OutputAltSizesIDs;
+                        lstAltListIDs.DataSource = drafter.groupAltList;
                         CheckDraftValidity();
                         break;
                 }
@@ -874,18 +883,18 @@ namespace UserInterface.Forms
 
                 // Exclude Alt Size ID List from the default Size ID selector
                 skipEvents = true;
-                cboDefaultID.DataSource = GetSizeListExcludeList(draft.AltList);
+                cboDefaultID.DataSource = GetSizeListExcludeList(drafter.groupAltList);
                 skipEvents = false;
-                cboDefaultID.Text = draft.DefaultListID;
+                cboDefaultID.Text = drafter.groupDefaultListID;
             }
         }
 
         private void ClearAltSizesIdList()
         {
-            if (draft.AltList != null)
+            if (drafter.groupAltList != null)
             {
-                draft.AltList = null;
-                draft.HasAltList = false;
+                drafter.groupAltList = null;
+                drafter.HasAltList = false;
 
                 chkAltList.Checked = false;
                 lstAltListIDs.DataSource = null;
@@ -896,7 +905,7 @@ namespace UserInterface.Forms
                 skipEvents = true;
                 cboDefaultID.DataSource = sizesList.Select(id => id.ID).ToList();
                 skipEvents = false;
-                cboDefaultID.Text = draft.DefaultListID;
+                cboDefaultID.Text = drafter.groupDefaultListID;
             }
         }
 

@@ -248,6 +248,7 @@ namespace UserInterface.Operation
             return repos.SpecsIdList;
         }
         #endregion
+        
         #region Size Groups Object
         public static List<SizeGroup> GetSizeGroups() => repos.SizeGroups;
         public static List<string> GetSizeGroupsId()
