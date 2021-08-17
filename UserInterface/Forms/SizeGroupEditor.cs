@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
 namespace UserInterface.Forms
 {
@@ -54,13 +53,10 @@ namespace UserInterface.Forms
             InitializeComponent();
         }
 
-        #region File Management
-        private void SaveXmlFile()
+        private void SaveToSource()
         {
-            XDataDocuments.Save(Program.xDataDocs.SizeGroups, Program.fpp.SizeGroups);
-            DataService.UpdateSizeGroups();
-        }
-        #endregion
+            Program.context.Save(ContextEntity.SizeGroups);
+        }        
 
         private void ReadSizeGroupsIDs()
         {
@@ -99,9 +95,6 @@ namespace UserInterface.Forms
             ResizeGrid();
         }
 
-        /// <summary>
-        /// البتاعة دي فاشلة تبقى شيلها
-        /// </summary>
         private void RefreshSizeGroups()
         {
             object dataSource = dgvGroups.DataSource;
@@ -129,7 +122,7 @@ namespace UserInterface.Forms
 
         private void DisplaySelectedGroupData(string groupId)
         {
-            SizeGroup sGroup = GetSizeGroup(groupId);
+            SizeGroup sGroup = DataService.GetSizeGroup(groupId);
 
             txtGroupID.Text = groupId;
             txtGroupName.Text = sGroup.Name;
@@ -263,10 +256,7 @@ namespace UserInterface.Forms
 
             string groupId = row.Cells[0].Value.ToString();
 
-            drafter = new SizeGroupDrafter(GetSizeGroup(groupId))
-            {
-                DraftGroupXElement = GetSizeGroupXElement(groupId)
-            };
+            drafter = new SizeGroupDrafter(DataService.GetSizeGroup(groupId));
 
             draft_idGiven = true;
             draft_nameGiven = true;
@@ -338,18 +328,20 @@ namespace UserInterface.Forms
         private void SaveDraftGroup()
         {
             // Save Draft Object
-            drafter.ConfirmChanges();
+            drafter.CommitChanges();
 
-            if (Mode == EntryMode.New)
+            switch (Mode)
             {
-                //sizeGroups.Add(drafter.DraftSizeGroup);
-                //Program.xDataDocs.SizeGroups.Root.Add(drafter.DraftGroupXElement);
+                case EntryMode.New:
+                    DataService.AddSizeGroup(drafter.DraftSizeGroup);
+                    break;
 
-                // TEST
-                DataService.AddSizeGroup(drafter.DraftSizeGroup);
-                sizeGroups = DataService.GetSizeGroups();
+                case EntryMode.Edit:
+                    DataService.UpdateSizeGroup(drafter.refId, drafter.DraftSizeGroup);
+                    break;
             }
-
+            sizeGroups = DataService.GetSizeGroups();
+            
             // Reset UI and settings
             EnterViewMode();
 
@@ -359,16 +351,9 @@ namespace UserInterface.Forms
             // Update SizeGroup ID List
             //UpdateSizeGroupsIDs();
             
-            // Refresh or Set Size Groups List
-            if (sizeGroups.Count > 1)
-            {
-                RefreshSizeGroups();
-                Common.SetDataGridViewDataSource(dgvGroups, sizeGroups);
-            }
-            else
-            {
-                ListSizeGroups();
-            }
+            // Update Size Groups List
+            dgvGroups.DataSource = null;
+            Common.SetDataGridViewDataSource(dgvGroups, sizeGroups);
 
             // Reset UI
             EnableSizeGroupSelection();
@@ -406,12 +391,13 @@ namespace UserInterface.Forms
             groupSelectionIndex = SaveDataGridViewSelection(dgvGroups);
 
             string groupId = row.Cells[0].Value.ToString();
-            sizeGroups.Remove(GetSizeGroup(groupId));
+            DataService.DeleteSizeGroup(groupId);
+            sizeGroups = DataService.GetSizeGroups();
 
             // Check sizeGroups count
             CheckSizeGroupList();
             UpdateSizeGroupsIDs();
-            RefreshSizeGroups();
+            Common.SetDataGridViewDataSource(dgvGroups, sizeGroups);
 
             //Restore Selection
             RestoreDataGridViewSelection(dgvGroups, groupSelectionIndex);
@@ -468,19 +454,6 @@ namespace UserInterface.Forms
         }
 
         #region Getters
-
-        private SizeGroup GetSizeGroup(string groupId)
-        {
-            return sizeGroups.Find(i => i.ID == groupId);
-        }
-
-        private XElement GetSizeGroupXElement(string groupId)
-        {
-            return Program.xDataDocs.SizeGroups.Descendants("group")
-                .Where(g => g.Attribute("groupID").Value == groupId)
-                .FirstOrDefault();
-        }
-
         private List<BasicListView> GetSizeListExcludeId(string excludeId)
         {
             return sizesList.Where(s => s.ID != excludeId).ToList();
@@ -1071,7 +1044,7 @@ namespace UserInterface.Forms
 
         private void msmiSaveFile_Click(object sender, EventArgs e)
         {
-            SaveXmlFile();
+            SaveToSource();
         }
 
         private void tsmiClose_Click(object sender, EventArgs e)

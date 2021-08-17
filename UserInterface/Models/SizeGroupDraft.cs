@@ -1,8 +1,5 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 
 namespace UserInterface.Models
 {
@@ -23,6 +20,9 @@ namespace UserInterface.Models
         /// <param name="group"></param>
         public SizeGroupDrafter(SizeGroup group)
         {
+            // Save the reference of original SizeGroup ID to reference it incase of ID change
+            refId = group.ID;
+
             // Save the reference of original SizeGroup object to reference it later if editing was canceled
             DraftSizeGroup = group;
 
@@ -30,71 +30,50 @@ namespace UserInterface.Models
             groupID = group.ID;
             groupName = group.Name;
             groupDefaultListID = group.DefaultListID;
-            groupAltList = group.AltIdList.ToList();
+            groupAltList = group.AltIdList?.ToList();
             groupCustomSizeID = group.CustomSize;
         }
-        
 
         /// <summary>
         /// Stores the reference of the draft <see cref="SizeGroup"/> object.
         /// </summary>
         public SizeGroup DraftSizeGroup { get; private set; }
 
-        public XElement DraftGroupXElement { get; set; }
-
-        #region SizeGroup Object Value Holder Fields
+        public readonly string refId;
+        /// <summary>
+        /// Temporary input for <see cref="SizeGroup.ID"/>.
+        /// </summary>
         public string groupID;
+        /// <summary>
+        /// Temporary input for <see cref="SizeGroup.Name"/>.
+        /// </summary>
         public string groupName;
+        /// <summary>
+        /// Temporary input for <see cref="SizeGroup.DefaultListID"/>.
+        /// </summary>
         public string groupDefaultListID;
+        /// <summary>
+        /// Temporary input for <see cref="SizeGroup.AltIdList"/>.
+        /// </summary>
         public List<string> groupAltList;
+        /// <summary>
+        /// Temporary input for <see cref="SizeGroup.CustomSize"/>.
+        /// </summary>
         public string groupCustomSizeID;
-        #endregion
 
         public bool HasAltList { get; set; }
         public bool HasCustomSize { get; set; }
 
-
-        public void ConfirmChanges()
+        /// <summary>
+        /// Commit changes to the draft <see cref="SizeGroup"/> object.
+        /// </summary>
+        public void CommitChanges()
         {
             DraftSizeGroup.ID = groupID;
             DraftSizeGroup.Name = groupName;
             DraftSizeGroup.DefaultListID = groupDefaultListID;
             DraftSizeGroup.AltIdList = HasAltList ? groupAltList : null;
             DraftSizeGroup.CustomSize = HasCustomSize ? groupCustomSizeID : null;
-
-            //Save Changes in XElement object in case of edit
-            if (DraftGroupXElement != null)
-            {
-                XElement xAltList = new XElement("altLists");
-                groupAltList?.ForEach(id => xAltList.Add(new XElement("listID", id)));
-
-                DraftGroupXElement.SetAttributeValue("groupID", groupID);
-                DraftGroupXElement.SetAttributeValue("groupName", groupName);
-                DraftGroupXElement.SetElementValue("defaultListID", groupDefaultListID);
-                DraftGroupXElement.Element("altLists").ReplaceWith(xAltList);
-                DraftGroupXElement.SetElementValue("customSizeDataID", groupCustomSizeID);
-            }
-            else
-            {
-                //DraftGroupXElement = NewXElement();
-            }
-
-        }
-
-        private XElement NewXElement()
-        {
-            XElement xAltList = new XElement("altLists");
-            DraftSizeGroup.AltIdList?.ForEach(id => xAltList.Add(new XElement("listID", id)));
-
-            return
-                new XElement("group",
-                new XAttribute("groupID", DraftSizeGroup.ID),
-                new XAttribute("groupName", DraftSizeGroup.Name),
-                    new XElement("defaultListID", DraftSizeGroup.DefaultListID),
-                    /*xAltList*/
-                    new XElement("altLists", DraftSizeGroup.AltIdList != null ?
-                    (from id in DraftSizeGroup.AltIdList select new XElement("listID", id)) : null),
-                    new XElement("customSizeDataID", DraftSizeGroup.CustomSize));
         }
 
         public bool IsModified()
@@ -128,7 +107,7 @@ namespace UserInterface.Models
                 expr3 = !listA.SequenceEqual(listB);
             }
             modified = expr1 || expr2 || expr3;
-            
+
             return modified;
         }
 

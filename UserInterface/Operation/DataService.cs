@@ -283,6 +283,21 @@ namespace UserInterface.Operation
             // Update to refresh local cache
             UpdateSizeGroups();
         }
+        public static void UpdateSizeGroup(string refId, SizeGroup group)
+        {
+            // Update data source
+            Program.sizeGroupRepo.Update(refId, group);
+        }
+        public static void DeleteSizeGroup(string groupId)
+        {
+            // Delete from local cache
+            repos.SizeGroups = repos.SizeGroups.Where(group => group.ID != groupId).ToList();
+
+            // Delete from data source
+            Program.sizeGroupRepo.Delete(groupId);
+
+        }
+        public static SizeGroup GetSizeGroup(string groupId) => repos.SizeGroups.Find(group => group.ID == groupId);
         #endregion
 
         #region Fields (Sizes, Brands or Ends)

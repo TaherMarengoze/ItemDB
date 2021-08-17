@@ -12,7 +12,7 @@ namespace UserInterface.Interfaces
     {
         void Create(SizeGroup group);
         void Read();
-        void Update();
-        void Delete();
+        void Update(string refId, SizeGroup group);
+        void Delete(string groupId);
     }
 }

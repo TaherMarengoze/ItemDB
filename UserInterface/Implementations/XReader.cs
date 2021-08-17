@@ -106,6 +106,7 @@ namespace UserInterface
                     sg.Element("altLists").Elements("listID").Select(l => l.Value).ToList() : null
 
                 let customId = sg.Element("customSizeDataID").Value
+
                 select new SizeGroup()
                 {
                     ID = sg.Attribute("groupID").Value,
