@@ -288,6 +288,11 @@ namespace UserInterface.Operation
             // Update data source
             Program.sizeGroupRepo.Update(refId, group);
         }
+
+        /// <summary>
+        /// Deletes a specific <see cref="SizeGroup"/>.
+        /// </summary>
+        /// <param name="groupId">The ID of the <see cref="SizeGroup"/> object to delete.</param>
         public static void DeleteSizeGroup(string groupId)
         {
             // Delete from local cache

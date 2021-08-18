@@ -224,7 +224,7 @@ namespace UserInterface.Forms
             string id = row.Cells[0].Value.ToString();
 
             //Save Selection Position
-            itemSelectionIndex = Common.SaveDataGridViewSelection(dgvItems);
+            itemSelectionIndex = Common.GetDataGridViewSelectionIndex(dgvItems);
 
             List<ItemVO> modifiedItemList = DataService.DeleteItem(id);
 

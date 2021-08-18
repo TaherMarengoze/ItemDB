@@ -32,20 +32,18 @@ namespace UserInterface.Forms
             }
         }
 
-        #region Field Variables
-        private List<SizeGroup> sizeGroups;
-        private List<string> custSizesList;
-
         private SizeGroupDrafter drafter;
 
         /// <summary>
         /// A flag indicating a valid ID is given or not.
         /// </summary>
         private bool draft_idGiven = false;
+
         /// <summary>
         /// A flag indicating a valid Name is given or not.
         /// </summary>
         private bool draft_nameGiven = false;
+
         /// <summary>
         /// A flag indicating a valid size list ID is given or not.
         /// </summary>
@@ -53,7 +51,6 @@ namespace UserInterface.Forms
 
         private bool skipEvents = false;
         private int groupSelectionIndex;
-        #endregion
 
         public SizeGroupEditor()
         {
@@ -65,28 +62,32 @@ namespace UserInterface.Forms
             Program.context.Save(ContextEntity.SizeGroups);
         }        
         
-        #region Mode Handling
         private void EnterViewMode() => Mode = EntryMode.View;
 
         private void EnterNewMode() => Mode = EntryMode.New;
 
         private void EnterEditMode() => Mode = EntryMode.Edit;
-        #endregion
 
         private void PostLoading()
         {
-            sizeGroups = DataService.GetSizeGroups();
-            custSizesList = DataService.GetCustomSizes();
-
             BindSizeSelectors();
             ListSizeGroups();
             EnableGroupModifyUI();
         }
 
+        private void BindSizeSelectors()
+        {
+            cboDefaultID.DataSource = DataService.GetFieldIds(FieldType.SIZE).ToList();
+            cboCustomSizeID.DataSource = DataService.GetCustomSizes();
+            cboDefaultID.SelectedIndex = -1;
+        }
+
+        /// <summary>
+        /// Binds the size group list to a <see cref="DataGridView"/>.
+        /// </summary>
         private void ListSizeGroups()
         {
-            dgvGroups.DataSource = sizeGroups;
-            ResizeGrid();
+            Common.SetDataGridViewDataSource(dgvGroups, DataService.GetSizeGroups());
         }
 
         private void RefreshSizeGroups()
@@ -104,13 +105,6 @@ namespace UserInterface.Forms
         {
             dgvGroups.AutoResizeColumns();
             dgvGroups.AutoResizeRows();
-        }
-
-        private void BindSizeSelectors()
-        {
-            cboDefaultID.DataSource = DataService.GetFieldIds(FieldType.SIZE).ToList();
-            cboCustomSizeID.DataSource = custSizesList;
-            cboDefaultID.SelectedIndex = -1;
         }
 
         private void DisplaySelectedGroupData(string groupId)
@@ -340,12 +334,12 @@ namespace UserInterface.Forms
             // Clear draft object
             drafter = null;
 
-            // Reset Size Selector Datasource
+            // Reset Size Selector data source
             BindSizeSelectors();
 
             // Update Size Groups List
             dgvGroups.DataSource = null;
-            Common.SetDataGridViewDataSource(dgvGroups, DataService.GetSizeGroups());
+            ListSizeGroups();
 
             // Reset UI
             EnableSizeGroupSelection();
@@ -360,13 +354,14 @@ namespace UserInterface.Forms
             // Clear draft object
             drafter = null;
 
+            // Reset flags values
             draft_idGiven = false;
             draft_nameGiven = false;
             draft_defListGiven = false;
 
             EnterViewMode();
 
-            // Reset Size Selector Datasource
+            // Reset Size Selector data source
             BindSizeSelectors();
 
             // Setup UI
@@ -385,16 +380,17 @@ namespace UserInterface.Forms
             DataGridViewRow row = dgvGroups.SelectedRows[0];
 
             //Save Selection
-            groupSelectionIndex = Common.SaveDataGridViewSelection(dgvGroups);
+            groupSelectionIndex = Common.GetDataGridViewSelectionIndex(dgvGroups);
 
+            // Get size group id from selected row
             string groupId = row.Cells[0].Value.ToString();
-            DataService.DeleteSizeGroup(groupId);
-            sizeGroups = DataService.GetSizeGroups();
 
-            // Check sizeGroups count
+            DataService.DeleteSizeGroup(groupId);
+
+            // Check size groups count
             CheckSizeGroupList();
-            
-            Common.SetDataGridViewDataSource(dgvGroups, sizeGroups);
+
+            ListSizeGroups();
 
             //Restore Selection
             Common.RestoreDataGridViewSelection(dgvGroups, groupSelectionIndex);
@@ -405,7 +401,9 @@ namespace UserInterface.Forms
 
         private void CheckSizeGroupList()
         {
-            bool emptySizeGroupList = sizeGroups.Count <= 0;
+            List<SizeGroup> szGroups = DataService.GetSizeGroups();
+
+            bool emptySizeGroupList = szGroups.Count <= 0;
 
             switch (Mode)
             {
@@ -432,8 +430,6 @@ namespace UserInterface.Forms
                     }
                     break;
             }
-
-
         }
 
         private void EditRemoveUIEnabledStatus(bool enable)
