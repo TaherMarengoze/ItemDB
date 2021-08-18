@@ -248,7 +248,7 @@ namespace UserInterface.Operation
             return repos.SpecsIdList;
         }
         #endregion
-        
+
         #region Size Groups Object
         public static List<SizeGroup> GetSizeGroups() => repos.SizeGroups;
         public static List<string> GetSizeGroupsId()
@@ -271,7 +271,7 @@ namespace UserInterface.Operation
             return repos.SizeGroups
                 .Select(grp => new SizeGroupView(grp)).ToList();
         }
-        
+
         public static void AddSizeGroup(SizeGroup group)
         {
             // Add to local cache
@@ -385,10 +385,15 @@ namespace UserInterface.Operation
                 delegate { EndsListMoveEntry(listId, entryValue, direction); });
         }
         #endregion
-        
+
         #region Size Lists
+        // Context
         private static List<BasicListView> GetSizes() => repos.SizesList;
+        public static List<BasicListView> GetSizesExclude(string excludeId) => repos.SizesList.Where(list => list.ID != excludeId).ToList();
         private static IEnumerable<string> GetSizesId() => repos.SizesIdList;
+        public static List<string> GetSizesIdExclude(List<string> excludeIdList) => (from list in repos.SizesList where !excludeIdList.Contains(list.ID) select list.ID).ToList();
+
+        // Entity
         private static void AddSizeList(IBasicList content)
         {
             // Add to data source
@@ -412,6 +417,8 @@ namespace UserInterface.Operation
             Program.sizesRepo.DeleteList(listId);
         }
         private static IBasicList GetSizeList(string listId) => repos.SizesList.Find(list => list.ID == listId);
+
+        // Entity Manipulation
         private static ObservableCollection<string> SizeListGetEntries(string listId)
         {
             IEnumerable<ObservableCollection<string>> qry =
@@ -456,6 +463,12 @@ namespace UserInterface.Operation
 
             // Move entry in data source
             Program.sizeManipulator.MoveEntry(listId, entryValue, direction);
+        }
+
+        // Others
+        public static List<string> GetTs()
+        {
+            return null;
         }
         #endregion
 

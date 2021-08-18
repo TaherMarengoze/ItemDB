@@ -25,10 +25,7 @@ namespace UserInterface
             dataSource.Root.Add(content);
         }
 
-        public void Read()
-        {
-            throw new NotImplementedException();
-        }
+        public void Read() => throw new NotImplementedException();
 
         public void Update(string refId, SizeGroup group)
         {
