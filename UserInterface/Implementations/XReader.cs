@@ -172,5 +172,12 @@ namespace UserInterface
                 dataDocs.CustomSizes.Descendants("customSizeData")
                 .Select(csz => csz.Attribute("dataId").Value);
         }
+
+        public IEnumerable<string> GetCustomSpecs()
+        {
+            return
+                dataDocs.CustomSpecs.Descendants("customSpecData")
+                .Select(csp => csp.Attribute("dataId").Value);
+        }
     }
 }

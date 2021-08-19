@@ -34,7 +34,7 @@ namespace UserInterface.Forms
         #region File Management
         private void SaveToSource()
         {
-            Program.context.Save(ContextEntity.Items);
+            AppFactory.context.Save(ContextEntity.Items);
         }
         #endregion
 
@@ -374,7 +374,7 @@ namespace UserInterface.Forms
         {
             if (lbxImages.SelectedItem != null)
             {
-                string imageFile = Path.Combine(Program.fpp.ImageRepos, lbxImages.Text);
+                string imageFile = Path.Combine(AppFactory.fpp.ImageRepos, lbxImages.Text);
 
                 if (File.Exists(imageFile))
                 {
