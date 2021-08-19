@@ -69,7 +69,7 @@ namespace UserInterface.Forms
 
         private void SaveToSource()
         {
-            AppFactory.context.Save(entity);
+            Program.context.Save(entity);
         }
         
         private void PopulateGrid()

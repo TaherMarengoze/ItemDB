@@ -35,7 +35,7 @@ namespace UserInterface.Forms
 
         private void LauchEditor(Form editor)
         {
-            if (AppFactory.fpp != null && AppFactory.xDataDocs != null)
+            if (Program.fpp != null && Program.xDataDocs != null)
             {
                 Hide();
                 editor.ShowDialog(this);
@@ -58,14 +58,15 @@ namespace UserInterface.Forms
             EnableDisableEditorsLaunchUI(false);
 
             tsmiAutoLoad.Checked = Program.TestAutoLoad;
-            Runtime.Test.AutoLoad(((XmlContext)AppFactory.context).TestLoadXmlFile);
+            Runtime.Test.AutoLoad(((XmlContext)Program.context).TestLoadXmlFile);
             Runtime.Test.DoSomething(PostLoading);
+            //Runtime.Test.AutoJump(delegate { new ItemEditor(/*Program.xDataDocs, Program.fpr.ImageRepos*/).ShowDialog(); });
         }
 
         private void tsmiLoadAll_Click(object sender, EventArgs e)
         {
             // TEST
-            AppFactory.context.Load();
+            Program.context.Load();
             //Common.BrowseXmlFile(LoadXmlFile);
             PostLoading();
         }
@@ -73,15 +74,15 @@ namespace UserInterface.Forms
         private void LoadXmlFile(string filePath)
         {
             // Load all the required XML file paths.
-            AppFactory.fpp = new FilePathProcessor(filePath);
+            Program.fpp = new FilePathProcessor(filePath);
 
             // Load all the required XML documents.
-            AppFactory.xDataDocs = new XDataDocuments(AppFactory.fpp);
+            Program.xDataDocs = new XDataDocuments(Program.fpp);
 
             // Instantiate the source reader and modifier
-            AppFactory.reader = new XReader(AppFactory.xDataDocs);
-            AppFactory.itemModifier = new ModifyXml();
-            AppFactory.specsRepo = new SpecsRepoX(AppFactory.xDataDocs.Specs);
+            Program.reader = new XReader(Program.xDataDocs);
+            Program.itemModifier = new ModifyXml();
+            Program.specsRepo = new SpecsRepoX(Program.xDataDocs.Specs);
 
             PostLoading();
         }

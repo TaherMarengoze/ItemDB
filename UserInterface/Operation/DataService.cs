@@ -25,26 +25,25 @@ namespace UserInterface.Operation
         {
             repos = new DataRepos()
             {
-                Items = AppFactory.reader.GetItems(),
-                Categories = AppFactory.reader.GetCategories(),
-                SpecsList = AppFactory.reader.GetSpecs(),
-                SizeGroups = AppFactory.reader.GetSizeGroups().ToList(),
-                SizesList = AppFactory.reader.GetSizes().ToList(),
-                BrandsList = AppFactory.reader.GetBrands().ToList(),
-                EndsList = AppFactory.reader.GetEnds().ToList(),
-                CustomSpecs = AppFactory.reader.GetCustomSpecs().ToList(),
-                CustomSizes = AppFactory.reader.GetCustomSizes().ToList()
+                Items = Program.reader.GetItems(),
+                Categories = Program.reader.GetCategories(),
+                SpecsList = Program.reader.GetSpecs(),
+                SizeGroups = Program.reader.GetSizeGroups().ToList(),
+                SizesList = Program.reader.GetSizes().ToList(),
+                BrandsList = Program.reader.GetBrands().ToList(),
+                EndsList = Program.reader.GetEnds().ToList(),
+                CustomSizes = Program.reader.GetCustomSizes().ToList()
             };
         }
 
         #region Updater code
-        private static void UpdateItems() => repos.Items = AppFactory.reader.GetItems();
-        private static void UpdateCategories() => repos.Categories = AppFactory.reader.GetCategories();
-        public static void UpdateSpecs() => repos.SpecsList = AppFactory.reader.GetSpecs();
-        public static void UpdateSizeGroups() => repos.SizeGroups = AppFactory.reader.GetSizeGroups().ToList();
-        private static void UpdateSizes() => repos.SizesList = AppFactory.reader.GetSizes().ToList();
-        private static void UpdateBrands() => repos.BrandsList = AppFactory.reader.GetBrands().ToList();
-        private static void UpdateEnds() => repos.EndsList = AppFactory.reader.GetEnds().ToList();
+        private static void UpdateItems() => repos.Items = Program.reader.GetItems();
+        private static void UpdateCategories() => repos.Categories = Program.reader.GetCategories();
+        public static void UpdateSpecs() => repos.SpecsList = Program.reader.GetSpecs();
+        public static void UpdateSizeGroups() => repos.SizeGroups = Program.reader.GetSizeGroups().ToList();
+        private static void UpdateSizes() => repos.SizesList = Program.reader.GetSizes().ToList();
+        private static void UpdateBrands() => repos.BrandsList = Program.reader.GetBrands().ToList();
+        private static void UpdateEnds() => repos.EndsList = Program.reader.GetEnds().ToList();
         #endregion
 
         public static void ValidateItemRawData(ItemRawData data)
@@ -88,7 +87,7 @@ namespace UserInterface.Operation
         #region Interface Implementation
         public static void AddNewItem(IItemRawData data)
         {
-            AppFactory.itemModifier.AddItem(ProcessItemRawData(data));
+            Program.itemModifier.AddItem(ProcessItemRawData(data));
 
             // Update Items List and Categories
             UpdateItems();
@@ -97,7 +96,7 @@ namespace UserInterface.Operation
 
         public static void ModifyItem(string refId, IItemRawData data)
         {
-            AppFactory.itemModifier.ModifyItem(refId, ProcessItemRawData(data));
+            Program.itemModifier.ModifyItem(refId, ProcessItemRawData(data));
 
             // Update Items List and Categories
             UpdateItems();
@@ -106,7 +105,7 @@ namespace UserInterface.Operation
 
         public static List<ItemVO> DeleteItem(string itemId)
         {
-            AppFactory.itemModifier.DeleteItem(itemId);
+            Program.itemModifier.DeleteItem(itemId);
 
             // Set the Items property to itself but excluding the item to be
             // deleted; so that ItemsView property is updated automatically
@@ -279,7 +278,7 @@ namespace UserInterface.Operation
 
 
             // Add to data source
-            AppFactory.sizeGroupRepo.Create(group);
+            Program.sizeGroupRepo.Create(group);
 
             // Update to refresh local cache
             UpdateSizeGroups();
@@ -287,7 +286,7 @@ namespace UserInterface.Operation
         public static void UpdateSizeGroup(string refId, SizeGroup group)
         {
             // Update data source
-            AppFactory.sizeGroupRepo.Update(refId, group);
+            Program.sizeGroupRepo.Update(refId, group);
         }
 
         /// <summary>
@@ -300,7 +299,7 @@ namespace UserInterface.Operation
             repos.SizeGroups = repos.SizeGroups.Where(group => group.ID != groupId).ToList();
 
             // Delete from data source
-            AppFactory.sizeGroupRepo.Delete(groupId);
+            Program.sizeGroupRepo.Delete(groupId);
 
         }
         public static SizeGroup GetSizeGroup(string groupId) => repos.SizeGroups.Find(group => group.ID == groupId);
@@ -403,7 +402,7 @@ namespace UserInterface.Operation
         private static void AddSizeList(IBasicList content)
         {
             // Add to data source
-            AppFactory.sizesRepo.AddList(content);
+            Program.sizesRepo.AddList(content);
 
             // Updating will automatically refresh the local cache
             UpdateSizes();
@@ -412,7 +411,7 @@ namespace UserInterface.Operation
         {
             // Modify local cache (no need because changes are made on local cache)
             // Modify data source
-            AppFactory.sizesRepo.UpdateList(refId, content);
+            Program.sizesRepo.UpdateList(refId, content);
         }
         private static void DeleteSizeList(string listId)
         {
@@ -420,7 +419,7 @@ namespace UserInterface.Operation
             repos.SizesList = repos.SizesList.Where(list => list.ID != listId).ToList();
 
             // Delete from data source
-            AppFactory.sizesRepo.DeleteList(listId);
+            Program.sizesRepo.DeleteList(listId);
         }
         private static IBasicList GetSizeList(string listId) => repos.SizesList.Find(list => list.ID == listId);
 
@@ -438,7 +437,7 @@ namespace UserInterface.Operation
             repos.SizesList.Where(list => list.ID == listId).First().List.Add(entry);
 
             // Add to data source
-            AppFactory.sizeManipulator.AddEntry(listId, entry);
+            Program.sizeManipulator.AddEntry(listId, entry);
         }
         private static void SizeListEditEntry(string listId, string oldValue, string newValue)
         {
@@ -447,7 +446,7 @@ namespace UserInterface.Operation
             SizeListGetEntries(listId)[index] = newValue;
 
             // Edit data source
-            AppFactory.sizeManipulator.EditEntry(listId, oldValue, newValue);
+            Program.sizeManipulator.EditEntry(listId, oldValue, newValue);
         }
         private static void SizeListDeleteEntry(string listId, string entry)
         {
@@ -455,7 +454,7 @@ namespace UserInterface.Operation
             GetSizeList(listId).List.Remove(entry);
 
             // Remove from data source
-            AppFactory.sizeManipulator.DeleteEntry(listId, entry);
+            Program.sizeManipulator.DeleteEntry(listId, entry);
         }
         private static void SizeListMoveEntry(string listId, string entryValue, ShiftDirection direction)
         {
@@ -468,7 +467,7 @@ namespace UserInterface.Operation
             listEntries.Move(n, n + (int)direction);
 
             // Move entry in data source
-            AppFactory.sizeManipulator.MoveEntry(listId, entryValue, direction);
+            Program.sizeManipulator.MoveEntry(listId, entryValue, direction);
         }
 
         // Others
@@ -484,7 +483,7 @@ namespace UserInterface.Operation
         private static void AddBrandList(IBasicList content)
         {
             // Add to data source
-            AppFactory.brandsRepo.AddList(content);
+            Program.brandsRepo.AddList(content);
 
             // Updating will automatically refresh the local cache
             UpdateBrands();
@@ -493,7 +492,7 @@ namespace UserInterface.Operation
         {
             // Modify local cache (no need because changes are made on local cache)
             // Modify data source
-            AppFactory.brandsRepo.UpdateList(refId, content);
+            Program.brandsRepo.UpdateList(refId, content);
         }
         private static void DeleteBrandList(string listId)
         {
@@ -501,7 +500,7 @@ namespace UserInterface.Operation
             repos.BrandsList = repos.BrandsList.Where(list => list.ID != listId).ToList();
 
             // Delete from data source
-            AppFactory.brandsRepo.DeleteList(listId);
+            Program.brandsRepo.DeleteList(listId);
         }
         private static IBasicList GetBrandList(string listId) => repos.BrandsList.Find(list => list.ID == listId);
         private static ObservableCollection<string> BrandListGetEntries(string listId)
@@ -517,7 +516,7 @@ namespace UserInterface.Operation
             repos.BrandsList.Where(list => list.ID == listId).First().List.Add(entry);
 
             // Add to data source
-            AppFactory.brandManipulator.AddEntry(listId, entry);
+            Program.brandManipulator.AddEntry(listId, entry);
         }
         private static void BrandListEditEntry(string listId, string oldValue, string newValue)
         {
@@ -526,7 +525,7 @@ namespace UserInterface.Operation
             BrandListGetEntries(listId)[index] = newValue;
 
             // Edit data source
-            AppFactory.brandManipulator.EditEntry(listId, oldValue, newValue);
+            Program.brandManipulator.EditEntry(listId, oldValue, newValue);
         }
         private static void BrandListDeleteEntry(string listId, string entry)
         {
@@ -534,7 +533,7 @@ namespace UserInterface.Operation
             GetBrandList(listId).List.Remove(entry);
 
             // Remove from data source
-            AppFactory.brandManipulator.DeleteEntry(listId, entry);
+            Program.brandManipulator.DeleteEntry(listId, entry);
         }
         private static void BrandListMoveEntry(string listId, string entryValue, ShiftDirection direction)
         {
@@ -547,7 +546,7 @@ namespace UserInterface.Operation
             listEntries.Move(n, n + (int)direction);
 
             // Move entry in data source
-            AppFactory.brandManipulator.MoveEntry(listId, entryValue, direction);
+            Program.brandManipulator.MoveEntry(listId, entryValue, direction);
         }
         #endregion
 
@@ -556,14 +555,14 @@ namespace UserInterface.Operation
         private static IEnumerable<string> GetEndsId() => repos.EndsIdList;
         private static void AddEndsList(IBasicList content)
         {
-            AppFactory.endsRepo.AddList(content);
+            Program.endsRepo.AddList(content);
             UpdateEnds();
         }
         private static void EditEndsList(string refId, IBasicList content)
         {
             // Modify local cache (no need because changes are made on local cache)
             // Modify data source
-            AppFactory.endsRepo.UpdateList(refId, content);
+            Program.endsRepo.UpdateList(refId, content);
         }
         private static void DeleteEndsList(string listId)
         {
@@ -571,7 +570,7 @@ namespace UserInterface.Operation
             repos.EndsList = repos.EndsList.Where(list => list.ID != listId).ToList();
 
             // Delete from data source
-            AppFactory.endsRepo.DeleteList(listId);
+            Program.endsRepo.DeleteList(listId);
         }
         private static IBasicList GetEndsList(string listId) => repos.EndsList.Find(list => list.ID == listId);
         private static ObservableCollection<string> EndsListGetEntries(string listId)
@@ -587,7 +586,7 @@ namespace UserInterface.Operation
             repos.EndsList.Where(list => list.ID == listId).First().List.Add(entry);
 
             // Add to data source
-            AppFactory.endsManipulator.AddEntry(listId, entry);
+            Program.endsManipulator.AddEntry(listId, entry);
         }
         private static void EndsListEditEntry(string listId, string oldValue, string newValue)
         {
@@ -596,7 +595,7 @@ namespace UserInterface.Operation
             EndsListGetEntries(listId)[index] = newValue;
 
             // Edit data source
-            AppFactory.endsManipulator.EditEntry(listId, oldValue, newValue);
+            Program.endsManipulator.EditEntry(listId, oldValue, newValue);
         }
         private static void EndsListDeleteEntry(string listId, string entry)
         {
@@ -604,7 +603,7 @@ namespace UserInterface.Operation
             GetEndsList(listId).List.Remove(entry);
 
             // Remove from data source
-            AppFactory.endsManipulator.DeleteEntry(listId, entry);
+            Program.endsManipulator.DeleteEntry(listId, entry);
         }
         private static void EndsListMoveEntry(string listId, string entryValue, ShiftDirection direction)
         {
@@ -617,16 +616,12 @@ namespace UserInterface.Operation
             listEntries.Move(n, n + (int)direction);
 
             // Move entry in data source
-            AppFactory.endsManipulator.MoveEntry(listId, entryValue, direction);
+            Program.endsManipulator.MoveEntry(listId, entryValue, direction);
         }
         #endregion
 
         #region Custom Sizes
         public static List<string> GetCustomSizes() => repos.CustomSizes;
-        #endregion
-
-        #region Custom Specs
-        public static List<string> GetCustomSpecs() => repos.CustomSpecs;
         #endregion
 
         public static bool IsDuplicateItemId(string itemId)

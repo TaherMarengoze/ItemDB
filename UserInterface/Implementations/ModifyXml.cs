@@ -16,7 +16,7 @@ namespace UserInterface
         
         public void ModifyItem(string refId, IItem data)
         {
-            XElement xItem = AppFactory.xDataDocs.Items.Descendants("item")
+            XElement xItem = Program.xDataDocs.Items.Descendants("item")
                     .Where(elem => elem.Attribute("itemID").Value == refId)
                     .SingleOrDefault();
 
@@ -68,7 +68,7 @@ namespace UserInterface
         public void DeleteItem(string itemId)
         {
             XElement deleteItem =
-                AppFactory.xDataDocs.Items.Descendants("item")
+                Program.xDataDocs.Items.Descendants("item")
                 .Where(item => item.Attribute("itemID").Value == itemId).First();
 
             deleteItem.Remove();
@@ -141,7 +141,7 @@ namespace UserInterface
         {
             // Get old CatID of edited item
             string oldCatID =
-                XDataService.GetItemCategoryIdAttribute(AppFactory.xDataDocs.Items, existingId).Value;
+                XDataService.GetItemCategoryIdAttribute(Program.xDataDocs.Items, existingId).Value;
 
             // Compare categories IDs
             if (catId != oldCatID)
@@ -156,7 +156,7 @@ namespace UserInterface
         private void CategorizeItem(XElement serializedItem, string catId, string catName)
         {
             // Get the item's new category or create it if not found
-            XElement category = XDataService.GetCategoryAdd(AppFactory.xDataDocs.Items, catId, catName);
+            XElement category = XDataService.GetCategoryAdd(Program.xDataDocs.Items, catId, catName);
 
             // Add the item to the category
             category.Add(serializedItem);
