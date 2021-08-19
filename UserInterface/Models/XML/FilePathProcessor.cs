@@ -16,7 +16,6 @@ namespace UserInterface.Models
             //Get the parent directory of the browsed file
             string parentDir = Path.GetDirectoryName(browsedPath);
 
-            //Items = browsedPath;
             Items = Path.Combine(parentDir, "Items.xml");
             SizeGroups = Path.Combine(parentDir, "SizeGroups.xml");
             Specs = Path.Combine(parentDir, "Specs.xml");
@@ -37,16 +36,7 @@ namespace UserInterface.Models
         public string ImageRepos { get; private set; }
         public string CustomSpecs { get; private set; }
         public string CustomSizes { get; private set; }
-
-        public static string FieldFilePath(FieldType fieldType)
-        {
-            return (string)
-                Delegators.FieldFunctionCallback(fieldType,
-                    delegate { return Program.fpp.Sizes; },
-                    delegate { return Program.fpp.Brands; },
-                    delegate { return Program.fpp.Ends; });
-        }
-
+        
         public static string TestSave(string filePath)
         {
             //Get file name from path

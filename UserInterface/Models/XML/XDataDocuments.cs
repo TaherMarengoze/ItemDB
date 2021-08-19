@@ -7,7 +7,7 @@ namespace UserInterface.Models
 {
     using Interfaces;
 
-    public class XDataDocuments// : ISourceProcessor
+    public class XDataDocuments
     {
         /// <summary>
         /// Loads all XML documents in a specific path.

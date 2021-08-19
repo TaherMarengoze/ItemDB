@@ -121,7 +121,7 @@ namespace UserInterface.Forms
         #region File Management
         private void SaveToDataSource()
         {
-            Program.context.Save(ContextEntity.Specs);
+            AppFactory.context.Save(ContextEntity.Specs);
             DataService.UpdateSpecs();
         }
         #endregion
@@ -157,7 +157,7 @@ namespace UserInterface.Forms
         private void ReadSelectedSpecsData()
         {
             string specsId = lbxSpecs.Text;
-            selectedSpecs = Program.specsRepo.ReadSpecs(specsId);
+            selectedSpecs = AppFactory.specsRepo.ReadSpecs(specsId);
         }
 
         private void CancelSpecsAddOrEdit()
@@ -253,7 +253,7 @@ namespace UserInterface.Forms
         private void EditSpecs()
         {
             draftSpecsId = GetSelectedSpecsId();
-            draftSpecs = Program.specsRepo.ReadSpecs(draftSpecsId);  //GetSpecsData(draftSpecsId);
+            draftSpecs = AppFactory.specsRepo.ReadSpecs(draftSpecsId);  //GetSpecsData(draftSpecsId);
             SaveSpecsSelectionPosition();
 
 
@@ -306,7 +306,7 @@ namespace UserInterface.Forms
                 specsIdList.Remove(specsId);
                 CheckSpecsCount();
 
-                Program.specsRepo.DeleteSpecs(specsId);
+                AppFactory.specsRepo.DeleteSpecs(specsId);
                 RefreshSpecsList();
 
                 if (specsIdList.Count <= 0)
@@ -556,10 +556,10 @@ namespace UserInterface.Forms
             draftSpecs.TextPattern = txtSpecsPattern.Text;
 
             if (SpecsMode == EntryMode.New)
-                Program.specsRepo.AddSpecs(draftSpecs);
+                AppFactory.specsRepo.AddSpecs(draftSpecs);
 
             if (SpecsMode == EntryMode.Edit)
-                Program.specsRepo.UpdateSpecs(draftSpecsId, draftSpecs);
+                AppFactory.specsRepo.UpdateSpecs(draftSpecsId, draftSpecs);
 
             DataService.UpdateSpecs();
 
