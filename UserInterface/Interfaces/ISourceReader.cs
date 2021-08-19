@@ -26,5 +26,6 @@ namespace UserInterface.Interfaces
 
         IEnumerable<string> GetCustomSizes();
 
+        IEnumerable<string> GetCustomSizes();
     }
 }

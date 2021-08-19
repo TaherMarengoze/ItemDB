@@ -118,9 +118,5 @@ namespace UserInterface.Models
         #region Custom Sizes
         public List<string> CustomSizes { get; set; }
         #endregion
-
-        #region Custom Specs
-        public List<string> CustomSpecs { get; set; }
-        #endregion
     }
 }

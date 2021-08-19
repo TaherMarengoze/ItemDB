@@ -1,10 +1,9 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace UserInterface.Operation
+namespace DataServiceLibrary
 {
     using Enums;
     using Factory;

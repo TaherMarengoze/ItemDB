@@ -59,7 +59,7 @@ namespace UserInterface.Forms
 
         private void SaveToSource()
         {
-            AppFactory.context.Save(ContextEntity.SizeGroups);
+            Program.context.Save(ContextEntity.SizeGroups);
         }        
         
         private void EnterViewMode() => Mode = EntryMode.View;
