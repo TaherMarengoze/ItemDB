@@ -25,19 +25,45 @@ namespace UserInterface
             dataSource.Root.Add(content);
         }
 
-        public void Read()
+        public void Read() => throw new NotImplementedException();
+
+        public void Update(string refId, SizeGroup group)
         {
-            throw new NotImplementedException();
+            XElement content = GetSizeGroup(refId);
+
+            if (content != null)
+            {
+                XElement xAltList = new XElement("altLists");
+                group.AltIdList?.ForEach(id => xAltList.Add(new XElement("listID", id)));
+
+                content.SetAttributeValue("groupID", group.ID);
+                content.SetAttributeValue("groupName", group.Name);
+                content.SetElementValue("defaultListID", group.DefaultListID);
+                content.Element("altLists").ReplaceWith(xAltList);
+
+                //content.SetElementValue("customSizeDataID", group.CustomSize ?? string.Empty);
+                if (group.CustomSize != null)
+                {
+                    content.SetElementValue("customSizeDataID", group.CustomSize);
+                }
+                else
+                {
+                    content.Element("customSizeDataID").ReplaceWith(new XElement("customSizeDataID"));
+                }
+            }
         }
 
-        public void Update()
+        public void Delete(string groupId)
         {
-            throw new NotImplementedException();
+            GetSizeGroup(groupId).Remove();
         }
 
-        public void Delete()
+        private XElement GetSizeGroup(string groupId)
         {
-            throw new NotImplementedException();
+            return
+                dataSource.Descendants("group")
+                .Where(g => g.Attribute("groupID").Value == groupId)
+                .FirstOrDefault();
         }
 
         private XElement SerializeSizeGroup(SizeGroup group)

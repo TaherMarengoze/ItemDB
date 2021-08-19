@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Media;
+﻿using System.Media;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -60,7 +59,12 @@ namespace UserInterface
             dgv.AutoResizeRows();
         }
 
-        public static int SaveDataGridViewSelection(DataGridView dgv)
+        /// <summary>
+        /// Gets the index of the first row in a <see cref="DataGridView"/> selection.
+        /// </summary>
+        /// <param name="dgv">The <see cref="DataGridView"/> containing the selected rows.</param>
+        /// <returns></returns>
+        public static int GetDataGridViewSelectionIndex(DataGridView dgv)
         {
             if (dgv.DataSource == null)
                 return -1;

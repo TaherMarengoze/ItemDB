@@ -1,113 +1,86 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 
 namespace UserInterface.Models
 {
-    public class SizeGroupDraft
+    public class SizeGroupDrafter
     {
-        //public event EventHandler<bool> OnGroupValid;
-
-        //private bool groupIdGiven = false;
-
-        private string _groupID;
 
         /// <summary>
         /// Constructor for new draft.
         /// </summary>
-        public SizeGroupDraft()
+        public SizeGroupDrafter()
         {
-            SavedGroup = new SizeGroup();
+            DraftSizeGroup = new SizeGroup();
         }
 
         /// <summary>
         /// Constructor for modified draft.
         /// </summary>
         /// <param name="group"></param>
-        public SizeGroupDraft(SizeGroup group)
+        public SizeGroupDrafter(SizeGroup group)
         {
-            SavedGroup = group;
+            // Save the reference of original SizeGroup ID to reference it incase of ID change
+            refId = group.ID;
 
-            // Copy data in the SizeGroup object being edited to a new draft object so that
-            // if editing was cancelled the original object will not be affected and can be restored
-            GroupID = group.ID;
-            GroupName = group.Name;
-            DefaultListID = group.DefaultListID;
-            AltList = group.AltIdList;
-            CustomSizeID = group.CustomSize;
+            // Save the reference of original SizeGroup object to reference it later if editing was canceled
+            DraftSizeGroup = group;
+
+            // Copy data in SizeGroup object being edited to temporary fields
+            groupID = group.ID;
+            groupName = group.Name;
+            groupDefaultListID = group.DefaultListID;
+            groupAltList = group.AltIdList?.ToList();
+            groupCustomSizeID = group.CustomSize;
         }
 
         /// <summary>
-        /// The SizeGroup draft object that will be modified.
+        /// Stores the reference of the draft <see cref="SizeGroup"/> object.
         /// </summary>
-        public SizeGroup SavedGroup { get; private set; }
+        public SizeGroup DraftSizeGroup { get; private set; }
 
-        public XElement DraftGroupXElement { get; set; }
-
-        public string GroupID
-        {
-            get => _groupID;
-            set => _groupID = value;
-        }
-        public string GroupName { get; set; }
-        public string DefaultListID { get; set; }
-        public List<string> AltList { get; set; }
-        public string CustomSizeID { get; set; }
+        public readonly string refId;
+        /// <summary>
+        /// Temporary input for <see cref="SizeGroup.ID"/>.
+        /// </summary>
+        public string groupID;
+        /// <summary>
+        /// Temporary input for <see cref="SizeGroup.Name"/>.
+        /// </summary>
+        public string groupName;
+        /// <summary>
+        /// Temporary input for <see cref="SizeGroup.DefaultListID"/>.
+        /// </summary>
+        public string groupDefaultListID;
+        /// <summary>
+        /// Temporary input for <see cref="SizeGroup.AltIdList"/>.
+        /// </summary>
+        public List<string> groupAltList;
+        /// <summary>
+        /// Temporary input for <see cref="SizeGroup.CustomSize"/>.
+        /// </summary>
+        public string groupCustomSizeID;
 
         public bool HasAltList { get; set; }
         public bool HasCustomSize { get; set; }
 
-
-        public void SaveData()
+        /// <summary>
+        /// Commit changes to the draft <see cref="SizeGroup"/> object.
+        /// </summary>
+        public void CommitChanges()
         {
-            SavedGroup.ID = GroupID;
-            SavedGroup.Name = GroupName;
-            SavedGroup.DefaultListID = DefaultListID;
-            SavedGroup.AltIdList = HasAltList ? AltList : null;
-            SavedGroup.CustomSize = HasCustomSize ? CustomSizeID : null;
-
-            //Save Changes in XElement object in case of edit
-            if (DraftGroupXElement != null)
-            {
-                XElement xAltList = new XElement("altLists");
-                AltList?.ForEach(id => xAltList.Add(new XElement("listID", id)));
-
-                DraftGroupXElement.SetAttributeValue("groupID", GroupID);
-                DraftGroupXElement.SetAttributeValue("groupName", GroupName);
-                DraftGroupXElement.SetElementValue("defaultListID", DefaultListID);
-                DraftGroupXElement.Element("altLists").ReplaceWith(xAltList);
-                DraftGroupXElement.SetElementValue("customSizeDataID", CustomSizeID);
-            }
-            else
-            {
-                DraftGroupXElement = NewXElement();
-            }
-
-        }
-
-        private XElement NewXElement()
-        {
-            XElement xAltList = new XElement("altLists");
-            SavedGroup.AltIdList?.ForEach(id => xAltList.Add(new XElement("listID", id)));
-
-            return
-                new XElement("group",
-                new XAttribute("groupID", SavedGroup.ID),
-                new XAttribute("groupName", SavedGroup.Name),
-                    new XElement("defaultListID", SavedGroup.DefaultListID),
-                    /*xAltList*/
-                    new XElement("altLists", SavedGroup.AltIdList != null ?
-                    (from id in SavedGroup.AltIdList select new XElement("listID", id)) : null),
-                    new XElement("customSizeDataID", SavedGroup.CustomSize));
+            DraftSizeGroup.ID = groupID;
+            DraftSizeGroup.Name = groupName;
+            DraftSizeGroup.DefaultListID = groupDefaultListID;
+            DraftSizeGroup.AltIdList = HasAltList ? groupAltList : null;
+            DraftSizeGroup.CustomSize = HasCustomSize ? groupCustomSizeID : null;
         }
 
         public bool IsModified()
         {
-            bool idChanged = SavedGroup.ID != GroupID;
-            bool nameChanged = SavedGroup.Name != GroupName;
-            bool defaultListIdChanged = SavedGroup.DefaultListID != DefaultListID;
+            bool idChanged = DraftSizeGroup.ID != groupID;
+            bool nameChanged = DraftSizeGroup.Name != groupName;
+            bool defaultListIdChanged = DraftSizeGroup.DefaultListID != groupDefaultListID;
             bool altListChanged = IsAltSizeListModified();
             bool customSizeIdChanged = IsCustomSizeIdModified();
 
@@ -118,9 +91,9 @@ namespace UserInterface.Models
         {
             bool modified = false;
 
-            bool savedEmpty = SavedGroup.AltIdList == null;
+            bool savedEmpty = DraftSizeGroup.AltIdList == null;
             bool includeDraft = HasAltList;
-            bool draftEmpty = AltList == null;
+            bool draftEmpty = groupAltList == null;
 
             bool expr1 = savedEmpty && includeDraft && !draftEmpty;
             bool expr2 = !savedEmpty && (!includeDraft || draftEmpty);
@@ -128,13 +101,13 @@ namespace UserInterface.Models
 
             if (!savedEmpty && !draftEmpty)
             {
-                List<string> listA = (from item in SavedGroup.AltIdList orderby item select item).ToList();
-                List<string> listB = (from item in AltList orderby item select item).ToList();
+                List<string> listA = (from item in DraftSizeGroup.AltIdList orderby item select item).ToList();
+                List<string> listB = (from item in groupAltList orderby item select item).ToList();
 
                 expr3 = !listA.SequenceEqual(listB);
             }
             modified = expr1 || expr2 || expr3;
-            
+
             return modified;
         }
 
@@ -142,9 +115,9 @@ namespace UserInterface.Models
         {
             bool modified = false;
 
-            bool savedEmpty = SavedGroup.CustomSize == null || SavedGroup.CustomSize == string.Empty;
+            bool savedEmpty = DraftSizeGroup.CustomSize == null || DraftSizeGroup.CustomSize == string.Empty;
             bool includeDraft = HasCustomSize;
-            bool draftEmpty = CustomSizeID == null || CustomSizeID == string.Empty;
+            bool draftEmpty = groupCustomSizeID == null || groupCustomSizeID == string.Empty;
 
             bool expr1 = savedEmpty && includeDraft && !draftEmpty;
             bool expr2 = !savedEmpty && (!includeDraft || draftEmpty);
@@ -152,7 +125,7 @@ namespace UserInterface.Models
 
             if (!savedEmpty && !draftEmpty)
             {
-                expr3 = SavedGroup.CustomSize != CustomSizeID;
+                expr3 = DraftSizeGroup.CustomSize != groupCustomSizeID;
             }
 
             modified = expr1 || expr2 || expr3;

@@ -248,6 +248,7 @@ namespace UserInterface.Operation
             return repos.SpecsIdList;
         }
         #endregion
+
         #region Size Groups Object
         public static List<SizeGroup> GetSizeGroups() => repos.SizeGroups;
         public static List<string> GetSizeGroupsId()
@@ -270,7 +271,7 @@ namespace UserInterface.Operation
             return repos.SizeGroups
                 .Select(grp => new SizeGroupView(grp)).ToList();
         }
-        
+
         public static void AddSizeGroup(SizeGroup group)
         {
             // Add to local cache
@@ -282,6 +283,26 @@ namespace UserInterface.Operation
             // Update to refresh local cache
             UpdateSizeGroups();
         }
+        public static void UpdateSizeGroup(string refId, SizeGroup group)
+        {
+            // Update data source
+            Program.sizeGroupRepo.Update(refId, group);
+        }
+
+        /// <summary>
+        /// Deletes a specific <see cref="SizeGroup"/>.
+        /// </summary>
+        /// <param name="groupId">The ID of the <see cref="SizeGroup"/> object to delete.</param>
+        public static void DeleteSizeGroup(string groupId)
+        {
+            // Delete from local cache
+            repos.SizeGroups = repos.SizeGroups.Where(group => group.ID != groupId).ToList();
+
+            // Delete from data source
+            Program.sizeGroupRepo.Delete(groupId);
+
+        }
+        public static SizeGroup GetSizeGroup(string groupId) => repos.SizeGroups.Find(group => group.ID == groupId);
         #endregion
 
         #region Fields (Sizes, Brands or Ends)
@@ -369,10 +390,15 @@ namespace UserInterface.Operation
                 delegate { EndsListMoveEntry(listId, entryValue, direction); });
         }
         #endregion
-        
+
         #region Size Lists
+        // Context
         private static List<BasicListView> GetSizes() => repos.SizesList;
+        public static List<BasicListView> GetSizesExclude(string excludeId) => repos.SizesList.Where(list => list.ID != excludeId).ToList();
         private static IEnumerable<string> GetSizesId() => repos.SizesIdList;
+        public static List<string> GetSizesIdExclude(List<string> excludeIdList) => (from list in repos.SizesList where !excludeIdList.Contains(list.ID) select list.ID).ToList();
+
+        // Entity
         private static void AddSizeList(IBasicList content)
         {
             // Add to data source
@@ -396,6 +422,8 @@ namespace UserInterface.Operation
             Program.sizesRepo.DeleteList(listId);
         }
         private static IBasicList GetSizeList(string listId) => repos.SizesList.Find(list => list.ID == listId);
+
+        // Entity Manipulation
         private static ObservableCollection<string> SizeListGetEntries(string listId)
         {
             IEnumerable<ObservableCollection<string>> qry =
@@ -440,6 +468,12 @@ namespace UserInterface.Operation
 
             // Move entry in data source
             Program.sizeManipulator.MoveEntry(listId, entryValue, direction);
+        }
+
+        // Others
+        public static List<string> GetTs()
+        {
+            return null;
         }
         #endregion
 

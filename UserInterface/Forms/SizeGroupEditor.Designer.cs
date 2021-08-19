@@ -65,7 +65,7 @@
             this.btnEditGroup = new System.Windows.Forms.Button();
             this.btnNewGroup = new System.Windows.Forms.Button();
             this.grpModiyControlPanel = new System.Windows.Forms.GroupBox();
-            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.lbxSizeListEntries = new System.Windows.Forms.ListBox();
             this.grpListEntries = new System.Windows.Forms.GroupBox();
             this.grpGroupMetadata.SuspendLayout();
             this.mnuMain.SuspendLayout();
@@ -497,20 +497,20 @@
             // 
             // listBox1
             // 
-            this.listBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.IntegralHeight = false;
-            this.listBox1.Location = new System.Drawing.Point(3, 16);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(226, 52);
-            this.listBox1.TabIndex = 0;
+            this.lbxSizeListEntries.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbxSizeListEntries.FormattingEnabled = true;
+            this.lbxSizeListEntries.IntegralHeight = false;
+            this.lbxSizeListEntries.Location = new System.Drawing.Point(3, 16);
+            this.lbxSizeListEntries.Name = "listBox1";
+            this.lbxSizeListEntries.Size = new System.Drawing.Size(226, 52);
+            this.lbxSizeListEntries.TabIndex = 0;
             // 
             // grpListEntries
             // 
             this.grpListEntries.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpListEntries.Controls.Add(this.listBox1);
+            this.grpListEntries.Controls.Add(this.lbxSizeListEntries);
             this.grpListEntries.Location = new System.Drawing.Point(6, 46);
             this.grpListEntries.Name = "grpListEntries";
             this.grpListEntries.Size = new System.Drawing.Size(232, 71);
@@ -592,7 +592,7 @@
         private System.Windows.Forms.Label lblValidatorDefaultId;
         private System.Windows.Forms.GroupBox grpModiyControlPanel;
         private System.Windows.Forms.Button btnClearAltList;
-        private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.ListBox lbxSizeListEntries;
         private System.Windows.Forms.GroupBox grpListEntries;
     }
 }
