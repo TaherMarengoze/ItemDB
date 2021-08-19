@@ -7,10 +7,11 @@ using System.Windows.Forms;
 
 namespace UserInterface.Forms
 {
-    using Enums;
-    using Interfaces;
-    using Models;
-    using Operation;
+    using CoreLibrary;
+    using CoreLibrary.Enums;
+    using CoreLibrary.Interfaces;
+    using CoreLibrary.Models;
+    using CoreLibrary.Operation;
 
     public partial class ItemViewer : Form
     {
@@ -34,7 +35,7 @@ namespace UserInterface.Forms
         #region File Management
         private void SaveToSource()
         {
-            Program.context.Save(ContextEntity.Items);
+            AppFactory.context.Save(ContextEntity.Items);
         }
         #endregion
 
@@ -374,7 +375,7 @@ namespace UserInterface.Forms
         {
             if (lbxImages.SelectedItem != null)
             {
-                string imageFile = Path.Combine(Program.fpp.ImageRepos, lbxImages.Text);
+                string imageFile = Path.Combine(AppFactory.fpp.ImageRepos, lbxImages.Text);
 
                 if (File.Exists(imageFile))
                 {

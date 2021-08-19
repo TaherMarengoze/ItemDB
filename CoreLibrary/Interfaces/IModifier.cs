@@ -3,9 +3,9 @@ namespace CoreLibrary.Interfaces
 {
     public interface IModifier
     {
-        void AddItem(IItem item);
+        void CreateItem(IItem item);
 
-        void ModifyItem(string refId, IItem data);
+        void UpdateItem(string refId, IItem data);
 
         /// <summary>
         /// Deletes an item from its data source

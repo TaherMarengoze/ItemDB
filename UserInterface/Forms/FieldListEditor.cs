@@ -7,8 +7,8 @@ using System.Windows.Forms;
 
 namespace UserInterface.Forms
 {
-    using Interfaces;
-    using Models;
+    using CoreLibrary.Interfaces;
+    using CoreLibrary.Models;
 
     public partial class FieldListEditor : Form
     {

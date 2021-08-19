@@ -88,7 +88,7 @@ namespace CoreLibrary
         #region Interface Implementation
         public static void AddNewItem(IItemRawData data)
         {
-            AppFactory.itemModifier.AddItem(ProcessItemRawData(data));
+            AppFactory.itemModifier.CreateItem(ProcessItemRawData(data));
 
             // Update Items List and Categories
             UpdateItems();
@@ -97,7 +97,7 @@ namespace CoreLibrary
 
         public static void ModifyItem(string refId, IItemRawData data)
         {
-            AppFactory.itemModifier.ModifyItem(refId, ProcessItemRawData(data));
+            AppFactory.itemModifier.UpdateItem(refId, ProcessItemRawData(data));
 
             // Update Items List and Categories
             UpdateItems();
@@ -218,7 +218,7 @@ namespace CoreLibrary
         }
         #endregion
         #region Specs Object
-        internal static List<Specs> GetSpecs()
+        public static List<Specs> GetSpecs()
         {
             return repos.SpecsList.ToList();
         }

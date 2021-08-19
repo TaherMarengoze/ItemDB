@@ -7,9 +7,9 @@ using System.Windows.Forms;
 
 namespace UserInterface.Forms
 {
-    using Enums;
-    using Models;
-    using Operation;
+    using CoreLibrary;
+    using CoreLibrary.Enums;
+    using CoreLibrary.Models;
 
 
     public partial class SizeGroupEditor : Form
@@ -59,7 +59,7 @@ namespace UserInterface.Forms
 
         private void SaveToSource()
         {
-            Program.context.Save(ContextEntity.SizeGroups);
+            AppFactory.context.Save(ContextEntity.SizeGroups);
         }        
         
         private void EnterViewMode() => Mode = EntryMode.View;
