@@ -52,7 +52,7 @@
     </Win32Resource>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Ampeross-Ampola-Folder-documents.ico</ApplicationIcon>
+    <ApplicationIcon>AppIcon\Ampeross-Ampola-Folder-documents.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -68,15 +68,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppFactory.cs" />
-    <Compile Include="Class1.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Common.cs" />
+    <Compile Include="Factory\AppFactory.cs" />
+    <Compile Include="General\Common.cs" />
     <Compile Include="Controllers\SimpleListController.cs" />
     <Compile Include="Controllers\SizeGroupExt.cs" />
     <Compile Include="Enums\Enums.cs" />
-    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="General\ExtensionMethods.cs" />
     <Compile Include="Factory\Delegators.cs" />
     <Compile Include="Forms\Canvas.cs">
       <SubType>Form</SubType>
@@ -227,7 +224,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Runtime\Test.cs" />
-    <Compile Include="XmlContext.cs" />
+    <Compile Include="Implementations\XmlContext.cs" />
     <EmbeddedResource Include="Forms\AltListSelector.resx">
       <DependentUpon>AltListSelector.cs</DependentUpon>
     </EmbeddedResource>
@@ -292,9 +289,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Ampeross-Ampola-Folder-data.ico" />
-    <Content Include="Ampeross-Ampola-Folder-documents.ico" />
-    <Content Include="appIcon.ico" />
+    <Content Include="AppIcon\Ampeross-Ampola-Folder-data.ico" />
+    <Content Include="AppIcon\Ampeross-Ampola-Folder-documents.ico" />
     <None Include="Resources\down_arrow 16x.png" />
     <None Include="Resources\up_arrow 16x.png" />
     <None Include="Resources\cancel-icon_16x.png" />
@@ -317,5 +313,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
