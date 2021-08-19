@@ -1,14 +1,15 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.ObjectModel;
 using System.Windows.Forms;
 
 
 namespace UserInterface.Forms
 {
-    using Enums;
-    using Interfaces;
-    using Models;
-    using Operation;
+    using CoreLibrary;
+    using CoreLibrary.Models;
+    using CoreLibrary.Interfaces;
+    using CoreLibrary.Enums;
 
     public partial class FieldEditor : Form
     {
@@ -69,7 +70,7 @@ namespace UserInterface.Forms
 
         private void SaveToSource()
         {
-            Program.context.Save(entity);
+            AppFactory.context.Save(entity);
         }
         
         private void PopulateGrid()

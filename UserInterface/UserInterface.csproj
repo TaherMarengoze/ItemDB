@@ -68,13 +68,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Factory\AppFactory.cs" />
-    <Compile Include="General\Common.cs" />
     <Compile Include="Controllers\SimpleListController.cs" />
     <Compile Include="Controllers\SizeGroupExt.cs" />
-    <Compile Include="Enums\Enums.cs" />
-    <Compile Include="General\ExtensionMethods.cs" />
-    <Compile Include="Factory\Delegators.cs" />
     <Compile Include="Forms\Canvas.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -117,45 +112,6 @@
     <Compile Include="Forms\XML Viewer.Designer.cs">
       <DependentUpon>XML Viewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Implementations\FieldXmlManipulator.cs" />
-    <Compile Include="Implementations\FieldXmlRepository.cs" />
-    <Compile Include="Implementations\SizeGroupsXmlRepository.cs" />
-    <Compile Include="Implementations\SpecsRepoX.cs" />
-    <Compile Include="Implementations\XReader.cs" />
-    <Compile Include="Interfaces\IDataReader.cs" />
-    <Compile Include="Interfaces\IFieldManipulator.cs" />
-    <Compile Include="Interfaces\IFieldRepos.cs" />
-    <Compile Include="Interfaces\IModifier.cs" />
-    <Compile Include="Interfaces\ISchema.cs" />
-    <Compile Include="Interfaces\ISizeGroupRepos.cs" />
-    <Compile Include="Interfaces\ISourceContext.cs" />
-    <Compile Include="Interfaces\ISpecsRepo.cs" />
-    <Compile Include="Models\BasicListView.cs" />
-    <Compile Include="Models\BasicView.cs" />
-    <Compile Include="Models\CopyOrder.cs" />
-    <Compile Include="Interfaces\IItemView.cs" />
-    <Compile Include="Interfaces\IItem.cs" />
-    <Compile Include="Interfaces\IItemRawData.cs" />
-    <Compile Include="Interfaces\IBasicView.cs" />
-    <Compile Include="Models\FieldList.cs" />
-    <Compile Include="Interfaces\IFieldList.cs" />
-    <Compile Include="Interfaces\ISpecs.cs" />
-    <Compile Include="Interfaces\ISpec.cs" />
-    <Compile Include="Interfaces\ISpecListEntry.cs" />
-    <Compile Include="Models\FieldSchema.cs" />
-    <Compile Include="Interfaces\IBasicList.cs" />
-    <Compile Include="Models\IdName.cs" />
-    <Compile Include="Models\ItemCategory.cs" />
-    <Compile Include="Models\DataRepos.cs" />
-    <Compile Include="Models\ItemCheckList.cs" />
-    <Compile Include="Models\ItemImage.cs" />
-    <Compile Include="Models\ItemRawData.cs" />
-    <Compile Include="Models\ItemViewObject.cs" />
-    <Compile Include="Models\ItemDetails.cs" />
-    <Compile Include="Models\SelectionSizeList.cs" />
-    <Compile Include="Models\Validators\FieldListValidator.cs" />
-    <Compile Include="Models\ViewModels.cs" />
-    <Compile Include="Implementations\ModifyXml.cs" />
     <Compile Include="Forms\AltListSelector.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -192,24 +148,12 @@
     <Compile Include="Forms\SizeGroupEditor.Designer.cs">
       <DependentUpon>SizeGroupEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Models\Item.cs" />
     <Compile Include="Forms\SpecsEditor.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\SpecsEditor.Designer.cs">
       <DependentUpon>SpecsEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Models\SizeGroupDraft.cs" />
-    <Compile Include="Models\ListMetadata.cs" />
-    <Compile Include="Models\SizeGroup.cs" />
-    <Compile Include="Models\SpecListEntry.cs" />
-    <Compile Include="Models\Specs.cs" />
-    <Compile Include="Models\Spec.cs" />
-    <Compile Include="Models\XML\FilePathProcessor.cs" />
-    <Compile Include="Models\XML\XDataDocuments.cs" />
-    <Compile Include="Operation\DataService.cs" />
-    <Compile Include="Operation\FileCopyService.cs" />
-    <Compile Include="Operation\XDataService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Forms\ValueEdit.cs">
@@ -224,7 +168,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Runtime\Test.cs" />
-    <Compile Include="Implementations\XmlContext.cs" />
     <EmbeddedResource Include="Forms\AltListSelector.resx">
       <DependentUpon>AltListSelector.cs</DependentUpon>
     </EmbeddedResource>
@@ -312,6 +255,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj">
+      <Project>{90c23753-2a1c-4f04-a4e7-3b12ce02fa7f}</Project>
+      <Name>CoreLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

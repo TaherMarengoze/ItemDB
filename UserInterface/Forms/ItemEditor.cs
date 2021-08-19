@@ -9,10 +9,11 @@ using System.Windows.Forms;
 
 namespace UserInterface.Forms
 {
-    using Enums;
-    using Interfaces;
-    using Models;
-    using Operation;
+    using CoreLibrary;
+    using CoreLibrary.Enums;
+    using CoreLibrary.Interfaces;
+    using CoreLibrary.Models;
+    using CoreLibrary.Operation;
 
     public partial class ItemEditor : Form
     {
@@ -124,8 +125,8 @@ namespace UserInterface.Forms
             checkList.OnComplete += CheckList_OnComplete;
             checkList.OnIncomplete += CheckList_OnIncomplete;
 
-            existingImages = Program.reader.GetImageNames().ToList();
-            imagesReposPath = Program.fpp.ImageRepos;
+            existingImages = AppFactory.reader.GetImageNames().ToList();
+            imagesReposPath = AppFactory.fpp.ImageRepos;
             BindControlsToDatasources();
         }
 

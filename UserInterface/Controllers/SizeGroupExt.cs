@@ -8,10 +8,10 @@ using System.Windows.Forms;
 
 namespace UserInterface
 {
+    using CoreLibrary;
+    using CoreLibrary.Models;
     using Forms;
-    using Models;
-    using Models.Validators;
-    using Operation;
+    using CoreLibrary.Models.Validators;
 
     public class SizeGroupExt
     {

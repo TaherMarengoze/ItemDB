@@ -7,11 +7,11 @@ using System.Windows.Forms;
 namespace UserInterface.Forms
 {
     using Controllers;
-    using Enums;
-    using Interfaces;
-    using Models;
-    using Models.Validators;
-    using Operation;
+    using CoreLibrary;
+    using CoreLibrary.Enums;
+    using CoreLibrary.Interfaces;
+    using CoreLibrary.Models;
+    using CoreLibrary.Models.Validators;
 
     public partial class SizeGroupAdder : Form
     {
