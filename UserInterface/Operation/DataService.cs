@@ -32,6 +32,7 @@ namespace UserInterface.Operation
                 SizesList = Program.reader.GetSizes().ToList(),
                 BrandsList = Program.reader.GetBrands().ToList(),
                 EndsList = Program.reader.GetEnds().ToList(),
+                CustomSpecs = Program.reader.GetCustomSpecs().ToList(),
                 CustomSizes = Program.reader.GetCustomSizes().ToList()
             };
         }
@@ -622,6 +623,10 @@ namespace UserInterface.Operation
 
         #region Custom Sizes
         public static List<string> GetCustomSizes() => repos.CustomSizes;
+        #endregion
+
+        #region Custom Specs
+        public static List<string> GetCustomSpecs() => repos.CustomSpecs;
         #endregion
 
         public static bool IsDuplicateItemId(string itemId)

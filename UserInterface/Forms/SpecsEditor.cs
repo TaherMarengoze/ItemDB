@@ -131,7 +131,7 @@ namespace UserInterface.Forms
         private void PostLoading()
         {
             RefreshSpecsList();
-            ReadCustomSpecsFromXFile();
+            ReadCustomSpecs();
             // Bind Custom Specs Selector
             cboCustomTypeSelector.DataSource = cSpecIdList;
             ClearCustomTypeSelector();
@@ -149,12 +149,9 @@ namespace UserInterface.Forms
             specsIdList = DataService.GetAllSpecsId();
         }
 
-        // To be replaced
-        private void ReadCustomSpecsFromXFile()
+        private void ReadCustomSpecs()
         {
-            cSpecIdList =
-                (from customSpec in Program.xDataDocs.CustomSpecs.Descendants("customSpecData")
-                 select customSpec.Attribute("dataId").Value).ToList();
+            cSpecIdList = DataService.GetCustomSpecs();
         }
 
         private void ReadSelectedSpecsData()
