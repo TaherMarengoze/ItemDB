@@ -122,13 +122,13 @@
     <Compile Include="Implementations\SizeGroupsXmlRepository.cs" />
     <Compile Include="Implementations\SpecsRepoX.cs" />
     <Compile Include="Implementations\XReader.cs" />
-    <Compile Include="Interfaces\IDataReader.cs" />
     <Compile Include="Interfaces\IFieldManipulator.cs" />
     <Compile Include="Interfaces\IFieldRepos.cs" />
     <Compile Include="Interfaces\IModifier.cs" />
     <Compile Include="Interfaces\ISchema.cs" />
     <Compile Include="Interfaces\ISizeGroupRepos.cs" />
     <Compile Include="Interfaces\ISourceContext.cs" />
+    <Compile Include="Interfaces\ISourceReader.cs" />
     <Compile Include="Interfaces\ISpecsRepo.cs" />
     <Compile Include="Models\BasicListView.cs" />
     <Compile Include="Models\BasicView.cs" />
