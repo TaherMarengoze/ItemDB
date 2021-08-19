@@ -22,6 +22,10 @@ namespace UserInterface.Interfaces
 
         IEnumerable<string> GetImageNames();
 
+        IEnumerable<string> GetCustomSpecs();
+
+        IEnumerable<string> GetCustomSizes();
+
         IEnumerable<string> GetCustomSizes();
     }
 }
