@@ -27,7 +27,7 @@ namespace CoreLibrary
             {
                 Items = AppFactory.reader.GetItems(),
                 Categories = AppFactory.reader.GetCategories(),
-                SpecsList = AppFactory.reader.GetSpecs(),
+                SpecsList = AppFactory.reader.GetSpecs().ToList(),
                 SizeGroups = AppFactory.reader.GetSizeGroups().ToList(),
                 SizesList = AppFactory.reader.GetSizes().ToList(),
                 BrandsList = AppFactory.reader.GetBrands().ToList(),
@@ -40,7 +40,7 @@ namespace CoreLibrary
         #region Updater code
         private static void UpdateItems() => repos.Items = AppFactory.reader.GetItems();
         private static void UpdateCategories() => repos.Categories = AppFactory.reader.GetCategories();
-        public static void UpdateSpecs() => repos.SpecsList = AppFactory.reader.GetSpecs();
+        public static void UpdateSpecs() => repos.SpecsList = AppFactory.reader.GetSpecs().ToList();
         public static void UpdateSizeGroups() => repos.SizeGroups = AppFactory.reader.GetSizeGroups().ToList();
         private static void UpdateSizes() => repos.SizesList = AppFactory.reader.GetSizes().ToList();
         private static void UpdateBrands() => repos.BrandsList = AppFactory.reader.GetBrands().ToList();
@@ -218,10 +218,24 @@ namespace CoreLibrary
         }
         #endregion
         #region Specs Object
-        public static List<Specs> GetSpecs()
-        {
-            return repos.SpecsList.ToList();
-        }
+        // Context
+
+        /// <summary>
+        /// Gets a list of <see cref="Specs"/> object.
+        /// </summary>
+        /// <returns></returns>
+        public static List<Specs> GetSpecsList() => repos.SpecsList;
+
+        /// <summary>
+        /// Gets a list of ID of the <see cref="Specs"/> object.
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<string> GetSpecsIdList() => repos.SpecsIdList;
+
+        // Entity
+        // Entity Manipulation
+
+
 
         public static IEnumerable<ISpec> GetSpecsItems(string specsId)
         {
@@ -244,10 +258,6 @@ namespace CoreLibrary
                  select spec.ListEntries).FirstOrDefault();
         }
 
-        public static List<string> GetAllSpecsId()
-        {
-            return repos.SpecsIdList;
-        }
         #endregion
 
         #region Size Groups Object

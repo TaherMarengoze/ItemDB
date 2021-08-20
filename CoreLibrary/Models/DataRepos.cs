@@ -12,7 +12,7 @@ namespace CoreLibrary.Models
     public class DataRepos
     {
         private IEnumerable<IItem> _items;
-        private IEnumerable<Specs> _specsList;
+        private List<Specs> _specsList;
         private List<SizeGroup> _sizeGroups;
 
         private List<BasicListView> _sizesList;
@@ -48,7 +48,7 @@ namespace CoreLibrary.Models
         public IEnumerable<ItemCategory> Categories { get; set; }
 
         #region Specs
-        public IEnumerable<Specs> SpecsList
+        public List<Specs> SpecsList
         {
             get => _specsList;
             set
@@ -58,7 +58,7 @@ namespace CoreLibrary.Models
             }
         }
 
-        public List<string> SpecsIdList { get; private set; }
+        public IEnumerable<string> SpecsIdList { get; private set; }
         #endregion
 
         #region Size Groups

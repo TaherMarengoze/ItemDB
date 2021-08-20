@@ -140,9 +140,9 @@ namespace UserInterface.Forms
             dgvCategories.Columns[0].DisplayIndex = 2;
 
             // Bind Specs ID selector combobox
-            cboSpecsId.DataSource = DataService.GetAllSpecsId();
+            cboSpecsId.DataSource = DataService.GetSpecsIdList().ToList();
             cboSpecsId.SelectedIndex = -1;
-            dgvSpecs.DataSource = DataService.GetSpecs/*Brief*/();
+            dgvSpecs.DataSource = DataService.GetSpecsList/*Brief*/();
 
             // Bind Size Groups ID selector combobox
             cboSizeGroupId.DataSource = DataService.GetSizeGroupsId();
