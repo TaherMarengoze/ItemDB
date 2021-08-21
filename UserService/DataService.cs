@@ -47,7 +47,7 @@ namespace UserService
         private static void UpdateEnds() => repos.EndsList = AppFactory.reader.GetEnds().ToList();
         #endregion
 
-        public static void ValidateItemRawData(ItemRawData data)
+        public static void ValidateItemRawData(IItemRawData data)
         {
             // Category ID
             if (data.CatID.Length > 0 && data.CatID.Length <= 5)
