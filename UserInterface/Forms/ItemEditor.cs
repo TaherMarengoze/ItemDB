@@ -14,6 +14,7 @@ namespace UserInterface.Forms
     using CoreLibrary.Interfaces;
     using CoreLibrary.Models;
     using CoreLibrary.Operation;
+    using UserService;
 
     public partial class ItemEditor : Form
     {

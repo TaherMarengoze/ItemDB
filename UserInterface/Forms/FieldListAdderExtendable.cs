@@ -13,6 +13,7 @@ namespace UserInterface.Forms
     using CoreLibrary.Interfaces;
     using CoreLibrary.Models;
     using CoreLibrary.Models.Validators;
+    using UserService;
 
     public partial class FieldListAdderExtendable : Form
     {

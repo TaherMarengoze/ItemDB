@@ -7,6 +7,7 @@ namespace UserInterface.Forms
     using CoreLibrary;
     using CoreLibrary.Enums;
     using CoreLibrary.Models;
+    using UserService;
 
     public partial class Main : Form
     {

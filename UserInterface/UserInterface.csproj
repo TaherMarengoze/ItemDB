@@ -261,6 +261,10 @@
       <Project>{90c23753-2a1c-4f04-a4e7-3b12ce02fa7f}</Project>
       <Name>CoreLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\UserService\UserService.csproj">
+      <Project>{81fcb3e0-a6c3-4fbb-9e73-90a8c711831c}</Project>
+      <Name>UserService</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

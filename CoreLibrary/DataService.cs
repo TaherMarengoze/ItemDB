@@ -4,14 +4,15 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace CoreLibrary
+namespace UserService
 {
-    using Enums;
-    using Factory;
-    using Interfaces;
-    using Models;
+    using CoreLibrary;
+    using CoreLibrary.Enums;
+    using CoreLibrary.Factory;
+    using CoreLibrary.Interfaces;
+    using CoreLibrary.Models;
 
-    public static partial class DataService
+    public static class DataService
     {
         /// <summary>
         /// Local cache for <see cref="DataRepos"/> members.
@@ -233,6 +234,16 @@ namespace CoreLibrary
         public static IEnumerable<string> GetSpecsIdList() => repos.SpecsIdList;
 
         // Entity
+
+        public static void DeleteSpecs(string specsId)
+        {
+            // Delete from local cache
+            repos.SpecsList = repos.SpecsList.Where(specs => specs.ID != specsId).ToList();
+
+            // Delete from data source
+            AppFactory.specsRepo.DeleteSpecs(specsId);
+        }
+
         // Entity Manipulation
 
 

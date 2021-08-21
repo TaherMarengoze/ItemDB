@@ -77,7 +77,6 @@
     <Compile Include="Models\BasicView.cs" />
     <Compile Include="Models\CopyOrder.cs" />
     <Compile Include="Models\DataRepos.cs" />
-    <Compile Include="DataService.cs" />
     <Compile Include="Interfaces\IBasicList.cs" />
     <Compile Include="Interfaces\IFieldRepos.cs" />
     <Compile Include="Interfaces\IItemRawData.cs" />

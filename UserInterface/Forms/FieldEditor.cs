@@ -10,6 +10,7 @@ namespace UserInterface.Forms
     using CoreLibrary.Models;
     using CoreLibrary.Interfaces;
     using CoreLibrary.Enums;
+    using UserService;
 
     public partial class FieldEditor : Form
     {

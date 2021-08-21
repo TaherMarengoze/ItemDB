@@ -12,6 +12,8 @@ namespace UserInterface.Forms
     using CoreLibrary.Interfaces;
     using CoreLibrary.Models;
 
+    using UserService;
+
     public partial class SpecsEditor : Form
     {
         private enum IdStatus
@@ -295,7 +297,7 @@ namespace UserInterface.Forms
         private void RemoveSpecs()
         {
             int rowsCount = lbxSpecs.SelectedItems.Count;
-            if (rowsCount == 0 /*|| rowsCount > 1*/)
+            if (rowsCount == 0)
                 return;
 
             SaveSpecsSelectionPosition(true);
@@ -303,10 +305,10 @@ namespace UserInterface.Forms
             if (ShowSpecsRemoveConfirmation() == DialogResult.OK)
             {
                 string specsId = GetSelectedSpecsId();
-                specsIdList.Remove(specsId);
+
+                DataService.DeleteSpecs(specsId);
                 CheckSpecsCount();
 
-                AppFactory.specsRepo.DeleteSpecs(specsId);
                 RefreshSpecsList();
 
                 if (specsIdList.Count <= 0)

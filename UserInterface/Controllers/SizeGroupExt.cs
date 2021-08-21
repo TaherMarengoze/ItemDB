@@ -12,6 +12,7 @@ namespace UserInterface
     using CoreLibrary.Models;
     using Forms;
     using CoreLibrary.Models.Validators;
+    using UserService;
 
     public class SizeGroupExt
     {
