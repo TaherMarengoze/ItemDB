@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using CoreLibrary.Enums;
+using CoreLibrary.Interfaces;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
 namespace CoreLibrary.Models
 {
-    using Enums;
-    using Interfaces;
-
     public class Spec : ISpec
     {
         public Spec()
