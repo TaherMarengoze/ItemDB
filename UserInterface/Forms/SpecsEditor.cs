@@ -255,7 +255,7 @@ namespace UserInterface.Forms
         private void EditSpecs()
         {
             draftSpecsId = GetSelectedSpecsId();
-            draftSpecs = AppFactory.specsRepo.ReadSpecs(draftSpecsId);  //GetSpecsData(draftSpecsId);
+            draftSpecs = AppFactory.specsRepo.ReadSpecs(draftSpecsId); //GetSpecsData(draftSpecsId);
             SaveSpecsSelectionPosition();
 
 
