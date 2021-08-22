@@ -77,8 +77,8 @@ namespace UserInterface.Forms
 
         private void BindSizeSelectors()
         {
-            cboDefaultID.DataSource = DataService.GetFieldIds(FieldType.SIZE).ToList();
-            cboCustomSizeID.DataSource = DataService.GetCustomSizes();
+            cboDefaultID.DataSource = Data.GetFieldIds(FieldType.SIZE).ToList();
+            cboCustomSizeID.DataSource = Data.GetCustomSizes();
             cboDefaultID.SelectedIndex = -1;
         }
 
@@ -87,7 +87,7 @@ namespace UserInterface.Forms
         /// </summary>
         private void ListSizeGroups()
         {
-            Common.SetDataGridViewDataSource(dgvGroups, DataService.GetSizeGroups());
+            Common.SetDataGridViewDataSource(dgvGroups, Data.GetSizeGroups());
         }
 
         private void RefreshSizeGroups()
@@ -109,7 +109,7 @@ namespace UserInterface.Forms
 
         private void DisplaySelectedGroupData(string groupId)
         {
-            SizeGroup sGroup = DataService.GetSizeGroup(groupId);
+            SizeGroup sGroup = Data.GetSizeGroup(groupId);
 
             txtGroupID.Text = groupId;
             txtGroupName.Text = sGroup.Name;
@@ -240,7 +240,7 @@ namespace UserInterface.Forms
             // Get selected group id from row
             string groupId = row.Cells[0].Value.ToString();
 
-            drafter = new SizeGroupDrafter(DataService.GetSizeGroup(groupId));
+            drafter = new SizeGroupDrafter(Data.GetSizeGroup(groupId));
 
             draft_idGiven = true;
             draft_nameGiven = true;
@@ -321,11 +321,11 @@ namespace UserInterface.Forms
             switch (Mode)
             {
                 case EntryMode.New:
-                    DataService.AddSizeGroup(drafter.DraftSizeGroup);
+                    Data.AddSizeGroup(drafter.DraftSizeGroup);
                     break;
 
                 case EntryMode.Edit:
-                    DataService.UpdateSizeGroup(drafter.refId, drafter.DraftSizeGroup);
+                    Data.UpdateSizeGroup(drafter.refId, drafter.DraftSizeGroup);
                     break;
             }
             
@@ -385,7 +385,7 @@ namespace UserInterface.Forms
             // Get size group id from selected row
             string groupId = row.Cells[0].Value.ToString();
 
-            DataService.DeleteSizeGroup(groupId);
+            Data.DeleteSizeGroup(groupId);
 
             // Check size groups count
             CheckSizeGroupList();
@@ -401,7 +401,7 @@ namespace UserInterface.Forms
 
         private void CheckSizeGroupList()
         {
-            List<SizeGroup> szGroups = DataService.GetSizeGroups();
+            List<SizeGroup> szGroups = Data.GetSizeGroups();
 
             bool emptySizeGroupList = szGroups.Count <= 0;
 
@@ -470,7 +470,7 @@ namespace UserInterface.Forms
         private bool IsGroupIdUnique(string inputId)
         {
             bool unique;
-            List<string> groupsId = DataService.GetSizeGroupsId();
+            List<string> groupsId = Data.GetSizeGroupsId();
 
             switch (Mode)
             {
@@ -796,7 +796,7 @@ namespace UserInterface.Forms
             AltListSelector listSelector;
 
             List<BasicListView> sizeListExcluded =
-                DataService.GetSizesExclude(drafter.groupDefaultListID);
+                Data.GetSizesExclude(drafter.groupDefaultListID);
 
             if (drafter.groupAltList == null)
             {
@@ -829,7 +829,7 @@ namespace UserInterface.Forms
 
                 // Exclude Alt Size ID List from the default Size ID selector
                 skipEvents = true;
-                cboDefaultID.DataSource = DataService.GetSizesIdExclude(drafter.groupAltList);
+                cboDefaultID.DataSource = Data.GetSizesIdExclude(drafter.groupAltList);
                 skipEvents = false;
                 cboDefaultID.Text = drafter.groupDefaultListID;
             }
@@ -849,7 +849,7 @@ namespace UserInterface.Forms
 
                 // Re-bind the size ID selector with the full list
                 skipEvents = true;
-                cboDefaultID.DataSource = DataService.GetFieldIds(FieldType.SIZE).ToList();
+                cboDefaultID.DataSource = Data.GetFieldIds(FieldType.SIZE).ToList();
                 skipEvents = false;
                 cboDefaultID.Text = drafter.groupDefaultListID;
             }
@@ -943,7 +943,7 @@ namespace UserInterface.Forms
             if (skipEvents) return;
 
             // Display selected size list entries
-            lbxSizeListEntries.DataSource = DataService.FieldListGetEntries(FieldType.SIZE, cboDefaultID.Text);
+            lbxSizeListEntries.DataSource = Data.FieldListGetEntries(FieldType.SIZE, cboDefaultID.Text);
 
             ChangeDefaultListID();
         }

@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace UserService
 {
-    public static class DataService
+    public static class Data
     {
         /// <summary>
         /// Local cache for <see cref="DataRepos"/> members.

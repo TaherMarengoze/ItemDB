@@ -42,13 +42,13 @@ namespace UserInterface.Forms
 
         private void PostLoading()
         {
-            dgvItems.DataSource = DataService.GetAllItemsVO();
+            dgvItems.DataSource = Data.GetAllItemsVO();
             dgvItems.Columns["CatID"].Visible = false;
 
             // Update Status bar
             //UpdateStatusBar();
 
-            cboFilterCategory.DataSource = DataService.GetAllCategories();
+            cboFilterCategory.DataSource = Data.GetAllCategories();
             cboFilterCategory.DisplayMember = "CatName";
             cboFilterCategory.ValueMember = "CatID";
 
@@ -61,7 +61,7 @@ namespace UserInterface.Forms
 
         private void UpdateStatusBar()
         {
-            int items = DataService.GetItemsCount();
+            int items = Data.GetItemsCount();
             int filtered = dgvItems.RowCount;
 
             tslblItemsCount.Text = $"Items: { items }";
@@ -200,7 +200,7 @@ namespace UserInterface.Forms
             }
 
             List<ItemVO> filteredItems =
-                DataService.GetFilteredItemsView(id, name, image, cat);
+                Data.GetFilteredItemsView(id, name, image, cat);
 
             //dgvItems.DataSource = filteredItems;
             dgvItems.DataSourceResize(filteredItems);
@@ -228,7 +228,7 @@ namespace UserInterface.Forms
             //Save Selection Position
             itemSelectionIndex = Common.GetDataGridViewSelectionIndex(dgvItems);
 
-            List<ItemVO> modifiedItemList = DataService.DeleteItem(id);
+            List<ItemVO> modifiedItemList = Data.DeleteItem(id);
 
             if (modifiedItemList.Count > 0)
             {
@@ -293,7 +293,7 @@ namespace UserInterface.Forms
             {
                 SetAbilityItemEditUI(enable: true);
                 string id = (string)dgv.SelectedRows[0].Cells[0].Value;
-                ShowItemData(DataService.GetItem(id));
+                ShowItemData(Data.GetItem(id));
             }
         }
 
@@ -344,7 +344,7 @@ namespace UserInterface.Forms
             ItemEditor itemEditor = new ItemEditor();
             if (itemEditor.ShowDialog() == DialogResult.OK)
             {
-                DataService.AddNewItem(itemEditor.DraftItemData);
+                Data.AddNewItem(itemEditor.DraftItemData);
                 PostLoading();
             }
             Show();
@@ -362,7 +362,7 @@ namespace UserInterface.Forms
             if (itemEditor.ShowDialog() == DialogResult.OK)
             {
                 // Modify edited item with new one
-                DataService.ModifyItem(id, itemEditor.DraftItemData);
+                Data.ModifyItem(id, itemEditor.DraftItemData);
                 PostLoading();
             }
             Show();

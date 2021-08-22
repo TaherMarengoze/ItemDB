@@ -31,7 +31,7 @@ namespace UserInterface.Forms
 
             fieldType = field;
 
-            existingFieldIds = DataService.GetFieldBasicView(fieldType);
+            existingFieldIds = Data.GetFieldBasicView(fieldType);
             SetListItems(existingFieldIds);
 
             listController =

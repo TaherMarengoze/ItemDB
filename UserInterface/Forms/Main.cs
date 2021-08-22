@@ -90,7 +90,7 @@ namespace UserInterface.Forms
         
         private void PostLoading()
         {
-            DataService.InitializeRepos();
+            Data.InitializeRepos();
             EnableDisableEditorsLaunchUI(true);
         }
 

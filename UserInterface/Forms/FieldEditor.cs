@@ -77,7 +77,7 @@ namespace UserInterface.Forms
         private void PopulateGrid()
         {
             dgvListDetails.DataSource = null;
-            object newDataSource = DataService.GetFieldLists(fieldType);
+            object newDataSource = Data.GetFieldLists(fieldType);
             dgvListDetails.DataSource = newDataSource;
 
             // Auto-Size Columns and Rows
@@ -93,14 +93,14 @@ namespace UserInterface.Forms
         private void UpdateEntriesList()
         {
             string listId = GetSelectedListId();
-            listEntries = DataService.FieldListGetEntries(fieldType, listId);
+            listEntries = Data.FieldListGetEntries(fieldType, listId);
             lbxFieldListItems.DataSource = null;
             lbxFieldListItems.DataSource = listEntries;
         }
 
         private void PopulateEntryList(string listId)
         {
-            listEntries = DataService.FieldListGetEntries(fieldType, listId);
+            listEntries = Data.FieldListGetEntries(fieldType, listId);
             lbxFieldListItems.DataSource = listEntries;
         }
 
@@ -147,11 +147,11 @@ namespace UserInterface.Forms
         private void AddNewList()
         {
             FieldListEditor listEditor =
-                new FieldListEditor(DataService.GetFieldIds(fieldType));
+                new FieldListEditor(Data.GetFieldIds(fieldType));
 
             if (listEditor.ShowDialog() == DialogResult.OK)
             {
-                DataService.AddFieldList(fieldType, listEditor.FieldList);
+                Data.AddFieldList(fieldType, listEditor.FieldList);
                 PopulateGrid();
             }
         }
@@ -160,7 +160,7 @@ namespace UserInterface.Forms
         {
             if (Common.ShowEntryRemoveConfirmation(false) == DialogResult.OK)
             {
-                DataService.DeleteFieldList(fieldType, listId);
+                Data.DeleteFieldList(fieldType, listId);
 
                 PopulateGrid();
                 SelectFirstListItem();
@@ -169,14 +169,14 @@ namespace UserInterface.Forms
 
         private void EditExistingList(string listId, string listName)
         {
-            IBasicList editList = DataService.GetFieldList(fieldType, listId);
+            IBasicList editList = Data.GetFieldList(fieldType, listId);
 
             FieldListEditor listEditor =
-                new FieldListEditor(DataService.GetFieldIds(fieldType), editList);
+                new FieldListEditor(Data.GetFieldIds(fieldType), editList);
 
             if (listEditor.ShowDialog() == DialogResult.OK)
             {
-                DataService.EditFieldList(fieldType, listId, listEditor.FieldList);
+                Data.EditFieldList(fieldType, listId, listEditor.FieldList);
 
                 PopulateGrid();
             }
@@ -210,7 +210,7 @@ namespace UserInterface.Forms
             if (entryValue != string.Empty)
             {
                 string fieldId = GetSelectedListId();
-                DataService.FieldListAddEntry(fieldType, fieldId, entryValue);
+                Data.FieldListAddEntry(fieldType, fieldId, entryValue);
                 
                 txtEntryValue.Text = string.Empty;
                 UpdateEntriesList();
@@ -231,7 +231,7 @@ namespace UserInterface.Forms
                 string listId = GetSelectedListId();
                 string selectedEntry = lbxFieldListItems.Text;
                 //DataService.SizeListDeleteEntry(listId, selectedEntry);
-                DataService.FieldListDeleteEntry(fieldType, listId, selectedEntry);
+                Data.FieldListDeleteEntry(fieldType, listId, selectedEntry);
 
                 UpdateEntriesList();
                 SelectFirstListItem();
@@ -255,7 +255,7 @@ namespace UserInterface.Forms
                 if (valueEditBox.ShowDialog() == DialogResult.OK)
                 {
                     //DataService.SizeListEditEntry(listId, selectedEntry, valueEditBox.NewValue);
-                    DataService.FieldListEditEntry(fieldType, listId, selectedEntry, valueEditBox.NewValue);
+                    Data.FieldListEditEntry(fieldType, listId, selectedEntry, valueEditBox.NewValue);
 
                     UpdateEntriesList();
                     lbxFieldListItems.Text = valueEditBox.NewValue;
@@ -326,7 +326,7 @@ namespace UserInterface.Forms
             int selecIndex = lbxFieldListItems.SelectedIndex;
 
             //DataService.SizeListMoveEntry(listId, item, ShiftDirection.UP);
-            DataService.FieldListMoveEntry(fieldType, listId, item, ShiftDirection.UP);
+            Data.FieldListMoveEntry(fieldType, listId, item, ShiftDirection.UP);
             
             UpdateEntriesList();
             SelectShiftedItem(selecIndex, ShiftDirection.UP);
@@ -339,7 +339,7 @@ namespace UserInterface.Forms
             int selecIndex = lbxFieldListItems.SelectedIndex;
 
             //DataService.SizeListMoveEntry(listId, item, ShiftDirection.DOWN);
-            DataService.FieldListMoveEntry(fieldType, listId, item, ShiftDirection.DOWN);
+            Data.FieldListMoveEntry(fieldType, listId, item, ShiftDirection.DOWN);
 
             UpdateEntriesList();
             SelectShiftedItem(selecIndex, ShiftDirection.DOWN);

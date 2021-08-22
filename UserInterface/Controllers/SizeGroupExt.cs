@@ -231,7 +231,7 @@ namespace UserInterface
 
         private void ParentComponentPostSetting()
         {
-            existSizeGroupIds = DataService.GetSizeGroupsBasic();
+            existSizeGroupIds = Data.GetSizeGroupsBasic();
         }
 
         private void Host_Load(object sender, EventArgs e)

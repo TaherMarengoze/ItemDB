@@ -124,7 +124,7 @@ namespace UserInterface.Forms
         private void SaveToDataSource()
         {
             AppFactory.context.Save(ContextEntity.Specs);
-            DataService.UpdateSpecs();
+            Data.UpdateSpecs();
         }
         #endregion
 
@@ -148,12 +148,12 @@ namespace UserInterface.Forms
 
         private void ReadSpecsIDs()
         {
-            specsIdList = DataService.GetSpecsIdList().ToList();
+            specsIdList = Data.GetSpecsIdList().ToList();
         }
 
         private void ReadCustomSpecs()
         {
-            cSpecIdList = DataService.GetCustomSpecs();
+            cSpecIdList = Data.GetCustomSpecs();
         }
 
         private void ReadSelectedSpecsData()
@@ -306,7 +306,7 @@ namespace UserInterface.Forms
             {
                 string specsId = GetSelectedSpecsId();
 
-                DataService.DeleteSpecs(specsId);
+                Data.DeleteSpecs(specsId);
                 CheckSpecsCount();
 
                 RefreshSpecsList();
@@ -563,7 +563,7 @@ namespace UserInterface.Forms
             if (SpecsMode == EntryMode.Edit)
                 AppFactory.specsRepo.UpdateSpecs(draftSpecsId, draftSpecs);
 
-            DataService.UpdateSpecs();
+            Data.UpdateSpecs();
 
             // Exit draft (New) mode
             SpecsMode = EntryMode.View;
