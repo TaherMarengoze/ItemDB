@@ -91,7 +91,7 @@
     <Compile Include="Models\ItemRawData.cs" />
     <Compile Include="Models\ItemVO.cs" />
     <Compile Include="Models\SelectionSizeList.cs" />
-    <Compile Include="Models\SizeGroupDraft.cs" />
+    <Compile Include="Models\SizeGroupDrafter.cs" />
     <Compile Include="Models\Spec.cs" />
     <Compile Include="Models\SpecListEntry.cs" />
     <Compile Include="Models\Specs.cs" />

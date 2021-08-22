@@ -939,8 +939,8 @@ namespace UserInterface.Forms
 
                 selSpec =
                     SpecsMode == EntryMode.View ?
-                    GetSpecData(selectedSpecs, idx) :
-                    GetSpecData(draftSpecs, idx);
+                    Data.GetSpecsItem(selectedSpecs, idx) :
+                    Data.GetSpecsItem(draftSpecs, idx);
 
                 //selSpec =
                 //    SpecsMode == EntryMode.View ?

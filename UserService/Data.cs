@@ -262,11 +262,18 @@ namespace UserService
         // Entity Operations
         public static ISpec GetSpecsItem(string specsId, int specIndex)
         {
-            Specs specs =
+            ISpecs specs =
                 repos.SpecsList.Find(sp => sp.ID == specsId);
 
             return
                 specs.SpecItems.Find(spec => spec.Index == specIndex);
+        }
+
+        public static ISpec GetSpecsItem(ISpecs specs, int specIndex)
+        {
+            return
+                specs.SpecItems
+                .FirstOrDefault(si => si.Index == specIndex);
         }
 
         // Entity Manipulation
@@ -297,7 +304,12 @@ namespace UserService
         #endregion
 
         #region Size Groups Object
+        /// <summary>
+        /// Retrieves the list of <see cref="SizeGroup"/> from the cache.
+        /// </summary>
+        /// <returns></returns>
         public static List<SizeGroup> GetSizeGroups() => repos.SizeGroups;
+
         public static List<string> GetSizeGroupsId()
         {
             return repos.SizeGroupIdList;
@@ -330,6 +342,7 @@ namespace UserService
             // Update to refresh local cache
             UpdateSizeGroupsRepos();
         }
+
         public static void UpdateSizeGroup(string refId, SizeGroup group)
         {
             // Update data source
@@ -349,7 +362,11 @@ namespace UserService
             AppFactory.sizeGroupRepo.Delete(groupId);
 
         }
-        public static SizeGroup GetSizeGroup(string groupId) => repos.SizeGroups.Find(group => group.ID == groupId);
+
+        public static SizeGroup GetSizeGroup(string groupId)
+        {
+            return repos.SizeGroups.Find(group => group.ID == groupId);
+        }
         #endregion
 
         #region Fields (Sizes, Brands or Ends)

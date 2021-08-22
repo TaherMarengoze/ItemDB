@@ -1,7 +1,8 @@
-﻿namespace CoreLibrary.Models
+﻿
+namespace CoreLibrary.Interfaces
 {
     public interface IView
     {
-        BasicView GetBasicView();
+        Models.BasicView GetBasicView();
     }
 }

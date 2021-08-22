@@ -1,17 +1,18 @@
-﻿using System;
+﻿
+using CoreLibrary;
+using CoreLibrary.Enums;
+using CoreLibrary.Models;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using UserService;
+
 
 namespace UserInterface.Forms
 {
-    using CoreLibrary;
-    using CoreLibrary.Enums;
-    using CoreLibrary.Models;
-    using UserService;
-
     public partial class SizeGroupEditor : Form
     {
         private EntryMode _mode = EntryMode.View;

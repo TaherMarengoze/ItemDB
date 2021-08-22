@@ -5,7 +5,6 @@ namespace CoreLibrary.Models
 {
     public class SizeGroupDrafter
     {
-
         /// <summary>
         /// Constructor for new draft.
         /// </summary>
@@ -20,7 +19,7 @@ namespace CoreLibrary.Models
         /// <param name="group"></param>
         public SizeGroupDrafter(SizeGroup group)
         {
-            // Save the reference of original SizeGroup ID to reference it incase of ID change
+            // Save the reference of original SizeGroup ID to reference it in case of ID change
             refId = group.ID;
 
             // Save the reference of original SizeGroup object to reference it later if editing was canceled
@@ -43,25 +42,31 @@ namespace CoreLibrary.Models
         /// <summary>
         /// Temporary input for <see cref="SizeGroup.ID"/>.
         /// </summary>
+
         public string groupID;
         /// <summary>
         /// Temporary input for <see cref="SizeGroup.Name"/>.
         /// </summary>
+
         public string groupName;
         /// <summary>
         /// Temporary input for <see cref="SizeGroup.DefaultListID"/>.
         /// </summary>
+
         public string groupDefaultListID;
         /// <summary>
         /// Temporary input for <see cref="SizeGroup.AltIdList"/>.
         /// </summary>
+
         public List<string> groupAltList;
         /// <summary>
         /// Temporary input for <see cref="SizeGroup.CustomSize"/>.
         /// </summary>
+
         public string groupCustomSizeID;
 
         public bool HasAltList { get; set; }
+
         public bool HasCustomSize { get; set; }
 
         /// <summary>
