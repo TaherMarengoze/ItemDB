@@ -1,19 +1,19 @@
-﻿using System;
+﻿
+using CoreLibrary;
+using CoreLibrary.Enums;
+using CoreLibrary.Interfaces;
+using CoreLibrary.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using UserService;
+
 
 namespace UserInterface.Forms
 {
-    using CoreLibrary;
-    using CoreLibrary.Enums;
-    using CoreLibrary.Interfaces;
-    using CoreLibrary.Models;
-
-    using UserService;
-
     public partial class SpecsEditor : Form
     {
         private enum IdStatus
@@ -98,6 +98,7 @@ namespace UserInterface.Forms
         private List<string> cSpecIdList;
         private List<string> filteredspecsIdList;
 
+        //private string selectedSpecsId;
         private ISpecs selectedSpecs;
         private ISpec selSpec;
 
@@ -113,20 +114,15 @@ namespace UserInterface.Forms
         private int entrySelectionIndex;
         #endregion
 
-        #region Constructor
         public SpecsEditor()
         {
             InitializeComponent();
         }
-        #endregion
 
-        #region File Management
         private void SaveToDataSource()
         {
             AppFactory.context.Save(ContextEntity.Specs);
-            Data.UpdateSpecs();
         }
-        #endregion
 
         #region Processes
 
@@ -159,7 +155,8 @@ namespace UserInterface.Forms
         private void ReadSelectedSpecsData()
         {
             string specsId = lbxSpecs.Text;
-            selectedSpecs = AppFactory.specsRepo.ReadSpecs(specsId);
+            //selectedSpecsId = specsId;
+            selectedSpecs = Data.GetSpecs(specsId);
         }
 
         private void CancelSpecsAddOrEdit()
@@ -255,7 +252,7 @@ namespace UserInterface.Forms
         private void EditSpecs()
         {
             draftSpecsId = GetSelectedSpecsId();
-            draftSpecs = AppFactory.specsRepo.ReadSpecs(draftSpecsId); //GetSpecsData(draftSpecsId);
+            draftSpecs = Data.GetSpecs(draftSpecsId);
             SaveSpecsSelectionPosition();
 
 
@@ -520,7 +517,7 @@ namespace UserInterface.Forms
 
                     // Renumber SpecItems
                     int i = 0;
-                    foreach (Spec spec in draftSpecs.SpecItems)
+                    foreach (ISpec spec in draftSpecs.SpecItems)
                     {
                         spec.Index = ++i;
                     }
@@ -558,13 +555,11 @@ namespace UserInterface.Forms
             draftSpecs.TextPattern = txtSpecsPattern.Text;
 
             if (SpecsMode == EntryMode.New)
-                AppFactory.specsRepo.AddSpecs(draftSpecs);
-
+                Data.AddSpecs(draftSpecs);
+            
             if (SpecsMode == EntryMode.Edit)
-                AppFactory.specsRepo.UpdateSpecs(draftSpecsId, draftSpecs);
-
-            Data.UpdateSpecs();
-
+                Data.UpdateSpecs(draftSpecsId, draftSpecs);
+            
             // Exit draft (New) mode
             SpecsMode = EntryMode.View;
 
@@ -858,11 +853,6 @@ namespace UserInterface.Forms
                 .FirstOrDefault(spec => spec.Index == specIndex);
         }
 
-        private ISpec GetNewSpecsItemData(int siIndex)
-        {
-            return
-                draftSpecs.SpecItems.Find(si => si.Index == siIndex);
-        }
         private int GetLastSpecsItemIndex()
         {
             return draftSpecs.SpecItems.Count();
@@ -870,7 +860,7 @@ namespace UserInterface.Forms
 
         private string GetSelectedSpecsId()
         {
-            return lbxSpecs.SelectedValue.ToString();
+            return (string)lbxSpecs.SelectedValue;
         }
 
         private int GetSelectedSpecIndex()
@@ -883,7 +873,8 @@ namespace UserInterface.Forms
             if (dgvListEntries.Rows.Count <= 0)
                 return 0;
 
-            return (int)dgvListEntries.SelectedRows[0].Cells[0].Value;
+            return //(int)dgvListEntries.SelectedRows[0].Cells[0].Value;
+                (int)dgvListEntries.SelectedRows[0].Cells["ValueID"].Value;
         }
 
         private string GenerateNewSpecsID()
@@ -934,18 +925,27 @@ namespace UserInterface.Forms
             txtSpecsID.Text = selectedSpecs.ID;
             txtSpecsName.Text = selectedSpecs.Name;
             txtSpecsPattern.Text = selectedSpecs.TextPattern;
-            dgvSpec.DataSource = selectedSpecs.SpecItems;
-            dgvSpec.AutoResizeColumns();
+            //dgvSpec.DataSource = selectedSpecs.SpecItems;
+            //dgvSpec.AutoResizeColumns();
+            Common.SetDataGridViewDataSource(dgvSpec, selectedSpecs.SpecItems);
         }
 
         private void ViewSelectedSpecData(int idx)
         {
             if (specMode == EntryMode.View)
             {
+                //string specsId = GetSelectedSpecsId();
+                //Console.WriteLine("{0}, {1}", SpecsMode, specsId);
+
                 selSpec =
-                        SpecsMode == EntryMode.View ?
-                        GetSpecData(selectedSpecs, idx) :
-                        GetSpecData(draftSpecs, idx);
+                    SpecsMode == EntryMode.View ?
+                    GetSpecData(selectedSpecs, idx) :
+                    GetSpecData(draftSpecs, idx);
+
+                //selSpec =
+                //    SpecsMode == EntryMode.View ?
+                //    Data.GetSpecsItem(selectedSpecsId, idx) :
+                //    Data.GetSpecsItem(draftSpecsId, idx);
 
                 txtSiIndex.Text = idx.ToString();
                 txtSiName.Text = selSpec.Name;
@@ -956,7 +956,7 @@ namespace UserInterface.Forms
 
         private void ChangeSpecTypeSelector()
         {
-            // List Type Spec
+            // List Type Specs Item
             if (selSpec.SpecType == SpecType.List)
             {
                 dgvListEntries.DataSource = selSpec.ListEntries;
@@ -969,7 +969,7 @@ namespace UserInterface.Forms
                 rdoListType.Checked = false;
             }
 
-            // Custom Type Spec
+            // Custom Type Specs Item
             if (selSpec.SpecType == SpecType.Custom)
             {
                 cboCustomTypeSelector.Text = selSpec.CustomInputID;

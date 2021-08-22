@@ -38,13 +38,13 @@ namespace UserService
         }
 
         #region Updater code
-        private static void UpdateItems() => repos.Items = AppFactory.reader.GetItems();
-        private static void UpdateCategories() => repos.Categories = AppFactory.reader.GetCategories();
-        public static void UpdateSpecs() => repos.SpecsList = AppFactory.reader.GetSpecs().ToList();
-        public static void UpdateSizeGroups() => repos.SizeGroups = AppFactory.reader.GetSizeGroups().ToList();
-        private static void UpdateSizes() => repos.SizesList = AppFactory.reader.GetSizes().ToList();
-        private static void UpdateBrands() => repos.BrandsList = AppFactory.reader.GetBrands().ToList();
-        private static void UpdateEnds() => repos.EndsList = AppFactory.reader.GetEnds().ToList();
+        private static void UpdateItemsRepos() => repos.Items = AppFactory.reader.GetItems();
+        private static void UpdateCategoriesRepos() => repos.Categories = AppFactory.reader.GetCategories();
+        public static void UpdateSpecsRepos() => repos.SpecsList = AppFactory.reader.GetSpecs().ToList();
+        public static void UpdateSizeGroupsRepos() => repos.SizeGroups = AppFactory.reader.GetSizeGroups().ToList();
+        private static void UpdateSizesRepos() => repos.SizesList = AppFactory.reader.GetSizes().ToList();
+        private static void UpdateBrandsRepos() => repos.BrandsList = AppFactory.reader.GetBrands().ToList();
+        private static void UpdateEndsRepos() => repos.EndsList = AppFactory.reader.GetEnds().ToList();
         #endregion
 
         public static void ValidateItemRawData(IItemRawData data)
@@ -91,8 +91,8 @@ namespace UserService
             AppFactory.itemModifier.CreateItem(ProcessItemRawData(data));
 
             // Update Items List and Categories
-            UpdateItems();
-            UpdateCategories();
+            UpdateItemsRepos();
+            UpdateCategoriesRepos();
         }
 
         public static void ModifyItem(string refId, IItemRawData data)
@@ -100,8 +100,8 @@ namespace UserService
             AppFactory.itemModifier.UpdateItem(refId, ProcessItemRawData(data));
 
             // Update Items List and Categories
-            UpdateItems();
-            UpdateCategories();
+            UpdateItemsRepos();
+            UpdateCategoriesRepos();
         }
 
         public static List<ItemVO> DeleteItem(string itemId)
@@ -181,6 +181,7 @@ namespace UserService
             }
         }
         #endregion
+
         #region Category Object
         public static List<ItemCategory> GetAllCategories()
         {
@@ -217,6 +218,7 @@ namespace UserService
                 .FirstOrDefault();
         }
         #endregion
+
         #region Specs Object
         // Context
 
@@ -233,7 +235,20 @@ namespace UserService
         public static IEnumerable<string> GetSpecsIdList() => repos.SpecsIdList;
 
         // Entity
+        public static void AddSpecs(ISpecs specs)
+        {
+            // Add to data source
+            AppFactory.specsRepo.AddSpecs(specs);
 
+            // Updating will automatically refresh the local cache
+            UpdateSpecsRepos();
+        }
+        public static void UpdateSpecs(string refId, ISpecs content)
+        {
+            // Modify local cache (no need because changes are made on local cache)
+            // Modify data source
+            AppFactory.specsRepo.UpdateSpecs(refId, content);
+        }
         public static void DeleteSpecs(string specsId)
         {
             // Delete from local cache
@@ -241,6 +256,17 @@ namespace UserService
 
             // Delete from data source
             AppFactory.specsRepo.DeleteSpecs(specsId);
+        }
+        public static ISpecs GetSpecs(string specsId) => repos.SpecsList.Find(specs => specs.ID == specsId);
+
+        // Entity Operations
+        public static ISpec GetSpecsItem(string specsId, int specIndex)
+        {
+            Specs specs =
+                repos.SpecsList.Find(sp => sp.ID == specsId);
+
+            return
+                specs.SpecItems.Find(spec => spec.Index == specIndex);
         }
 
         // Entity Manipulation
@@ -302,7 +328,7 @@ namespace UserService
             AppFactory.sizeGroupRepo.Create(group);
 
             // Update to refresh local cache
-            UpdateSizeGroups();
+            UpdateSizeGroupsRepos();
         }
         public static void UpdateSizeGroup(string refId, SizeGroup group)
         {
@@ -426,7 +452,7 @@ namespace UserService
             AppFactory.sizesRepo.AddList(content);
 
             // Updating will automatically refresh the local cache
-            UpdateSizes();
+            UpdateSizesRepos();
         }
         private static void EditSizeList(string refId, IBasicList content)
         {
@@ -507,7 +533,7 @@ namespace UserService
             AppFactory.brandsRepo.AddList(content);
 
             // Updating will automatically refresh the local cache
-            UpdateBrands();
+            UpdateBrandsRepos();
         }
         private static void EditBrandList(string refId, IBasicList content)
         {
@@ -577,7 +603,7 @@ namespace UserService
         private static void AddEndsList(IBasicList content)
         {
             AppFactory.endsRepo.AddList(content);
-            UpdateEnds();
+            UpdateEndsRepos();
         }
         private static void EditEndsList(string refId, IBasicList content)
         {

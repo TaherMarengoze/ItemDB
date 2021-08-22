@@ -95,7 +95,7 @@
             this.lblSpecsID.AutoSize = true;
             this.lblSpecsID.Location = new System.Drawing.Point(14, 30);
             this.lblSpecsID.Name = "lblSpecsID";
-            this.lblSpecsID.Size = new System.Drawing.Size(51, 13);
+            this.lblSpecsID.Size = new System.Drawing.Size(49, 13);
             this.lblSpecsID.TabIndex = 6;
             this.lblSpecsID.Text = "Specs I&D";
             this.lblSpecsID.Click += new System.EventHandler(this.lblSpecsID_Click);
@@ -125,7 +125,7 @@
             this.lblSpecsPattern.AutoSize = true;
             this.lblSpecsPattern.Location = new System.Drawing.Point(242, 30);
             this.lblSpecsPattern.Name = "lblSpecsPattern";
-            this.lblSpecsPattern.Size = new System.Drawing.Size(65, 13);
+            this.lblSpecsPattern.Size = new System.Drawing.Size(68, 13);
             this.lblSpecsPattern.TabIndex = 8;
             this.lblSpecsPattern.Text = "Te&xt Pattern";
             this.lblSpecsPattern.Click += new System.EventHandler(this.lblSpecsPattern_Click);
@@ -472,7 +472,7 @@
             this.lblSpecValuePattern.AutoSize = true;
             this.lblSpecValuePattern.Location = new System.Drawing.Point(9, 74);
             this.lblSpecValuePattern.Name = "lblSpecValuePattern";
-            this.lblSpecValuePattern.Size = new System.Drawing.Size(71, 13);
+            this.lblSpecValuePattern.Size = new System.Drawing.Size(72, 13);
             this.lblSpecValuePattern.TabIndex = 4;
             this.lblSpecValuePattern.Text = "&Value Pattern";
             this.lblSpecValuePattern.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -483,7 +483,7 @@
             this.lblSpecName.AutoSize = true;
             this.lblSpecName.Location = new System.Drawing.Point(47, 48);
             this.lblSpecName.Name = "lblSpecName";
-            this.lblSpecName.Size = new System.Drawing.Size(35, 13);
+            this.lblSpecName.Size = new System.Drawing.Size(34, 13);
             this.lblSpecName.TabIndex = 2;
             this.lblSpecName.Text = "Na&me";
             this.lblSpecName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -494,7 +494,7 @@
             this.lblSpecIndex.AutoSize = true;
             this.lblSpecIndex.Location = new System.Drawing.Point(46, 22);
             this.lblSpecIndex.Name = "lblSpecIndex";
-            this.lblSpecIndex.Size = new System.Drawing.Size(33, 13);
+            this.lblSpecIndex.Size = new System.Drawing.Size(35, 13);
             this.lblSpecIndex.TabIndex = 0;
             this.lblSpecIndex.Text = "Index";
             this.lblSpecIndex.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -545,33 +545,33 @@
             // 
             this.tsmiSaveFile.Name = "tsmiSaveFile";
             this.tsmiSaveFile.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.tsmiSaveFile.Size = new System.Drawing.Size(198, 22);
-            this.tsmiSaveFile.Text = "&Save File";
+            this.tsmiSaveFile.Size = new System.Drawing.Size(194, 22);
+            this.tsmiSaveFile.Text = "&Save";
             this.tsmiSaveFile.Click += new System.EventHandler(this.mnuItmSaveFile_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(195, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(191, 6);
             // 
             // tsmiClose
             // 
             this.tsmiClose.Name = "tsmiClose";
-            this.tsmiClose.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.tsmiClose.Size = new System.Drawing.Size(198, 22);
+            this.tsmiClose.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.C)));
+            this.tsmiClose.Size = new System.Drawing.Size(194, 22);
             this.tsmiClose.Text = "Close";
             this.tsmiClose.Click += new System.EventHandler(this.tsmiClose_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(195, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(191, 6);
             // 
             // tsmiExitApp
             // 
             this.tsmiExitApp.Name = "tsmiExitApp";
-            this.tsmiExitApp.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.tsmiExitApp.Size = new System.Drawing.Size(198, 22);
+            this.tsmiExitApp.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.X)));
+            this.tsmiExitApp.Size = new System.Drawing.Size(194, 22);
             this.tsmiExitApp.Text = "E&xit Application";
             this.tsmiExitApp.Click += new System.EventHandler(this.tsmiExitApp_Click);
             // 
@@ -696,7 +696,7 @@
             this.lblSpecsName.AutoSize = true;
             this.lblSpecsName.Location = new System.Drawing.Point(14, 56);
             this.lblSpecsName.Name = "lblSpecsName";
-            this.lblSpecsName.Size = new System.Drawing.Size(68, 13);
+            this.lblSpecsName.Size = new System.Drawing.Size(65, 13);
             this.lblSpecsName.TabIndex = 6;
             this.lblSpecsName.Text = "Specs Name";
             this.lblSpecsName.Click += new System.EventHandler(this.lblSpecsID_Click);

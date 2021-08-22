@@ -665,4 +665,22 @@
       </list>
     </specsItem>
   </specs>
+  <specs specsID="S0022" name="Wire Rope" textPattern="{1} {base}">
+    <specsItem index="1" name="Material" valuePattern="{val}">
+      <list>
+        <entry valId="1">
+          <val>Steel</val>
+          <disp>Steel</disp>
+        </entry>
+        <entry valId="2">
+          <val>Galvanized Steel</val>
+          <disp>Galvanized Steel</disp>
+        </entry>
+        <entry valId="3">
+          <val>Stainless Steel</val>
+          <disp>Stainless Steel</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
 </specsGroups>
