@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using UserInterface.Controllers;
-using UserInterface.Interfaces;
-using UserInterface.Models;
-using UserInterface.Models.Validators;
-using UserInterface.Operation;
-using UserInterface.Enums;
 
 namespace UserInterface.Forms
 {
+    using Controllers;
+    using CoreLibrary;
+    using CoreLibrary.Enums;
+    using CoreLibrary.Interfaces;
+    using CoreLibrary.Models;
+    using CoreLibrary.Models.Validators;
+    using UserService;
+
     public partial class SizeGroupAdder : Form
     {
         public IFieldList FieldListItem { get; private set; } = new FieldList();
@@ -97,7 +95,7 @@ namespace UserInterface.Forms
                 if (duplicateFound)
                 {
                     inputValidator.ValidID = false;
-                    lblValidID.Text = "• Duplicte ID";
+                    lblValidID.Text = "• Duplicate ID";
                     if (input.Length >= txtListID.MaxLength)
                     {
                         txtListID.SelectAll();
@@ -162,6 +160,9 @@ namespace UserInterface.Forms
                 SetListItems(existingFieldIds);
             }
         }
+
         #endregion
+
+
     }
 }

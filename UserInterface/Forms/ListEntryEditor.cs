@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
-using UserInterface.Interfaces;
-using UserInterface.Models;
+using CoreLibrary.Interfaces;
+using CoreLibrary.Models;
 
 namespace UserInterface.Forms
 {

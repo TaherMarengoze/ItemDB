@@ -949,4 +949,41 @@
       <uom>TEST</uom>
     </item>
   </category>
+  <category catID="TXDCT" name="Air Textile Distributors">
+    <item itemID="SOX01" order="0">
+      <names>
+        <base>Fabric Duct</base>
+        <display>Fabric Duct</display>
+        <common>
+          <cname>Sox</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>SOX01-00.jpg</image>
+        <image>SOX01-01.jpg</image>
+      </images>
+      <details />
+      <uom>mt</uom>
+    </item>
+  </category>
+  <category catID="STEEL" name="Steel">
+    <item itemID="WRP01" order="0">
+      <names>
+        <base>Wire Rope</base>
+        <display>Wire Rope</display>
+        <common>
+          <cname>حبل حديد</cname>
+          <cname>واير حديد</cname>
+        </common>
+      </names>
+      <description>Wire rope is several strands of metal wire twisted into a helix forming a composite rope.</description>
+      <images>
+        <image>WRP01-00.jpg</image>
+        <image>WRP01-01.jpg</image>
+      </images>
+      <details />
+      <uom>mt</uom>
+    </item>
+  </category>
 </items>

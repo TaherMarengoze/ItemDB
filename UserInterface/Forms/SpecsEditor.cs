@@ -7,10 +7,12 @@ using System.Windows.Forms;
 
 namespace UserInterface.Forms
 {
-    using Enums;
-    using Interfaces;
-    using Models;
-    using Operation;
+    using CoreLibrary;
+    using CoreLibrary.Enums;
+    using CoreLibrary.Interfaces;
+    using CoreLibrary.Models;
+
+    using UserService;
 
     public partial class SpecsEditor : Form
     {
@@ -121,7 +123,7 @@ namespace UserInterface.Forms
         #region File Management
         private void SaveToDataSource()
         {
-            Program.context.Save(ContextEntity.Specs);
+            AppFactory.context.Save(ContextEntity.Specs);
             DataService.UpdateSpecs();
         }
         #endregion
@@ -131,7 +133,7 @@ namespace UserInterface.Forms
         private void PostLoading()
         {
             RefreshSpecsList();
-            ReadCustomSpecsFromXFile();
+            ReadCustomSpecs();
             // Bind Custom Specs Selector
             cboCustomTypeSelector.DataSource = cSpecIdList;
             ClearCustomTypeSelector();
@@ -146,21 +148,18 @@ namespace UserInterface.Forms
 
         private void ReadSpecsIDs()
         {
-            specsIdList = DataService.GetAllSpecsId();
+            specsIdList = DataService.GetSpecsIdList().ToList();
         }
 
-        // To be replaced
-        private void ReadCustomSpecsFromXFile()
+        private void ReadCustomSpecs()
         {
-            cSpecIdList =
-                (from customSpec in Program.xDataDocs.CustomSpecs.Descendants("customSpecData")
-                 select customSpec.Attribute("dataId").Value).ToList();
+            cSpecIdList = DataService.GetCustomSpecs();
         }
 
         private void ReadSelectedSpecsData()
         {
             string specsId = lbxSpecs.Text;
-            selectedSpecs = Program.specsRepo.ReadSpecs(specsId);
+            selectedSpecs = AppFactory.specsRepo.ReadSpecs(specsId);
         }
 
         private void CancelSpecsAddOrEdit()
@@ -256,7 +255,7 @@ namespace UserInterface.Forms
         private void EditSpecs()
         {
             draftSpecsId = GetSelectedSpecsId();
-            draftSpecs = Program.specsRepo.ReadSpecs(draftSpecsId);  //GetSpecsData(draftSpecsId);
+            draftSpecs = AppFactory.specsRepo.ReadSpecs(draftSpecsId); //GetSpecsData(draftSpecsId);
             SaveSpecsSelectionPosition();
 
 
@@ -298,7 +297,7 @@ namespace UserInterface.Forms
         private void RemoveSpecs()
         {
             int rowsCount = lbxSpecs.SelectedItems.Count;
-            if (rowsCount == 0 /*|| rowsCount > 1*/)
+            if (rowsCount == 0)
                 return;
 
             SaveSpecsSelectionPosition(true);
@@ -306,10 +305,10 @@ namespace UserInterface.Forms
             if (ShowSpecsRemoveConfirmation() == DialogResult.OK)
             {
                 string specsId = GetSelectedSpecsId();
-                specsIdList.Remove(specsId);
+
+                DataService.DeleteSpecs(specsId);
                 CheckSpecsCount();
 
-                Program.specsRepo.DeleteSpecs(specsId);
                 RefreshSpecsList();
 
                 if (specsIdList.Count <= 0)
@@ -559,10 +558,10 @@ namespace UserInterface.Forms
             draftSpecs.TextPattern = txtSpecsPattern.Text;
 
             if (SpecsMode == EntryMode.New)
-                Program.specsRepo.AddSpecs(draftSpecs);
+                AppFactory.specsRepo.AddSpecs(draftSpecs);
 
             if (SpecsMode == EntryMode.Edit)
-                Program.specsRepo.UpdateSpecs(draftSpecsId, draftSpecs);
+                AppFactory.specsRepo.UpdateSpecs(draftSpecsId, draftSpecs);
 
             DataService.UpdateSpecs();
 

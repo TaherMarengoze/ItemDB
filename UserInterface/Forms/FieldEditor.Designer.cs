@@ -41,7 +41,7 @@
             this.btnEdit = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuItmSaveFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiSave = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tsmiClose = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -140,7 +140,7 @@
             this.btnAddNewList.Name = "btnAddNewList";
             this.btnAddNewList.Size = new System.Drawing.Size(75, 23);
             this.btnAddNewList.TabIndex = 11;
-            this.btnAddNewList.Text = "Add List";
+            this.btnAddNewList.Text = "&Add List";
             this.btnAddNewList.UseVisualStyleBackColor = true;
             this.btnAddNewList.Click += new System.EventHandler(this.btnAddNewList_Click);
             // 
@@ -179,7 +179,7 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuItmSaveFile,
+            this.tsmiSave,
             this.toolStripSeparator1,
             this.tsmiClose,
             this.toolStripSeparator2,
@@ -188,14 +188,14 @@
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "&File";
             // 
-            // mnuItmSaveFile
+            // tsmiSave
             // 
-            this.mnuItmSaveFile.Enabled = false;
-            this.mnuItmSaveFile.Name = "mnuItmSaveFile";
-            this.mnuItmSaveFile.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.mnuItmSaveFile.Size = new System.Drawing.Size(198, 22);
-            this.mnuItmSaveFile.Text = "&Save File";
-            this.mnuItmSaveFile.Click += new System.EventHandler(this.mnuItmSaveFile_Click);
+            this.tsmiSave.Enabled = false;
+            this.tsmiSave.Name = "tsmiSave";
+            this.tsmiSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.tsmiSave.Size = new System.Drawing.Size(198, 22);
+            this.tsmiSave.Text = "&Save";
+            this.tsmiSave.Click += new System.EventHandler(this.tsmiSave_Click);
             // 
             // toolStripSeparator1
             // 
@@ -290,7 +290,6 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Field Lists Editor";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FieldEditor_FormClosing);
             this.Load += new System.EventHandler(this.Form_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FieldEditor_KeyDown);
             this.grpListData.ResumeLayout(false);
@@ -315,7 +314,7 @@
         private System.Windows.Forms.Button btnAddNewList;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem mnuItmSaveFile;
+        private System.Windows.Forms.ToolStripMenuItem tsmiSave;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem tsmiClose;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;

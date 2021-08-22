@@ -9,10 +9,12 @@ using System.Windows.Forms;
 
 namespace UserInterface.Forms
 {
-    using Enums;
-    using Interfaces;
-    using Models;
-    using Operation;
+    using CoreLibrary;
+    using CoreLibrary.Enums;
+    using CoreLibrary.Interfaces;
+    using CoreLibrary.Models;
+    using CoreLibrary.Operation;
+    using UserService;
 
     public partial class ItemEditor : Form
     {
@@ -71,7 +73,7 @@ namespace UserInterface.Forms
             txtDescription.Text = item.Description;
             txtUom.Text = item.UoM;
 
-            // Set images listbox
+            // Set images ListBox
             lbxNameCommon.DataSource = commonNames;
 
             if (!string.IsNullOrEmpty(item.Details.SpecsID))
@@ -124,8 +126,8 @@ namespace UserInterface.Forms
             checkList.OnComplete += CheckList_OnComplete;
             checkList.OnIncomplete += CheckList_OnIncomplete;
 
-            existingImages = Program.reader.GetImageNames().ToList();
-            imagesReposPath = Program.fpp.ImageRepos;
+            existingImages = AppFactory.reader.GetImageNames().ToList();
+            imagesReposPath = AppFactory.fpp.ImageRepos;
             BindControlsToDatasources();
         }
 
@@ -139,9 +141,9 @@ namespace UserInterface.Forms
             dgvCategories.Columns[0].DisplayIndex = 2;
 
             // Bind Specs ID selector combobox
-            cboSpecsId.DataSource = DataService.GetAllSpecsId();
+            cboSpecsId.DataSource = DataService.GetSpecsIdList().ToList();
             cboSpecsId.SelectedIndex = -1;
-            dgvSpecs.DataSource = DataService.GetSpecs/*Brief*/();
+            dgvSpecs.DataSource = DataService.GetSpecsList/*Brief*/();
 
             // Bind Size Groups ID selector combobox
             cboSizeGroupId.DataSource = DataService.GetSizeGroupsId();
@@ -149,16 +151,16 @@ namespace UserInterface.Forms
             dgvSizeGroup.DataSource = DataService.GetSizeGroupsVO();
 
             // Bind Brands ID selector combobox
-            cboBrandListId.DataSource = DataService.GetBrandListsId();
+            cboBrandListId.DataSource = DataService.GetFieldIds(FieldType.BRAND).ToList();
             cboBrandListId.SelectedIndex = -1;
-            dgvBrandsLists.DataSource = DataService.GetBrands();
+            dgvBrandsLists.DataSource = DataService.GetFieldLists(FieldType.BRAND);
 
             // Bind Ends List ID selector combobox
-            cboEndsListId.DataSource = DataService.GetEndsListsId();
+            cboEndsListId.DataSource = DataService.GetFieldIds(FieldType.ENDS).ToList();
             cboEndsListId.SelectedIndex = -1;
-            dgvEndsLists.DataSource = DataService.GetEnds();
+            dgvEndsLists.DataSource = DataService.GetFieldLists(FieldType.ENDS);
 
-            // Images Listbox
+            // Images ListBox
             lbxImages.DisplayMember = "DraftDisplayName";
         }
 
@@ -612,7 +614,8 @@ namespace UserInterface.Forms
             if (dgvSizeGroup.SelectedRows.Count > 0)
             {
                 string sizeId = dgvSizeGroup.SelectedRows[0].Cells["DefaultListID"].Value.ToString();
-                lbxSizeListEntries.DataSource = DataService.GetSizeListEntries(sizeId);
+                lbxSizeListEntries.DataSource = //DataService.SizeListGetEntries(sizeId);
+                    DataService.FieldListGetEntries(FieldType.SIZE, sizeId);
 
                 SizeGroupView sgv = dgvSizeGroup.SelectedRows[0].DataBoundItem as SizeGroupView;
                 cboAltListSelector.DataSource = sgv.AltIdList;
@@ -841,7 +844,8 @@ namespace UserInterface.Forms
             if (cboAltListSelector.SelectedIndex != -1)
             {
                 string sizeId = cboAltListSelector.Text;
-                lbxAltSizeListEntries.DataSource = DataService.GetSizeListEntries(sizeId);
+                lbxAltSizeListEntries.DataSource = //DataService.SizeListGetEntries(sizeId);
+                    DataService.FieldListGetEntries(FieldType.SIZE, sizeId);
             }
             else
             {
@@ -945,12 +949,12 @@ namespace UserInterface.Forms
                 //ItemImage image = (ItemImage)selectedImage;
                 itemImages.Remove((ItemImage)selectedImage);
 
-                // Save Listbox selection
+                // Save ListBox selection
                 int selIdx = Common.SaveListboxSelection(lbxImages);
 
                 UpdateImagesList();
 
-                // Restore Listbox selection
+                // Restore ListBox selection
                 Common.RestoreListboxSelection(lbxImages, selIdx);
 
                 // Disable Edit & Remove buttons if no image remains
@@ -1215,13 +1219,22 @@ namespace UserInterface.Forms
 
         private void tsmiSizeList_Click(object sender, EventArgs e)
         {
-            FieldType fieldType = FieldType.SIZE;
-            //QuickAddField(fieldType);
-            SizeGroupAdder fieldAdder = new SizeGroupAdder(fieldType);
-            if (fieldAdder.ShowDialog() == DialogResult.OK)
+
+            var adder = //new SizeGroupAdder(FieldType.SIZE);
+                new FieldListAdderExtendable(FieldType.SIZE, out SizeGroupExt groupExt);
+
+            if (adder.ShowDialog() == DialogResult.OK)
             {
-                DataService.AddNewFieldList(fieldType, fieldAdder.FieldListItem);
+                DataService.AddFieldList(FieldType.SIZE, adder.FieldListItem);
+                DataService.AddSizeGroup(new SizeGroup()
+                {
+                    ID = groupExt.ListData.ID,
+                    Name = groupExt.ListData.Name,
+                    DefaultListID = adder.FieldListItem.ID
+                });
             }
+
+            UpdateSizeGroupUI();
         }
 
         private void tsmiBrandsList_Click(object sender, EventArgs e)
@@ -1240,18 +1253,28 @@ namespace UserInterface.Forms
 
         void QuickAddField(FieldType fieldType)
         {
-            FieldListAdder listAdder = new FieldListAdder(fieldType);
-            if (listAdder.ShowDialog() == DialogResult.OK)
+            var adder = //new FieldListAdder(fieldType);
+                new FieldListAdderExtendable(fieldType);
+
+            if (adder.ShowDialog() == DialogResult.OK)
             {
-                DataService.AddNewFieldList(fieldType, listAdder.FieldListItem);
+                DataService.AddFieldList(fieldType, adder.FieldListItem);
             }
         }
 
-        private static void UpdateFieldUI(FieldType fieldType, ComboBox fieldSelector, DataGridView fieldDataView)
+        private void UpdateSizeGroupUI()
+        {
+            cboSizeGroupId.DataSource = null;
+            dgvSizeGroup.DataSource = null;
+            cboSizeGroupId.DataSource = DataService.GetSizeGroupsId();
+            dgvSizeGroup.DataSource = DataService.GetSizeGroupsVO();
+        }
+
+        private void UpdateFieldUI(FieldType fieldType, ComboBox fieldSelector, DataGridView fieldDataView)
         {
             fieldSelector.DataSource = null;
             fieldDataView.DataSource = null;
-            fieldSelector.DataSource = DataService.GetFieldListsId(fieldType);
+            fieldSelector.DataSource = DataService.GetFieldIds(fieldType).ToList();
             fieldDataView.DataSource = DataService.GetFieldLists(fieldType);
         }
 

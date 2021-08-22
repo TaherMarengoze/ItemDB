@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{90C23753-2A1C-4F04-A4E7-3B12CE02FA7F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CoreLibrary</RootNamespace>
+    <AssemblyName>CoreLibrary</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Factory\AppFactory.cs" />
+    <Compile Include="FileCopyService.cs" />
+    <Compile Include="General\Common.cs" />
+    <Compile Include="General\ExtensionMethods.cs" />
+    <Compile Include="Interfaces\IBasicField.cs" />
+    <Compile Include="Implementations\FieldXmlManipulator.cs" />
+    <Compile Include="Implementations\FieldXmlRepository.cs" />
+    <Compile Include="Implementations\ModifyXml.cs" />
+    <Compile Include="Implementations\SizeGroupsXmlRepository.cs" />
+    <Compile Include="Implementations\SpecsRepoX.cs" />
+    <Compile Include="Implementations\XmlContext.cs" />
+    <Compile Include="Implementations\XReader.cs" />
+    <Compile Include="Interfaces\IFieldManipulator.cs" />
+    <Compile Include="Interfaces\IModifier.cs" />
+    <Compile Include="Interfaces\ISchema.cs" />
+    <Compile Include="Interfaces\ISizeGroupRepos.cs" />
+    <Compile Include="Interfaces\ISourceContext.cs" />
+    <Compile Include="Interfaces\ISourceReader.cs" />
+    <Compile Include="Interfaces\ISpec.cs" />
+    <Compile Include="Interfaces\ISpecListEntry.cs" />
+    <Compile Include="Interfaces\ISpecs.cs" />
+    <Compile Include="Interfaces\ISpecsRepo.cs" />
+    <Compile Include="Interfaces\IView.cs" />
+    <Compile Include="Models\ItemIdView.cs" />
+    <Compile Include="Models\BasicListView.cs" />
+    <Compile Include="Enums\Enums.cs" />
+    <Compile Include="Factory\Delegators.cs" />
+    <Compile Include="Interfaces\IBasicView.cs" />
+    <Compile Include="Interfaces\IFieldList.cs" />
+    <Compile Include="Interfaces\IItem.cs" />
+    <Compile Include="Interfaces\IItemView.cs" />
+    <Compile Include="Models\BasicView.cs" />
+    <Compile Include="Models\CopyOrder.cs" />
+    <Compile Include="Models\DataRepos.cs" />
+    <Compile Include="Interfaces\IBasicList.cs" />
+    <Compile Include="Interfaces\IFieldRepos.cs" />
+    <Compile Include="Interfaces\IItemRawData.cs" />
+    <Compile Include="Models\FieldList.cs" />
+    <Compile Include="Models\FieldSchema.cs" />
+    <Compile Include="Models\IdName.cs" />
+    <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\ItemCategory.cs" />
+    <Compile Include="Models\ItemCheckList.cs" />
+    <Compile Include="Models\ItemDetails.cs" />
+    <Compile Include="Models\ItemImage.cs" />
+    <Compile Include="Models\ItemRawData.cs" />
+    <Compile Include="Models\ItemVO.cs" />
+    <Compile Include="Models\SelectionSizeList.cs" />
+    <Compile Include="Models\SizeGroupDraft.cs" />
+    <Compile Include="Models\Spec.cs" />
+    <Compile Include="Models\SpecListEntry.cs" />
+    <Compile Include="Models\Specs.cs" />
+    <Compile Include="Models\Validators\FieldListValidator.cs" />
+    <Compile Include="Models\XML\FilePathProcessor.cs" />
+    <Compile Include="Models\XML\XDataDocuments.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Models\SizeGroup.cs" />
+    <Compile Include="Models\SizeGroupView.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

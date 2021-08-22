@@ -100,4 +100,14 @@
     <altLists />
     <customSizeDataID />
   </group>
+  <group groupID="GWRN1" groupName="Wrench Size">
+    <defaultListID>WRN01</defaultListID>
+    <altLists />
+    <customSizeDataID />
+  </group>
+  <group groupID="GROP1" groupName="Wire Ropes">
+    <defaultListID>WROPE</defaultListID>
+    <altLists />
+    <customSizeDataID />
+  </group>
 </sizeGroups>
