@@ -1,12 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <endsLists ver="1.0">
-  <endsList listID="C000" name="Sample Test">
-    <ends>
-      <end>Fine</end>
-      <end>Normal</end>
-      <end>Coarse</end>
-    </ends>
-  </endsList>
   <endsList listID="C010" name="Pipe Ends">
     <ends>
       <end>Plain</end>

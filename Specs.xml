@@ -683,4 +683,18 @@
       </list>
     </specsItem>
   </specs>
+  <specs specsID="S0023" name="Wrench" textPattern="{1} {base}">
+    <specsItem index="1" name="Ends Type" valuePattern="{val}">
+      <list>
+        <entry valId="1">
+          <val>Standard</val>
+          <disp>Standard</disp>
+        </entry>
+        <entry valId="2">
+          <val>Combined</val>
+          <disp>Combined</disp>
+        </entry>
+      </list>
+    </specsItem>
+  </specs>
 </specsGroups>

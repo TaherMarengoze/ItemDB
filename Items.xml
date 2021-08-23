@@ -507,7 +507,9 @@
         <common />
       </names>
       <description>Stick pins are used to fasten insulation.</description>
-      <images />
+      <images>
+        <image>SASP1-00.jpg</image>
+      </images>
       <details />
       <uom>Ea</uom>
     </item>
@@ -546,6 +548,7 @@
         <image>SPR-CNGB.jpg</image>
       </images>
       <details>
+        <brandList ID="B0024" required="false" />
         <specs ID="S040" required="true" />
         <sizeGroup ID="G040" required="true" />
       </details>
@@ -898,6 +901,26 @@
       </details>
       <uom>Ea</uom>
     </item>
+    <item itemID="WRN01" order="0">
+      <names>
+        <base>Wrench</base>
+        <display>Wrench</display>
+        <common>
+          <cname>مفتاح انجليزي</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>WRN01-00.jpg</image>
+        <image>WRN01-01.jpg</image>
+        <image>WRN01-02.jpg</image>
+      </images>
+      <details>
+        <specs ID="S0023" required="true" />
+        <sizeGroup ID="GWRN1" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
   </category>
   <category catID="CHEM" name="Chemicals / Paints">
     <item itemID="PNT01" order="0">
@@ -936,19 +959,6 @@
       <uom>Liters</uom>
     </item>
   </category>
-  <category catID="TEST" name="Test Category">
-    <item itemID="TEST" order="0">
-      <names>
-        <base>Test Item</base>
-        <display>Test Item</display>
-        <common />
-      </names>
-      <description></description>
-      <images />
-      <details />
-      <uom>TEST</uom>
-    </item>
-  </category>
   <category catID="TXDCT" name="Air Textile Distributors">
     <item itemID="SOX01" order="0">
       <names>
@@ -982,7 +992,9 @@
         <image>WRP01-00.jpg</image>
         <image>WRP01-01.jpg</image>
       </images>
-      <details />
+      <details>
+        <sizeGroup ID="GROP1" required="true" />
+      </details>
       <uom>mt</uom>
     </item>
   </category>
