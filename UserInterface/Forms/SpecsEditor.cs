@@ -121,7 +121,7 @@ namespace UserInterface.Forms
 
         private void SaveToDataSource()
         {
-            AppFactory.context.Save(ContextEntity.Specs);
+            Data.Save(ContextEntity.Specs);
         }
 
         #region Processes
@@ -343,7 +343,7 @@ namespace UserInterface.Forms
             draftSpec = new Spec();
 
             // Get last SpecsItem index
-            int lastIdx = GetLastSpecsItemIndex();
+            int lastIdx = draftSpecs.SpecItems.Count; //GetLastSpecsItemIndex();
 
             // Set Initial member values
             int newIdx = lastIdx + 1;
@@ -845,19 +845,7 @@ namespace UserInterface.Forms
         }
         #endregion
 
-        #region Data Query
-        private ISpec GetSpecData(ISpecs specs, int specIndex)
-        {
-            return
-                specs.SpecItems
-                .FirstOrDefault(spec => spec.Index == specIndex);
-        }
-
-        private int GetLastSpecsItemIndex()
-        {
-            return draftSpecs.SpecItems.Count();
-        }
-
+        #region Getters
         private string GetSelectedSpecsId()
         {
             return (string)lbxSpecs.SelectedValue;
@@ -876,6 +864,7 @@ namespace UserInterface.Forms
             return //(int)dgvListEntries.SelectedRows[0].Cells[0].Value;
                 (int)dgvListEntries.SelectedRows[0].Cells["ValueID"].Value;
         }
+        #endregion
 
         private string GenerateNewSpecsID()
         {
@@ -895,7 +884,7 @@ namespace UserInterface.Forms
             }
             return newId;
         }
-        #endregion
+        
 
         #region User Interface
 

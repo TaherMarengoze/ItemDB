@@ -36,7 +36,8 @@ namespace UserInterface.Forms
         #region File Management
         private void SaveToSource()
         {
-            AppFactory.context.Save(ContextEntity.Items);
+            //AppFactory.context.Save(ContextEntity.Items);
+            Data.Save(ContextEntity.Items);
         }
         #endregion
 
@@ -207,12 +208,14 @@ namespace UserInterface.Forms
             if (filteredItems.Count <= 0 /* and in filter mode */)
             {
                 lblNoItems.Visible = true;
+                grpData.Enabled = false;
             }
             else
             {
                 lblNoItems.Visible = false;
+                grpData.Enabled = true;
             }
-
+            
             //UpdateStatusBar();
         }
 

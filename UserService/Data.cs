@@ -47,6 +47,18 @@ namespace UserService
         private static void UpdateEndsRepos() => repos.EndsList = AppFactory.reader.GetEnds().ToList();
         #endregion
 
+        #region Context Saving
+        public static void Save()
+        {
+            AppFactory.context.Save();
+        }
+
+        public static void Save(ContextEntity context)
+        {
+            AppFactory.context.Save(context);
+        }
+        #endregion
+
         public static void ValidateItemRawData(IItemRawData data)
         {
             // Category ID
