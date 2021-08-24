@@ -110,4 +110,9 @@
     <altLists />
     <customSizeDataID />
   </group>
+  <group groupID="GPLT1" groupName="Plate Dimension">
+    <defaultListID>PLT01</defaultListID>
+    <altLists />
+    <customSizeDataID />
+  </group>
 </sizeGroups>

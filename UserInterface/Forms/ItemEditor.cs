@@ -134,10 +134,13 @@ namespace UserInterface.Forms
         private void BindControlsToDatasources()
         {
             // Bind items ID DGV
-            Common.SetDataGridViewDataSource(dgvItemsId, Data.GetAllItemsBrief());
+            //Common.SetDataGridViewDataSource(dgvItemsId, Data.GetAllItemsBrief());
+            dgvItemsId.DataSourceResize(Data.GetAllItemsBrief());
 
             // Bind item categories DGV
-            Common.SetDataGridViewDataSource(dgvCategories, Data.GetCategories());
+            //Common.SetDataGridViewDataSource(dgvCategories, Data.GetCategories());
+            dgvCategories.DataSourceResize(Data.GetCategories());
+
             dgvCategories.Columns[0].DisplayIndex = 2;
 
             // Bind Specs ID selector combobox

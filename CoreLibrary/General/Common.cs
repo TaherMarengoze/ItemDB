@@ -52,13 +52,6 @@ namespace CoreLibrary
             return DialogResult.OK;
         }
 
-        public static void SetDataGridViewDataSource(DataGridView dgv, object dataSource)
-        {
-            dgv.DataSource = dataSource;
-            dgv.AutoResizeColumns();
-            dgv.AutoResizeRows();
-        }
-
         /// <summary>
         /// Gets the index of the first row in a <see cref="DataGridView"/> selection.
         /// </summary>

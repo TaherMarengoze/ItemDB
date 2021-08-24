@@ -362,4 +362,14 @@
       <size>6 x 7</size>
     </sizes>
   </sizeList>
+  <sizeList listID="PLT01" name="Plate Dimensions">
+    <sizes>
+      <size>100 x 100 x 3 mm</size>
+      <size>150 x 150 x 3 mm</size>
+      <size>200 x 200 x 3 mm</size>
+      <size>100 x 100 x 4 mm</size>
+      <size>150 x 150 x 4 mm</size>
+      <size>200 x 200 x 4 mm</size>
+    </sizes>
+  </sizeList>
 </sizeLists>

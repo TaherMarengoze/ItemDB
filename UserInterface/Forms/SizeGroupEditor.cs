@@ -89,7 +89,8 @@ namespace UserInterface.Forms
         /// </summary>
         private void ListSizeGroups()
         {
-            Common.SetDataGridViewDataSource(dgvGroups, Data.GetSizeGroups());
+            //Common.SetDataGridViewDataSource(dgvGroups, Data.GetSizeGroups());
+            dgvGroups.DataSourceResize(Data.GetSizeGroups());
         }
 
         private void RefreshSizeGroups()

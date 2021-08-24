@@ -28,6 +28,10 @@ namespace CoreLibrary
             dgv.AutoResizeRows();
         }
 
+        /// <summary>
+        /// Select all text contents in a <see cref="TextBox"/> and set the focus on it.
+        /// </summary>
+        /// <param name="textBox"></param>
         public static void FocusSelectAll(this TextBox textBox)
         {
             textBox.SelectAll();
@@ -36,7 +40,7 @@ namespace CoreLibrary
 
         public static void AddRange<T>(this ObservableCollection<T> collection, IEnumerable<T> range)
         {
-            foreach (var item in range)
+            foreach (T item in range)
             {
                 collection.Add(item);
             }

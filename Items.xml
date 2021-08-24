@@ -998,4 +998,25 @@
       <uom>mt</uom>
     </item>
   </category>
+  <category catID="STPLT" name="Steel Plates">
+    <item itemID="PLTB1" order="0">
+      <names>
+        <base>Black Steel Plate</base>
+        <display>Black Steel Plate</display>
+        <common>
+          <cname>بالتة حديد اسود</cname>
+          <cname>Black Steel Base Plate</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>PLTB1-00.jpg</image>
+        <image>PLTB1-01.jpg</image>
+      </images>
+      <details>
+        <sizeGroup ID="GPLT1" required="true" />
+      </details>
+      <uom>Ea</uom>
+    </item>
+  </category>
 </items>

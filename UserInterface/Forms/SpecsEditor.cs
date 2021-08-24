@@ -916,7 +916,8 @@ namespace UserInterface.Forms
             txtSpecsPattern.Text = selectedSpecs.TextPattern;
             //dgvSpec.DataSource = selectedSpecs.SpecItems;
             //dgvSpec.AutoResizeColumns();
-            Common.SetDataGridViewDataSource(dgvSpec, selectedSpecs.SpecItems);
+            //Common.SetDataGridViewDataSource(dgvSpec, selectedSpecs.SpecItems);
+            dgvSpec.DataSourceResize(selectedSpecs.SpecItems);
         }
 
         private void ViewSelectedSpecData(int idx)
