@@ -1,17 +1,16 @@
 ﻿
+using CoreLibrary;
+using CoreLibrary.Enums;
+using CoreLibrary.Interfaces;
+using CoreLibrary.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Forms;
+using UserService;
 
 
 namespace UserInterface.Forms
 {
-    using CoreLibrary;
-    using CoreLibrary.Models;
-    using CoreLibrary.Interfaces;
-    using CoreLibrary.Enums;
-    using UserService;
-
     public partial class FieldEditor : Form
     {
         private FieldType fieldType;

@@ -1,20 +1,20 @@
 ﻿
+using CoreLibrary;
+using CoreLibrary.Enums;
+using CoreLibrary.Interfaces;
+using CoreLibrary.Models;
+using CoreLibrary.Models.Validators;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
+using UserInterface.Controllers;
+using UserService;
+
 
 namespace UserInterface.Forms
 {
-    using Controllers;
-    using CoreLibrary;
-    using CoreLibrary.Enums;
-    using CoreLibrary.Interfaces;
-    using CoreLibrary.Models;
-    using CoreLibrary.Models.Validators;
-    using UserService;
-
     public partial class FieldListAdderExtendable : Form
     {
         public IFieldList FieldListItem { get; private set; } = new FieldList();

@@ -1,19 +1,19 @@
 ﻿
+using CoreLibrary;
+using CoreLibrary.Models;
+using CoreLibrary.Models.Validators;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using UserInterface.Forms;
+using UserService;
+
 
 namespace UserInterface
 {
-    using CoreLibrary;
-    using CoreLibrary.Models;
-    using Forms;
-    using CoreLibrary.Models.Validators;
-    using UserService;
-
     public class SizeGroupExt
     {
         public IdName ListData { get; private set; } = new IdName();

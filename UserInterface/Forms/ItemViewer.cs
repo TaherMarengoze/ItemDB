@@ -1,19 +1,20 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using CoreLibrary;
+using CoreLibrary.Enums;
+using CoreLibrary.Interfaces;
+using CoreLibrary.Models;
+using CoreLibrary.Operation;
+using UserService;
+
 
 namespace UserInterface.Forms
 {
-    using CoreLibrary;
-    using CoreLibrary.Enums;
-    using CoreLibrary.Interfaces;
-    using CoreLibrary.Models;
-    using CoreLibrary.Operation;
-    using UserService;
-
     public partial class ItemViewer : Form
     {
         //List<Item> items;

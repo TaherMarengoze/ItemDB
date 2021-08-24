@@ -1,15 +1,16 @@
-﻿using System;
+﻿
+using CoreLibrary.Interfaces;
+using CoreLibrary.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 
+
 namespace UserInterface.Forms
 {
-    using CoreLibrary.Interfaces;
-    using CoreLibrary.Models;
-
     public partial class FieldListEditor : Form
     {
         private List<string> existingIds;

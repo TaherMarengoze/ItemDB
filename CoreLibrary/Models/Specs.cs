@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿
+using CoreLibrary.Interfaces;
+using System.Collections.Generic;
+
 
 namespace CoreLibrary.Models
 {
-    using Interfaces;
-
     public class Specs : IView, ISpecs
     {
         public string ID { get; set; }

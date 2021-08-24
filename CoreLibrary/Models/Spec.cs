@@ -1,8 +1,10 @@
-﻿using CoreLibrary.Enums;
+﻿
+using CoreLibrary.Enums;
 using CoreLibrary.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+
 
 namespace CoreLibrary.Models
 {

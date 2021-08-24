@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿
+using System.Collections.Generic;
+using CoreLibrary.Interfaces;
+
 
 namespace CoreLibrary.Models
 {
-    using Interfaces;
-
     public class SizeGroup : IView
     {
         public string ID { get; set; }

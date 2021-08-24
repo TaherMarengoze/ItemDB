@@ -1,14 +1,15 @@
-﻿using System;
+﻿
+using CoreLibrary;
+using CoreLibrary.Enums;
+using CoreLibrary.Models;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
+using UserService;
+
 
 namespace UserInterface.Forms
 {
-    using CoreLibrary;
-    using CoreLibrary.Enums;
-    using CoreLibrary.Models;
-    using UserService;
-
     public partial class Main : Form
     {
         public Main() => InitializeComponent();

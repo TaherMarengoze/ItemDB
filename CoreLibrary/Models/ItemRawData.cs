@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿
+using CoreLibrary.Interfaces;
+using System.Collections.Generic;
+
 
 namespace CoreLibrary.Models
 {
-    using Interfaces;
-
     public class ItemRawData : IItemRawData
     {
         public string ItemID { get; set; }

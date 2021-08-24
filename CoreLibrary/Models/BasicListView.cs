@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿
+using CoreLibrary.Interfaces;
 using System.Collections.ObjectModel;
+
 
 namespace CoreLibrary.Models
 {
-    using Interfaces;
-
     public class BasicListView : IBasicList
     {
         public BasicListView() { }

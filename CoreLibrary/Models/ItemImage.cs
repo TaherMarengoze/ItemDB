@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 
+
 namespace CoreLibrary.Models
 {
     public class ItemImage

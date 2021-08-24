@@ -1,4 +1,10 @@
-﻿using System;
+﻿
+using CoreLibrary;
+using CoreLibrary.Enums;
+using CoreLibrary.Interfaces;
+using CoreLibrary.Models;
+using CoreLibrary.Operation;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -6,16 +12,11 @@ using System.IO;
 using System.Linq;
 using System.Media;
 using System.Windows.Forms;
+using UserService;
+
 
 namespace UserInterface.Forms
 {
-    using CoreLibrary;
-    using CoreLibrary.Enums;
-    using CoreLibrary.Interfaces;
-    using CoreLibrary.Models;
-    using CoreLibrary.Operation;
-    using UserService;
-
     public partial class ItemEditor : Form
     {
         public ItemRawData DraftItemData { get; private set; }
