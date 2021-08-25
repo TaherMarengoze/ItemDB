@@ -4,6 +4,7 @@ using CoreLibrary.Enums;
 using CoreLibrary.Factory;
 using CoreLibrary.Interfaces;
 using CoreLibrary.Models;
+using DataCache;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,16 +15,13 @@ namespace UserService
     public static class Data
     {
         /// <summary>
-        /// Local cache for <see cref="DataRepos"/> members.
+        /// Application local cache.
         /// </summary>
-        public static DataRepos repos;
+        public static Cache appCache;
 
-        /// <summary>
-        /// Caches a new instance of <see cref="DataRepos"/> and set its members.
-        /// </summary>
         public static void InitializeRepos()
         {
-            repos = new DataRepos()
+            appCache = new Cache()
             {
                 Items = AppFactory.reader.GetItems(),
                 Categories = AppFactory.reader.GetCategories(),
@@ -38,13 +36,13 @@ namespace UserService
         }
 
         #region Updater code
-        private static void UpdateItemsRepos() => repos.Items = AppFactory.reader.GetItems();
-        private static void UpdateCategoriesRepos() => repos.Categories = AppFactory.reader.GetCategories();
-        public static void UpdateSpecsRepos() => repos.SpecsList = AppFactory.reader.GetSpecs().ToList();
-        public static void UpdateSizeGroupsRepos() => repos.SizeGroups = AppFactory.reader.GetSizeGroups().ToList();
-        private static void UpdateSizesRepos() => repos.SizesList = AppFactory.reader.GetSizes().ToList();
-        private static void UpdateBrandsRepos() => repos.BrandsList = AppFactory.reader.GetBrands().ToList();
-        private static void UpdateEndsRepos() => repos.EndsList = AppFactory.reader.GetEnds().ToList();
+        private static void UpdateItemsRepos() => appCache.Items = AppFactory.reader.GetItems();
+        private static void UpdateCategoriesRepos() => appCache.Categories = AppFactory.reader.GetCategories();
+        public static void UpdateSpecsRepos() => appCache.SpecsList = AppFactory.reader.GetSpecs().ToList();
+        public static void UpdateSizeGroupsRepos() => appCache.SizeGroups = AppFactory.reader.GetSizeGroups().ToList();
+        private static void UpdateSizesRepos() => appCache.SizesList = AppFactory.reader.GetSizes().ToList();
+        private static void UpdateBrandsRepos() => appCache.BrandsList = AppFactory.reader.GetBrands().ToList();
+        private static void UpdateEndsRepos() => appCache.EndsList = AppFactory.reader.GetEnds().ToList();
         #endregion
 
         #region Context Saving
@@ -122,9 +120,9 @@ namespace UserService
 
             // Set the Items property to itself but excluding the item to be
             // deleted; so that ItemsView property is updated automatically
-            repos.Items = repos.Items.Where(id => id.ItemID != itemId).ToList();
+            appCache.Items = appCache.Items.Where(id => id.ItemID != itemId).ToList();
 
-            return repos.ItemsView;
+            return appCache.ItemsView;
         }
 
         #endregion
@@ -133,12 +131,12 @@ namespace UserService
 
         public static List<ItemIdView> GetAllItemsBrief()
         {
-            return repos.ItemIdViews;
+            return appCache.ItemIdViews;
         }
 
         public static List<ItemIdView> GetAllItemsBrief(string filterId)
         {
-            return repos.ItemIdViews.Where(id => id.ID.Contains(filterId)).ToList();
+            return appCache.ItemIdViews.Where(id => id.ID.Contains(filterId)).ToList();
         }
 
         /// <summary>
@@ -147,13 +145,13 @@ namespace UserService
         /// <returns></returns>
         public static List<ItemVO> GetAllItemsVO()
         {
-            return repos.ItemsView;
+            return appCache.ItemsView;
         }
 
         public static List<ItemVO> GetFilteredItemsView(string itemId, string itemName, bool? image, string catId)
         {
             return
-                (from item in repos.ItemsView
+                (from item in appCache.ItemsView
                  let filterId = itemId != string.Empty ? item.ID.Contains(itemId) : true
                  let filterName = itemName != string.Empty ? item.Name.ToUpper().Contains(itemName.ToUpper()) : true
                  let filterImage = FilterItemImage(image, item)
@@ -164,13 +162,13 @@ namespace UserService
 
         public static int GetItemsCount()
         {
-            return repos.Items.Count();
+            return appCache.Items.Count();
         }
 
         public static IItem GetItem(string itemId)
         {
             return
-                repos.Items.Where(id => id.ItemID == itemId).FirstOrDefault();
+                appCache.Items.Where(id => id.ItemID == itemId).FirstOrDefault();
         }
 
         private static bool FilterItemImage(bool? image, IItemView item)
@@ -201,24 +199,24 @@ namespace UserService
             {
                 new ItemCategory() { CatID = "*", CatName = "<All categories>" }
             };
-            categories.AddRange(repos.Categories);
+            categories.AddRange(appCache.Categories);
             return categories;
         }
 
         public static List<ItemCategory> GetCategories()
         {
-            return repos.Categories.ToList();
+            return appCache.Categories.ToList();
         }
 
         public static List<ItemCategory> FilterCategoriesById(string filterCatId)
         {
-            return repos.Categories.Where(cat => cat.CatID.Contains(filterCatId)).ToList();
+            return appCache.Categories.Where(cat => cat.CatID.Contains(filterCatId)).ToList();
         }
 
         public static List<ItemCategory> FilterCategoriesByName(string filterCatName)
         {
             return
-                repos.Categories.Where(cat =>
+                appCache.Categories.Where(cat =>
                 cat.CatName.IndexOf(filterCatName, StringComparison.OrdinalIgnoreCase) != -1)
                 .ToList();
         }
@@ -226,7 +224,7 @@ namespace UserService
         public static string GetCategoryName(string catId)
         {
             return
-                (from cat in repos.Categories where cat.CatID == catId select cat.CatName)
+                (from cat in appCache.Categories where cat.CatID == catId select cat.CatName)
                 .FirstOrDefault();
         }
         #endregion
@@ -238,13 +236,13 @@ namespace UserService
         /// Gets a list of <see cref="Specs"/> object.
         /// </summary>
         /// <returns></returns>
-        public static List<Specs> GetSpecsList() => repos.SpecsList;
+        public static List<Specs> GetSpecsList() => appCache.SpecsList;
 
         /// <summary>
         /// Gets a list of ID of the <see cref="Specs"/> object.
         /// </summary>
         /// <returns></returns>
-        public static IEnumerable<string> GetSpecsIdList() => repos.SpecsIdList;
+        public static IEnumerable<string> GetSpecsIdList() => appCache.SpecsIdList;
 
         // Entity
         public static void AddSpecs(ISpecs specs)
@@ -264,18 +262,18 @@ namespace UserService
         public static void DeleteSpecs(string specsId)
         {
             // Delete from local cache
-            repos.SpecsList = repos.SpecsList.Where(specs => specs.ID != specsId).ToList();
+            appCache.SpecsList = appCache.SpecsList.Where(specs => specs.ID != specsId).ToList();
 
             // Delete from data source
             AppFactory.specsRepo.DeleteSpecs(specsId);
         }
-        public static ISpecs GetSpecs(string specsId) => repos.SpecsList.Find(specs => specs.ID == specsId);
+        public static ISpecs GetSpecs(string specsId) => appCache.SpecsList.Find(specs => specs.ID == specsId);
 
         // Entity Operations
         public static ISpec GetSpecsItem(string specsId, int specIndex)
         {
             ISpecs specs =
-                repos.SpecsList.Find(sp => sp.ID == specsId);
+                appCache.SpecsList.Find(sp => sp.ID == specsId);
 
             return
                 specs.SpecItems.Find(spec => spec.Index == specIndex);
@@ -295,7 +293,7 @@ namespace UserService
         public static IEnumerable<ISpec> GetSpecsItems(string specsId)
         {
             return
-                (from specs in repos.SpecsList
+                (from specs in appCache.SpecsList
                  where specs.ID == specsId
                  select specs.SpecItems).FirstOrDefault();
         }
@@ -303,7 +301,7 @@ namespace UserService
         public static List<ISpecListEntry> GetSpecListEntries(string specsId, int specIndex)
         {
             List<ISpec> specsItems =
-                (from specs in repos.SpecsList
+                (from specs in appCache.SpecsList
                  where specs.ID == specsId
                  select specs.SpecItems).FirstOrDefault();
 
@@ -320,17 +318,17 @@ namespace UserService
         /// Retrieves the list of <see cref="SizeGroup"/> from the cache.
         /// </summary>
         /// <returns></returns>
-        public static List<SizeGroup> GetSizeGroups() => repos.SizeGroups;
+        public static List<SizeGroup> GetSizeGroups() => appCache.SizeGroups;
 
         public static List<string> GetSizeGroupsId()
         {
-            return repos.SizeGroupIdList;
+            return appCache.SizeGroupIdList;
         }
 
         public static IEnumerable<BasicView> GetSizeGroupsBasic()
         {
             return
-                repos.SizeGroups.Select(grp => new BasicView(grp.ID, grp.Name));
+                appCache.SizeGroups.Select(grp => new BasicView(grp.ID, grp.Name));
         }
 
         /// <summary>
@@ -339,7 +337,7 @@ namespace UserService
         /// <returns></returns>
         public static List<SizeGroupView> GetSizeGroupsVO()
         {
-            return repos.SizeGroups
+            return appCache.SizeGroups
                 .Select(grp => new SizeGroupView(grp)).ToList();
         }
 
@@ -368,7 +366,7 @@ namespace UserService
         public static void DeleteSizeGroup(string groupId)
         {
             // Delete from local cache
-            repos.SizeGroups = repos.SizeGroups.Where(group => group.ID != groupId).ToList();
+            appCache.SizeGroups = appCache.SizeGroups.Where(group => group.ID != groupId).ToList();
 
             // Delete from data source
             AppFactory.sizeGroupRepo.Delete(groupId);
@@ -377,7 +375,7 @@ namespace UserService
 
         public static SizeGroup GetSizeGroup(string groupId)
         {
-            return repos.SizeGroups.Find(group => group.ID == groupId);
+            return appCache.SizeGroups.Find(group => group.ID == groupId);
         }
         #endregion
 
@@ -469,10 +467,10 @@ namespace UserService
 
         #region Size Lists
         // Context
-        private static List<BasicListView> GetSizes() => repos.SizesList;
-        public static List<BasicListView> GetSizesExclude(string excludeId) => repos.SizesList.Where(list => list.ID != excludeId).ToList();
-        private static IEnumerable<string> GetSizesId() => repos.SizesIdList;
-        public static List<string> GetSizesIdExclude(List<string> excludeIdList) => (from list in repos.SizesList where !excludeIdList.Contains(list.ID) select list.ID).ToList();
+        private static List<BasicListView> GetSizes() => appCache.SizesList;
+        public static List<BasicListView> GetSizesExclude(string excludeId) => appCache.SizesList.Where(list => list.ID != excludeId).ToList();
+        private static IEnumerable<string> GetSizesId() => appCache.SizesIdList;
+        public static List<string> GetSizesIdExclude(List<string> excludeIdList) => (from list in appCache.SizesList where !excludeIdList.Contains(list.ID) select list.ID).ToList();
 
         // Entity
         private static void AddSizeList(IBasicList content)
@@ -492,25 +490,25 @@ namespace UserService
         private static void DeleteSizeList(string listId)
         {
             // Delete from local cache
-            repos.SizesList = repos.SizesList.Where(list => list.ID != listId).ToList();
+            appCache.SizesList = appCache.SizesList.Where(list => list.ID != listId).ToList();
 
             // Delete from data source
             AppFactory.sizesRepo.DeleteList(listId);
         }
-        private static IBasicList GetSizeList(string listId) => repos.SizesList.Find(list => list.ID == listId);
+        private static IBasicList GetSizeList(string listId) => appCache.SizesList.Find(list => list.ID == listId);
 
         // Entity Manipulation
         private static ObservableCollection<string> SizeListGetEntries(string listId)
         {
             IEnumerable<ObservableCollection<string>> qry =
-                from list in repos.SizesList where list.ID == listId select list.List;
+                from list in appCache.SizesList where list.ID == listId select list.List;
 
             return qry.FirstOrDefault();
         }
         private static void SizeListAddEntry(string listId, string entry)
         {
             // Add to local cache
-            repos.SizesList.Where(list => list.ID == listId).First().List.Add(entry);
+            appCache.SizesList.Where(list => list.ID == listId).First().List.Add(entry);
 
             // Add to data source
             AppFactory.sizeManipulator.AddEntry(listId, entry);
@@ -536,7 +534,7 @@ namespace UserService
         {
             // Move entry in local cache
             ObservableCollection<string> listEntries =
-                repos.SizesList.Where(list => list.ID == listId)
+                appCache.SizesList.Where(list => list.ID == listId)
                 .FirstOrDefault().List;
 
             int n = listEntries.IndexOf(entryValue);
@@ -554,8 +552,8 @@ namespace UserService
         #endregion
 
         #region Brand Lists
-        private static List<BasicListView> GetBrands() => repos.BrandsList;
-        private static IEnumerable<string> GetBrandsId() => repos.BrandsIdList;
+        private static List<BasicListView> GetBrands() => appCache.BrandsList;
+        private static IEnumerable<string> GetBrandsId() => appCache.BrandsIdList;
         private static void AddBrandList(IBasicList content)
         {
             // Add to data source
@@ -573,23 +571,23 @@ namespace UserService
         private static void DeleteBrandList(string listId)
         {
             // Delete from local cache
-            repos.BrandsList = repos.BrandsList.Where(list => list.ID != listId).ToList();
+            appCache.BrandsList = appCache.BrandsList.Where(list => list.ID != listId).ToList();
 
             // Delete from data source
             AppFactory.brandsRepo.DeleteList(listId);
         }
-        private static IBasicList GetBrandList(string listId) => repos.BrandsList.Find(list => list.ID == listId);
+        private static IBasicList GetBrandList(string listId) => appCache.BrandsList.Find(list => list.ID == listId);
         private static ObservableCollection<string> BrandListGetEntries(string listId)
         {
             return
-                (from list in repos.BrandsList
+                (from list in appCache.BrandsList
                  where list.ID == listId
                  select list.List).FirstOrDefault();
         }
         private static void BrandListAddEntry(string listId, string entry)
         {
             // Add to local cache
-            repos.BrandsList.Where(list => list.ID == listId).First().List.Add(entry);
+            appCache.BrandsList.Where(list => list.ID == listId).First().List.Add(entry);
 
             // Add to data source
             AppFactory.brandManipulator.AddEntry(listId, entry);
@@ -615,7 +613,7 @@ namespace UserService
         {
             // Move entry in local cache
             ObservableCollection<string> listEntries =
-                repos.BrandsList.Where(list => list.ID == listId)
+                appCache.BrandsList.Where(list => list.ID == listId)
                 .FirstOrDefault().List;
 
             int n = listEntries.IndexOf(entryValue);
@@ -627,8 +625,8 @@ namespace UserService
         #endregion
 
         #region Ends Lists
-        private static List<BasicListView> GetEnds() => repos.EndsList;
-        private static IEnumerable<string> GetEndsId() => repos.EndsIdList;
+        private static List<BasicListView> GetEnds() => appCache.EndsList;
+        private static IEnumerable<string> GetEndsId() => appCache.EndsIdList;
         private static void AddEndsList(IBasicList content)
         {
             AppFactory.endsRepo.AddList(content);
@@ -643,23 +641,23 @@ namespace UserService
         private static void DeleteEndsList(string listId)
         {
             // Delete from local cache
-            repos.EndsList = repos.EndsList.Where(list => list.ID != listId).ToList();
+            appCache.EndsList = appCache.EndsList.Where(list => list.ID != listId).ToList();
 
             // Delete from data source
             AppFactory.endsRepo.DeleteList(listId);
         }
-        private static IBasicList GetEndsList(string listId) => repos.EndsList.Find(list => list.ID == listId);
+        private static IBasicList GetEndsList(string listId) => appCache.EndsList.Find(list => list.ID == listId);
         private static ObservableCollection<string> EndsListGetEntries(string listId)
         {
             return
-                (from list in repos.EndsList
+                (from list in appCache.EndsList
                  where list.ID == listId
                  select list.List).FirstOrDefault();
         }
         private static void EndsListAddEntry(string listId, string entry)
         {
             // Add to local cache
-            repos.EndsList.Where(list => list.ID == listId).First().List.Add(entry);
+            appCache.EndsList.Where(list => list.ID == listId).First().List.Add(entry);
 
             // Add to data source
             AppFactory.endsManipulator.AddEntry(listId, entry);
@@ -685,7 +683,7 @@ namespace UserService
         {
             // Move entry in local cache
             ObservableCollection<string> listEntries =
-                repos.EndsList.Where(list => list.ID == listId)
+                appCache.EndsList.Where(list => list.ID == listId)
                 .FirstOrDefault().List;
 
             int n = listEntries.IndexOf(entryValue);
@@ -697,16 +695,16 @@ namespace UserService
         #endregion
 
         #region Custom Sizes
-        public static List<string> GetCustomSizes() => repos.CustomSizes;
+        public static List<string> GetCustomSizes() => appCache.CustomSizes;
         #endregion
 
         #region Custom Specs
-        public static List<string> GetCustomSpecs() => repos.CustomSpecs;
+        public static List<string> GetCustomSpecs() => appCache.CustomSpecs;
         #endregion
 
         public static bool IsDuplicateItemId(string itemId)
         {
-            return repos.ItemsID.Contains(itemId);
+            return appCache.ItemsID.Contains(itemId);
         }
 
         #region Basic View
@@ -719,7 +717,7 @@ namespace UserService
         public static List<BasicView> SizesBasicView()
         {
             return
-                repos.SizesList
+                appCache.SizesList
                 .Select(l => new BasicView(l.ID, l.Name))
                 .ToList();
         }
@@ -727,7 +725,7 @@ namespace UserService
         public static List<BasicView> BrandsBasicView()
         {
             return
-                repos.BrandsList
+                appCache.BrandsList
                 .Select(l => new BasicView(l.ID, l.Name))
                 .ToList();
         }
@@ -735,7 +733,7 @@ namespace UserService
         public static List<BasicView> EndsBasicView()
         {
             return
-                repos.EndsList
+                appCache.EndsList
                 .Select(l => new BasicView(l.ID, l.Name))
                 .ToList();
         }

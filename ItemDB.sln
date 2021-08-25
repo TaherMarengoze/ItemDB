@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29318.209
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1622
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserInterface", "UserInterface\UserInterface.csproj", "{A627C197-795E-4AF7-B3AA-127797DE04BE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreLibrary", "CoreLibrary\CoreLibrary.csproj", "{90C23753-2A1C-4F04-A4E7-3B12CE02FA7F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService", "UserService\UserService.csproj", "{81FCB3E0-A6C3-4FBB-9E73-90A8C711831C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataCache", "DataCache\DataCache.csproj", "{6F9A999D-0FDD-467D-8331-05AC21E033B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{81FCB3E0-A6C3-4FBB-9E73-90A8C711831C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81FCB3E0-A6C3-4FBB-9E73-90A8C711831C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81FCB3E0-A6C3-4FBB-9E73-90A8C711831C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F9A999D-0FDD-467D-8331-05AC21E033B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F9A999D-0FDD-467D-8331-05AC21E033B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F9A999D-0FDD-467D-8331-05AC21E033B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F9A999D-0FDD-467D-8331-05AC21E033B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

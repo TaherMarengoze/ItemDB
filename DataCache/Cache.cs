@@ -1,15 +1,13 @@
-﻿using System;
+﻿
+using CoreLibrary.Interfaces;
+using CoreLibrary.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
-namespace CoreLibrary.Models
+namespace DataCache
 {
-    using Interfaces;
-
-    public class DataRepos
+    public class Cache
     {
         private IEnumerable<IItem> _items;
         private List<Specs> _specsList;
@@ -19,7 +17,7 @@ namespace CoreLibrary.Models
         private List<BasicListView> _brandsList;
         private List<BasicListView> _endsList;
 
-        public DataRepos()
+        public Cache()
         {
 
         }

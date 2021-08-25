@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{81FCB3E0-A6C3-4FBB-9E73-90A8C711831C}</ProjectGuid>
+    <ProjectGuid>{6F9A999D-0FDD-467D-8331-05AC21E033B6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UserService</RootNamespace>
-    <AssemblyName>UserService</AssemblyName>
+    <RootNamespace>DataCache</RootNamespace>
+    <AssemblyName>DataCache</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -41,17 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data.cs" />
+    <Compile Include="Cache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj">
       <Project>{90c23753-2a1c-4f04-a4e7-3b12ce02fa7f}</Project>
       <Name>CoreLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DataCache\DataCache.csproj">
-      <Project>{6f9a999d-0fdd-467d-8331-05ac21e033b6}</Project>
-      <Name>DataCache</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
