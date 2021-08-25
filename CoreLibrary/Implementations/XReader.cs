@@ -131,7 +131,7 @@ namespace CoreLibrary
                 };
         }
 
-        public IEnumerable<BasicListView> GetBrands()
+        public IEnumerable<IBasicList> GetBrands()
         {
             return
                 from brands in dataDocs.Brands.Descendants("brandList")
@@ -145,7 +145,7 @@ namespace CoreLibrary
                 };
         }
 
-        public IEnumerable<BasicListView> GetEnds()
+        public IEnumerable<IBasicList> GetEnds()
         {
             return
                 from ends in dataDocs.Ends.Descendants("endsList")

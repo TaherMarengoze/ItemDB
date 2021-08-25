@@ -17,9 +17,9 @@ namespace CoreLibrary.Interfaces
 
         IEnumerable<BasicListView> GetSizes();
 
-        IEnumerable<BasicListView> GetBrands();
+        IEnumerable<IBasicList> GetBrands();
 
-        IEnumerable<BasicListView> GetEnds();
+        IEnumerable<IBasicList> GetEnds();
 
         IEnumerable<string> GetImageNames();
 

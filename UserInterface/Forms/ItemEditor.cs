@@ -163,6 +163,7 @@ namespace UserInterface.Forms
             cboEndsListId.DataSource = Data.GetFieldIds(FieldType.ENDS).ToList();
             cboEndsListId.SelectedIndex = -1;
             dgvEndsLists.DataSource = Data.GetFieldLists(FieldType.ENDS);
+                //GetEndsInterface();
 
             // Images ListBox
             lbxImages.DisplayMember = "DraftDisplayName";

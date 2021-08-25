@@ -41,8 +41,17 @@ namespace UserService
         public static void UpdateSpecsRepos() => appCache.SpecsList = AppFactory.reader.GetSpecs().ToList();
         public static void UpdateSizeGroupsRepos() => appCache.SizeGroups = AppFactory.reader.GetSizeGroups().ToList();
         private static void UpdateSizesRepos() => appCache.SizesList = AppFactory.reader.GetSizes().ToList();
-        private static void UpdateBrandsRepos() => appCache.BrandsList = AppFactory.reader.GetBrands().ToList();
-        private static void UpdateEndsRepos() => appCache.EndsList = AppFactory.reader.GetEnds().ToList();
+        private static void UpdateBrandsRepos()
+        {
+            appCache.BrandsList = AppFactory.reader
+                .GetBrands().ToList();
+        }
+
+        private static void UpdateEndsRepos()
+        {
+            appCache.EndsList = AppFactory.reader
+                .GetEnds().ToList();
+        }
         #endregion
 
         #region Context Saving
@@ -552,7 +561,14 @@ namespace UserService
         #endregion
 
         #region Brand Lists
-        private static List<BasicListView> GetBrands() => appCache.BrandsList;
+        private static List<BasicListView> GetBrands()
+        {
+            return
+                appCache.BrandsList
+                .Cast<BasicListView>()
+                .ToList();
+        }
+
         private static IEnumerable<string> GetBrandsId() => appCache.BrandsIdList;
         private static void AddBrandList(IBasicList content)
         {
@@ -625,7 +641,14 @@ namespace UserService
         #endregion
 
         #region Ends Lists
-        private static List<BasicListView> GetEnds() => appCache.EndsList;
+        private static List<BasicListView> GetEnds()
+        {
+            return
+                appCache.EndsList
+                .Cast<BasicListView>()
+                .ToList();
+        }
+
         private static IEnumerable<string> GetEndsId() => appCache.EndsIdList;
         private static void AddEndsList(IBasicList content)
         {

@@ -5,12 +5,16 @@ using CoreLibrary.Interfaces;
 
 namespace CoreLibrary.Models
 {
-    public class SizeGroup : IView
+    public class SizeGroup : ISizeGroup, IView
     {
         public string ID { get; set; }
+
         public string Name { get; set; }
+
         public string DefaultListID { get; set; }
+
         public List<string> AltIdList { get; set; }
+
         public int AltListsCount
         {
             get
@@ -22,6 +26,7 @@ namespace CoreLibrary.Models
                 return 0;
             }
         }
+
         public string CustomSize { get; set; }
 
         public BasicView GetBasicView()

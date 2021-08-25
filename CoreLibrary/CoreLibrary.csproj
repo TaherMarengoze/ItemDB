@@ -66,6 +66,7 @@
     <Compile Include="Interfaces\ISpecs.cs" />
     <Compile Include="Interfaces\ISpecsRepo.cs" />
     <Compile Include="Interfaces\IView.cs" />
+    <Compile Include="Interfaces\ISizeGroup.cs" />
     <Compile Include="Models\ItemIdView.cs" />
     <Compile Include="Models\BasicListView.cs" />
     <Compile Include="Enums\Enums.cs" />

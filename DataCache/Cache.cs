@@ -14,8 +14,8 @@ namespace DataCache
         private List<SizeGroup> _sizeGroups;
 
         private List<BasicListView> _sizesList;
-        private List<BasicListView> _brandsList;
-        private List<BasicListView> _endsList;
+        private List<IBasicList> _brandsList;
+        private List<IBasicList> _endsList;
 
         public Cache()
         {
@@ -88,7 +88,7 @@ namespace DataCache
         #endregion
 
         #region Brands
-        public List<BasicListView> BrandsList
+        public List<IBasicList> BrandsList
         {
             get => _brandsList;
             set
@@ -102,7 +102,7 @@ namespace DataCache
         #endregion
 
         #region Ends
-        public List<BasicListView> EndsList
+        public List<IBasicList> EndsList
         {
             get => _endsList;
             set
