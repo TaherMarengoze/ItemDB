@@ -43,7 +43,7 @@ namespace DataCache
 
         public List<ItemVO> ItemsView { get; private set; }
 
-        public IEnumerable<ItemCategory> Categories { get; set; }
+        public IEnumerable<IBasicField> Categories { get; set; }
 
         #region Specs
         public List<ISpecs> SpecsList

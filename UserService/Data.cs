@@ -218,25 +218,33 @@ namespace UserService
             {
                 new ItemCategory() { ID = "*", Name = "<All categories>" }
             };
-            categories.AddRange(appCache.Categories);
+            categories.AddRange(appCache.Categories.Cast<ItemCategory>());
             return categories;
         }
 
         public static List<ItemCategory> GetCategories()
         {
-            return appCache.Categories.ToList();
+            return
+                appCache.Categories
+                .Cast<ItemCategory>()
+                .ToList();
         }
 
         public static List<ItemCategory> FilterCategoriesById(string filterCatId)
         {
-            return appCache.Categories.Where(cat => cat.ID.Contains(filterCatId)).ToList();
+            return
+                appCache.Categories
+                .Where(cat => cat.ID.Contains(filterCatId))
+                .Cast<ItemCategory>()
+                .ToList();
         }
 
         public static List<ItemCategory> FilterCategoriesByName(string filterCatName)
         {
             return
-                appCache.Categories.Where(cat =>
-                cat.Name.IndexOf(filterCatName, StringComparison.OrdinalIgnoreCase) != -1)
+                appCache.Categories
+                .Where(cat =>cat.Name.IndexOf(filterCatName, StringComparison.OrdinalIgnoreCase) != -1)
+                .Cast<ItemCategory>()
                 .ToList();
         }
 
