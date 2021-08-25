@@ -1,4 +1,4 @@
-﻿namespace CoreLibrary.Models
+﻿namespace CoreLibrary.Interfaces
 {
     public interface IBasicField
     {

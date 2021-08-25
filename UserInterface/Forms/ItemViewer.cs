@@ -51,8 +51,8 @@ namespace UserInterface.Forms
             //UpdateStatusBar();
 
             cboFilterCategory.DataSource = Data.GetAllCategories();
-            cboFilterCategory.DisplayMember = "CatName";
-            cboFilterCategory.ValueMember = "CatID";
+            cboFilterCategory.DisplayMember = "Name"; //"CatName";
+            cboFilterCategory.ValueMember = "ID"; //"CatID";
 
             EnableUI();
 
@@ -264,7 +264,7 @@ namespace UserInterface.Forms
         #region Getters
         private string GetSelectedCatId()
         {
-            return ((ItemCategory)cboFilterCategory.SelectedItem).CatID;
+            return ((ItemCategory)cboFilterCategory.SelectedItem).ID;
         }
         #endregion
 

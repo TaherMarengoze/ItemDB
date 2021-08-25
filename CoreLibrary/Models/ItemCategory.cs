@@ -1,8 +1,10 @@
-﻿namespace CoreLibrary.Models
+﻿using CoreLibrary.Interfaces;
+
+namespace CoreLibrary.Models
 {
-    public class ItemCategory
+    public class ItemCategory : IBasicField
     {
-        public string CatID { get; set; }
-        public string CatName { get; set; }
+        public string ID { get; set; }
+        public string Name { get; set; }
     }
 }

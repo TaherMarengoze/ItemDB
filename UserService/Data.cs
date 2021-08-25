@@ -216,7 +216,7 @@ namespace UserService
         {
             List<ItemCategory> categories = new List<ItemCategory>
             {
-                new ItemCategory() { CatID = "*", CatName = "<All categories>" }
+                new ItemCategory() { ID = "*", Name = "<All categories>" }
             };
             categories.AddRange(appCache.Categories);
             return categories;
@@ -229,21 +229,21 @@ namespace UserService
 
         public static List<ItemCategory> FilterCategoriesById(string filterCatId)
         {
-            return appCache.Categories.Where(cat => cat.CatID.Contains(filterCatId)).ToList();
+            return appCache.Categories.Where(cat => cat.ID.Contains(filterCatId)).ToList();
         }
 
         public static List<ItemCategory> FilterCategoriesByName(string filterCatName)
         {
             return
                 appCache.Categories.Where(cat =>
-                cat.CatName.IndexOf(filterCatName, StringComparison.OrdinalIgnoreCase) != -1)
+                cat.Name.IndexOf(filterCatName, StringComparison.OrdinalIgnoreCase) != -1)
                 .ToList();
         }
 
         public static string GetCategoryName(string catId)
         {
             return
-                (from cat in appCache.Categories where cat.CatID == catId select cat.CatName)
+                (from cat in appCache.Categories where cat.ID == catId select cat.Name)
                 .FirstOrDefault();
         }
         #endregion

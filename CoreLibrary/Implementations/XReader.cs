@@ -74,8 +74,8 @@ namespace CoreLibrary
                 from cat in dataDocs.Items.Descendants("category")
                 select new ItemCategory()
                 {
-                    CatID = cat.Attribute("catID").Value,
-                    CatName = cat.Attribute("name").Value
+                    ID = cat.Attribute("catID").Value,
+                    Name = cat.Attribute("name").Value
                 };
         }
 
