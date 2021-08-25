@@ -1,4 +1,5 @@
 ﻿
+using CoreLibrary.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,7 +20,7 @@ namespace CoreLibrary.Models
         /// Constructor for modified draft.
         /// </summary>
         /// <param name="group"></param>
-        public SizeGroupDrafter(SizeGroup group)
+        public SizeGroupDrafter(ISizeGroup group)
         {
             // Save the reference of original SizeGroup ID to reference it in case of ID change
             refId = group.ID;
@@ -38,7 +39,7 @@ namespace CoreLibrary.Models
         /// <summary>
         /// Stores the reference of the draft <see cref="SizeGroup"/> object.
         /// </summary>
-        public SizeGroup DraftSizeGroup { get; private set; }
+        public ISizeGroup DraftSizeGroup { get; private set; }
 
         public readonly string refId;
         /// <summary>

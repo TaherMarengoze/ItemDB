@@ -7,7 +7,7 @@ namespace CoreLibrary.Models
 
     public class SizeGroupView : IBasicField
     {
-        public SizeGroupView(SizeGroup group)
+        public SizeGroupView(Interfaces.ISizeGroup group)
         {
             ID = group.ID;
             Name = group.Name;

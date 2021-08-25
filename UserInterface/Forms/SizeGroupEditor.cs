@@ -1,6 +1,7 @@
 ﻿
 using CoreLibrary;
 using CoreLibrary.Enums;
+using CoreLibrary.Interfaces;
 using CoreLibrary.Models;
 using System;
 using System.Collections.Generic;
@@ -112,13 +113,13 @@ namespace UserInterface.Forms
 
         private void DisplaySelectedGroupData(string groupId)
         {
-            SizeGroup sGroup = Data.GetSizeGroup(groupId);
+            ISizeGroup sGroup = Data.GetSizeGroup(groupId);
 
             txtGroupID.Text = groupId;
             txtGroupName.Text = sGroup.Name;
             cboDefaultID.Text = sGroup.DefaultListID;
 
-            if (sGroup.AltListsCount > 0)
+            if (((SizeGroup)sGroup).AltListsCount > 0)
             {
                 lstAltListIDs.DataSource = sGroup.AltIdList;
                 lstAltListIDs.SelectedIndex = -1;

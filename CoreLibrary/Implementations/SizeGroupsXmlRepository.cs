@@ -16,7 +16,7 @@ namespace CoreLibrary
             dataSource = source;
         }
 
-        public void Create(SizeGroup group)
+        public void Create(ISizeGroup group)
         {
             XElement content = SerializeSizeGroup(group);
             dataSource.Root.Add(content);
@@ -24,7 +24,7 @@ namespace CoreLibrary
 
         public void Read() => throw new NotImplementedException();
 
-        public void Update(string refId, SizeGroup group)
+        public void Update(string refId, ISizeGroup group)
         {
             XElement content = GetSizeGroup(refId);
 
@@ -63,7 +63,7 @@ namespace CoreLibrary
                 .FirstOrDefault();
         }
 
-        private XElement SerializeSizeGroup(SizeGroup group)
+        private XElement SerializeSizeGroup(ISizeGroup group)
         {
             XElement altIdList = new XElement("altLists");
             group.AltIdList?.ForEach(id => altIdList.Add(new XElement("listID", id)));

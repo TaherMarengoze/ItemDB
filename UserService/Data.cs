@@ -39,7 +39,12 @@ namespace UserService
         private static void UpdateItemsRepos() => appCache.Items = AppFactory.reader.GetItems();
         private static void UpdateCategoriesRepos() => appCache.Categories = AppFactory.reader.GetCategories();
         public static void UpdateSpecsRepos() => appCache.SpecsList = AppFactory.reader.GetSpecs().ToList();
-        public static void UpdateSizeGroupsRepos() => appCache.SizeGroups = AppFactory.reader.GetSizeGroups().ToList();
+        public static void UpdateSizeGroupsRepos()
+        {
+            appCache.SizeGroups = AppFactory.reader
+                .GetSizeGroups().ToList();
+        }
+
         private static void UpdateSizesRepos() => appCache.SizesList = AppFactory.reader.GetSizes().ToList();
         private static void UpdateBrandsRepos()
         {
@@ -327,7 +332,13 @@ namespace UserService
         /// Retrieves the list of <see cref="SizeGroup"/> from the cache.
         /// </summary>
         /// <returns></returns>
-        public static List<SizeGroup> GetSizeGroups() => appCache.SizeGroups;
+        public static List<SizeGroup> GetSizeGroups()
+        {
+            return
+                appCache.SizeGroups
+                .Cast<SizeGroup>()
+                .ToList();
+        }
 
         public static List<string> GetSizeGroupsId()
         {
@@ -350,7 +361,7 @@ namespace UserService
                 .Select(grp => new SizeGroupView(grp)).ToList();
         }
 
-        public static void AddSizeGroup(SizeGroup group)
+        public static void AddSizeGroup(ISizeGroup group)
         {
             // Add to local cache
 
@@ -362,7 +373,7 @@ namespace UserService
             UpdateSizeGroupsRepos();
         }
 
-        public static void UpdateSizeGroup(string refId, SizeGroup group)
+        public static void UpdateSizeGroup(string refId, ISizeGroup group)
         {
             // Update data source
             AppFactory.sizeGroupRepo.Update(refId, group);
@@ -382,9 +393,14 @@ namespace UserService
 
         }
 
-        public static SizeGroup GetSizeGroup(string groupId)
+        public static ISizeGroup GetSizeGroup(string groupId)
         {
-            return appCache.SizeGroups.Find(group => group.ID == groupId);
+            return
+                appCache.SizeGroups
+                .Find(group => group.ID == groupId);
+
+            appCache.SizeGroups.Cast<SizeGroup>().ToList()
+                .Find(group => group.ID == groupId);
         }
         #endregion
 

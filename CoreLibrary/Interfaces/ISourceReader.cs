@@ -13,7 +13,7 @@ namespace CoreLibrary.Interfaces
 
         IEnumerable<ISpecs> GetSpecs();
 
-        IEnumerable<SizeGroup> GetSizeGroups();
+        IEnumerable<ISizeGroup> GetSizeGroups();
 
         IEnumerable<BasicListView> GetSizes();
 

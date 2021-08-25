@@ -4,9 +4,9 @@
 
     public interface ISizeGroupRepos
     {
-        void Create(SizeGroup group);
+        void Create(ISizeGroup group);
         void Read();
-        void Update(string refId, SizeGroup group);
+        void Update(string refId, ISizeGroup group);
         void Delete(string groupId);
     }
 }

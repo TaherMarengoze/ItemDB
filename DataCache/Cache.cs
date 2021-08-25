@@ -11,7 +11,7 @@ namespace DataCache
     {
         private IEnumerable<IItem> _items;
         private List<ISpecs> _specsList;
-        private List<SizeGroup> _sizeGroups;
+        private List<ISizeGroup> _sizeGroups;
 
         private List<BasicListView> _sizesList;
         private List<IBasicList> _brandsList;
@@ -60,7 +60,7 @@ namespace DataCache
         #endregion
 
         #region Size Groups
-        public List<SizeGroup> SizeGroups
+        public List<ISizeGroup> SizeGroups
         {
             get => _sizeGroups;
             set

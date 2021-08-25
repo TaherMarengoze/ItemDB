@@ -98,7 +98,7 @@ namespace CoreLibrary
                 };
         }
 
-        public IEnumerable<SizeGroup> GetSizeGroups()
+        public IEnumerable<ISizeGroup> GetSizeGroups()
         {
             return
                 from sg in dataDocs.SizeGroups.Descendants("group")
