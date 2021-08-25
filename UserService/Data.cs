@@ -236,7 +236,7 @@ namespace UserService
         /// Gets a list of <see cref="Specs"/> object.
         /// </summary>
         /// <returns></returns>
-        public static List<Specs> GetSpecsList() => appCache.SpecsList;
+        public static List<ISpecs> GetSpecsList() => appCache.SpecsList;
 
         /// <summary>
         /// Gets a list of ID of the <see cref="Specs"/> object.

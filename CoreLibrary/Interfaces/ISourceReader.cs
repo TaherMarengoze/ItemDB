@@ -1,16 +1,17 @@
-﻿using System.Collections.Generic;
+﻿
+using System.Collections.Generic;
+using CoreLibrary.Models;
+
 
 namespace CoreLibrary.Interfaces
 {
-    using Models;
-
     public interface ISourceReader
     {
         IEnumerable<IItem> GetItems();
 
         IEnumerable<ItemCategory> GetCategories();
 
-        IEnumerable<Specs> GetSpecs();
+        IEnumerable<ISpecs> GetSpecs();
 
         IEnumerable<SizeGroup> GetSizeGroups();
 

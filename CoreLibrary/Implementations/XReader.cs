@@ -79,7 +79,7 @@ namespace CoreLibrary
                 };
         }
 
-        public IEnumerable<Specs> GetSpecs()
+        public IEnumerable<ISpecs> GetSpecs()
         {
             return
                 from specs in dataDocs.Specs.Descendants("specs")
