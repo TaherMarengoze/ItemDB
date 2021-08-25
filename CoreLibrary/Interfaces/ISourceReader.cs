@@ -15,7 +15,7 @@ namespace CoreLibrary.Interfaces
 
         IEnumerable<ISizeGroup> GetSizeGroups();
 
-        IEnumerable<BasicListView> GetSizes();
+        IEnumerable<IBasicList> GetSizes();
 
         IEnumerable<IBasicList> GetBrands();
 

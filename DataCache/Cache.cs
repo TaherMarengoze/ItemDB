@@ -13,7 +13,7 @@ namespace DataCache
         private List<ISpecs> _specsList;
         private List<ISizeGroup> _sizeGroups;
 
-        private List<BasicListView> _sizesList;
+        private List<IBasicList> _sizesList;
         private List<IBasicList> _brandsList;
         private List<IBasicList> _endsList;
 
@@ -74,7 +74,7 @@ namespace DataCache
         #endregion
 
         #region Sizes
-        public List<BasicListView> SizesList
+        public List<IBasicList> SizesList
         {
             get => _sizesList;
             set

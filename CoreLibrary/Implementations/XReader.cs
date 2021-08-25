@@ -117,7 +117,7 @@ namespace CoreLibrary
                 };
         }
 
-        public IEnumerable<BasicListView> GetSizes()
+        public IEnumerable<IBasicList> GetSizes()
         {
             return
                 from list in dataDocs.Sizes.Descendants("sizeList")

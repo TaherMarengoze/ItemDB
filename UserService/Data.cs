@@ -45,7 +45,12 @@ namespace UserService
                 .GetSizeGroups().ToList();
         }
 
-        private static void UpdateSizesRepos() => appCache.SizesList = AppFactory.reader.GetSizes().ToList();
+        private static void UpdateSizesRepos()
+        {
+            appCache.SizesList = AppFactory.reader
+                .GetSizes().ToList();
+        }
+
         private static void UpdateBrandsRepos()
         {
             appCache.BrandsList = AppFactory.reader
@@ -492,8 +497,23 @@ namespace UserService
 
         #region Size Lists
         // Context
-        private static List<BasicListView> GetSizes() => appCache.SizesList;
-        public static List<BasicListView> GetSizesExclude(string excludeId) => appCache.SizesList.Where(list => list.ID != excludeId).ToList();
+        private static List<BasicListView> GetSizes()
+        {
+            return
+                appCache.SizesList
+                .Cast<BasicListView>()
+                .ToList();
+        }
+
+        public static List<BasicListView> GetSizesExclude(string excludeId)
+        {
+            return
+                appCache.SizesList
+                .Where(list => list.ID != excludeId)
+                .Cast<BasicListView>()
+                .ToList();
+        }
+
         private static IEnumerable<string> GetSizesId() => appCache.SizesIdList;
         public static List<string> GetSizesIdExclude(List<string> excludeIdList) => (from list in appCache.SizesList where !excludeIdList.Contains(list.ID) select list.ID).ToList();
 
