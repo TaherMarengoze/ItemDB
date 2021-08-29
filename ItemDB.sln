@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modeling", "Modeling\Modeli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelAbstraction", "ModelAbstraction\ModelAbstraction.csproj", "{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlDataSource", "XmlDataSource\XmlDataSource.csproj", "{120DC4D4-FB79-4C36-AB02-A47CEE84C7C4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{120DC4D4-FB79-4C36-AB02-A47CEE84C7C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{120DC4D4-FB79-4C36-AB02-A47CEE84C7C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{120DC4D4-FB79-4C36-AB02-A47CEE84C7C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{120DC4D4-FB79-4C36-AB02-A47CEE84C7C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

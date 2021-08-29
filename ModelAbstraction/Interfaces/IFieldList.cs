@@ -4,12 +4,8 @@ using System.Collections.ObjectModel;
 
 namespace ModelAbstraction.Interfaces
 {
-    public interface IFieldList
+    public interface IFieldList : IIdentity
     {
-        string ID { get; set; }
-
-        string Name { get; set; }
-
         ObservableCollection<string> List { get; set; }
     }
 }
