@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService", "UserService\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataCache", "DataCache\DataCache.csproj", "{6F9A999D-0FDD-467D-8331-05AC21E033B6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modeling", "Modeling\Modeling.csproj", "{B195C5BF-431E-4828-86F1-F638F131EA43}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelAbstraction", "ModelAbstraction\ModelAbstraction.csproj", "{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{6F9A999D-0FDD-467D-8331-05AC21E033B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F9A999D-0FDD-467D-8331-05AC21E033B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F9A999D-0FDD-467D-8331-05AC21E033B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B195C5BF-431E-4828-86F1-F638F131EA43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B195C5BF-431E-4828-86F1-F638F131EA43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B195C5BF-431E-4828-86F1-F638F131EA43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B195C5BF-431E-4828-86F1-F638F131EA43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

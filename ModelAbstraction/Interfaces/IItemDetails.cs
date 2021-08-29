@@ -1,0 +1,27 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ModelAbstraction.Interfaces
+{
+    public interface IItemDetails
+    {
+        string SpecsID { get; set; }
+
+        string SizeGroupID { get; set; }
+
+        string BrandListID { get; set; }
+
+        string EndsListID { get; set; }
+
+        bool SpecsRequired { get; set; }
+
+        bool SizeRequired { get; set; }
+
+        bool BrandRequired { get; set; }
+
+        bool EndsRequired { get; set; }
+    }
+}
