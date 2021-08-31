@@ -52,6 +52,7 @@
     <Compile Include="Models\ISpecListEntry.cs" />
     <Compile Include="Models\ISpecs.cs" />
     <Compile Include="Models\ISpecsItem.cs" />
+    <Compile Include="Operations\IEntityRepo.cs" />
     <Compile Include="Operations\ISourceReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
