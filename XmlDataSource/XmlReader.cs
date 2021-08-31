@@ -1,5 +1,6 @@
 ﻿
-using ModelAbstraction.Interfaces;
+using Interfaces.Models;
+using Interfaces.Operations;
 using Modeling.DataModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,11 +13,11 @@ namespace XmlDataSorce
     /// <summary>
     /// Reads and deserializes the XML data from an <see cref="DataDocuments"/>.
     /// </summary>
-    public class XReader
+    public class XmlReader : ISourceReader
     {
         private readonly DataDocuments dataDocs;
 
-        public XReader(DataDocuments documents)
+        public XmlReader(DataDocuments documents)
         {
             dataDocs = documents;
         }
@@ -69,7 +70,7 @@ namespace XmlDataSorce
                 };
         }
 
-        public IEnumerable<IIdentity> GetCategories()
+        public IEnumerable<IItemCategory> GetCategories()
         {
             return
                 from cat in dataDocs.Items.Descendants("category") //select Factory.NewCategory(cat);

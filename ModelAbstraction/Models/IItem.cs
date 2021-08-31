@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 
-namespace ModelAbstraction.Interfaces
+namespace Interfaces.Models
 {
     public interface IItem
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 
-namespace ModelAbstraction.Interfaces
+namespace Interfaces.Models
 {
     public interface ISpecsItem
     {
@@ -12,7 +12,7 @@ namespace ModelAbstraction.Interfaces
 
          string ValuePattern { get; set; }
 
-         List<ISpecListEntry> ListEntries { get; set; }
+         IEnumerable<ISpecListEntry> ListEntries { get; set; }
 
          string CustomInputID { get; set; }
     }

@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 
 
-namespace ModelAbstraction.Interfaces
+namespace Interfaces.Models
 {
     public interface IFieldList : IIdentity
     {

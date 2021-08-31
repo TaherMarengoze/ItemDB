@@ -1,10 +1,10 @@
 ﻿
-using ModelAbstraction.Interfaces;
+using Interfaces.Models;
 
 
 namespace Modeling.DataModels
 {
-    public class ItemCategory : IIdentity
+    public class ItemCategory : IItemCategory
     {
         public string ID { get; set; }
 

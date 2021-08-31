@@ -1,5 +1,5 @@
 ﻿
-using ModelAbstraction.Interfaces;
+using Interfaces.Models;
 
 
 namespace Modeling.DataModels

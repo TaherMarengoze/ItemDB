@@ -54,9 +54,9 @@
     <Compile Include="DataModels\ItemDetails.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ModelAbstraction\ModelAbstraction.csproj">
+    <ProjectReference Include="..\ModelAbstraction\Interfaces.csproj">
       <Project>{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}</Project>
-      <Name>ModelAbstraction</Name>
+      <Name>Interfaces</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

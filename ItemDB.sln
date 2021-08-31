@@ -13,9 +13,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataCache", "DataCache\Data
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modeling", "Modeling\Modeling.csproj", "{B195C5BF-431E-4828-86F1-F638F131EA43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelAbstraction", "ModelAbstraction\ModelAbstraction.csproj", "{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interfaces", "ModelAbstraction\Interfaces.csproj", "{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlDataSource", "XmlDataSource\XmlDataSource.csproj", "{120DC4D4-FB79-4C36-AB02-A47CEE84C7C4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{47242FF6-BD28-4828-9B30-79959F8966FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +56,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B195C5BF-431E-4828-86F1-F638F131EA43} = {47242FF6-BD28-4828-9B30-79959F8966FA}
+		{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06} = {47242FF6-BD28-4828-9B30-79959F8966FA}
+		{120DC4D4-FB79-4C36-AB02-A47CEE84C7C4} = {47242FF6-BD28-4828-9B30-79959F8966FA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E9F8D276-37EB-44B5-87CB-F0F160F7C0C2}

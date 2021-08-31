@@ -1,5 +1,5 @@
 ﻿
-using ModelAbstraction.Interfaces;
+using Interfaces.Models;
 using System.Collections.Generic;
 
 
@@ -13,6 +13,7 @@ namespace Modeling.DataModels
 
         public string TextPattern { get; set; } = "{base}";
 
-        public List<ISpecsItem> SpecItems { get; set; } = new List<ISpecsItem>();
+        public IEnumerable<ISpecsItem> SpecItems { get; set; }
+            = new List<ISpecsItem>();
     }
 }

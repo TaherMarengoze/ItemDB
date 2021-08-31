@@ -1,5 +1,5 @@
 ﻿
-namespace ModelAbstraction.Interfaces
+namespace Interfaces.Models
 {
     public interface IIdentity
     {

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 
 
-namespace ModelAbstraction.Interfaces
+namespace Interfaces.Models
 {
     public interface ISpecs : IIdentity
     {
         string TextPattern { get; set; }
 
-        List<ISpecsItem> SpecItems { get; set; }
+        IEnumerable<ISpecsItem> SpecItems { get; set; }
     }
 }

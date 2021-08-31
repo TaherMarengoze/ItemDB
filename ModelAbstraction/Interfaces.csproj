@@ -7,8 +7,8 @@
     <ProjectGuid>{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ModelAbstraction</RootNamespace>
-    <AssemblyName>ModelAbstraction</AssemblyName>
+    <RootNamespace>Interfaces</RootNamespace>
+    <AssemblyName>Interfaces</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -21,6 +21,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -41,15 +43,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\IFieldList.cs" />
-    <Compile Include="Interfaces\IIdentity.cs" />
-    <Compile Include="Interfaces\IItem.cs" />
-    <Compile Include="Interfaces\IItemDetails.cs" />
-    <Compile Include="Interfaces\ISizeGroup.cs" />
-    <Compile Include="Interfaces\ISpecListEntry.cs" />
-    <Compile Include="Interfaces\ISpecs.cs" />
-    <Compile Include="Interfaces\ISpecsItem.cs" />
+    <Compile Include="Models\IFieldList.cs" />
+    <Compile Include="Models\IIdentity.cs" />
+    <Compile Include="Models\IItem.cs" />
+    <Compile Include="Models\IItemCategory.cs" />
+    <Compile Include="Models\IItemDetails.cs" />
+    <Compile Include="Models\ISizeGroup.cs" />
+    <Compile Include="Models\ISpecListEntry.cs" />
+    <Compile Include="Models\ISpecs.cs" />
+    <Compile Include="Models\ISpecsItem.cs" />
+    <Compile Include="Operations\ISourceReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

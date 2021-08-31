@@ -45,12 +45,12 @@
     <Compile Include="DataDocuments.cs" />
     <Compile Include="FilePathProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="XReader.cs" />
+    <Compile Include="XmlReader.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ModelAbstraction\ModelAbstraction.csproj">
+    <ProjectReference Include="..\ModelAbstraction\Interfaces.csproj">
       <Project>{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}</Project>
-      <Name>ModelAbstraction</Name>
+      <Name>Interfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\Modeling\Modeling.csproj">
       <Project>{B195C5BF-431E-4828-86F1-F638F131EA43}</Project>

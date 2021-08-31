@@ -1,5 +1,5 @@
 ﻿
-using ModelAbstraction.Interfaces;
+using Interfaces.Models;
 using System.Collections.Generic;
 
 
@@ -13,7 +13,7 @@ namespace Modeling.DataModels
 
         public string ValuePattern { get; set; } = "{val}";
 
-        public List<ISpecListEntry> ListEntries { get;  set; }
+        public IEnumerable<ISpecListEntry> ListEntries { get;  set; }
 
         public string CustomInputID { get;  set; }
         
