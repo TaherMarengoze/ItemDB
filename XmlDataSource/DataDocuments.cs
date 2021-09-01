@@ -26,12 +26,19 @@ namespace XmlDataSorce
         }
 
         public XDocument Items { get; private set; }
+
         public XDocument SizeGroups { get; private set; }
+
         public XDocument Specs { get; private set; }
+
         public XDocument Sizes { get; private set; }
+
         public XDocument Brands { get; private set; }
+
         public XDocument Ends { get; private set; }
+
         public XDocument CustomSpecs { get; private set; }
+
         public XDocument CustomSizes { get; private set; }
 
         public static void Save(XDocument document, string savePath, bool test = false)

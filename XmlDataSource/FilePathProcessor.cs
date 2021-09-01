@@ -26,16 +26,26 @@ namespace XmlDataSorce
             ImageRepos = Path.Combine(parentDir, @"images\");
         }
 
+
         public string Items { get; private set; }
+
         public string SizeGroups { get; private set; }
+
         public string Specs { get; private set; }
+
         public string Sizes { get; private set; }
+
         public string Brands { get; private set; }
+
         public string Ends { get; private set; }
+
         public string ImageRepos { get; private set; }
+
         public string CustomSpecs { get; private set; }
+
         public string CustomSizes { get; private set; }
-        
+
+
         public static string TestSave(string filePath)
         {
             //Get file name from path

@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Interfaces.Operations
 {
     public interface IEntityRepo<TEntity>
     {
-        void Create(TEntity group);
+        void Create(TEntity entity);
 
         TEntity Read();
 
-        void Update(string refId, TEntity group);
+        void Update(string refId, TEntity entity);
 
-        void Delete(string groupId);
+        void Delete(string entityId);
     }
 }

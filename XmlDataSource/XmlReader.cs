@@ -73,7 +73,7 @@ namespace XmlDataSorce
         public IEnumerable<IItemCategory> GetCategories()
         {
             return
-                from cat in dataDocs.Items.Descendants("category") //select Factory.NewCategory(cat);
+                from cat in dataDocs.Items.Descendants("category")
                 select new ItemCategory()
                 {
                     ID = cat.Attribute("catID").Value,
