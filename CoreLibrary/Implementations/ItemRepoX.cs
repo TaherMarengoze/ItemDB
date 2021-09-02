@@ -8,7 +8,7 @@ namespace CoreLibrary
     using Interfaces;
 
 
-    public class ModifyXml : IModifier
+    public class ItemRepoX : IModifier
     {
         public void CreateItem(IItem item)
         {

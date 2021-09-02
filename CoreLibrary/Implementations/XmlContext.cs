@@ -61,7 +61,7 @@ namespace CoreLibrary
             // Instantiate the source reader and modifier
             AppFactory.reader = new XReader(AppFactory.xDataDocs);
 
-            AppFactory.itemModifier = new ModifyXml();
+            AppFactory.itemModifier = new ItemRepoX();
 
             AppFactory.specsRepo = new SpecsRepoX(AppFactory.xDataDocs.Specs);
 

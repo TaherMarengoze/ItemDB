@@ -2,7 +2,6 @@
 using Interfaces.Models;
 using System.Collections.Generic;
 
-
 namespace Modeling.DataModels
 {
     public class Item : IItem
@@ -10,6 +9,8 @@ namespace Modeling.DataModels
         public string CatID { get; set; }
 
         public string CatName { get; set; }
+
+        //public IItemCategory Category { get; set; }
 
         public string ItemID { get; set; }
 

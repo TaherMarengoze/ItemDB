@@ -6,28 +6,28 @@ using System.Linq;
 using System.Xml.Linq;
 using XmlDataSource.Serialization;
 
-namespace XmlDataSorce.Repository
+namespace XmlDataSource.Repository
 {
-    public class Specs : IEntityRepo<ISpecs>
+    public class EndList : IEntityRepo<IFieldList>
     {
         private readonly XDocument dataSource;
 
-        public Specs(XDocument source)
+        public EndList(XDocument source)
         {
             dataSource = source;
         }
 
-        public void Create(ISpecs entity)
+        public void Create(IFieldList entity)
         {
-            XElement content = Entity.Serialize(entity);
+            XElement content = Entity.SerializeEnd(entity);
             dataSource.Root.Add(content);
         }
 
-        public ISpecs Read() => throw new NotImplementedException();
+        public IFieldList Read() => throw new NotImplementedException();
 
-        public void Update(string refId, ISpecs entity)
+        public void Update(string refId, IFieldList entity)
         {
-            XElement newContent = Entity.Serialize(entity);
+            XElement newContent = Entity.SerializeEnd(entity);
             XElement oldContent = GetElement(refId);
             oldContent.ReplaceWith(newContent);
         }
@@ -40,8 +40,8 @@ namespace XmlDataSorce.Repository
         private XElement GetElement(string entityId)
         {
             return
-                dataSource.Descendants("specs")
-                .Where(node => node.Attribute("specsID").Value == entityId)
+                dataSource.Descendants("endsList")
+                .Where(node => node.Attribute("listID").Value == entityId)
                 .FirstOrDefault();
         }
     }

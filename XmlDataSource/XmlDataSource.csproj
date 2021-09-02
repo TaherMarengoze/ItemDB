@@ -43,7 +43,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataDocuments.cs" />
+    <Compile Include="Repository\Item.cs" />
+    <Compile Include="Repository\EndList.cs" />
     <Compile Include="Repository\SizeGroup.cs" />
+    <Compile Include="Repository\BrandList.cs" />
+    <Compile Include="Repository\SizeList.cs" />
     <Compile Include="Serialization\EntitySerializer.cs" />
     <Compile Include="FilePathProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

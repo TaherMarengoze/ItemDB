@@ -47,10 +47,10 @@
     <Compile Include="FileCopyService.cs" />
     <Compile Include="General\Common.cs" />
     <Compile Include="General\ExtensionMethods.cs" />
+    <Compile Include="Implementations\ItemRepoX.cs" />
     <Compile Include="Interfaces\IBasicField.cs" />
     <Compile Include="Implementations\FieldXmlManipulator.cs" />
     <Compile Include="Implementations\FieldXmlRepository.cs" />
-    <Compile Include="Implementations\ModifyXml.cs" />
     <Compile Include="Implementations\SizeGroupsXmlRepository.cs" />
     <Compile Include="Implementations\SpecsRepoX.cs" />
     <Compile Include="Implementations\XmlContext.cs" />

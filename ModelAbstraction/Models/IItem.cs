@@ -10,6 +10,8 @@ namespace Interfaces.Models
 
         string CatName { get; set; }
 
+        //IItemCategory Category { get; set; }
+
         string ItemID { get; set; }
 
         string BaseName { get; set; }
