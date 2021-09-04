@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Interfaces.Operations
 {
-    public interface ISourceReader
+    public interface IDataReader
     {
         IEnumerable<IItem> GetItems();
 

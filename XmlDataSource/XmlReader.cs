@@ -13,7 +13,7 @@ namespace XmlDataSorce
     /// <summary>
     /// Reads and deserializes the XML data from an <see cref="DataDocuments"/>.
     /// </summary>
-    public class XmlReader : ISourceReader
+    public class XmlReader : IDataReader
     {
         private readonly DataDocuments dataDocs;
 
