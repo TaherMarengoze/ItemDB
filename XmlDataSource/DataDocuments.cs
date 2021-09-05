@@ -7,6 +7,9 @@ using System.Xml.Linq;
 
 namespace XmlDataSorce
 {
+    /// <summary>
+    /// Represents the context XML documents and provides save method for the documents.
+    /// </summary>
     public class DataDocuments
     {
         /// <summary>
