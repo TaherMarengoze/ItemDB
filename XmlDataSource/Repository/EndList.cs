@@ -17,6 +17,11 @@ namespace XmlDataSource.Repository
             dataSource = source;
         }
 
+        public EndList()
+        {
+            dataSource = new XDocument(); // this should be ends list XDocument
+        }
+
         public void Create(IFieldList entity)
         {
             XElement content = Entity.SerializeEnd(entity);

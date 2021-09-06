@@ -2,7 +2,7 @@
 using System.IO;
 
 
-namespace XmlDataSorce
+namespace XmlDataSource
 {
     public class FilePathProcessor
     {

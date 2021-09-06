@@ -17,6 +17,11 @@ namespace XmlDataSource.Repository
             dataSource = source;
         }
 
+        public SizeList()
+        {
+            dataSource = new XDocument(); // this should be sizes list XDocument
+        }
+
         public void Create(IFieldList entity)
         {
             XElement content = Entity.SerializeSize(entity);

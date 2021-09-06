@@ -8,7 +8,7 @@ using System.Linq;
 using System.Xml.Linq;
 
 
-namespace XmlDataSorce
+namespace XmlDataSource
 {
     /// <summary>
     /// Reads and deserializes the XML data from an <see cref="DataDocuments"/>.

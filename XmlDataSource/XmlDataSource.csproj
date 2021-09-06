@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataDocuments.cs" />
+    <Compile Include="DataDocumentsProcessor.cs" />
     <Compile Include="Repository\Item.cs" />
     <Compile Include="Repository\EndList.cs" />
     <Compile Include="Repository\SizeGroup.cs" />
@@ -56,6 +57,10 @@
     <Compile Include="XmlReader.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ApplicationCentre\AppCore.csproj">
+      <Project>{d544af89-205d-48bb-bf81-ff93d9a43692}</Project>
+      <Name>AppCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj">
       <Project>{90C23753-2A1C-4F04-A4E7-3B12CE02FA7F}</Project>
       <Name>CoreLibrary</Name>

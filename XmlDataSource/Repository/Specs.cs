@@ -6,7 +6,7 @@ using System.Linq;
 using System.Xml.Linq;
 using XmlDataSource.Serialization;
 
-namespace XmlDataSorce.Repository
+namespace XmlDataSource.Repository
 {
     public class Specs : IEntityRepo<ISpecs>
     {
@@ -15,6 +15,11 @@ namespace XmlDataSorce.Repository
         public Specs(XDocument source)
         {
             dataSource = source;
+        }
+
+        public Specs()
+        {
+            dataSource = new XDocument(); // this should be Specs XDocument
         }
 
         public void Create(ISpecs entity)

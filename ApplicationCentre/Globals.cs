@@ -1,31 +1,28 @@
-﻿using Interfaces.Models;
+﻿
+using Interfaces.Models;
 using Interfaces.Operations;
-using XmlDataSorce;
 
 namespace AppCore
 {
     public static class Globals
     {
-        public static FilePathProcessor fpp;
-        public static DataDocuments xDataDocs;
-
         public static IDataReader reader;
 
         public static ISourceContext context;
 
-        public static IItem items;
+        public static IEntityRepo<IItem> itemsRepo;
 
-        public static ISpecs specsRepo;
+        public static IEntityRepo<ISpecs> specsRepo;
 
-        public static ISizeGroup sizeGroupRepo;
+        public static IEntityRepo<ISizeGroup> sizeGroupRepo;
 
-        public static IFieldList sizes;
+        public static IEntityRepo<IFieldList> sizesRepo;
         //public static IFieldManipulator sizeManipulator;
 
-        public static IFieldList brands;
+        public static IEntityRepo<IFieldList> brandsRepo;
         //public static IFieldManipulator brandManipulator;
 
-        public static IFieldList ends;
+        public static IEntityRepo<IFieldList> endsRepo;
         //public static IFieldManipulator endsManipulator;
     }
 }

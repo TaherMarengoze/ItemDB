@@ -17,6 +17,11 @@ namespace XmlDataSource.Repository
             dataSource = source;
         }
 
+        public BrandList( )
+        {
+            dataSource = new XDocument(); // this should be brands list XDocument
+        }
+
         public void Create(IFieldList entity)
         {
             XElement content = Entity.SerializeBrand(entity);

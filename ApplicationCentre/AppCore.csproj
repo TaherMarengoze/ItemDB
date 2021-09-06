@@ -49,10 +49,6 @@
       <Project>{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}</Project>
       <Name>Interfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\XmlDataSource\XmlDataSource.csproj">
-      <Project>{120DC4D4-FB79-4C36-AB02-A47CEE84C7C4}</Project>
-      <Name>XmlDataSource</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

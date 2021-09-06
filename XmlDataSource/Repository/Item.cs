@@ -17,6 +17,11 @@ namespace XmlDataSource.Repository
             dataSource = source;
         }
 
+        public Item()
+        {
+            dataSource = new XDocument(); // this should be Items XDocument
+        }
+
         public void Create(IItem entity)
         {
             XElement content = Entity.Serialize(entity);

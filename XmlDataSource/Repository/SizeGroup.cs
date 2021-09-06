@@ -17,6 +17,11 @@ namespace XmlDataSource.Repository
             dataSource = source;
         }
 
+        public SizeGroup()
+        {
+            dataSource = new XDocument(); // this should be size group XDocument
+        }
+
         public void Create(ISizeGroup entity)
         {
             XElement content = Entity.Serialize(entity);
