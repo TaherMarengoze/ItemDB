@@ -1,7 +1,6 @@
 ﻿
 using System.IO;
 
-
 namespace XmlDataSource
 {
     public class FilePathProcessor

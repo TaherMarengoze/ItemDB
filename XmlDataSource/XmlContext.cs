@@ -18,7 +18,7 @@ namespace XmlDataSource
 
         public void Load()
         {
-            CoreLibrary.Common.BrowseXmlFile(LoadXmlFile);
+            CoreLibrary.Common.BrowseXmlFile(LoadXmlContext);
         }
 
         public void Save()
@@ -62,7 +62,7 @@ namespace XmlDataSource
                 DocumentProcessor.Save(dataDocs.CustomSizes, fpp.CustomSizes);
         }
 
-        private void LoadXmlFile(string filePath)
+        private void LoadXmlContext(string filePath)
         {
             fpp = new FilePathProcessor(filePath);
             dataDocs = new DataDocuments(fpp);
@@ -82,9 +82,9 @@ namespace XmlDataSource
             //Globals.endsManipulator = new FieldXmlManipulator(Globals.xDataDocs.Ends, FieldType.ENDS);
         }
 
-        public void TestLoadXmlFile(string filePath)
+        public void TestLoadXmlContext(string filePath)
         {
-            LoadXmlFile(filePath);
+            LoadXmlContext(filePath);
         }
     }
 }

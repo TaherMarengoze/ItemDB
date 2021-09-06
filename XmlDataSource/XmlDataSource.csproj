@@ -43,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataDocuments.cs" />
-    <Compile Include="DataDocumentsProcessor.cs" />
+    <Compile Include="DocumentProcessor.cs" />
     <Compile Include="Repository\Item.cs" />
     <Compile Include="Repository\EndList.cs" />
     <Compile Include="Repository\SizeGroup.cs" />
