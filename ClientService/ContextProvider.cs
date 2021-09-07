@@ -10,6 +10,11 @@ namespace ClientService
 {
     public class ContextProvider
     {
+        public static void Load()
+        {
+            Globals.context.Load();
+        }
+
         public static void Save()
         {
             Globals.context.Save();

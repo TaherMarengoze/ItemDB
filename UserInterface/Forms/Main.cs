@@ -78,7 +78,8 @@ namespace UserInterface.Forms
         private void tsmiLoadAll_Click(object sender, EventArgs e)
         {
             AppFactory.context.Load();
-            Globals.context.Load();
+            //Globals.context.Load();
+            ContextProvider.Load();
             PostLoading();
         }
 
