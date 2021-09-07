@@ -1,4 +1,6 @@
 ﻿
+using AppCore;
+using ClientService;
 using CoreLibrary;
 using CoreLibrary.Enums;
 using CoreLibrary.Models;
@@ -37,7 +39,11 @@ namespace UserInterface.Forms
 
         private void LauchEditor(Form editor)
         {
-            if (AppFactory.fpp != null && AppFactory.xDataDocs != null)
+            //bool check = AppFactory.fpp != null && AppFactory.xDataDocs != null
+            //bool check = !Globals.disableEditors;
+            bool check = true;
+
+            if (check)
             {
                 Hide();
                 editor.ShowDialog(this);
@@ -58,40 +64,28 @@ namespace UserInterface.Forms
         private void Main_Load(object sender, EventArgs e)
         {
             EnableDisableEditorsLaunchUI(false);
+            TestActions();
+        }
 
+        private void TestActions()
+        {
             tsmiAutoLoad.Checked = Program.TestAutoLoad;
             Runtime.Test.AutoLoad(((XmlContext)AppFactory.context).TestLoadXmlFile);
+            Runtime.Test.AutoLoad(((XmlDataSource.XmlContext)Globals.context).TestLoadXmlContext);
             Runtime.Test.DoSomething(PostLoading);
-            //Runtime.Test.AutoJump(delegate { new ItemEditor(/*Program.xDataDocs, Program.fpr.ImageRepos*/).ShowDialog(); });
         }
 
         private void tsmiLoadAll_Click(object sender, EventArgs e)
         {
-            // TEST
             AppFactory.context.Load();
-            //Common.BrowseXmlFile(LoadXmlFile);
+            Globals.context.Load();
             PostLoading();
         }
 
-        private void LoadXmlFile(string filePath)
-        {
-            // Load all the required XML file paths.
-            AppFactory.fpp = new FilePathProcessor(filePath);
-
-            // Load all the required XML documents.
-            AppFactory.xDataDocs = new XDataDocuments(AppFactory.fpp);
-
-            // Instantiate the source reader and modifier
-            AppFactory.reader = new XReader(AppFactory.xDataDocs);
-            AppFactory.itemModifier = new ItemRepoX();
-            AppFactory.specsRepo = new SpecsRepoX(AppFactory.xDataDocs.Specs);
-
-            PostLoading();
-        }
-        
         private void PostLoading()
         {
             Data.InitializeRepos();
+            DataProvider.InitLists();
             EnableDisableEditorsLaunchUI(true);
         }
 

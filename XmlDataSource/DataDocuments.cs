@@ -9,7 +9,7 @@ namespace XmlDataSource
     public class DataDocuments
     {
         /// <summary>
-        /// Loads all XML documents in a specific path.
+        /// Instantiates a new instance and loads all XML documents from a specific path.
         /// </summary>
         /// <param name="processor">The <see cref="FilePathProcessor"/> containing all files path.</param>
         public DataDocuments(FilePathProcessor processor)

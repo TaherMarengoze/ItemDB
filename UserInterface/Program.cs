@@ -39,6 +39,9 @@ namespace UserInterface
             // Initial Application Configuration
             CoreLibrary.AppFactory.context = new CoreLibrary.XmlContext(); // Set app context to XML, can be changed to database if applicable
 
+            // Test New libraries
+            AppCore.Globals.context = new XmlDataSource.XmlContext();
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Forms.Main());

@@ -67,6 +67,8 @@ namespace XmlDataSource
             fpp = new FilePathProcessor(filePath);
             dataDocs = new DataDocuments(fpp);
 
+            Globals.disableEditors = false;
+
             // Instantiate the source reader
             Globals.reader = new XmlReader(dataDocs);
 

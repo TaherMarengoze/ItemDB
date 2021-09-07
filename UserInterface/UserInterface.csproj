@@ -248,13 +248,29 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ApplicationCentre\AppCore.csproj">
+      <Project>{D544AF89-205D-48BB-BF81-FF93D9A43692}</Project>
+      <Name>AppCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ClientService\ClientService.csproj">
+      <Project>{2EC19893-87BD-41AA-A165-BF544D2A1BCB}</Project>
+      <Name>ClientService</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj">
       <Project>{90c23753-2a1c-4f04-a4e7-3b12ce02fa7f}</Project>
       <Name>CoreLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ModelAbstraction\Interfaces.csproj">
+      <Project>{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}</Project>
+      <Name>Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UserService\UserService.csproj">
       <Project>{81fcb3e0-a6c3-4fbb-9e73-90a8c711831c}</Project>
       <Name>UserService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XmlDataSource\XmlDataSource.csproj">
+      <Project>{120dc4d4-fb79-4c36-ab02-a47cee84c7c4}</Project>
+      <Name>XmlDataSource</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

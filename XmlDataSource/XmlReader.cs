@@ -5,6 +5,7 @@ using Modeling.DataModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace XmlDataSource
 {
@@ -93,11 +94,13 @@ namespace XmlDataSource
                     {
                         Index = (int)spec.Attribute("index"),
                         Name = spec.Attribute("name").Value,
-                        ValuePattern = spec.Attribute("valuePattern").Value
+                        ValuePattern = spec.Attribute("valuePattern").Value,
+                        ListEntries = GetSpecListEntries(spec),
+                        CustomInputID = GetSpecCustomId(spec)
                     }).ToList<ISpecsItem>()
                 };
         }
-
+        
         public IEnumerable<ISizeGroup> GetSizeGroups()
         {
             return
@@ -178,6 +181,37 @@ namespace XmlDataSource
             return
                 dataDocs.CustomSpecs.Descendants("customSpecData")
                 .Select(csp => csp.Attribute("dataId").Value);
+        }
+
+        private IEnumerable<ISpecListEntry> GetSpecListEntries(XElement spec)
+        {
+            XName name = ((XElement)spec.FirstNode).Name;
+            IEnumerable<ISpecListEntry> entries = null;
+
+            if (name.LocalName == "list")
+            {
+                entries = spec.Descendants("entry").Select(entry => new SpecListEntry()
+                {
+                    ValueID = (int)entry.Attribute("valId"),
+                    Value = entry.Element("val").Value,
+                    Display = entry.Element("disp").Value
+                });
+            }
+
+            return entries;
+        }
+
+        private string GetSpecCustomId(XElement spec)
+        {
+            XName name = ((XElement)spec.FirstNode).Name;
+            string customId = null;
+
+            if (name.LocalName == "custom")
+            {
+                customId = spec.Element("custom").Value;
+            }
+
+            return customId;
         }
     }
 }

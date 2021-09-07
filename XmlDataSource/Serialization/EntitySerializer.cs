@@ -7,6 +7,11 @@ namespace XmlDataSource.Serialization
 {
     internal class Entity
     {
+        /// <summary>
+        /// Serializes an item object to XML.
+        /// </summary>
+        /// <param name="entity">The object instance to serialize.</param>
+        /// <returns>The serialized XML of the object.</returns>
         internal static XElement Serialize(IItem entity)
         {
             XElement commonNames = new XElement("common");
@@ -70,6 +75,11 @@ namespace XmlDataSource.Serialization
             return draftItem;
         }
 
+        /// <summary>
+        /// Serializes an item specs object to XML.
+        /// </summary>
+        /// <param name="specs">The object instance to serialize.</param>
+        /// <returns>The serialized XML of the object.</returns>
         internal static XElement Serialize(ISpecs specs)
         {
             XElement specsXElement =
@@ -112,6 +122,11 @@ namespace XmlDataSource.Serialization
             return specsXElement;
         }
 
+        /// <summary>
+        /// Serializes a size group object to XML.
+        /// </summary>
+        /// <param name="specs">The object instance to serialize.</param>
+        /// <returns>The serialized XML of the object.</returns>
         internal static XElement Serialize(ISizeGroup group)
         {
             XElement altIdList = new XElement("altLists");
@@ -128,6 +143,11 @@ namespace XmlDataSource.Serialization
             return draftSizeGroup;
         }
 
+        /// <summary>
+        /// Serializes an item category object to XML.
+        /// </summary>
+        /// <param name="specs">The object instance to serialize.</param>
+        /// <returns>The serialized XML of the object.</returns>
         internal static XElement SerializeCategory(IItem entity)
         {
             return
@@ -136,6 +156,11 @@ namespace XmlDataSource.Serialization
                     new XAttribute("name", entity.CatName));
         }
 
+        /// <summary>
+        /// Serializes a size list object to XML.
+        /// </summary>
+        /// <param name="specs">The object instance to serialize.</param>
+        /// <returns>The serialized XML of the object.</returns>
         internal static XElement SerializeSize(IFieldList entity)
         {
             XElement draftFieldList =
@@ -148,6 +173,11 @@ namespace XmlDataSource.Serialization
             return draftFieldList;
         }
 
+        /// <summary>
+        /// Serializes a brand list object to XML.
+        /// </summary>
+        /// <param name="specs">The object instance to serialize.</param>
+        /// <returns>The serialized XML of the object.</returns>
         internal static XElement SerializeBrand(IFieldList entity)
         {
             XElement draftFieldList =
@@ -160,6 +190,11 @@ namespace XmlDataSource.Serialization
             return draftFieldList;
         }
 
+        /// <summary>
+        /// Serializes an end list object to XML.
+        /// </summary>
+        /// <param name="specs">The object instance to serialize.</param>
+        /// <returns>The serialized XML of the object.</returns>
         internal static XElement SerializeEnd(IFieldList entity)
         {
             XElement draftFieldList =
