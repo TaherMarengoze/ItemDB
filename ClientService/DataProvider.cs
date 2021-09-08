@@ -6,28 +6,27 @@ using System.Linq;
 
 namespace ClientService
 {
+    /// <summary>
+    /// Provides static methods for getting lists of entities from the reader and the global cache, and allows updating of this cache.
+    /// </summary>
     public static class DataProvider
     {
         public static void InitLists()
         {
-            Globals.Lists = new ModelListHolder()
-            {
-                Items = Globals.reader.GetItems().ToList(),
-                Specs = Globals.reader.GetSpecs().ToList(),
-                SizeGroups = Globals.reader.GetSizeGroups().ToList(),
-                SizeLists = Globals.reader.GetSizes().ToList(),
-                BrandLists = Globals.reader.GetBrands().ToList(),
-                EndLists = Globals.reader.GetEnds().ToList(),
-                CustomSpecs = Globals.reader.GetCustomSpecs().ToList(),
-                CustomSizes = Globals.reader.GetCustomSizes().ToList()
-            };
+            Globals.Lists = new ModelListHolder();
+            UpdateAllLists();
+            //{
+            //    Items = Globals.reader.GetItems().ToList(),
+            //    Specs = Globals.reader.GetSpecs().ToList(),
+            //    SizeGroups = Globals.reader.GetSizeGroups().ToList(),
+            //    SizeLists = Globals.reader.GetSizes().ToList(),
+            //    BrandLists = Globals.reader.GetBrands().ToList(),
+            //    EndLists = Globals.reader.GetEnds().ToList(),
+            //    CustomSpecs = Globals.reader.GetCustomSpecs().ToList(),
+            //    CustomSizes = Globals.reader.GetCustomSizes().ToList()
+            //};
         }
-
-        private static void UpdateCustomSizesList()
-        {
-            Globals.Lists.CustomSizes = Globals.reader.GetCustomSizes().ToList();
-        }
-
+        
         public static List<IItem> GetItemList()
         {
             return Globals.Lists.Items;
@@ -103,6 +102,11 @@ namespace ClientService
         private static void UpdateCustomSpecsList()
         {
             Globals.Lists.CustomSpecs = Globals.reader.GetCustomSpecs().ToList();
+        }
+
+        private static void UpdateCustomSizesList()
+        {
+            Globals.Lists.CustomSizes = Globals.reader.GetCustomSizes().ToList();
         }
     }
 }

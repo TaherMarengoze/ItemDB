@@ -71,6 +71,7 @@ namespace UserInterface.Forms
         {
             tsmiAutoLoad.Checked = Program.TestAutoLoad;
             Runtime.Test.AutoLoad(((XmlContext)AppFactory.context).TestLoadXmlFile);
+            // Requires a reference to the Interfaces.dll remove after test
             Runtime.Test.AutoLoad(((XmlDataSource.XmlContext)Globals.context).TestLoadXmlContext);
             Runtime.Test.DoSomething(PostLoading);
         }

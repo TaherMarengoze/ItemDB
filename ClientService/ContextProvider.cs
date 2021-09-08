@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace ClientService
 {
+    /// <summary>
+    /// Provides static methods for saving and loading the context of all the entities, also provides partial saving for context's specific entity.
+    /// </summary>
     public class ContextProvider
     {
         public static void Load()
