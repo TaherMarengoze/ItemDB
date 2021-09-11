@@ -15,18 +15,8 @@ namespace ClientService
         {
             Globals.Lists = new ModelListHolder();
             UpdateAllLists();
-            //{
-            //    Items = Globals.reader.GetItems().ToList(),
-            //    Specs = Globals.reader.GetSpecs().ToList(),
-            //    SizeGroups = Globals.reader.GetSizeGroups().ToList(),
-            //    SizeLists = Globals.reader.GetSizes().ToList(),
-            //    BrandLists = Globals.reader.GetBrands().ToList(),
-            //    EndLists = Globals.reader.GetEnds().ToList(),
-            //    CustomSpecs = Globals.reader.GetCustomSpecs().ToList(),
-            //    CustomSizes = Globals.reader.GetCustomSizes().ToList()
-            //};
         }
-        
+
         public static List<IItem> GetItemList()
         {
             return Globals.Lists.Items;
@@ -74,19 +64,23 @@ namespace ClientService
             Globals.Lists.Items = Globals.reader.GetItems().ToList();
         }
 
-        private static void UpdateSpecsList()
+        internal static void UpdateSpecsList()
         {
-            Globals.Lists.Specs = Globals.reader.GetSpecs().ToList();
+            // This will run a query against the data source
+            Globals.Lists.Specs =
+                Globals.reader.GetSpecs().ToList();
         }
 
         private static void UpdateSizeGroupList()
         {
-            Globals.Lists.SizeGroups = Globals.reader.GetSizeGroups().ToList();
+            Globals.Lists.SizeGroups =
+                Globals.reader.GetSizeGroups().ToList();
         }
 
         private static void UpdateSizesList()
         {
-            Globals.Lists.SizeLists = Globals.reader.GetSizes().ToList();
+            Globals.Lists.SizeLists =
+                Globals.reader.GetSizes().ToList();
         }
 
         private static void UpdateBrandsList()
