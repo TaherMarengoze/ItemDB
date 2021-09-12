@@ -9,7 +9,8 @@ namespace XmlDataSource
     public class XmlContext : ISourceContext
     {
         private FilePathProcessor fpp;
-        private DataDocuments dataDocs;
+
+        internal DataDocuments DataDocs { get; private set; }
 
         public XmlContext()
         {
@@ -23,14 +24,14 @@ namespace XmlDataSource
 
         public void Save()
         {
-            DocumentProcessor.Save(dataDocs.Items, fpp.Items);
-            DocumentProcessor.Save(dataDocs.Specs, fpp.Specs);
-            DocumentProcessor.Save(dataDocs.SizeGroups, fpp.SizeGroups);
-            DocumentProcessor.Save(dataDocs.Sizes, fpp.Sizes);
-            DocumentProcessor.Save(dataDocs.Brands, fpp.Brands);
-            DocumentProcessor.Save(dataDocs.Ends, fpp.Ends);
-            DocumentProcessor.Save(dataDocs.CustomSpecs, fpp.CustomSpecs);
-            DocumentProcessor.Save(dataDocs.CustomSizes, fpp.CustomSizes);
+            DocumentProcessor.Save(DataDocs.Items, fpp.Items);
+            DocumentProcessor.Save(DataDocs.Specs, fpp.Specs);
+            DocumentProcessor.Save(DataDocs.SizeGroups, fpp.SizeGroups);
+            DocumentProcessor.Save(DataDocs.Sizes, fpp.Sizes);
+            DocumentProcessor.Save(DataDocs.Brands, fpp.Brands);
+            DocumentProcessor.Save(DataDocs.Ends, fpp.Ends);
+            DocumentProcessor.Save(DataDocs.CustomSpecs, fpp.CustomSpecs);
+            DocumentProcessor.Save(DataDocs.CustomSizes, fpp.CustomSizes);
         }
 
         public void Save(object options)
@@ -38,39 +39,39 @@ namespace XmlDataSource
             ContextEntity entity = (ContextEntity)options;
 
             if ((entity & ContextEntity.Items) != 0)
-                DocumentProcessor.Save(dataDocs.Items, fpp.Items);
+                DocumentProcessor.Save(DataDocs.Items, fpp.Items);
 
             if ((entity & ContextEntity.Specs) != 0)
-                DocumentProcessor.Save(dataDocs.Specs, fpp.Specs);
+                DocumentProcessor.Save(DataDocs.Specs, fpp.Specs);
 
             if ((entity & ContextEntity.SizeGroups) != 0)
-                DocumentProcessor.Save(dataDocs.SizeGroups, fpp.SizeGroups);
+                DocumentProcessor.Save(DataDocs.SizeGroups, fpp.SizeGroups);
 
             if ((entity & ContextEntity.Sizes) != 0)
-                DocumentProcessor.Save(dataDocs.Sizes, fpp.Sizes);
+                DocumentProcessor.Save(DataDocs.Sizes, fpp.Sizes);
 
             if ((entity & ContextEntity.Brands) != 0)
-                DocumentProcessor.Save(dataDocs.Brands, fpp.Brands);
+                DocumentProcessor.Save(DataDocs.Brands, fpp.Brands);
 
             if ((entity & ContextEntity.Ends) != 0)
-                DocumentProcessor.Save(dataDocs.Ends, fpp.Ends);
+                DocumentProcessor.Save(DataDocs.Ends, fpp.Ends);
 
             if ((entity & ContextEntity.CustomSpecs) != 0)
-                DocumentProcessor.Save(dataDocs.CustomSpecs, fpp.CustomSpecs);
+                DocumentProcessor.Save(DataDocs.CustomSpecs, fpp.CustomSpecs);
 
             if ((entity & ContextEntity.CustomSizes) != 0)
-                DocumentProcessor.Save(dataDocs.CustomSizes, fpp.CustomSizes);
+                DocumentProcessor.Save(DataDocs.CustomSizes, fpp.CustomSizes);
         }
 
         private void LoadXmlContext(string filePath)
         {
             fpp = new FilePathProcessor(filePath);
-            dataDocs = new DataDocuments(fpp);
+            DataDocs = new DataDocuments(fpp);
 
             Globals.disableEditors = false;
 
             // Instantiate the source reader
-            Globals.reader = new XmlReader(dataDocs);
+            Globals.reader = new XmlReader(DataDocs);
 
             // Instantiate the repositories
             Globals.itemsRepo = new Item();

@@ -19,7 +19,8 @@ namespace XmlDataSource.Repository
 
         public SizeGroup()
         {
-            dataSource = new XDocument(); // this should be size group XDocument
+            dataSource =
+                ((XmlContext)AppCore.Globals.context).DataDocs.SizeGroups;
         }
 
         public void Create(ISizeGroup entity)

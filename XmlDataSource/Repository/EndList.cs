@@ -1,4 +1,5 @@
 ﻿
+using AppCore;
 using Interfaces.Models;
 using Interfaces.Operations;
 using System;
@@ -19,7 +20,8 @@ namespace XmlDataSource.Repository
 
         public EndList()
         {
-            dataSource = new XDocument(); // this should be ends list XDocument
+            dataSource =
+                ((XmlContext)Globals.context).DataDocs.Ends;
         }
 
         public void Create(IFieldList entity)

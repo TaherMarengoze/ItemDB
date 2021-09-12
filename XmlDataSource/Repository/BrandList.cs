@@ -1,4 +1,5 @@
 ﻿
+using AppCore;
 using Interfaces.Models;
 using Interfaces.Operations;
 using System;
@@ -19,7 +20,8 @@ namespace XmlDataSource.Repository
 
         public BrandList( )
         {
-            dataSource = new XDocument(); // this should be brands list XDocument
+            dataSource =
+                ((XmlContext)Globals.context).DataDocs.Brands;
         }
 
         public void Create(IFieldList entity)

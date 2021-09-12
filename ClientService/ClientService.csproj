@@ -45,6 +45,7 @@
     <Compile Include="DataProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpecsContext.cs" />
+    <Compile Include="SpecsItemContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ApplicationCentre\AppCore.csproj">

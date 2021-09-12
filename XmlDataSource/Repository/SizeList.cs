@@ -19,7 +19,8 @@ namespace XmlDataSource.Repository
 
         public SizeList()
         {
-            dataSource = new XDocument(); // this should be sizes list XDocument
+            dataSource =
+                ((XmlContext)AppCore.Globals.context).DataDocs.Sizes;
         }
 
         public void Create(IFieldList entity)

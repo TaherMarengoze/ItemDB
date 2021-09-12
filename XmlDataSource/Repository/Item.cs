@@ -19,7 +19,8 @@ namespace XmlDataSource.Repository
 
         public Item()
         {
-            dataSource = new XDocument(); // this should be Items XDocument
+            dataSource =
+                ((XmlContext)AppCore.Globals.context).DataDocs.Items;
         }
 
         public void Create(IItem entity)

@@ -19,7 +19,8 @@ namespace XmlDataSource.Repository
 
         public Specs()
         {
-            dataSource = new XDocument(); // this should be Specs XDocument
+            dataSource =
+                ((XmlContext)AppCore.Globals.context).DataDocs.Specs;
         }
 
         public void Create(ISpecs entity)
