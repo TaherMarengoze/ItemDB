@@ -43,7 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Factory\AppFactory.cs" />
+    <Compile Include="Factory\GlobalsX.cs" />
     <Compile Include="FileCopyService.cs" />
     <Compile Include="General\Common.cs" />
     <Compile Include="General\ExtensionMethods.cs" />
@@ -56,7 +56,7 @@
     <Compile Include="Implementations\XmlContext.cs" />
     <Compile Include="Implementations\XReader.cs" />
     <Compile Include="Interfaces\IFieldManipulator.cs" />
-    <Compile Include="Interfaces\IModifier.cs" />
+    <Compile Include="Interfaces\IItemRepo.cs" />
     <Compile Include="Interfaces\ISchema.cs" />
     <Compile Include="Interfaces\ISizeGroupRepos.cs" />
     <Compile Include="Interfaces\ISourceContext.cs" />

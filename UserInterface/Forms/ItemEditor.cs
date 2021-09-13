@@ -127,8 +127,8 @@ namespace UserInterface.Forms
             checkList.OnComplete += CheckList_OnComplete;
             checkList.OnIncomplete += CheckList_OnIncomplete;
 
-            existingImages = AppFactory.reader.GetImageNames().ToList();
-            imagesReposPath = AppFactory.fpp.ImageRepos;
+            existingImages = GlobalsX.reader.GetImageNames().ToList();
+            imagesReposPath = GlobalsX.fpp.ImageRepos;
             BindControlsToDatasources();
         }
 

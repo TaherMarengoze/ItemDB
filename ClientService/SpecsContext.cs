@@ -42,7 +42,7 @@ namespace ClientService
             //>
         }
 
-        public static void DeleteSpecs(string entityId)
+        public static void Delete(string entityId)
         {
             // Delete from data source
             Globals.specsRepo.Delete(entityId);

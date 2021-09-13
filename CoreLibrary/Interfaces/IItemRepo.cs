@@ -1,7 +1,7 @@
 ﻿
 namespace CoreLibrary.Interfaces
 {
-    public interface IModifier
+    public interface IItemRepo
     {
         void CreateItem(IItem item);
 

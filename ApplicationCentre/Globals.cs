@@ -6,18 +6,27 @@ namespace AppCore
 {
     public static class Globals
     {
+
+
+
         public static ISourceContext context;
 
         public static IDataReader reader;
 
         public static IEntityRepo<IItem> itemsRepo;
+
         public static IEntityRepo<ISpecs> specsRepo;
+
         public static IEntityRepo<ISizeGroup> sizeGroupRepo;
+
         public static IEntityRepo<IFieldList> sizesRepo;
         //public static IFieldManipulator sizeManipulator;
+
         public static IEntityRepo<IFieldList> brandsRepo;
         //public static IFieldManipulator brandManipulator;
+
         public static IEntityRepo<IFieldList> endsRepo;
+        //public static IFieldManipulator endsManipulator;
 
         public static bool disableEditors = true;
 

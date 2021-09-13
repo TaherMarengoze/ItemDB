@@ -1,45 +1,62 @@
 ﻿
 using AppCore;
-using ClientService;
-using CoreLibrary;
+//using ClientService;
+//using CoreLibrary;
 using CoreLibrary.Enums;
 using CoreLibrary.Models;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using UserService;
+//using UserService;
 
 
 namespace UserInterface.Forms
 {
     public partial class Main : Form
     {
-        public Main() => InitializeComponent();
+        public Main()
+        {
+            InitializeComponent();
+        }
 
         private void ItemViewer_Click(object sender, EventArgs e)
-            => LauchEditor(new ItemViewer());
+        {
+            LauchEditor(new ItemViewer());
+        }
 
         private void SpecsEditor_Click(object sender, EventArgs e)
-            => LauchEditor(new SpecsEditor());
+        {
+            LauchEditor(new SpecsEditor());
+        }
 
         private void SizeGroupsEditor_Click(object sender, EventArgs e)
-            => LauchEditor(new SizeGroupEditor());
+        {
+            LauchEditor(new SizeGroupEditor());
+        }
 
         private void SizeEditor_Click(object sender, EventArgs e)
-            => LauchEditor(new FieldEditor(FieldType.SIZE));
+        {
+            LauchEditor(new FieldEditor(FieldType.SIZE));
+        }
 
         private void BrandEditor_Click(object sender, EventArgs e)
-            => LauchEditor(new FieldEditor(FieldType.BRAND));
+        {
+            LauchEditor(new FieldEditor(FieldType.BRAND));
+        }
 
         private void EndsEditor_Click(object sender, EventArgs e)
-            => LauchEditor(new FieldEditor(FieldType.ENDS));
+        {
+            LauchEditor(new FieldEditor(FieldType.ENDS));
+        }
 
         private void Exit_Click(object sender, EventArgs e)
-            => Application.Exit();
+        {
+            Application.Exit();
+        }
 
         private void LauchEditor(Form editor)
         {
-            //bool check = AppFactory.fpp != null && AppFactory.xDataDocs != null
+            //bool check = GlobalsX.fpp != null && GlobalsX.xDataDocs != null;
             //bool check = !Globals.disableEditors;
             bool check = true;
 
@@ -70,7 +87,7 @@ namespace UserInterface.Forms
         private void TestActions()
         {
             tsmiAutoLoad.Checked = Program.TestAutoLoad;
-            Runtime.Test.AutoLoad(((XmlContext)AppFactory.context).TestLoadXmlFile);
+            Runtime.Test.AutoLoad(((CoreLibrary.XmlContext)CoreLibrary.GlobalsX.context).TestLoadXmlFile);
             // Requires a reference to the Interfaces.dll remove after test
             Runtime.Test.AutoLoad(((XmlDataSource.XmlContext)Globals.context).TestLoadXmlContext);
             Runtime.Test.DoSomething(PostLoading);
@@ -78,16 +95,17 @@ namespace UserInterface.Forms
 
         private void tsmiLoadAll_Click(object sender, EventArgs e)
         {
-            AppFactory.context.Load();
+            CoreLibrary.GlobalsX.context.Load();
             //Globals.context.Load();
-            ContextProvider.Load();
+            ClientService.ContextProvider.Load();
             PostLoading();
         }
 
         private void PostLoading()
         {
-            Data.InitializeRepos();
-            DataProvider.InitLists();
+            UserService.Data.InitializeRepos();
+            ClientService.DataProvider.InitLists();
+
             EnableDisableEditorsLaunchUI(true);
         }
 
