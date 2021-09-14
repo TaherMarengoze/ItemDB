@@ -1,9 +1,9 @@
 ﻿
-using AppCore;
+//using AppCore;
 //using ClientService;
 //using CoreLibrary;
 using CoreLibrary.Enums;
-using CoreLibrary.Models;
+//using CoreLibrary.Models;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -57,8 +57,8 @@ namespace UserInterface.Forms
         private void LauchEditor(Form editor)
         {
             //bool check = GlobalsX.fpp != null && GlobalsX.xDataDocs != null;
-            //bool check = !Globals.disableEditors;
-            bool check = true;
+            bool check = !AppCore.Globals.disableEditors;
+            //bool check = true;
 
             if (check)
             {
@@ -88,8 +88,12 @@ namespace UserInterface.Forms
         {
             tsmiAutoLoad.Checked = Program.TestAutoLoad;
             Runtime.Test.AutoLoad(((CoreLibrary.XmlContext)CoreLibrary.GlobalsX.context).TestLoadXmlFile);
+            
             // Requires a reference to the Interfaces.dll remove after test
-            Runtime.Test.AutoLoad(((XmlDataSource.XmlContext)Globals.context).TestLoadXmlContext);
+            XmlDataSource.XmlContext context = (XmlDataSource.XmlContext)AppCore.Globals.context;
+            Runtime.Test.LoadCallback testLoadXmlContext = context.TestLoadXmlContext;
+
+            Runtime.Test.AutoLoad(testLoadXmlContext);
             Runtime.Test.DoSomething(PostLoading);
         }
 

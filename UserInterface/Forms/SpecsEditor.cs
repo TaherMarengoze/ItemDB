@@ -1,4 +1,5 @@
 ﻿
+using ClientService;
 using CoreLibrary;
 using CoreLibrary.Enums;
 using CoreLibrary.Interfaces;
@@ -9,7 +10,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using UserService;
+//using UserService;
 
 
 namespace UserInterface.Forms
@@ -66,8 +67,6 @@ namespace UserInterface.Forms
             }
         }
 
-
-
         private bool _isValidSpecName;
         public bool IsValidSpecName
         {
@@ -99,14 +98,26 @@ namespace UserInterface.Forms
         private List<string> filteredspecsIdList;
 
         //private string selectedSpecsId;
-        private ISpecs selectedSpecs;
-        private ISpec selSpec;
+
+        //private CoreLibrary.Interfaces.ISpecs selectedSpecs;
+        private Interfaces.Models.ISpecs _selectedSpecs;
+
+        //private CoreLibrary.Interfaces.ISpec selSpec;
+        private Interfaces.Models.ISpecsItem _selSpec;
 
         private string draftSpecsId;
-        private ISpecs draftSpecs;
-        private ISpec draftSpec;
+
+        private CoreLibrary.Interfaces.ISpecs draftSpecs;
+        private Interfaces.Models.ISpecs _draftSpecs;
+
+        private CoreLibrary.Interfaces.ISpec draftSpec;
+        private Interfaces.Models.ISpecsItem _draftSpec;
+
         private SpecType draftSpecType;
-        private List<ISpecListEntry> draftEntries;
+
+        private List<CoreLibrary.Interfaces.ISpecListEntry> draftEntries;
+        private List<Interfaces.Models.ISpecListEntry> _draftEntries;
+
         private string draftCustomSpecId;
 
         private int specsSelectionIndex = 0;
@@ -121,7 +132,8 @@ namespace UserInterface.Forms
 
         private void SaveToDataSource()
         {
-            Data.Save(ContextEntity.Specs);
+            //UserService.Data.Save(ContextEntity.Specs);
+            ContextProvider.Save(ContextEntity.Specs);
         }
 
         #region Processes
@@ -144,19 +156,25 @@ namespace UserInterface.Forms
 
         private void ReadSpecsIDs()
         {
-            specsIdList = Data.GetSpecsIdList().ToList();
+            // Old
+            specsIdList = UserService.Data.GetSpecsIdList().ToList();
         }
 
         private void ReadCustomSpecs()
         {
-            cSpecIdList = Data.GetCustomSpecs();
+            // Old
+            cSpecIdList = UserService.Data.GetCustomSpecs();
         }
 
         private void ReadSelectedSpecsData()
         {
             string specsId = lbxSpecs.Text;
             //selectedSpecsId = specsId;
-            selectedSpecs = Data.GetSpecs(specsId);
+            
+            // Old
+            //selectedSpecs = UserService.Data.GetSpecs(specsId);
+            // New
+            _selectedSpecs = SpecsContext.Read(specsId);
         }
 
         private void CancelSpecsAddOrEdit()
@@ -252,7 +270,13 @@ namespace UserInterface.Forms
         private void EditSpecs()
         {
             draftSpecsId = GetSelectedSpecsId();
-            draftSpecs = Data.GetSpecs(draftSpecsId);
+
+            // old
+            draftSpecs = UserService.Data.GetSpecs(draftSpecsId);
+
+            // new
+            _draftSpecs = SpecsContext.Read(draftSpecsId);
+
             SaveSpecsSelectionPosition();
 
 
@@ -303,7 +327,12 @@ namespace UserInterface.Forms
             {
                 string specsId = GetSelectedSpecsId();
 
-                Data.DeleteSpecs(specsId);
+                // old
+                UserService.Data.DeleteSpecs(specsId);
+
+                // new
+                SpecsContext.Delete(specsId);
+
                 CheckSpecsCount();
 
                 RefreshSpecsList();
@@ -381,12 +410,24 @@ namespace UserInterface.Forms
             specMode = EntryMode.Edit;
 
             // Get Spec object being edited
+            // old
             draftSpec = draftSpecs.SpecItems[GetSelectedSpecIndex() - 1];
+
+            // new
+            _draftSpec = _draftSpecs.SpecItems.ToList()[GetSelectedSpecIndex() - 1];
+
             draftSpecType = draftSpec.SpecType;
+
             switch (draftSpec.SpecType)
             {
                 case SpecType.List:
+                    //old
                     draftEntries = draftSpec.CopyEntries();
+
+                    // new
+                    _draftEntries =
+                        new List<Interfaces.Models.ISpecListEntry>(_draftSpec.ListEntries);
+
                     break;
                 case SpecType.Custom:
                     draftCustomSpecId = draftSpec.CustomInputID;
@@ -405,7 +446,12 @@ namespace UserInterface.Forms
                 grpListEntries.Enabled = true;
                 DisplayDraftEntries();
                 EnableListEntryModifyUI();
+
+                // old
                 CheckEntriesCount(draftEntries.Count);
+
+                // new
+                CheckEntriesCount(_draftEntries.Count);
             }
             //else Do Nothing
 
@@ -510,20 +556,39 @@ namespace UserInterface.Forms
 
                 if (ShowSpecRemoveConfirmation() == DialogResult.OK)
                 {
-                    ISpec specsItem = draftSpecs.SpecItems
+                    // old
+                    CoreLibrary.Interfaces.ISpec specsItem = draftSpecs.SpecItems
                         .Find(idx => idx.Index == GetSelectedSpecIndex());
+
+                    // new
+                    Interfaces.Models.ISpecsItem _specsItem = _draftSpecs.SpecItems
+                        .FirstOrDefault(idx => idx.Index == GetSelectedSpecIndex());
 
                     draftSpecs.SpecItems.Remove(specsItem);
 
                     // Renumber SpecItems
                     int i = 0;
-                    foreach (ISpec spec in draftSpecs.SpecItems)
+                    // old
+                    foreach (CoreLibrary.Interfaces.ISpec spec in draftSpecs.SpecItems)
+                    {
+                        spec.Index = ++i;
+                    }
+
+                    i = 0;
+                    // new
+                    foreach (Interfaces.Models.ISpecsItem spec in _draftSpecs.SpecItems)
                     {
                         spec.Index = ++i;
                     }
 
                     ClearSpecItemsGrid();
+
+                    // old
                     dgvSpec.DataSource = draftSpecs.SpecItems;
+
+                    // new
+                    dgvSpec.DataSource = _draftSpecs.SpecItems;
+
                     dgvSpec.AutoResizeColumns();
                 }
 
@@ -555,11 +620,23 @@ namespace UserInterface.Forms
             draftSpecs.TextPattern = txtSpecsPattern.Text;
 
             if (SpecsMode == EntryMode.New)
-                Data.AddSpecs(draftSpecs);
-            
+            {
+                // old
+                UserService.Data.AddSpecs(draftSpecs);
+
+                // new
+                SpecsContext.Create(_draftSpecs);
+            }
+
             if (SpecsMode == EntryMode.Edit)
-                Data.UpdateSpecs(draftSpecsId, draftSpecs);
-            
+            {
+                // old
+                UserService.Data.UpdateSpecs(draftSpecsId, draftSpecs);
+
+                // new
+                SpecsContext.Update(draftSpecsId, _draftSpecs);
+            }
+
             // Exit draft (New) mode
             SpecsMode = EntryMode.View;
 
@@ -629,7 +706,12 @@ namespace UserInterface.Forms
             // Get Spec ListEntry
             int entryId = GetSelectedListEntryID();
 
-            ISpecListEntry editListEntry = draftEntries
+            // old
+            CoreLibrary.Interfaces.ISpecListEntry editListEntry = draftEntries
+                .Find(id => id.ValueID == entryId);
+
+            // new
+            Interfaces.Models.ISpecListEntry _editListEntry = _draftEntries
                 .Find(id => id.ValueID == entryId);
 
             ListEntryEditor listEditor = new ListEntryEditor(editListEntry);
@@ -647,7 +729,11 @@ namespace UserInterface.Forms
             // Get Spec ListEntry
             int entryId = GetSelectedListEntryID();
 
-            ISpecListEntry editListEntry = draftEntries.Find(id => id.ValueID == entryId);
+            // old
+            CoreLibrary.Interfaces.ISpecListEntry editListEntry = draftEntries.Find(id => id.ValueID == entryId);
+
+            // new
+            Interfaces.Models.ISpecListEntry _editListEntry = _draftEntries.Find(id => id.ValueID == entryId);
 
             if (ShowEntryRemoveConfirmation() == DialogResult.OK)
             {
@@ -658,7 +744,15 @@ namespace UserInterface.Forms
 
                 // Renumber remaining entries ValueID
                 int i = 0;
-                foreach (ISpecListEntry entry in draftEntries)
+                // old
+                foreach (CoreLibrary.Interfaces.ISpecListEntry entry in draftEntries)
+                {
+                    entry.ValueID = ++i;
+                }
+
+                i = 0;
+                // new
+                foreach (Interfaces.Models.ISpecListEntry entry in _draftEntries)
                 {
                     entry.ValueID = ++i;
                 }
@@ -669,7 +763,11 @@ namespace UserInterface.Forms
 
                 RestoreEntrySelection();
 
+                // old
                 CheckEntriesCount(draftEntries.Count);
+
+                // new
+                CheckEntriesCount(_draftEntries.Count);
             }
         }
 
@@ -884,7 +982,7 @@ namespace UserInterface.Forms
             }
             return newId;
         }
-        
+
 
         #region User Interface
 
@@ -911,13 +1009,17 @@ namespace UserInterface.Forms
 
         private void ViewSelectedSpecsData()
         {
-            txtSpecsID.Text = selectedSpecs.ID;
-            txtSpecsName.Text = selectedSpecs.Name;
-            txtSpecsPattern.Text = selectedSpecs.TextPattern;
-            //dgvSpec.DataSource = selectedSpecs.SpecItems;
-            //dgvSpec.AutoResizeColumns();
-            //Common.SetDataGridViewDataSource(dgvSpec, selectedSpecs.SpecItems);
-            dgvSpec.DataSourceResize(selectedSpecs.SpecItems);
+            // old
+            //txtSpecsID.Text = selectedSpecs.ID;
+            //txtSpecsName.Text = selectedSpecs.Name;
+            //txtSpecsPattern.Text = selectedSpecs.TextPattern;
+            //dgvSpec.DataSourceResize(selectedSpecs.SpecItems);
+
+            // new
+            txtSpecsID.Text = _selectedSpecs.ID;
+            txtSpecsName.Text = _selectedSpecs.Name;
+            txtSpecsPattern.Text = _selectedSpecs.TextPattern;
+            dgvSpec.DataSourceResize(_selectedSpecs.SpecItems);
         }
 
         private void ViewSelectedSpecData(int idx)
@@ -927,19 +1029,28 @@ namespace UserInterface.Forms
                 //string specsId = GetSelectedSpecsId();
                 //Console.WriteLine("{0}, {1}", SpecsMode, specsId);
 
-                selSpec =
+                // old
+                /*selSpec =
                     SpecsMode == EntryMode.View ?
-                    Data.GetSpecsItem(selectedSpecs, idx) :
-                    Data.GetSpecsItem(draftSpecs, idx);
+                    UserService.Data.GetSpecsItem(selectedSpecs, idx) :
+                    UserService.Data.GetSpecsItem(draftSpecs, idx);*/
 
-                //selSpec =
-                //    SpecsMode == EntryMode.View ?
-                //    Data.GetSpecsItem(selectedSpecsId, idx) :
-                //    Data.GetSpecsItem(draftSpecsId, idx);
+                // new
+                _selSpec =
+                    SpecsMode == EntryMode.View ?
+                    SpecsManiuplator.GetSpecsItem(_selectedSpecs, idx) :
+                    SpecsManiuplator.GetSpecsItem(_draftSpecs, idx);
 
                 txtSiIndex.Text = idx.ToString();
-                txtSiName.Text = selSpec.Name;
-                txtSiValuePattern.Text = selSpec.ValuePattern;
+
+                // old
+                /*txtSiName.Text = selSpec.Name;
+                txtSiValuePattern.Text = selSpec.ValuePattern;*/
+
+                // new
+                txtSiName.Text = _selSpec.Name;
+                txtSiValuePattern.Text = _selSpec.ValuePattern;
+
                 ChangeSpecTypeSelector();
             }
         }
@@ -947,9 +1058,9 @@ namespace UserInterface.Forms
         private void ChangeSpecTypeSelector()
         {
             // List Type Specs Item
-            if (selSpec.SpecType == SpecType.List)
+            if (/*selSpec.SpecType == SpecType.List*/_selSpec.ListEntries != null)
             {
-                dgvListEntries.DataSource = selSpec.ListEntries;
+                dgvListEntries.DataSource = /*selSpec*/_selSpec.ListEntries.ToList();
                 dgvListEntries.AutoResizeColumns();
                 rdoListType.Checked = true;
             }
@@ -960,9 +1071,9 @@ namespace UserInterface.Forms
             }
 
             // Custom Type Specs Item
-            if (selSpec.SpecType == SpecType.Custom)
+            if (/*selSpec.SpecType == SpecType.Custom*/_selSpec.CustomInputID != null || _selSpec.CustomInputID != "")
             {
-                cboCustomTypeSelector.Text = selSpec.CustomInputID;
+                cboCustomTypeSelector.Text = /*selSpec*/ _selSpec.CustomInputID;
                 rdoCustomType.Checked = true;
             }
             else
