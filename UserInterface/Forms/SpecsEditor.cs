@@ -2,8 +2,8 @@
 using ClientService;
 using CoreLibrary;
 using CoreLibrary.Enums;
-using CoreLibrary.Interfaces;
 using CoreLibrary.Models;
+using Modeling.DataModels;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -110,7 +110,7 @@ namespace UserInterface.Forms
         private CoreLibrary.Interfaces.ISpecs draftSpecs;
         private Interfaces.Models.ISpecs _draftSpecs;
 
-        private CoreLibrary.Interfaces.ISpec draftSpec;
+        //private CoreLibrary.Interfaces.ISpec draftSpec;
         private Interfaces.Models.ISpecsItem _draftSpec;
 
         private SpecType draftSpecType;
@@ -170,7 +170,7 @@ namespace UserInterface.Forms
         {
             string specsId = lbxSpecs.Text;
             //selectedSpecsId = specsId;
-            
+
             // Old
             //selectedSpecs = UserService.Data.GetSpecs(specsId);
             // New
@@ -183,6 +183,8 @@ namespace UserInterface.Forms
             specMode = EntryMode.View;
 
             draftSpecs = null;
+            _draftSpecs = null;
+
             ClearSpecsDrafts();
 
             EnableSpecsListSelection();
@@ -231,7 +233,9 @@ namespace UserInterface.Forms
 
             SaveSpecsSelectionPosition();
             // Instantiate new Specs
-            draftSpecs = new Specs();
+            //draftSpecs = new Specs();
+            _draftSpecs = new Modeling.DataModels.Specs();
+
             // Generate new SpecsID
             draftSpecsId = GenerateNewSpecsID();
             // Sets a flag
@@ -256,7 +260,13 @@ namespace UserInterface.Forms
             // Set Specs Meta-data initial/default values
             txtSpecsID.Focus();
             txtSpecsID.Text = draftSpecsId;
+            
+            // old
             txtSpecsPattern.Text = draftSpecs.TextPattern;
+
+            // new
+            txtSpecsPattern.Text = _draftSpecs.TextPattern;
+
             // Setup SpecsItem Meta-data controls
             ClearSpecMetadataEntryUI();
             // Clear DGVs from any data
@@ -369,22 +379,33 @@ namespace UserInterface.Forms
             specMode = EntryMode.New;
 
             // Instantiate new Spec
-            draftSpec = new Spec();
+            //draftSpec = new Spec();
+            _draftSpec = new SpecsItem();
 
             // Get last SpecsItem index
+            
+            // old
             int lastIdx = draftSpecs.SpecItems.Count; //GetLastSpecsItemIndex();
+
+            // new
+            lastIdx = _draftSpecs.SpecItems.Count();
 
             // Set Initial member values
             int newIdx = lastIdx + 1;
             string name = $"SI{newIdx:000}";
 
             // Set object members
-            draftSpec.Index = newIdx;
-            draftSpec.Name = name;
+            //draftSpec.Index = newIdx;
+            //draftSpec.Name = name;
+
+            _draftSpec.Index = newIdx;
+            _draftSpec.Name = name;
 
             txtSiIndex.Text = newIdx.ToString();
             txtSiName.Text = name;
-            txtSiValuePattern.Text = draftSpec.ValuePattern;
+
+            //txtSiValuePattern.Text = draftSpec.ValuePattern;
+            txtSiValuePattern.Text = _draftSpec.ValuePattern;
 
             // Setup UI
             DisableSpecModifyUI();
@@ -410,28 +431,38 @@ namespace UserInterface.Forms
             specMode = EntryMode.Edit;
 
             // Get Spec object being edited
+
             // old
+            /*
             draftSpec = draftSpecs.SpecItems[GetSelectedSpecIndex() - 1];
-
-            // new
-            _draftSpec = _draftSpecs.SpecItems.ToList()[GetSelectedSpecIndex() - 1];
-
+            
             draftSpecType = draftSpec.SpecType;
 
             switch (draftSpec.SpecType)
             {
                 case SpecType.List:
                     //old
-                    draftEntries = draftSpec.CopyEntries();
-
-                    // new
-                    _draftEntries =
-                        new List<Interfaces.Models.ISpecListEntry>(_draftSpec.ListEntries);
-
+                    //draftEntries = draftSpec.CopyEntries();
                     break;
                 case SpecType.Custom:
                     draftCustomSpecId = draftSpec.CustomInputID;
                     break;
+            }
+            */
+
+            // new
+            _draftSpec =
+                _draftSpecs.SpecItems.ToList()[GetSelectedSpecIndex() - 1];
+
+            if (_draftSpec.ListEntries != null)
+            {
+                _draftEntries =
+                    new List<Interfaces.Models.ISpecListEntry>(_draftSpec.ListEntries);
+            }
+
+            if (_draftSpec.CustomInputID != null)
+            {
+                draftCustomSpecId = _draftSpec.CustomInputID;
             }
 
             // Setup UI
@@ -448,7 +479,7 @@ namespace UserInterface.Forms
                 EnableListEntryModifyUI();
 
                 // old
-                CheckEntriesCount(draftEntries.Count);
+                //CheckEntriesCount(draftEntries.Count);
 
                 // new
                 CheckEntriesCount(_draftEntries.Count);
@@ -466,9 +497,11 @@ namespace UserInterface.Forms
         private void SaveDraftSpec()
         {
             // Save new Spec data
+            /*
             draftSpec.Index = int.Parse(txtSiIndex.Text);
             draftSpec.Name = txtSiName.Text;
             draftSpec.ValuePattern = txtSiValuePattern.Text;
+
             switch (draftSpecType)
             {
                 case SpecType.List:
@@ -478,11 +511,37 @@ namespace UserInterface.Forms
                     draftSpec.SetCustomId(draftCustomSpecId);
                     break;
             }
+            */
+
+            _draftSpec.Index = int.Parse(txtSiIndex.Text);
+            _draftSpec.Name = txtSiName.Text;
+            _draftSpec.ValuePattern = txtSiValuePattern.Text;
+
+            if (_draftSpec.ListEntries != null)
+            {
+                _draftSpec.ListEntries =
+                    new List<Interfaces.Models.ISpecListEntry>(_draftEntries);
+
+                _draftSpec.CustomInputID = null;
+            }
+            else
+            {
+                _draftSpec.CustomInputID = draftCustomSpecId;
+                _draftSpec.ListEntries = null;
+            }
+
 
             // Add the created Spec to Spec list of the new Specs
             if (specMode == EntryMode.New)
             {
-                draftSpecs.SpecItems.Add(draftSpec);
+                //draftSpecs.SpecItems.Add(draftSpec);
+
+                List<Interfaces.Models.ISpecsItem> tempList =
+                    _draftSpecs.SpecItems.ToList();
+
+                tempList.Add(_draftSpec);
+
+                _draftSpecs.SpecItems = tempList;
             }
 
             CheckDraftSpecsItemsCount();
@@ -507,7 +566,14 @@ namespace UserInterface.Forms
             EnableSpecModifyUI();
 
             if (draftSpecs.SpecItems.Count <= 1)
+            {
+
+            }
+
+            if (_draftSpecs.SpecItems.Count() <= 1)
+            {
                 btnSiRemove.Enabled = false;
+            }
 
             HideSpecReviewUI();
             DisableSpecMetadataEntryUI();
@@ -520,7 +586,11 @@ namespace UserInterface.Forms
 
             // Refresh View
             ClearSpecItemsGrid();
-            dgvSpec.DataSource = draftSpecs.SpecItems;
+
+            dgvSpec.DataSource =
+                //draftSpecs.SpecItems; // old
+                _draftSpecs.SpecItems.ToList(); // new
+
             dgvSpec.AutoResizeColumns();
         }
 
@@ -534,7 +604,9 @@ namespace UserInterface.Forms
 
             ResetSpecUI();
 
-            if (draftSpecs.SpecItems.Count <= 0)
+            if (draftSpecs.SpecItems.Count <= 0) { }
+
+            if (_draftSpecs.SpecItems.Count() <= 0)
             {
                 // Set to null to remove columns
                 ClearSpecItemsGrid();
@@ -553,6 +625,7 @@ namespace UserInterface.Forms
             if ((SpecsMode != EntryMode.New || SpecsMode == EntryMode.Edit) && specMode == EntryMode.View)
             {
                 SaveSpecItemSelectionPosition(draftSpecs.SpecItems.Count);
+                SaveSpecItemSelectionPosition(_draftSpecs.SpecItems.Count());
 
                 if (ShowSpecRemoveConfirmation() == DialogResult.OK)
                 {
@@ -565,6 +638,10 @@ namespace UserInterface.Forms
                         .FirstOrDefault(idx => idx.Index == GetSelectedSpecIndex());
 
                     draftSpecs.SpecItems.Remove(specsItem);
+
+                    List<Interfaces.Models.ISpecsItem> tempList = _draftSpecs.SpecItems.ToList();
+                    tempList.Remove(_specsItem);
+                    _draftSpecs.SpecItems = tempList;
 
                     // Renumber SpecItems
                     int i = 0;
@@ -587,14 +664,15 @@ namespace UserInterface.Forms
                     dgvSpec.DataSource = draftSpecs.SpecItems;
 
                     // new
-                    dgvSpec.DataSource = _draftSpecs.SpecItems;
+                    dgvSpec.DataSource = _draftSpecs.SpecItems.ToList();
 
                     dgvSpec.AutoResizeColumns();
                 }
 
                 RestoreSpecItemSelection();
 
-                if (draftSpecs.SpecItems.Count <= 0)
+                if (draftSpecs.SpecItems.Count <= 0) { }
+                if (_draftSpecs.SpecItems.Count() <= 0)
                 {
                     // Set to null to remove columns
                     ClearSpecItemsGrid();
@@ -607,7 +685,9 @@ namespace UserInterface.Forms
                     dgvListEntries.DataSource = null;
                 }
 
-                if (draftSpecs.SpecItems.Count <= 1)
+                if (draftSpecs.SpecItems.Count <= 1) { }
+
+                if (_draftSpecs.SpecItems.Count() <= 1)
                     btnSiRemove.Enabled = false;
             }
         }
@@ -615,9 +695,13 @@ namespace UserInterface.Forms
         private void SaveChanges()
         {
             // Save draft (new) Specs metadata
-            draftSpecs.ID = txtSpecsID.Text;
+            /*draftSpecs.ID = txtSpecsID.Text;
             draftSpecs.Name = txtSpecsName.Text;
-            draftSpecs.TextPattern = txtSpecsPattern.Text;
+            draftSpecs.TextPattern = txtSpecsPattern.Text;*/
+
+            _draftSpecs.ID = txtSpecsID.Text;
+            _draftSpecs.Name = txtSpecsName.Text;
+            _draftSpecs.TextPattern = txtSpecsPattern.Text;
 
             if (SpecsMode == EntryMode.New)
             {
@@ -657,9 +741,11 @@ namespace UserInterface.Forms
             // Reload and Repopulate Specs list
             RefreshSpecsList();
             SelectSpecs(draftSpecs.ID);
+            SelectSpecs(_draftSpecs.ID);
 
             // TEST
             draftSpecs = null;
+            _draftSpecs = null;
         }
 
         private void AddNewListEntry()
@@ -667,26 +753,40 @@ namespace UserInterface.Forms
             ListEntryEditor listEditor = new ListEntryEditor();
 
             // Copy list entries of draftSpec, if any
-            if (draftEntries == null)
-                draftEntries = draftSpec.CopyEntries();
+            //if (draftEntries == null)
+            //    draftEntries = draftSpec.CopyEntries();
+
+
+            // new
+            if (_draftEntries == null)
+            {
+                _draftEntries =
+                    new List<Interfaces.Models.ISpecListEntry>(_draftSpec.ListEntries);
+            }
 
             if (listEditor.ShowDialog() == DialogResult.OK)
             {
                 // Get last entryID
                 int lastId = draftEntries.Count;
+                lastId = _draftEntries.Count();
 
                 // Generate new entryID
                 int newId = lastId + 1;
 
                 // Set ID for the new entry
                 listEditor.ListEntry.ValueID = newId;
+                listEditor.ListEntry2.ValueID = newId;
 
                 // Add the new entry to the draft list
                 draftEntries.Add(listEditor.ListEntry);
+                _draftEntries.Add(listEditor.ListEntry2);
 
                 // Enable Edit and Delete buttons
                 EnableListEntryModifyUI();
+
                 CheckEntriesCount(draftEntries.Count);
+                CheckEntriesCount(_draftEntries.Count());
+
                 CheckSpecData();
 
                 // Display the list items
@@ -707,16 +807,20 @@ namespace UserInterface.Forms
             int entryId = GetSelectedListEntryID();
 
             // old
-            CoreLibrary.Interfaces.ISpecListEntry editListEntry = draftEntries
-                .Find(id => id.ValueID == entryId);
+            /*CoreLibrary.Interfaces.ISpecListEntry editListEntry = draftEntries
+                .Find(id => id.ValueID == entryId);*/
 
             // new
             Interfaces.Models.ISpecListEntry _editListEntry = _draftEntries
                 .Find(id => id.ValueID == entryId);
 
-            ListEntryEditor listEditor = new ListEntryEditor(editListEntry);
+            // old
+            //ListEntryEditor listEditor = new ListEntryEditor(editListEntry);
 
-            if (listEditor.ShowDialog() == DialogResult.OK)
+            // new
+            ListEntryEditor _listEditor = new ListEntryEditor(_editListEntry);
+
+            if (_listEditor.ShowDialog() == DialogResult.OK)
             {
                 // Refresh the list of Entries
                 ClearListEntriesGrid();
@@ -738,9 +842,11 @@ namespace UserInterface.Forms
             if (ShowEntryRemoveConfirmation() == DialogResult.OK)
             {
                 SaveEntrySelectionPosition(draftEntries.Count);
+                SaveEntrySelectionPosition(_draftEntries.Count);
 
                 // Remove entry from list
                 draftEntries.Remove(editListEntry);
+                _draftEntries.Remove(_editListEntry);
 
                 // Renumber remaining entries ValueID
                 int i = 0;
@@ -802,9 +908,13 @@ namespace UserInterface.Forms
 
         private void ClearSpecsDrafts()
         {
-            draftSpec = null;
+            // old
+            //draftSpec = null;
             draftEntries = null;
             draftCustomSpecId = string.Empty;
+
+            // new
+            _draftSpec = null;
         }
 
         private void CheckSpecsID()
@@ -846,7 +956,9 @@ namespace UserInterface.Forms
 
         private void CheckDraftSpecsItemsCount()
         {
-            IsSpecsHasItem = draftSpecs.SpecItems.Count > 0;
+            IsSpecsHasItem =
+                //draftSpecs.SpecItems.Count > 0;
+                _draftSpecs.SpecItems.Count() > 0;
         }
 
         private void CheckDraftSpecsReady()
@@ -882,6 +994,8 @@ namespace UserInterface.Forms
         private void CheckSpecData()
         {
             bool specValid = false;
+
+            // old
             switch (draftSpecType)
             {
                 case SpecType.List:
@@ -893,6 +1007,18 @@ namespace UserInterface.Forms
                 default:
                     break;
             }
+
+            // new
+            if (_draftSpec.ListEntries != null)
+            {
+                specValid = _draftEntries != null && _draftEntries.Count > 0;
+            }
+
+            if (_draftSpec.CustomInputID != null)
+            {
+                specValid = draftCustomSpecId != string.Empty;
+            }
+
             IsValidSpecData = specValid;
         }
 
@@ -1241,7 +1367,7 @@ namespace UserInterface.Forms
 
         private void CheckListEntries()
         {
-            if (draftEntries == null)
+            if (/*draftEntries*/_draftEntries == null)
             {
                 btnListEntryAdd.Enabled = true;
             }
@@ -1249,7 +1375,12 @@ namespace UserInterface.Forms
             {
                 DisplayDraftEntries();
                 EnableListEntryModifyUI();
-                CheckEntriesCount(draftEntries.Count);
+
+                // old
+                //CheckEntriesCount(draftEntries.Count);
+
+                // new
+                CheckEntriesCount(_draftEntries.Count);
             }
         }
 
@@ -1326,7 +1457,10 @@ namespace UserInterface.Forms
 
         private void DisplayDraftEntries()
         {
-            dgvListEntries.DataSource = draftEntries;
+            dgvListEntries.DataSource =
+                //draftEntries;
+                _draftEntries;
+
             dgvListEntries.AutoResizeColumns();
         }
 

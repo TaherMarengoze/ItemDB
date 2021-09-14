@@ -264,6 +264,10 @@
       <Project>{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}</Project>
       <Name>Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Modeling\Modeling.csproj">
+      <Project>{B195C5BF-431E-4828-86F1-F638F131EA43}</Project>
+      <Name>Modeling</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UserService\UserService.csproj">
       <Project>{81fcb3e0-a6c3-4fbb-9e73-90a8c711831c}</Project>
       <Name>UserService</Name>
