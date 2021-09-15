@@ -47,6 +47,16 @@ namespace ClientService
             return Globals.Lists.EndLists;
         }
 
+        public static List<string> GetCustomSpecsList()
+        {
+            return Globals.Lists.CustomSpecs;
+        }
+
+        public static List<string> GetCustomSizeList()
+        {
+            return Globals.Lists.CustomSizes;
+        }
+
         private static void UpdateAllLists()
         {
             UpdateItemList();
