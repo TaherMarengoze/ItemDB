@@ -9,7 +9,7 @@ namespace UserInterface.Forms
 {
     public partial class ListEntryEditor : Form
     {
-        public ISpecListEntry ListEntry { get; set; }
+        //public ISpecListEntry ListEntry { get; set; }
         public Interfaces.Models.ISpecListEntry ListEntry2 { get; set; }
 
         private bool displayAsValue = true;
@@ -20,28 +20,28 @@ namespace UserInterface.Forms
             InitializeComponent();
         }
 
-        public ListEntryEditor(ISpecListEntry listEntry)
-        {
-            InitializeComponent();
+        //public ListEntryEditor(ISpecListEntry listEntry)
+        //{
+        //    InitializeComponent();
 
-            skipEvents = true;
+        //    skipEvents = true;
 
-            ListEntry = listEntry;
+        //    ListEntry = listEntry;
 
-            if (listEntry.Value != listEntry.Display)
-            {
-                displayAsValue = false;
-                chkSameValue.Checked = false;
-                txtDisplay.ReadOnly = false;
-                txtValue.SelectAll();
-                txtValue.Focus();
-            }
+        //    if (listEntry.Value != listEntry.Display)
+        //    {
+        //        displayAsValue = false;
+        //        chkSameValue.Checked = false;
+        //        txtDisplay.ReadOnly = false;
+        //        txtValue.SelectAll();
+        //        txtValue.Focus();
+        //    }
 
-            txtValue.Text = listEntry.Value;
-            txtDisplay.Text = listEntry.Display;
+        //    txtValue.Text = listEntry.Value;
+        //    txtDisplay.Text = listEntry.Display;
 
-            skipEvents = false;
-        }
+        //    skipEvents = false;
+        //}
 
         public ListEntryEditor(Interfaces.Models.ISpecListEntry listEntry)
         {
