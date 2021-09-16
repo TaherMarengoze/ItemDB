@@ -108,7 +108,7 @@ namespace UserInterface.Forms
         private void PostLoading()
         {
             UserService.Data.InitializeRepos();
-            ClientService.DataProvider.InitLists();
+            ClientService.DataManager.InitLists();
 
             EnableDisableEditorsLaunchUI(true);
         }

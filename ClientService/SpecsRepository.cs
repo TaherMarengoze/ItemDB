@@ -4,7 +4,7 @@ using Interfaces.Models;
 
 namespace ClientService
 {
-    public static class SpecsContext
+    public static class SpecsRepository
     {
         public static void Create(ISpecs content)
         {
@@ -13,7 +13,7 @@ namespace ClientService
             Globals.specsRepo.Create(content);
 
             // Update the list in the Globals class
-            DataProvider.UpdateSpecsList();
+            DataManager.UpdateSpecsList();
 
             /*
              • The above code will run a query against the
@@ -30,7 +30,7 @@ namespace ClientService
         public static ISpecs Read(string entityId)
         {
             return
-                Globals.Lists.Specs.Find(entity => entity.ID == entityId);
+                Globals.ModelLists.Specs.Find(entity => entity.ID == entityId);
         }
 
         public static void Update(string refId, ISpecs content)
@@ -51,14 +51,14 @@ namespace ClientService
 
             // Option 1:
             //    Update from data source
-            DataProvider.UpdateSpecsList();
+            DataManager.UpdateSpecsList();
 
             // Option 2:
             //    Find the item by ID and delete it from the global list
             ISpecs entityToRemove =
-                Globals.Lists.Specs.Find(entity => entity.ID == entityId);
+                Globals.ModelLists.Specs.Find(entity => entity.ID == entityId);
 
-            Globals.Lists.Specs.Remove(entityToRemove);
+            Globals.ModelLists.Specs.Remove(entityToRemove);
         }
     }
 }

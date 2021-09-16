@@ -11,14 +11,14 @@ namespace ClientService
         public static IEnumerable<ISpecsItem> GetSpecsItems(string specsId)
         {
             return
-                (from specs in Globals.Lists.Specs
+                (from specs in Globals.ModelLists.Specs
                  where specs.ID == specsId
                  select specs.SpecItems).FirstOrDefault();
         }
 
         public static ISpecsItem GetSpecsItem(string specsId, int specIndex)
         {
-            ISpecs specs = SpecsContext.Read(specsId);
+            ISpecs specs = SpecsRepository.Read(specsId);
 
             return
                 specs.SpecItems

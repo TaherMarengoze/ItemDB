@@ -92,9 +92,9 @@ namespace UserInterface.Forms
 
         #region Fields
         private EntryMode specMode = EntryMode.View;
-        private List<string> specsIdList;
-        private List<string> cSpecIdList;
-        private List<string> filteredspecsIdList;
+        //private List<string> specsIdList;
+        //private List<string> cSpecIdList;
+        //private List<string> filteredspecsIdList;
         //private string selectedSpecsId;
         //private CoreLibrary.Interfaces.ISpecs selectedSpecs;
         private Interfaces.Models.ISpecs _selectedSpecs;
@@ -114,10 +114,7 @@ namespace UserInterface.Forms
         private int entrySelectionIndex;
         #endregion
 
-        public SpecsEditor()
-        {
-            InitializeComponent();
-        }
+        public SpecsEditor() => InitializeComponent();
 
         private void SaveToDataSource()
         {
@@ -130,38 +127,40 @@ namespace UserInterface.Forms
         private void PostLoading()
         {
             RefreshSpecsList();
-            ReadCustomSpecs();
+            //ReadCustomSpecs();
+
             // Bind Custom Specs Selector
-            cboCustomTypeSelector.DataSource = cSpecIdList;
+            cboCustomTypeSelector.DataSource =
+                DataManager.GetCustomSpecsList();
+
             ClearCustomTypeSelector();
 
             EnableSpecsModifyUI();
         }
 
-        private void InsertEmptySpecId()
-        {
-            cSpecIdList.Insert(0, string.Empty);
-        }
+        //private void InsertEmptySpecId()
+        //{
+        //    //cSpecIdList.Insert(0, string.Empty);
+        //}
 
-        private void ReadSpecsIDs()
-        {
-            // old
-            //specsIdList = UserService.Data.GetSpecsIdList().ToList();
+        //private void ReadSpecsIDs()
+        //{
+        //    // old
+        //    //specsIdList = UserService.Data.GetSpecsIdList().ToList();
 
-            // new
-            specsIdList =
-                DataProvider.GetSpecsList()
-                .Select(e => e.ID).ToList();
-        }
+        //    // new
+        //    // TODO: this variable should be contained a separate service class
+        //    //specsIdList = DataManager.GetSpecsList().Select(e => e.ID).ToList();
+        //}
 
-        private void ReadCustomSpecs()
-        {
-            // old
-            //cSpecIdList = UserService.Data.GetCustomSpecs();
+        //private void ReadCustomSpecs()
+        //{
+        //    // old
+        //    //cSpecIdList = UserService.Data.GetCustomSpecs();
 
-            // new
-            cSpecIdList = DataProvider.GetCustomSpecsList();
-        }
+        //    // new
+        //    //cSpecIdList = DataManager.GetCustomSpecsList();
+        //}
 
         private void ReadSelectedSpecsData()
         {
@@ -172,7 +171,7 @@ namespace UserInterface.Forms
             //selectedSpecs = UserService.Data.GetSpecs(specsId);
 
             // new
-            _selectedSpecs = SpecsContext.Read(specsId);
+            _selectedSpecs = SpecsRepository.Read(specsId);
         }
 
         private void CancelSpecsAddOrEdit()
@@ -190,7 +189,10 @@ namespace UserInterface.Forms
 
             EnableSpecsListSelection();
 
-            if (specsIdList.Count > 0)
+
+            // TRY
+            //if (specsIdList.Count > 0)
+            if (DataProvider.SpecsIds.Count > 0)
             {
                 EnableSpecsModifyUI();
             }
@@ -286,7 +288,7 @@ namespace UserInterface.Forms
             //draftSpecs = UserService.Data.GetSpecs(draftSpecsId);
 
             // new
-            _draftSpecs = SpecsContext.Read(draftSpecsId);
+            _draftSpecs = SpecsRepository.Read(draftSpecsId);
 
             SaveSpecsSelectionPosition();
 
@@ -339,16 +341,18 @@ namespace UserInterface.Forms
                 string specsId = GetSelectedSpecsId();
 
                 // old
-                UserService.Data.DeleteSpecs(specsId);
+                //UserService.Data.DeleteSpecs(specsId);
 
                 // new
-                SpecsContext.Delete(specsId);
+                SpecsRepository.Delete(specsId);
 
                 CheckSpecsCount();
 
                 RefreshSpecsList();
 
-                if (specsIdList.Count <= 0)
+                // TRY
+                //if (specsIdList.Count > 0)
+                if (DataProvider.SpecsIds.Count > 0)
                 {
                     ClearSpecsMetadataEntryUI();
                     ClearSpecMetadataEntryUI();
@@ -363,7 +367,9 @@ namespace UserInterface.Forms
 
         private void CheckSpecsCount()
         {
-            if (specsIdList.Count < 1)
+            // TRY
+            //if (specsIdList.Count < 1)
+            if (DataProvider.SpecsIds.Count < 1)
             {
                 btnRemoveSpecs.Enabled = false;
                 btnEditSpecs.Enabled = false;
@@ -500,7 +506,7 @@ namespace UserInterface.Forms
         private void SaveDraftSpec()
         {
             // Save new Spec data
-            
+
             // old
             //draftSpec.Index = int.Parse(txtSiIndex.Text);
             //draftSpec.Name = txtSiName.Text;
@@ -534,7 +540,7 @@ namespace UserInterface.Forms
 
                     break;
             }
-            
+
             // Add the created Spec to Spec list of the new Specs
             if (specMode == EntryMode.New)
             {
@@ -644,7 +650,7 @@ namespace UserInterface.Forms
 
                     draftSpecs.SpecItems.Remove(specsItem);
                     */
-                    
+
                     // new
                     Interfaces.Models.ISpecsItem _specsItem = _draftSpecs.SpecItems
                         .FirstOrDefault(idx => idx.Index == GetSelectedSpecIndex());
@@ -726,7 +732,7 @@ namespace UserInterface.Forms
                 //UserService.Data.AddSpecs(draftSpecs);
 
                 // new
-                SpecsContext.Create(_draftSpecs);
+                SpecsRepository.Create(_draftSpecs);
             }
 
             if (SpecsMode == EntryMode.Edit)
@@ -735,7 +741,7 @@ namespace UserInterface.Forms
                 //UserService.Data.UpdateSpecs(draftSpecsId, draftSpecs);
 
                 // new
-                SpecsContext.Update(draftSpecsId, _draftSpecs);
+                SpecsRepository.Update(draftSpecsId, _draftSpecs);
             }
 
             // Exit draft (New) mode
@@ -810,7 +816,7 @@ namespace UserInterface.Forms
                 listEditor.ListEntry2.ValueID = newId;
 
                 // Add the new entry to the draft list
-                
+
                 // old
                 //draftEntries.Add(listEditor.ListEntry);
 
@@ -961,7 +967,7 @@ namespace UserInterface.Forms
             // old
             //draftSpec = null;
             //draftEntries = null;
-            
+
             // new
             _draftSpec = null;
             _draftEntries = null;
@@ -990,7 +996,9 @@ namespace UserInterface.Forms
 
         private void ValidateInputId(string inputSpecsId)
         {
-            if (inputSpecsId != draftSpecsId && specsIdList.Contains(inputSpecsId))
+            // TRY
+            //if (inputSpecsId != draftSpecsId && specsIdList.Contains(inputSpecsId))
+            if (inputSpecsId != draftSpecsId && DataProvider.SpecsIds.Contains(inputSpecsId))
             {
                 DisplayIdValidityInfo(IdStatus.Duplicate);
                 txtSpecsID.SelectAll();
@@ -1046,7 +1054,7 @@ namespace UserInterface.Forms
         private void CheckSpecData()
         {
             bool specValid = false;
-            
+
             switch (draftSpecType)
             {
                 case SpecType.List:
@@ -1137,10 +1145,14 @@ namespace UserInterface.Forms
 
         private string GenerateNewSpecsID()
         {
-            int idCount = specsIdList.Count();
+            // TRY
+            int idCount = //specsIdList.Count();
+                DataProvider.SpecsIds.Count;
+
             string newId = $"S{idCount:0000}";
 
-            if (specsIdList.Contains(newId) == true)
+            // if (specsIdList.Contains(newId) == true)
+            if (DataProvider.SpecsIds.Contains(newId) == true)
             {
                 int i = idCount;
                 do
@@ -1148,7 +1160,9 @@ namespace UserInterface.Forms
                     i++;
                     newId = $"S{i:0000}";
                 }
-                while (specsIdList.Contains(newId) == true && i > idCount + 1000);
+                while //(specsIdList.Contains(newId) == true && i > idCount + 1000);
+                    (DataProvider.SpecsIds.Contains(newId) == true && i > idCount + 1000);
+
                 return newId;
             }
             return newId;
@@ -1159,24 +1173,34 @@ namespace UserInterface.Forms
 
         private void RefreshSpecsList()
         {
-            ReadSpecsIDs();
+            //ReadSpecsIDs();
             PopulateSpecsList();
             CheckSpecsCount();
         }
 
-        private void RefreshSpecsItemsGrid()
-        {
-            ReadSelectedSpecsData();
-            ViewSelectedSpecsData();
-        }
+        //private void RefreshSpecsItemsGrid()
+        //{
+        //    ReadSelectedSpecsData();
+        //    ViewSelectedSpecsData();
+        //}
 
-        private void PopulateSpecsList()
-        {
-            if (specsIdList.Count > 0)
-                lbxSpecs.DataSource = specsIdList;
-            else
-                lbxSpecs.DataSource = specsIdList;
-        }
+        private void PopulateSpecsList() => lbxSpecs.DataSource = DataProvider.SpecsIds;
+
+        //private void PopulateSpecsList()
+        //{
+        //    // TRY
+        //    //if (specsIdList.Count > 0)
+        //    if (DataProvider.SpecsIds.Count > 0)
+        //    {
+        //        //lbxSpecs.DataSource = specsIdList;
+        //        lbxSpecs.DataSource = DataProvider.SpecsIds;
+        //    }
+        //    else
+        //    {
+        //        // This is a funny redundant useless code :)
+        //        lbxSpecs.DataSource = specsIdList;
+        //    }
+        //}
 
         private void ViewSelectedSpecsData()
         {
@@ -1523,9 +1547,14 @@ namespace UserInterface.Forms
         private void SaveSpecsSelectionPosition(bool shiftUp = false)
         {
             int selectedIndex = lbxSpecs.SelectedIndex;
-            if (selectedIndex == specsIdList.Count - 1)
+
+            // TRY
+            // if (selectedIndex == specsIdList.Count - 1)
+            if (selectedIndex == DataProvider.SpecsIds.Count - 1)
             {
-                specsSelectionIndex = specsIdList.Count - 1;
+                specsSelectionIndex = //specsIdList.Count - 1;
+                    DataProvider.SpecsIds.Count - 1;
+
                 if (shiftUp)
                 {
                     specsSelectionIndex -= 1;
@@ -1657,12 +1686,18 @@ namespace UserInterface.Forms
         {
             if (inputSpecsId == string.Empty)
             {
-                lbxSpecs.DataSource = specsIdList;
+                // ToBeRemoved
+                //lbxSpecs.DataSource = specsIdList;
+
+                // NewCode
+                lbxSpecs.DataSource = DataProvider.SpecsIds;
             }
             else
             {
-                filteredspecsIdList = specsIdList.Where(id => id.Contains(inputSpecsId)).ToList();
-                lbxSpecs.DataSource = filteredspecsIdList;
+                //filteredspecsIdList = specsIdList.Where(id => id.Contains(inputSpecsId)).ToList();
+
+                lbxSpecs.DataSource = //filteredspecsIdList;
+                    DataProvider.FilterSpecsIds(inputSpecsId);
             }
 
         }

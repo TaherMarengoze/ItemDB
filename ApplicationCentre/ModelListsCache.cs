@@ -1,14 +1,27 @@
 ﻿
 using Interfaces.Models;
+using System;
 using System.Collections.Generic;
 
 namespace AppCore
 {
-    public class ModelListHolder
+    public class ModelListsCache
     {
+        private List<ISpecs> _specs;
+
+        public event System.EventHandler OnSpecsChanged;
+
         public List<IItem> Items { get; set; }
 
-        public List<ISpecs> Specs { get; set; }
+        public List<ISpecs> Specs
+        {
+            get => _specs;
+            set
+            {
+                _specs = value;
+                OnSpecsChanged?.Invoke(this, System.EventArgs.Empty);
+            }
+        }
 
         public List<ISizeGroup> SizeGroups { get; set; }
 
