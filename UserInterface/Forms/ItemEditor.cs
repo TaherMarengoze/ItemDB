@@ -592,7 +592,8 @@ namespace UserInterface.Forms
             if (dgv.SelectedRows.Count > 0)
             {
                 string specsId = (string)dgv.SelectedRows[0].Cells[1].Value;
-                dgvSpecsItems.DataSource = Data.GetSpecsItems(specsId).ToList();
+                dgvSpecsItems.DataSource = //Data.GetSpecsItems(specsId).ToList();
+                    ClientService.SpecsManiuplator.GetSpecsItems(specsId).ToList();
             }
         }
 
@@ -612,7 +613,8 @@ namespace UserInterface.Forms
             {
                 string specsId = (string)dgvSpecs.SelectedRows[0].Cells[1].Value;
                 int specIndex = (int)dgv.SelectedRows[0].Cells[0].Value;
-                dgvSpecListEntries.DataSource = Data.GetSpecListEntries(specsId, specIndex);
+                dgvSpecListEntries.DataSource = //Data.GetSpecListEntries(specsId, specIndex);
+                    ClientService.SpecsManiuplator.GetSpecsItemListEntries(specsId, specIndex)?.ToList();
             }
         }
 
