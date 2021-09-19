@@ -8,7 +8,14 @@ namespace ClientService
 {
     public static class DataProvider
     {
-        public static List<string> SpecsIds => AppCore.Globals.DataLists.SpecsIdList;
+        /// <summary>
+        /// Gets a list of ID for all specs objects.
+        /// </summary>
+        /// <returns></returns>
+        public static List<string> GetSpecsIds()
+        {
+            return AppCore.Globals.DataLists.SpecsIdList;
+        }
 
         internal static void RegisterModelEvents()
         {

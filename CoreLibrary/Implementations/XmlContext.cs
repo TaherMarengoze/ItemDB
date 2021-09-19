@@ -63,7 +63,7 @@ namespace CoreLibrary
 
             GlobalsX.itemsRepo = new ItemRepoX();
 
-            GlobalsX.specsRepo = new SpecsRepoX(GlobalsX.xDataDocs.Specs);
+            //GlobalsX.specsRepo = new SpecsRepoX(GlobalsX.xDataDocs.Specs);
 
             GlobalsX.sizeGroupRepo = new SizeGroupsXmlRepository(GlobalsX.xDataDocs.SizeGroups);
 

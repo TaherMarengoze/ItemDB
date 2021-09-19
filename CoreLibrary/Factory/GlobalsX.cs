@@ -15,7 +15,7 @@ namespace CoreLibrary
 
         public static IItemRepo itemsRepo;
 
-        public static ISpecsRepo specsRepo;
+        //public static ISpecsRepo specsRepo;
 
         public static ISizeGroupRepos sizeGroupRepo;
 

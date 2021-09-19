@@ -22,11 +22,6 @@ namespace ClientService
             UpdateAllLists();
         }
 
-        //private static void RegisterEvents()
-        //{
-        //    Globals.ModelLists.OnSpecsChanged += DataProvider.Lists_OnSpecsChanged;
-        //}
-
         public static List<IItem> GetItemList()
         {
             return Globals.ModelLists.Items;

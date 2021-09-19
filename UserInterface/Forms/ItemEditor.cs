@@ -145,11 +145,9 @@ namespace UserInterface.Forms
             dgvCategories.Columns[0].DisplayIndex = 2;
 
             // Bind Specs ID selector combobox
-            cboSpecsId.DataSource = //Data.GetSpecsIdList().ToList();
-                ClientService.DataProvider.SpecsIds;
-
+            cboSpecsId.DataSource = ClientService.DataProvider.GetSpecsIds();
             cboSpecsId.SelectedIndex = -1;
-            dgvSpecs.DataSource = Data.GetSpecsList/*Brief*/();
+            dgvSpecs.DataSource = ClientService.SpecsVMProvider.Brief();
 
             // Bind Size Groups ID selector combobox
             cboSizeGroupId.DataSource = Data.GetSizeGroupsId();
@@ -593,7 +591,7 @@ namespace UserInterface.Forms
             {
                 string specsId = (string)dgv.SelectedRows[0].Cells[1].Value;
                 dgvSpecsItems.DataSource = //Data.GetSpecsItems(specsId).ToList();
-                    ClientService.SpecsManiuplator.GetSpecsItems(specsId).ToList();
+                    ClientService.SpecsManiuplator.GetSpecsItems(specsId)?.ToList();
             }
         }
 

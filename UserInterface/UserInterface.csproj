@@ -256,6 +256,10 @@
       <Project>{2EC19893-87BD-41AA-A165-BF544D2A1BCB}</Project>
       <Name>ClientService</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Common\Shared.csproj">
+      <Project>{b7c3ba24-b4cc-49d7-b9d5-9371a1ca02dd}</Project>
+      <Name>Shared</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj">
       <Project>{90c23753-2a1c-4f04-a4e7-3b12ce02fa7f}</Project>
       <Name>CoreLibrary</Name>

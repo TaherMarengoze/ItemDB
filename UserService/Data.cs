@@ -25,7 +25,6 @@ namespace UserService
             {
                 Items = GlobalsX.reader.GetItems(),
                 Categories = GlobalsX.reader.GetCategories(),
-                SpecsList = GlobalsX.reader.GetSpecs().ToList(),
                 SizeGroups = GlobalsX.reader.GetSizeGroups().ToList(),
                 SizesList = GlobalsX.reader.GetSizes().ToList(),
                 BrandsList = GlobalsX.reader.GetBrands().ToList(),
@@ -38,7 +37,6 @@ namespace UserService
         #region Updater code
         private static void UpdateItemsRepos() => appCache.Items = GlobalsX.reader.GetItems();
         private static void UpdateCategoriesRepos() => appCache.Categories = GlobalsX.reader.GetCategories();
-        public static void UpdateSpecsRepos() => appCache.SpecsList = GlobalsX.reader.GetSpecs().ToList();
         public static void UpdateSizeGroupsRepos()
         {
             appCache.SizeGroups = GlobalsX.reader
@@ -256,90 +254,6 @@ namespace UserService
         }
         #endregion
 
-        #region Specs Object
-        // Context
-
-        /// <summary>
-        /// Gets a list of <see cref="Specs"/> object.
-        /// </summary>
-        /// <returns></returns>
-        public static List<ISpecs> GetSpecsList() => appCache.SpecsList;
-
-        /// <summary>
-        /// Gets a list of ID of the <see cref="Specs"/> object.
-        /// </summary>
-        /// <returns></returns>
-        public static IEnumerable<string> GetSpecsIdList() => appCache.SpecsIdList;
-
-        // Entity
-        public static void AddSpecs(ISpecs specs)
-        {
-            // Add to data source
-            GlobalsX.specsRepo.AddSpecs(specs);
-
-            // Updating will automatically refresh the local cache
-            UpdateSpecsRepos();
-        }
-        public static void UpdateSpecs(string refId, ISpecs content)
-        {
-            // Modify local cache (no need because changes are made on local cache)
-            // Modify data source
-            GlobalsX.specsRepo.UpdateSpecs(refId, content);
-        }
-        public static void DeleteSpecs(string specsId)
-        {
-            // Delete from local cache
-            appCache.SpecsList = appCache.SpecsList.Where(specs => specs.ID != specsId).ToList();
-
-            // Delete from data source
-            GlobalsX.specsRepo.DeleteSpecs(specsId);
-        }
-        public static ISpecs GetSpecs(string specsId) => appCache.SpecsList.Find(specs => specs.ID == specsId);
-
-        // Entity Operations
-        public static ISpec GetSpecsItem(string specsId, int specIndex)
-        {
-            ISpecs specs =
-                appCache.SpecsList.Find(sp => sp.ID == specsId);
-
-            return
-                specs.SpecItems.Find(spec => spec.Index == specIndex);
-        }
-
-        public static ISpec GetSpecsItem(ISpecs specs, int specIndex)
-        {
-            return
-                specs.SpecItems
-                .FirstOrDefault(si => si.Index == specIndex);
-        }
-
-        // Entity Manipulation
-
-
-
-        public static IEnumerable<ISpec> GetSpecsItems(string specsId)
-        {
-            return
-                (from specs in appCache.SpecsList
-                 where specs.ID == specsId
-                 select specs.SpecItems).FirstOrDefault();
-        }
-
-        public static List<ISpecListEntry> GetSpecListEntries(string specsId, int specIndex)
-        {
-            List<ISpec> specsItems =
-                (from specs in appCache.SpecsList
-                 where specs.ID == specsId
-                 select specs.SpecItems).FirstOrDefault();
-
-            return
-                (from spec in specsItems
-                 where spec.Index == specIndex
-                 select spec.ListEntries).FirstOrDefault();
-        }
-
-        #endregion
-
         #region Size Groups Object
         /// <summary>
         /// Retrieves the list of <see cref="SizeGroup"/> from the cache.
@@ -412,8 +326,8 @@ namespace UserService
                 appCache.SizeGroups
                 .Find(group => group.ID == groupId);
 
-            appCache.SizeGroups.Cast<SizeGroup>().ToList()
-                .Find(group => group.ID == groupId);
+            //appCache.SizeGroups.Cast<SizeGroup>().ToList()
+            //    .Find(group => group.ID == groupId);
         }
         #endregion
 

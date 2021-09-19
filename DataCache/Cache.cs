@@ -10,7 +10,7 @@ namespace DataCache
     public class Cache
     {
         private IEnumerable<IItem> _items;
-        private List<ISpecs> _specsList;
+        //private List<ISpecs> _specsList;
         private List<ISizeGroup> _sizeGroups;
 
         private List<IBasicList> _sizesList;
@@ -44,20 +44,6 @@ namespace DataCache
         public List<ItemVO> ItemsView { get; private set; }
 
         public IEnumerable<IBasicField> Categories { get; set; }
-
-        #region Specs
-        public List<ISpecs> SpecsList
-        {
-            get => _specsList;
-            set
-            {
-                _specsList = value;
-                SpecsIdList = value.Select(specs => specs.ID).ToList();
-            }
-        }
-
-        public IEnumerable<string> SpecsIdList { get; private set; }
-        #endregion
 
         #region Size Groups
         public List<ISizeGroup> SizeGroups

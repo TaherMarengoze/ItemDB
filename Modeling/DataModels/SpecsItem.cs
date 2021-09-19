@@ -1,7 +1,7 @@
 ﻿
 using Interfaces.Models;
 using System.Collections.Generic;
-
+using System.Linq;
 
 namespace Modeling.DataModels
 {
@@ -16,7 +16,5 @@ namespace Modeling.DataModels
         public IEnumerable<ISpecListEntry> ListEntries { get;  set; }
 
         public string CustomInputID { get;  set; }
-        
-
     }
 }

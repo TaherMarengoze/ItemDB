@@ -11,7 +11,7 @@ namespace CoreLibrary.Interfaces
 
         IEnumerable<ItemCategory> GetCategories();
 
-        IEnumerable<ISpecs> GetSpecs();
+        //IEnumerable<ISpecs> GetSpecs();
 
         IEnumerable<ISizeGroup> GetSizeGroups();
 

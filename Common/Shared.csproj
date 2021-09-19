@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2EC19893-87BD-41AA-A165-BF544D2A1BCB}</ProjectGuid>
+    <ProjectGuid>{B7C3BA24-B4CC-49D7-B9D5-9371A1CA02DD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ClientService</RootNamespace>
-    <AssemblyName>ClientService</AssemblyName>
+    <RootNamespace>Shared</RootNamespace>
+    <AssemblyName>Shared</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,31 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ContextProvider.cs" />
-    <Compile Include="DataManager.cs" />
-    <Compile Include="DataProvider.cs" />
+    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SpecsManiuplator.cs" />
-    <Compile Include="SpecsRepository.cs" />
-    <Compile Include="SpecsVMProvider.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ApplicationCentre\AppCore.csproj">
-      <Project>{D544AF89-205D-48BB-BF81-FF93D9A43692}</Project>
-      <Name>AppCore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj">
-      <Project>{90C23753-2A1C-4F04-A4E7-3B12CE02FA7F}</Project>
-      <Name>CoreLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ModelAbstraction\Interfaces.csproj">
-      <Project>{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}</Project>
-      <Name>Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Modeling\Modeling.csproj">
-      <Project>{b195c5bf-431e-4828-86f1-f638f131ea43}</Project>
-      <Name>Modeling</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

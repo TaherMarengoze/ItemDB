@@ -50,8 +50,11 @@
     <Compile Include="DataModels\SpecListEntry.cs" />
     <Compile Include="DataModels\Specs.cs" />
     <Compile Include="DataModels\SpecsItem.cs" />
+    <Compile Include="DraftModels\CloneExtension.cs" />
+    <Compile Include="DraftModels\SpecsDrafter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataModels\ItemDetails.cs" />
+    <Compile Include="ViewModels\Specs\BasicView.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ModelAbstraction\Interfaces.csproj">
@@ -59,5 +62,6 @@
       <Name>Interfaces</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
