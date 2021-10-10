@@ -7,17 +7,17 @@ namespace Modeling.DraftModels
 {
     internal static class CloneExtension
     {
-        public static List<ISpecsItem> Clone(this IEnumerable<ISpecsItem> specsItems)
+        public static List<ISpecsItem> Clone(this IEnumerable<ISpecsItem> specItems)
         {
             IEnumerable<ISpecsItem> clonedItems =
-                from si in specsItems
+                from spec in specItems
                 select new DataModels.SpecsItem()
                 {
-                    Index = si.Index,
-                    Name = si.Name,
-                    ValuePattern = si.ValuePattern,
-                    ListEntries = si.ListEntries.Clone(),
-                    CustomInputID = si.CustomInputID
+                    Index = spec.Index,
+                    Name = spec.Name,
+                    ValuePattern = spec.ValuePattern,
+                    ListEntries = spec.ListEntries.Clone(),
+                    CustomInputID = spec.CustomInputID
                 };
 
             return clonedItems.ToList();

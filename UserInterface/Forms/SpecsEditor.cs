@@ -86,20 +86,24 @@ namespace UserInterface.Forms
         }
         #endregion
 
-        #region Fields
+        
         private EntryMode specMode = EntryMode.View;
         private Interfaces.Models.ISpecs selectedSpecs;
         private Interfaces.Models.ISpecsItem selSpec;
+
+        private Modeling.DraftModels.SpecsDrafter drafter;
+
         private string draftSpecsId;
         private Interfaces.Models.ISpecs draftSpecs;
         private Interfaces.Models.ISpecsItem draftSpec;
         private SpecType draftSpecType;
         private List<Interfaces.Models.ISpecListEntry> draftEntries;
         private string draftCustomSpecId;
+
         private int specsSelectionIndex = 0;
         private int specSelectionIndex;
         private int entrySelectionIndex;
-        #endregion
+        
 
         public SpecsEditor() => InitializeComponent();
 
@@ -135,6 +139,8 @@ namespace UserInterface.Forms
             // Instantiate new Specs
             draftSpecs = new Modeling.DataModels.Specs();
 
+            drafter = new Modeling.DraftModels.SpecsDrafter();
+
             // Generate new SpecsID
             draftSpecsId = GenerateNewSpecsID();
             // Sets a flag
@@ -159,6 +165,7 @@ namespace UserInterface.Forms
             txtSpecsID.Focus();
             txtSpecsID.Text = draftSpecsId;
             txtSpecsPattern.Text = draftSpecs.TextPattern;
+            txtSpecsPattern.Text = drafter.DraftSpecs.TextPattern;
 
             // Setup SpecsItem Meta-data controls
             ClearSpecMetadataEntryUI();
@@ -179,8 +186,8 @@ namespace UserInterface.Forms
 
             draftSpecs = SpecsRepository.Read(draftSpecsId);
 
-            Modeling.DraftModels.SpecsDrafter tempDraft =
-                new Modeling.DraftModels.SpecsDrafter(draftSpecs);
+            drafter = new Modeling.DraftModels
+                .SpecsDrafter(SpecsRepository.Read(draftSpecsId));
 
             SaveSpecsSelectionPosition();
 
@@ -210,6 +217,8 @@ namespace UserInterface.Forms
             specMode = EntryMode.View;
 
             draftSpecs = null;
+            drafter.ClearDraft();
+
             ClearSpecsDrafts();
             EnableSpecsListSelection();
 
@@ -292,15 +301,17 @@ namespace UserInterface.Forms
             }
         }
 
-        private void CreateNewSpec()
+        private void NewSpec()
         {
             specMode = EntryMode.New;
 
             // Instantiate new Spec
             draftSpec = new Modeling.DataModels.SpecsItem();
+            drafter.NewDraftSpec();
 
             // Get last SpecsItem index
             int lastIdx = draftSpecs.SpecItems.Count();
+            lastIdx = drafter.DraftSpecs.SpecItems.Count();
 
             // Set Initial member values
             int newIdx = lastIdx + 1;
@@ -313,6 +324,10 @@ namespace UserInterface.Forms
             txtSiIndex.Text = newIdx.ToString();
             txtSiName.Text = name;
             txtSiValuePattern.Text = draftSpec.ValuePattern;
+
+            txtSiIndex.Text = drafter.DraftSpec.Index.ToString();
+            txtSiName.Text = drafter.DraftSpec.Name;
+            txtSiValuePattern.Text = drafter.DraftSpec.ValuePattern;
 
             // Setup UI
             DisableSpecModifyUI();
@@ -340,6 +355,8 @@ namespace UserInterface.Forms
             // Get Spec object being edited
             draftSpec =
                 draftSpecs.SpecItems.ToList()[GetSelectedSpecIndex() - 1];
+
+            drafter.EditSpec(GetSelectedSpecIndex());
 
             if (draftSpec.ListEntries != null)
             {
@@ -833,7 +850,7 @@ namespace UserInterface.Forms
         }
         #endregion
 
-        #region Getters
+        #region User Interaction
         private string GetSelectedSpecsId()
         {
             return (string)lbxSpecs.SelectedValue;
@@ -1418,7 +1435,7 @@ namespace UserInterface.Forms
         private void btnCancel_Click(object sender, EventArgs e) => CancelSpecsDrafting();
         private void btnRemoveSpecs_Click(object sender, EventArgs e) => RemoveSpecs();
         private void txtSpecsID_TextChanged(object sender, EventArgs e) => CheckSpecsID();
-        private void btnSiAdd_Click(object sender, EventArgs e) => CreateNewSpec();
+        private void btnSiAdd_Click(object sender, EventArgs e) => NewSpec();
         private void btnSiEdit_Click(object sender, EventArgs e) => EditSpec();
         private void btnSiRemove_Click(object sender, EventArgs e) => RemoveSpec();
         private void btnSiAccept_Click(object sender, EventArgs e) => SaveDraftSpec();

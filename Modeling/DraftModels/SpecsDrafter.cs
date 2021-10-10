@@ -2,13 +2,15 @@
 using Interfaces.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Modeling.DraftModels
 {
-    public class SpecsDrafter : Interfaces.General.IDraftable
+    public partial class SpecsDrafter : Interfaces.General.IDraftable
     {
+
         public SpecsDrafter()
         {
             DraftSpecs = new DataModels.Specs();
@@ -60,5 +62,68 @@ namespace Modeling.DraftModels
             throw new NotImplementedException();
         }
 
+        public void ClearDraft()
+        {
+            DraftSpecs = null;
+        }
+
+        public ISpecsItem DraftSpec { get; private set; }
+
+        public void NewDraftSpec()
+        {
+            specDrafter = new SpecDrafter(this);
+
+            DraftSpec = new DataModels.SpecsItem();
+
+            int lastIdx = DraftSpecs.SpecItems.Count();
+            int newIdx = lastIdx + 1;
+
+            DraftSpec.Index = newIdx;
+            DraftSpec.Name = $"SI{newIdx:000}";
+        }
+
+        public void EditSpec(int specIndex)
+        {
+            ISpecsItem spec =
+                DraftSpecs.SpecItems//.ToList()[specIndex];
+                .FirstOrDefault(si => si.Index == specIndex);
+
+            specDrafter = new SpecDrafter(spec);
+        }
+
+        private SpecDrafter specDrafter;
+
+        private class SpecDrafter
+        {
+            //private readonly SpecsDrafter parent;
+
+            public SpecDrafter(SpecsDrafter specsDrafter)
+            {
+                //parent = specsDrafter;
+
+                DraftSpec = new DataModels.SpecsItem();
+
+                int lastIdx = specsDrafter.DraftSpecs.SpecItems.Count();
+                int newIdx = lastIdx + 1;
+
+                DraftSpec.Index = newIdx;
+                DraftSpec.Name = $"SI{newIdx:000}";
+            }
+
+            public SpecDrafter(ISpecsItem editSpec)
+            {
+                if (editSpec.ListEntries != null)
+                {
+
+                }
+
+                if (editSpec.CustomInputID != null)
+                {
+
+                }
+            }
+
+            public ISpecsItem DraftSpec { get; set; }
+        }
     }
 }
