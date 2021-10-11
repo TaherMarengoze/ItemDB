@@ -1,4 +1,5 @@
 ﻿
+//using CoreLibrary.Enums;
 using Interfaces.Models;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,11 @@ namespace Modeling.DraftModels
 {
     public partial class SpecsDrafter : Interfaces.General.IDraftable
     {
+        public enum SpecType
+        {
+            List = 1,
+            Custom = 2
+        }
 
         public SpecsDrafter()
         {
@@ -37,6 +43,14 @@ namespace Modeling.DraftModels
 
         public ISpecs DraftSpecs { get; set; }
 
+        public ISpecsItem DraftSpec { get; private set; }
+
+        public SpecType DraftSpecType { get; set; }
+        
+        public List<ISpecListEntry> DraftEntries { get; set; }
+
+        public string DraftCustomSpecId { get; set; }
+
         /// <summary>
         /// Temporary input for specs ID.
         /// </summary>
@@ -57,9 +71,16 @@ namespace Modeling.DraftModels
         /// </summary>
         public List<ISpecsItem> specsItems;
 
+        public int DraftSpecsItemsCount()
+        {
+            return DraftSpecs.SpecItems.Count();
+        }
+
         public void CommitChanges()
         {
-            throw new NotImplementedException();
+            DraftSpecs.ID = specsId;
+            DraftSpecs.Name = specsName;
+            DraftSpecs.TextPattern = specsTxtPat;
         }
 
         public void ClearDraft()
@@ -67,12 +88,9 @@ namespace Modeling.DraftModels
             DraftSpecs = null;
         }
 
-        public ISpecsItem DraftSpec { get; private set; }
-
         public void NewDraftSpec()
         {
-            specDrafter = new SpecDrafter(this);
-
+            // Same class attempt
             DraftSpec = new DataModels.SpecsItem();
 
             int lastIdx = DraftSpecs.SpecItems.Count();
@@ -88,42 +106,68 @@ namespace Modeling.DraftModels
                 DraftSpecs.SpecItems//.ToList()[specIndex];
                 .FirstOrDefault(si => si.Index == specIndex);
 
-            specDrafter = new SpecDrafter(spec);
+            if (spec.ListEntries != null)
+            {
+                DraftSpecType = SpecType.List;
+                DraftEntries = new List<ISpecListEntry>(DraftSpec.ListEntries);
+            }
+
+            if (spec.CustomInputID != null)
+            {
+                DraftSpecType = SpecType.Custom;
+                DraftCustomSpecId = DraftSpec.CustomInputID;
+            }
         }
 
-        private SpecDrafter specDrafter;
-
-        private class SpecDrafter
+        public void AddSpecToSpecsItemsDrafts()
         {
-            //private readonly SpecsDrafter parent;
+            // Trying extension method Add for IEnumerable
+            DraftSpecs.SpecItems.Add(DraftSpec);
 
-            public SpecDrafter(SpecsDrafter specsDrafter)
+            //List<ISpecsItem> tempList = DraftSpecs.SpecItems.ToList();
+            //tempList.Add(DraftSpec);
+            //DraftSpecs.SpecItems = tempList;
+        }
+
+        public void RemoveSpecFromDraftSpecsItems(int specIndex)
+        {
+            //ISpecsItem _specsItem =
+            //    DraftSpecs.SpecItems.FirstOrDefault(idx => idx.Index == specIndex);
+
+            //List<ISpecsItem> tempList = DraftSpecs.SpecItems.ToList();
+            //tempList.Remove(_specsItem);
+            //DraftSpecs.SpecItems = tempList;
+
+            DraftSpecs.SpecItems =
+                DraftSpecs.SpecItems.Where(idx => idx.Index != specIndex);
+
+            // Renumber SpecItems
+            int i = 0;
+            foreach (ISpecsItem spec in DraftSpecs.SpecItems)
             {
-                //parent = specsDrafter;
-
-                DraftSpec = new DataModels.SpecsItem();
-
-                int lastIdx = specsDrafter.DraftSpecs.SpecItems.Count();
-                int newIdx = lastIdx + 1;
-
-                DraftSpec.Index = newIdx;
-                DraftSpec.Name = $"SI{newIdx:000}";
+                spec.Index = ++i;
             }
+        }
 
-            public SpecDrafter(ISpecsItem editSpec)
+        public void SaveDraftSpec(int index, string name, string valPattern)
+        {
+            DraftSpec.Index = index;
+            DraftSpec.Name = name;
+            DraftSpec.ValuePattern = valPattern;
+
+            switch (DraftSpecType)
             {
-                if (editSpec.ListEntries != null)
-                {
+                case SpecType.List:
+                    DraftSpec.ListEntries = new List<ISpecListEntry>(DraftEntries);
+                    DraftSpec.CustomInputID = null;
 
-                }
+                    break;
+                case SpecType.Custom:
+                    DraftSpec.CustomInputID = DraftCustomSpecId;
+                    DraftSpec.ListEntries = null;
 
-                if (editSpec.CustomInputID != null)
-                {
-
-                }
+                    break;
             }
-
-            public ISpecsItem DraftSpec { get; set; }
         }
     }
 }
