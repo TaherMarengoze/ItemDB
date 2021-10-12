@@ -98,7 +98,7 @@ namespace UserInterface.Forms
         //private Interfaces.Models.ISpecsItem draftSpec;
         //private SpecType draftSpecType;
         //private List<Interfaces.Models.ISpecListEntry> draftEntries;
-        private string draftCustomSpecId;
+        //private string draftCustomSpecId;
 
         private int specsSelectionIndex = 0;
         private int specSelectionIndex;
@@ -409,7 +409,9 @@ namespace UserInterface.Forms
             if (rdoCustomType.Checked)
             {
                 cboCustomTypeSelector.Enabled = true;
-                cboCustomTypeSelector.Text = draftCustomSpecId;
+
+                // DISABLED
+                //cboCustomTypeSelector.Text = draftCustomSpecId;
                 cboCustomTypeSelector.Text = drafter.DraftCustomSpecId;
             }
             //else Do Nothing
@@ -767,22 +769,24 @@ namespace UserInterface.Forms
                 case EntryMode.New:
                     SetSpecCustomId(selCustSpecId);
 
-                    if (selCustSpecId != string.Empty)
-                    {
-                        draftCustomSpecId = selCustSpecId;
-                    }
-                    CheckSpecData();
+                    // DISABLED
+                    //if (selCustSpecId != string.Empty)
+                    //{
+                    //    draftCustomSpecId = selCustSpecId;
+                    //}
+                    //CheckSpecData();
                     break;
 
                 case EntryMode.Edit:
                     SetSpecCustomId(selCustSpecId);
 
-                    if (selCustSpecId != string.Empty)
-                    {
-                        draftCustomSpecId = selCustSpecId;
-                    }
-                    //CheckSpecName();
-                    CheckSpecData();
+                    // DISABLED
+                    //if (selCustSpecId != string.Empty)
+                    //{
+                    //    draftCustomSpecId = selCustSpecId;
+                    //}
+                    ////CheckSpecName();
+                    //CheckSpecData();
                     break;
 
                 default:
@@ -805,7 +809,7 @@ namespace UserInterface.Forms
             //draftSpec = null;
             //draftEntries = null;
 
-            draftCustomSpecId = string.Empty;
+            //draftCustomSpecId = string.Empty;
 
             drafter.ClearDraftSpec();
         }
@@ -1285,10 +1289,11 @@ namespace UserInterface.Forms
             //draftSpecType = SpecType.Custom;
             cboCustomTypeSelector.Enabled = true;
 
-            if (draftCustomSpecId != null)
-            {
-                cboCustomTypeSelector.Text = draftCustomSpecId;
-            }
+            // DISABLED
+            //if (draftCustomSpecId != null)
+            //{
+            //    cboCustomTypeSelector.Text = draftCustomSpecId;
+            //}
 
             if (drafter.DraftCustomSpecId != null)
             {
