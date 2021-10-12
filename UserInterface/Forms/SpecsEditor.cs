@@ -97,7 +97,7 @@ namespace UserInterface.Forms
         //private Interfaces.Models.ISpecs draftSpecs;
         //private Interfaces.Models.ISpecsItem draftSpec;
         //private SpecType draftSpecType;
-        private List<Interfaces.Models.ISpecListEntry> draftEntries;
+        //private List<Interfaces.Models.ISpecListEntry> draftEntries;
         private string draftCustomSpecId;
 
         private int specsSelectionIndex = 0;
@@ -399,7 +399,9 @@ namespace UserInterface.Forms
                 grpListEntries.Enabled = true;
                 DisplayDraftEntries();
                 EnableListEntryModifyUI();
-                CheckEntriesCount(draftEntries.Count);
+
+                // DISABLED
+                //CheckEntriesCount(draftEntries.Count);
                 CheckEntriesCount(drafter.DraftEntries.Count);
             }
             //else Do Nothing
@@ -660,8 +662,9 @@ namespace UserInterface.Forms
             if (listEditor.ShowDialog() == DialogResult.OK)
             {
                 // Get last entryID
-                int lastId = draftEntries.Count;
-                lastId = drafter.DraftEntries.Count;
+                // DISABLED
+                //int lastId = draftEntries.Count;
+                int lastId = drafter.DraftEntries.Count;
 
                 // Generate new entryID
                 int newId = lastId + 1;
@@ -670,13 +673,15 @@ namespace UserInterface.Forms
                 listEditor.ListEntry2.ValueID = newId;
 
                 // Add the new entry to the draft list
-                draftEntries.Add(listEditor.ListEntry2);
+                // DISABLED
+                //draftEntries.Add(listEditor.ListEntry2);
                 drafter.DraftEntries.Add(listEditor.ListEntry2);
 
                 // Enable Edit and Delete buttons
                 EnableListEntryModifyUI();
 
-                CheckEntriesCount(draftEntries.Count);
+                // DISABLED
+                //CheckEntriesCount(draftEntries.Count);
                 CheckEntriesCount(drafter.DraftEntries.Count);
 
                 CheckSpecData();
@@ -697,10 +702,10 @@ namespace UserInterface.Forms
         {
             // Get Spec ListEntry
             int entryId = GetSelectedListEntryID();
-            Interfaces.Models.ISpecListEntry _editListEntry = draftEntries
-                .Find(id => id.ValueID == entryId);
-
-            _editListEntry = drafter.GetSpecListEntry(entryId);
+            Interfaces.Models.ISpecListEntry _editListEntry =
+                // DISABLED
+                //draftEntries.Find(id => id.ValueID == entryId);
+                drafter.GetSpecListEntry(entryId);
 
             ListEntryEditor _listEditor = new ListEntryEditor(_editListEntry);
 
@@ -717,27 +722,31 @@ namespace UserInterface.Forms
             // Get Spec ListEntry
             int entryId = GetSelectedListEntryID();
 
-            Interfaces.Models.ISpecListEntry _removeListEntry =
-                draftEntries.Find(id => id.ValueID == entryId);
+            // DISABLED
+            //Interfaces.Models.ISpecListEntry _removeListEntry =
+            //    draftEntries.Find(id => id.ValueID == entryId);
 
             if (ShowEntryRemoveConfirmation() == DialogResult.OK)
             {
-                int entriesCount = draftEntries.Count;
-                entriesCount = drafter.DraftEntries.Count;
+                // DISABLED
+                //int entriesCount = draftEntries.Count;
+                int entriesCount = drafter.DraftEntries.Count;
 
                 SaveEntrySelectionPosition(entriesCount);
 
                 drafter.RemoveEntryFromDraftEntries(entryId);
 
                 // Remove entry from list
-                draftEntries.Remove(_removeListEntry);
+                // DISABLED
+                //draftEntries.Remove(_removeListEntry);
 
                 // Renumber remaining entries ValueID
-                int i = 0;
-                foreach (Interfaces.Models.ISpecListEntry entry in draftEntries)
-                {
-                    entry.ValueID = ++i;
-                }
+                // DISABLED
+                //int i = 0;
+                //foreach (Interfaces.Models.ISpecListEntry entry in draftEntries)
+                //{
+                //    entry.ValueID = ++i;
+                //}
 
                 // Refresh the list of Entries
                 ClearListEntriesGrid();
@@ -794,7 +803,7 @@ namespace UserInterface.Forms
         {
             // DISABLED
             //draftSpec = null;
-            draftEntries = null;
+            //draftEntries = null;
 
             draftCustomSpecId = string.Empty;
 
@@ -1225,7 +1234,8 @@ namespace UserInterface.Forms
             bool noEntries;
             int entriesCount;
 
-            noEntries = draftEntries == null;
+            // DISABLED
+            //noEntries = draftEntries == null;
             noEntries = drafter.DraftEntries == null;
 
             if (noEntries)
@@ -1236,8 +1246,9 @@ namespace UserInterface.Forms
             {
                 DisplayDraftEntries();
                 EnableListEntryModifyUI();
-                
-                entriesCount = draftEntries.Count;
+
+                // DISABLED
+                //entriesCount = draftEntries.Count;
                 entriesCount = drafter.DraftEntries.Count;
 
                 CheckEntriesCount(entriesCount);
@@ -1326,7 +1337,8 @@ namespace UserInterface.Forms
 
         private void DisplayDraftEntries()
         {
-            dgvListEntries.DataSourceResize(draftEntries);
+            // DISABLED
+            //dgvListEntries.DataSourceResize(draftEntries);
             dgvListEntries.DataSourceResize(drafter.DraftEntries);
         }
 
