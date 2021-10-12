@@ -89,7 +89,7 @@ namespace Modeling.DraftModels
             DraftSpecs.TextPattern = specsTxtPat;
         }
 
-        public void ClearAllDrafts()
+        public void Clear()
         {
             ClearDraftSpecs();
             ClearDraftSpec();
@@ -121,17 +121,16 @@ namespace Modeling.DraftModels
 
         public void EditSpec(int specIndex)
         {
-            ISpecsItem spec =
-                DraftSpecs.SpecItems//.ToList()[specIndex];
+            DraftSpec = DraftSpecs.SpecItems
                 .FirstOrDefault(si => si.Index == specIndex);
 
-            if (spec.ListEntries != null)
+            if (DraftSpec.ListEntries != null)
             {
                 DraftSpecType = SpecType.List;
                 DraftEntries = new List<ISpecListEntry>(DraftSpec.ListEntries);
             }
 
-            if (spec.CustomInputID != null)
+            if (DraftSpec.CustomInputID != null)
             {
                 DraftSpecType = SpecType.Custom;
                 DraftCustomSpecId = DraftSpec.CustomInputID;
@@ -140,12 +139,9 @@ namespace Modeling.DraftModels
 
         public void AddSpecToSpecsItemsDrafts()
         {
-            // Trying extension method Add for IEnumerable
-            DraftSpecs.SpecItems.Add(DraftSpec);
-
-            //List<ISpecsItem> tempList = DraftSpecs.SpecItems.ToList();
-            //tempList.Add(DraftSpec);
-            //DraftSpecs.SpecItems = tempList;
+            List<ISpecsItem> tempList = DraftSpecs.SpecItems.ToList();
+            tempList.Add(DraftSpec);
+            DraftSpecs.SpecItems = tempList;
         }
 
         public void RemoveSpecFromDraftSpecsItems(int specIndex)
