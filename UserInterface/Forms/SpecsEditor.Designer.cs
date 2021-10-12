@@ -689,7 +689,6 @@
             this.txtSpecsName.ReadOnly = true;
             this.txtSpecsName.Size = new System.Drawing.Size(162, 20);
             this.txtSpecsName.TabIndex = 7;
-            this.txtSpecsName.TextChanged += new System.EventHandler(this.txtSpecsID_TextChanged);
             // 
             // lblSpecsName
             // 
