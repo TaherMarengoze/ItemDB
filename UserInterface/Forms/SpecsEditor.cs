@@ -95,7 +95,7 @@ namespace UserInterface.Forms
 
         private string draftSpecsId;
         //private Interfaces.Models.ISpecs draftSpecs;
-        private Interfaces.Models.ISpecsItem draftSpec;
+        //private Interfaces.Models.ISpecsItem draftSpec;
         private SpecType draftSpecType;
         private List<Interfaces.Models.ISpecListEntry> draftEntries;
         private string draftCustomSpecId;
@@ -313,7 +313,8 @@ namespace UserInterface.Forms
             specMode = EntryMode.New;
 
             // Instantiate new Spec
-            draftSpec = new Modeling.DataModels.SpecsItem();
+            // DISABLED
+            //draftSpec = new Modeling.DataModels.SpecsItem();
             drafter.NewDraftSpec();
 
             // Get last SpecsItem index
@@ -326,13 +327,15 @@ namespace UserInterface.Forms
             string name = $"SI{newIdx:000}";
 
             // Set object members
-            draftSpec.Index = newIdx;
-            draftSpec.Name = name;
+            // DISABLED
+            //draftSpec.Index = newIdx;
+            //draftSpec.Name = name;
 
             drafter.DraftSpec.Index = newIdx;
             drafter.DraftSpec.Name = name;
 
-            SetSpecFieldsValue(newIdx, name, draftSpec.ValuePattern);
+            // DISABLED
+            //SetSpecFieldsValue(newIdx, name, draftSpec.ValuePattern);
             SetSpecFieldsValue(newIdx, name, drafter.DraftSpec.ValuePattern);
 
             // Setup UI
@@ -371,18 +374,18 @@ namespace UserInterface.Forms
             // DISABLED
             //draftSpec = draftSpecs.SpecItems.ToList()[GetSelectedSpecIndex() - 1];
 
-            if (draftSpec.ListEntries != null)
-            {
-                draftSpecType = SpecType.List;
-                draftEntries =
-                    new List<Interfaces.Models.ISpecListEntry>(draftSpec.ListEntries);
-            }
+            //if (draftSpec.ListEntries != null)
+            //{
+            //    draftSpecType = SpecType.List;
+            //    draftEntries =
+            //        new List<Interfaces.Models.ISpecListEntry>(draftSpec.ListEntries);
+            //}
 
-            if (draftSpec.CustomInputID != null)
-            {
-                draftSpecType = SpecType.Custom;
-                draftCustomSpecId = draftSpec.CustomInputID;
-            }
+            //if (draftSpec.CustomInputID != null)
+            //{
+            //    draftSpecType = SpecType.Custom;
+            //    draftCustomSpecId = draftSpec.CustomInputID;
+            //}
 
             // Setup UI
             DisableSpecModifyUI();
@@ -415,25 +418,26 @@ namespace UserInterface.Forms
             drafter.SaveDraftSpec(int.Parse(txtSiIndex.Text), txtSiName.Text, txtSiValuePattern.Text);
 
             // Save new Spec data
-            draftSpec.Index = int.Parse(txtSiIndex.Text);
-            draftSpec.Name = txtSiName.Text;
-            draftSpec.ValuePattern = txtSiValuePattern.Text;
+            // DISABLED
+            //draftSpec.Index = int.Parse(txtSiIndex.Text);
+            //draftSpec.Name = txtSiName.Text;
+            //draftSpec.ValuePattern = txtSiValuePattern.Text;
 
-            switch (draftSpecType)
-            {
-                case SpecType.List:
-                    draftSpec.ListEntries =
-                    new List<Interfaces.Models.ISpecListEntry>(draftEntries);
+            //switch (draftSpecType)
+            //{
+            //    case SpecType.List:
+            //        draftSpec.ListEntries =
+            //        new List<Interfaces.Models.ISpecListEntry>(draftEntries);
 
-                    draftSpec.CustomInputID = null;
+            //        draftSpec.CustomInputID = null;
 
-                    break;
-                case SpecType.Custom:
-                    draftSpec.CustomInputID = draftCustomSpecId;
-                    draftSpec.ListEntries = null;
+            //        break;
+            //    case SpecType.Custom:
+            //        draftSpec.CustomInputID = draftCustomSpecId;
+            //        draftSpec.ListEntries = null;
 
-                    break;
-            }
+            //        break;
+            //}
 
             // Add the created Spec to Spec list of the new Specs
             if (specMode == EntryMode.New)
@@ -642,13 +646,14 @@ namespace UserInterface.Forms
             ListEntryEditor listEditor = new ListEntryEditor();
 
             // Copy list entries of draft spec to draft entries, if any
-            if (draftEntries == null)
-            {
-                draftEntries =
-                    draftSpec.ListEntries == null ?
-                    new List<Interfaces.Models.ISpecListEntry>() :
-                    new List<Interfaces.Models.ISpecListEntry>(draftSpec.ListEntries);
-            }
+            // DISABLED
+            //if (draftEntries == null)
+            //{
+            //    draftEntries =
+            //        draftSpec.ListEntries == null ?
+            //        new List<Interfaces.Models.ISpecListEntry>() :
+            //        new List<Interfaces.Models.ISpecListEntry>(draftSpec.ListEntries);
+            //}
             drafter.CopyEntriesToDraft();
 
 
@@ -787,7 +792,8 @@ namespace UserInterface.Forms
 
         private void ClearSpecsDrafts()
         {
-            draftSpec = null;
+            // DISABLED
+            //draftSpec = null;
             draftEntries = null;
 
             draftCustomSpecId = string.Empty;
