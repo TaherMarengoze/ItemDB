@@ -96,7 +96,7 @@ namespace UserInterface.Forms
         private string draftSpecsId;
         //private Interfaces.Models.ISpecs draftSpecs;
         //private Interfaces.Models.ISpecsItem draftSpec;
-        private SpecType draftSpecType;
+        //private SpecType draftSpecType;
         private List<Interfaces.Models.ISpecListEntry> draftEntries;
         private string draftCustomSpecId;
 
@@ -877,22 +877,23 @@ namespace UserInterface.Forms
 
         private void CheckSpecData()
         {
-            bool specValid = false;
+            // DISABLED
+            //bool specValid = false;
 
-            switch (draftSpecType)
-            {
-                case SpecType.List:
-                    specValid = draftEntries != null && draftEntries.Count > 0;
+            //switch (draftSpecType)
+            //{
+            //    case SpecType.List:
+            //        specValid = draftEntries != null && draftEntries.Count > 0;
 
-                    break;
-                case SpecType.Custom:
-                    specValid = draftCustomSpecId != string.Empty;
-                    break;
-                default:
-                    break;
-            }
+            //        break;
+            //    case SpecType.Custom:
+            //        specValid = draftCustomSpecId != string.Empty;
+            //        break;
+            //    default:
+            //        break;
+            //}
 
-            IsValidSpecData = specValid;
+            //IsValidSpecData = specValid;
 
             IsValidSpecData = drafter.IsSpecValid();
         }
@@ -1211,7 +1212,8 @@ namespace UserInterface.Forms
         {
             drafter.SetSpecTypeToList();
 
-            draftSpecType = SpecType.List;
+            // DISABLED
+            //draftSpecType = SpecType.List;
             grpListEntries.Enabled = true;
             CheckListEntries();
             //CheckSpecName();
@@ -1268,7 +1270,8 @@ namespace UserInterface.Forms
         {
             drafter.SetSpecTypeToCustom();
 
-            draftSpecType = SpecType.Custom;
+            // DISABLED
+            //draftSpecType = SpecType.Custom;
             cboCustomTypeSelector.Enabled = true;
 
             if (draftCustomSpecId != null)
