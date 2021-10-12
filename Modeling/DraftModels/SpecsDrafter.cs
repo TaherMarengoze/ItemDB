@@ -45,7 +45,7 @@ namespace Modeling.DraftModels
 
         public ISpecsItem DraftSpec { get; private set; }
 
-        public SpecType DraftSpecType { get; set; }
+        public SpecType DraftSpecType { get; private set; }
         
         public List<ISpecListEntry> DraftEntries { get; set; }
 
@@ -71,6 +71,12 @@ namespace Modeling.DraftModels
         /// </summary>
         public List<ISpecsItem> specsItems;
 
+
+        public int specIndex;
+        public string specName;
+        public string specPattern;
+
+
         public int DraftSpecsItemsCount()
         {
             return DraftSpecs.SpecItems.Count();
@@ -83,9 +89,22 @@ namespace Modeling.DraftModels
             DraftSpecs.TextPattern = specsTxtPat;
         }
 
-        public void ClearDraft()
+        public void ClearAllDrafts()
+        {
+            ClearDraftSpecs();
+            ClearDraftSpec();
+        }
+
+        public void ClearDraftSpecs()
         {
             DraftSpecs = null;
+        }
+
+        public void ClearDraftSpec()
+        {
+            DraftSpec = null;
+            DraftEntries = null;
+            DraftCustomSpecId = string.Empty;
         }
 
         public void NewDraftSpec()
@@ -149,6 +168,18 @@ namespace Modeling.DraftModels
             }
         }
 
+        public void CopyEntriesToDraft()
+        {
+            // Copy list entries of draft spec to draft entries, if any
+            if (DraftEntries == null)
+            {
+                DraftEntries =
+                    DraftSpec.ListEntries == null ?
+                    new List<ISpecListEntry>() :
+                    new List<ISpecListEntry>(DraftSpec.ListEntries);
+            }
+        }
+
         public void SaveDraftSpec(int index, string name, string valPattern)
         {
             DraftSpec.Index = index;
@@ -167,6 +198,52 @@ namespace Modeling.DraftModels
                     DraftSpec.ListEntries = null;
 
                     break;
+            }
+        }
+
+        public bool IsSpecValid()
+        {
+            switch (DraftSpecType)
+            {
+                case SpecType.List:
+                    return DraftEntries != null && DraftEntries.Count > 0;
+
+                case SpecType.Custom:
+                    return DraftCustomSpecId != string.Empty;
+
+                default:
+                    return false;
+            }
+        }
+
+        public void SetSpecTypeToList()
+        {
+            DraftSpecType = SpecType.List;
+        }
+
+        public void SetSpecTypeToCustom()
+        {
+            DraftSpecType = SpecType.Custom;
+        }
+
+        public ISpecListEntry GetSpecListEntry(int entryId)
+        {
+            return
+                DraftEntries.Find(id => id.ValueID == entryId);
+        }
+
+        public void RemoveEntryFromDraftEntries(int entryId)
+        {
+            ISpecListEntry _removeListEntry = GetSpecListEntry(entryId);
+
+            // Remove entry from list
+            DraftEntries.Remove(_removeListEntry);
+
+            // Renumber remaining entries ValueID
+            int i = 0;
+            foreach (ISpecListEntry entry in DraftEntries)
+            {
+                entry.ValueID = ++i;
             }
         }
     }

@@ -216,7 +216,7 @@ namespace UserInterface.Forms
             specMode = EntryMode.View;
 
             draftSpecs = null;
-            drafter.ClearDraft();
+            drafter.ClearDraftSpecs();
 
             ClearSpecsDrafts();
             EnableSpecsListSelection();
@@ -320,8 +320,11 @@ namespace UserInterface.Forms
             draftSpec.Index = newIdx;
             draftSpec.Name = name;
 
-            SetSpecFieldsValue(newIdx.ToString(), name, draftSpec.ValuePattern);
-            SetSpecFieldsValue(drafter.DraftSpec.Index.ToString(), drafter.DraftSpec.Name, drafter.DraftSpec.ValuePattern);
+            drafter.DraftSpec.Index = newIdx;
+            drafter.DraftSpec.Name = name;
+
+            SetSpecFieldsValue(newIdx, name, draftSpec.ValuePattern);
+            SetSpecFieldsValue(newIdx, name, drafter.DraftSpec.ValuePattern);
 
             // Setup UI
             DisableSpecModifyUI();
@@ -336,9 +339,9 @@ namespace UserInterface.Forms
             ClearListEntriesGrid();
         }
 
-        private void SetSpecFieldsValue(string index, string name, string valPattern)
+        private void SetSpecFieldsValue(int index, string name, string valPattern)
         {
-            txtSiIndex.Text = index;
+            txtSiIndex.Text = index.ToString();
             txtSiName.Text = name;
             txtSiValuePattern.Text = valPattern;
         }
@@ -353,10 +356,10 @@ namespace UserInterface.Forms
         {
             specMode = EntryMode.Edit;
 
+            drafter.EditSpec(GetSelectedSpecIndex());
+
             // Get Spec object being edited
             draftSpec = draftSpecs.SpecItems.ToList()[GetSelectedSpecIndex() - 1];
-
-            drafter.EditSpec(GetSelectedSpecIndex());
 
             if (draftSpec.ListEntries != null)
             {
@@ -384,6 +387,7 @@ namespace UserInterface.Forms
                 DisplayDraftEntries();
                 EnableListEntryModifyUI();
                 CheckEntriesCount(draftEntries.Count);
+                CheckEntriesCount(drafter.DraftEntries.Count);
             }
             //else Do Nothing
 
@@ -391,6 +395,7 @@ namespace UserInterface.Forms
             {
                 cboCustomTypeSelector.Enabled = true;
                 cboCustomTypeSelector.Text = draftCustomSpecId;
+                cboCustomTypeSelector.Text = drafter.DraftCustomSpecId;
             }
             //else Do Nothing
         }
@@ -605,14 +610,14 @@ namespace UserInterface.Forms
 
             // TEST
             draftSpecs = null;
-            drafter.ClearDraft();
+            drafter.ClearDraftSpecs();
         }
 
         private void AddNewListEntry()
         {
             ListEntryEditor listEditor = new ListEntryEditor();
 
-            // Copy list entries of draftSpec, if any
+            // Copy list entries of draft spec to draft entries, if any
             if (draftEntries == null)
             {
                 draftEntries =
@@ -620,11 +625,14 @@ namespace UserInterface.Forms
                     new List<Interfaces.Models.ISpecListEntry>() :
                     new List<Interfaces.Models.ISpecListEntry>(draftSpec.ListEntries);
             }
+            drafter.CopyEntriesToDraft();
+
 
             if (listEditor.ShowDialog() == DialogResult.OK)
             {
                 // Get last entryID
                 int lastId = draftEntries.Count;
+                lastId = drafter.DraftEntries.Count;
 
                 // Generate new entryID
                 int newId = lastId + 1;
@@ -634,10 +642,14 @@ namespace UserInterface.Forms
 
                 // Add the new entry to the draft list
                 draftEntries.Add(listEditor.ListEntry2);
+                drafter.DraftEntries.Add(listEditor.ListEntry2);
 
                 // Enable Edit and Delete buttons
                 EnableListEntryModifyUI();
+
                 CheckEntriesCount(draftEntries.Count);
+                CheckEntriesCount(drafter.DraftEntries.Count);
+
                 CheckSpecData();
 
                 // Display the list items
@@ -659,6 +671,8 @@ namespace UserInterface.Forms
             Interfaces.Models.ISpecListEntry _editListEntry = draftEntries
                 .Find(id => id.ValueID == entryId);
 
+            _editListEntry = drafter.GetSpecListEntry(entryId);
+
             ListEntryEditor _listEditor = new ListEntryEditor(_editListEntry);
 
             if (_listEditor.ShowDialog() == DialogResult.OK)
@@ -674,14 +688,20 @@ namespace UserInterface.Forms
             // Get Spec ListEntry
             int entryId = GetSelectedListEntryID();
 
-            Interfaces.Models.ISpecListEntry _editListEntry = draftEntries.Find(id => id.ValueID == entryId);
+            Interfaces.Models.ISpecListEntry _removeListEntry =
+                draftEntries.Find(id => id.ValueID == entryId);
 
             if (ShowEntryRemoveConfirmation() == DialogResult.OK)
             {
-                SaveEntrySelectionPosition(draftEntries.Count);
+                int entriesCount = draftEntries.Count;
+                entriesCount = drafter.DraftEntries.Count;
+
+                SaveEntrySelectionPosition(entriesCount);
+
+                drafter.RemoveEntryFromDraftEntries(entryId);
 
                 // Remove entry from list
-                draftEntries.Remove(_editListEntry);
+                draftEntries.Remove(_removeListEntry);
 
                 // Renumber remaining entries ValueID
                 int i = 0;
@@ -694,28 +714,31 @@ namespace UserInterface.Forms
                 ClearListEntriesGrid();
                 DisplayDraftEntries();
                 RestoreEntrySelection();
-                CheckEntriesCount(draftEntries.Count);
+                CheckEntriesCount(entriesCount);
             }
         }
 
         private void ChangeSpecCustomId()
         {
-            string selCustSpecId;
+            string selCustSpecId= cboCustomTypeSelector.Text;
 
             switch (specMode)
             {
                 case EntryMode.View:
                     break;
                 case EntryMode.New:
-                    selCustSpecId = cboCustomTypeSelector.Text;
+                    SetSpecCustomId(selCustSpecId);
+
                     if (selCustSpecId != string.Empty)
                     {
                         draftCustomSpecId = selCustSpecId;
                     }
                     CheckSpecData();
                     break;
+
                 case EntryMode.Edit:
-                    selCustSpecId = cboCustomTypeSelector.Text;
+                    SetSpecCustomId(selCustSpecId);
+
                     if (selCustSpecId != string.Empty)
                     {
                         draftCustomSpecId = selCustSpecId;
@@ -723,9 +746,19 @@ namespace UserInterface.Forms
                     //CheckSpecName();
                     CheckSpecData();
                     break;
+
                 default:
                     break;
             }
+        }
+
+        private void SetSpecCustomId(string selCustSpecId)
+        {
+            if (selCustSpecId != string.Empty)
+            {
+                drafter.DraftCustomSpecId = selCustSpecId;
+            }
+            CheckSpecData();
         }
 
         private void ClearSpecsDrafts()
@@ -734,6 +767,8 @@ namespace UserInterface.Forms
             draftEntries = null;
 
             draftCustomSpecId = string.Empty;
+
+            drafter.ClearDraftSpec();
         }
 
         private void CheckSpecsID()
@@ -827,6 +862,8 @@ namespace UserInterface.Forms
             }
 
             IsValidSpecData = specValid;
+
+            IsValidSpecData = drafter.IsSpecValid();
         }
 
         private void CheckDraftSpecItemReady()
@@ -1140,6 +1177,8 @@ namespace UserInterface.Forms
 
         private void SelectListType()
         {
+            drafter.SetSpecTypeToList();
+
             draftSpecType = SpecType.List;
             grpListEntries.Enabled = true;
             CheckListEntries();
@@ -1149,7 +1188,13 @@ namespace UserInterface.Forms
 
         private void CheckListEntries()
         {
-            if (/*draftEntries*/draftEntries == null)
+            bool noEntries;
+            int entriesCount;
+
+            noEntries = draftEntries == null;
+            noEntries = drafter.DraftEntries == null;
+
+            if (noEntries)
             {
                 btnListEntryAdd.Enabled = true;
             }
@@ -1157,7 +1202,11 @@ namespace UserInterface.Forms
             {
                 DisplayDraftEntries();
                 EnableListEntryModifyUI();
-                CheckEntriesCount(draftEntries.Count);
+                
+                entriesCount = draftEntries.Count;
+                entriesCount = drafter.DraftEntries.Count;
+
+                CheckEntriesCount(entriesCount);
             }
         }
 
@@ -1185,11 +1234,19 @@ namespace UserInterface.Forms
 
         private void SelectCustomType()
         {
+            drafter.SetSpecTypeToCustom();
+
             draftSpecType = SpecType.Custom;
             cboCustomTypeSelector.Enabled = true;
+
             if (draftCustomSpecId != null)
             {
                 cboCustomTypeSelector.Text = draftCustomSpecId;
+            }
+
+            if (drafter.DraftCustomSpecId != null)
+            {
+                cboCustomTypeSelector.Text = drafter.DraftCustomSpecId;
             }
 
         }
@@ -1235,6 +1292,7 @@ namespace UserInterface.Forms
         private void DisplayDraftEntries()
         {
             dgvListEntries.DataSourceResize(draftEntries);
+            dgvListEntries.DataSourceResize(drafter.DraftEntries);
         }
 
         private void ClearSpecItemsGrid()
