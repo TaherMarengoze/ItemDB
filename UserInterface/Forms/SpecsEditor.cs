@@ -1,6 +1,8 @@
 ﻿
 using ClientService;
 using CoreLibrary.Enums;
+using Drafting;
+//using Modeling.DraftModels;
 using Shared.UI;
 using System;
 using System.Drawing;
@@ -15,7 +17,8 @@ namespace UserInterface.Forms
         {
             Valid,
             Duplicate,
-            Blank
+            Blank,
+            Invalid
         }
 
         #region Properties
@@ -89,9 +92,7 @@ namespace UserInterface.Forms
         private Interfaces.Models.ISpecs selectedSpecs;
         private Interfaces.Models.ISpecsItem selSpec;
 
-        private Modeling.DraftModels.SpecsDrafter drafter;
-
-        private string draftSpecsId;
+        private SpecsDrafter drafter;
 
         private int specsSelectionIndex = 0;
         private int specSelectionIndex;
@@ -130,10 +131,12 @@ namespace UserInterface.Forms
         {
             SaveSpecsSelectionPosition();
             // Instantiate new Specs
-            drafter = new Modeling.DraftModels.SpecsDrafter();
+            drafter = new SpecsDrafter
+            {
+                // Generate new SpecsID
+                DraftSpecsId = GenerateNewSpecsID()
+            };
 
-            // Generate new SpecsID
-            draftSpecsId = GenerateNewSpecsID();
             // Sets a flag
             SpecsMode = EntryMode.New;
 
@@ -153,7 +156,9 @@ namespace UserInterface.Forms
 
             // Set Specs Meta-data initial/default values
             txtSpecsID.Focus();
-            txtSpecsID.Text = draftSpecsId;
+
+            txtSpecsID.Text = drafter.DraftSpecsId;
+
             txtSpecsPattern.Text = drafter.DraftSpecs.TextPattern;
 
             // Setup SpecsItem Meta-data controls
@@ -171,8 +176,10 @@ namespace UserInterface.Forms
 
         private void EditSpecs()
         {
-            draftSpecsId = GetSelectedSpecsId();
-            drafter = new Modeling.DraftModels.SpecsDrafter(SpecsRepository.Read(draftSpecsId));
+            drafter = new SpecsDrafter(SpecsRepository.Read(GetSelectedSpecsId()))
+            {
+                DraftSpecsId = GetSelectedSpecsId()
+            };
 
             SaveSpecsSelectionPosition();
 
@@ -472,7 +479,7 @@ namespace UserInterface.Forms
         private void SaveChanges()
         {
             // Save draft (new) Specs metadata
-            drafter.specsId = txtSpecsID.Text;
+            drafter.inputSpecsId = txtSpecsID.Text;
             drafter.specsName = txtSpecsName.Text;
             drafter.specsTxtPat = txtSpecsPattern.Text;
 
@@ -485,7 +492,7 @@ namespace UserInterface.Forms
 
             if (SpecsMode == EntryMode.Edit)
             {
-                SpecsRepository.Update(draftSpecsId, drafter.DraftSpecs);
+                SpecsRepository.Update(drafter.DraftSpecsId, drafter.DraftSpecs);
             }
 
             // Exit draft (New) mode
@@ -622,6 +629,15 @@ namespace UserInterface.Forms
             drafter.ClearDraftSpec();
         }
 
+        private void InputSpecsID()
+        {
+            if (SpecsMode != EntryMode.View && specMode == EntryMode.View)
+            {
+                drafter.inputSpecsId = txtSpecsID.Text;
+                drafter.InputSpecsId(txtSpecsID.Text);
+            }
+        }
+
         private void CheckSpecsID()
         {
             if (SpecsMode != EntryMode.View && specMode == EntryMode.View)
@@ -643,7 +659,9 @@ namespace UserInterface.Forms
 
         private void ValidateInputId(string inputSpecsId)
         {
-            if (inputSpecsId != draftSpecsId && DataProvider.GetSpecsIds().Contains(inputSpecsId))
+            string input = drafter.DraftSpecsId;
+
+            if (inputSpecsId != input && DataProvider.GetSpecsIds().Contains(inputSpecsId))
             {
                 DisplayIdValidityInfo(IdStatus.Duplicate);
                 txtSpecsID.SelectAll();

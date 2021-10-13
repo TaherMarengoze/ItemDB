@@ -264,6 +264,10 @@
       <Project>{90c23753-2a1c-4f04-a4e7-3b12ce02fa7f}</Project>
       <Name>CoreLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Drafting\Drafting.csproj">
+      <Project>{38dd4b4a-716d-4d0d-ad6c-9affedb3f964}</Project>
+      <Name>Drafting</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ModelAbstraction\Interfaces.csproj">
       <Project>{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}</Project>
       <Name>Interfaces</Name>

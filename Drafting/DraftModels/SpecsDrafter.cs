@@ -1,13 +1,12 @@
 ﻿
 //using CoreLibrary.Enums;
+using ClientService;
 using Interfaces.Models;
-using System;
+using Modeling.DataModels;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Modeling.DraftModels
+namespace Drafting
 {
     public partial class SpecsDrafter : Interfaces.General.IDraftable
     {
@@ -19,7 +18,7 @@ namespace Modeling.DraftModels
 
         public SpecsDrafter()
         {
-            DraftSpecs = new DataModels.Specs();
+            DraftSpecs = new Specs();
         }
 
         public SpecsDrafter(ISpecs editSpecs)
@@ -40,6 +39,8 @@ namespace Modeling.DraftModels
         /// Temporary value holder for edit object ID,to refer to old ID value in case it was changed.
         /// </summary>
         private readonly string refId;
+
+        public string DraftSpecsId { get; set; }
 
         public ISpecs DraftSpecs { get; set; }
 
@@ -110,7 +111,7 @@ namespace Modeling.DraftModels
         public void NewDraftSpec()
         {
             // Same class attempt
-            DraftSpec = new DataModels.SpecsItem();
+            DraftSpec = new SpecsItem();
 
             int lastIdx = DraftSpecs.SpecItems.Count();
             int newIdx = lastIdx + 1;
@@ -146,13 +147,6 @@ namespace Modeling.DraftModels
 
         public void RemoveSpecFromDraftSpecsItems(int specIndex)
         {
-            //ISpecsItem _specsItem =
-            //    DraftSpecs.SpecItems.FirstOrDefault(idx => idx.Index == specIndex);
-
-            //List<ISpecsItem> tempList = DraftSpecs.SpecItems.ToList();
-            //tempList.Remove(_specsItem);
-            //DraftSpecs.SpecItems = tempList;
-
             DraftSpecs.SpecItems =
                 DraftSpecs.SpecItems.Where(idx => idx.Index != specIndex);
 
@@ -241,6 +235,63 @@ namespace Modeling.DraftModels
             {
                 entry.ValueID = ++i;
             }
+        }
+
+        public bool IsValidSpecsId { get; private set; }
+
+        public IdStatus Status { get; private set; }
+        public List<string> ExistingIDs { get; private set; }
+
+        public enum IdStatus
+        {
+            Valid,
+            Duplicate,
+            Blank,
+            Invalid
+        }
+
+        public void InputSpecsId(string input)
+        {
+            inputSpecsId = input;
+
+            if (inputSpecsId == string.Empty)
+            {
+                IsValidSpecsId = false;
+                Status = IdStatus.Blank;
+            }
+            else
+            {
+                ValidateInputId();
+            }
+            ExistingIDs = FilterExistingIDs(inputSpecsId);
+        }
+
+        private void ValidateInputId( )
+        {
+            if (inputSpecsId != DraftSpecsId && DataProvider.GetSpecsIds().Contains(inputSpecsId))
+            {
+                IsValidSpecsId = false;
+                Status = IdStatus.Duplicate;
+            }
+            else
+            {
+                IsValidSpecsId = true;
+                Status = IdStatus.Valid;
+            }
+        }
+
+
+        private List<string> FilterExistingIDs(string inputSpecsId)
+        {
+            if (inputSpecsId == string.Empty)
+            {
+                return DataProvider.GetSpecsIds();
+            }
+            else
+            {
+                return DataProvider.FilterSpecsIds(inputSpecsId);
+            }
+
         }
     }
 }
