@@ -184,7 +184,8 @@ namespace UserInterface.Forms
             SaveSpecsSelectionPosition();
 
             SpecsMode = EntryMode.Edit;
-            CheckSpecsID();
+            //CheckSpecsID();
+            InputSpecsID();
             CheckDraftSpecsItemsCount();
             // Disable Specs Selection
             DisableSpecsListSelection();
@@ -237,6 +238,7 @@ namespace UserInterface.Forms
 
             ClearSpecItemsGrid();
             ClearListEntriesGrid();
+            ResetIdValidityInfo();
             ResetSpecTypeUI();
             DisableSpecTypeUI();
             PopulateSpecsList();
@@ -633,49 +635,58 @@ namespace UserInterface.Forms
         {
             if (SpecsMode != EntryMode.View && specMode == EntryMode.View)
             {
-                drafter.inputSpecsId = txtSpecsID.Text;
+                //drafter.inputSpecsId = txtSpecsID.Text;
                 drafter.InputSpecsId(txtSpecsID.Text);
+                IsValidSpecsId = drafter.IsValidSpecsId;
+                DisplayIdValidityInfo((IdStatus)drafter.IdStatus);
+                lbxSpecs.DataSource = drafter.ExistingIDs;
             }
         }
 
-        private void CheckSpecsID()
-        {
-            if (SpecsMode != EntryMode.View && specMode == EntryMode.View)
-            {
-                string inputSpecsId = txtSpecsID.Text;
-                if (inputSpecsId != string.Empty)
-                {
-                    ValidateInputId(inputSpecsId);
-                }
-                else
-                {
-                    DisplayIdValidityInfo(IdStatus.Blank);
-                    IsValidSpecsId = false;
-                    //CheckDraftSpecsReady();
-                }
-                FilterExistingIDs(inputSpecsId);
-            }
-        }
+        //private void CheckSpecsID()
+        //{
+        //    if (SpecsMode != EntryMode.View && specMode == EntryMode.View)
+        //    {
+        //        string inputSpecsId = txtSpecsID.Text;
+        //        if (inputSpecsId == string.Empty)
+        //        {
+        //            DisplayIdValidityInfo(IdStatus.Blank);
+        //            IsValidSpecsId = false;
+        //        }
+        //        else
+        //        {
+        //            //ValidateInputId(inputSpecsId);
+        //            if (inputSpecsId != drafter.DraftSpecsId && DataProvider.GetSpecsIds().Contains(inputSpecsId))
+        //            {
+        //                DisplayIdValidityInfo(IdStatus.Duplicate);
+        //                txtSpecsID.FocusSelectAll();
+        //                IsValidSpecsId = false;
+        //            }
+        //            else
+        //            {
+        //                DisplayIdValidityInfo(IdStatus.Valid);
+        //                IsValidSpecsId = true;
+        //            }
 
-        private void ValidateInputId(string inputSpecsId)
-        {
-            string input = drafter.DraftSpecsId;
+        //        }
+        //        FilterExistingIDs(inputSpecsId);
+        //    }
+        //}
 
-            if (inputSpecsId != input && DataProvider.GetSpecsIds().Contains(inputSpecsId))
-            {
-                DisplayIdValidityInfo(IdStatus.Duplicate);
-                txtSpecsID.SelectAll();
-                txtSpecsID.Focus();
-                IsValidSpecsId = false;
-                //CheckDraftSpecsReady
-            }
-            else
-            {
-                DisplayIdValidityInfo(IdStatus.Valid);
-                IsValidSpecsId = true;
-                //CheckDraftSpecsReady();
-            }
-        }
+        //private void ValidateInputId(string inputSpecsId)
+        //{
+        //    if (inputSpecsId != drafter.DraftSpecsId && DataProvider.GetSpecsIds().Contains(inputSpecsId))
+        //    {
+        //        DisplayIdValidityInfo(IdStatus.Duplicate);
+        //        txtSpecsID.FocusSelectAll();
+        //        IsValidSpecsId = false;
+        //    }
+        //    else
+        //    {
+        //        DisplayIdValidityInfo(IdStatus.Valid);
+        //        IsValidSpecsId = true;
+        //    }
+        //}
 
         private void CheckDraftSpecsItemsCount()
         {
@@ -1250,20 +1261,30 @@ namespace UserInterface.Forms
             switch (status)
             {
                 case IdStatus.Valid:
-                    lblSpecsIdValidator.Text = string.Empty;
-                    txtSpecsID.BackColor = SystemColors.Window;
+                    //lblSpecsIdValidator.Text = string.Empty;
+                    //txtSpecsID.BackColor = SystemColors.Window;
+                    ResetIdValidityInfo();
                     break;
+
                 case IdStatus.Duplicate:
                     lblSpecsIdValidator.Text = "* Duplicate ID";
                     txtSpecsID.BackColor = Color.HotPink;
                     break;
+
                 case IdStatus.Blank:
                     lblSpecsIdValidator.Text = "* Blank ID";
                     txtSpecsID.BackColor = Color.Pink;
                     break;
+
                 default:
                     break;
             }
+        }
+
+        private void ResetIdValidityInfo()
+        {
+            lblSpecsIdValidator.Text = string.Empty;
+            txtSpecsID.BackColor = SystemColors.Window;
         }
 
         private void FilterExistingIDs(string inputSpecsId)
@@ -1349,7 +1370,12 @@ namespace UserInterface.Forms
         private void btnAccept_Click(object sender, EventArgs e) => SaveChanges();
         private void btnCancel_Click(object sender, EventArgs e) => CancelSpecsDrafting();
         private void btnRemoveSpecs_Click(object sender, EventArgs e) => RemoveSpecs();
-        private void txtSpecsID_TextChanged(object sender, EventArgs e) => CheckSpecsID();
+        private void txtSpecsID_TextChanged(object sender, EventArgs e)
+        {
+            //CheckSpecsID();
+            InputSpecsID();
+        }
+
         private void btnSiAdd_Click(object sender, EventArgs e) => NewSpec();
         private void btnSiEdit_Click(object sender, EventArgs e) => EditSpec();
         private void btnSiRemove_Click(object sender, EventArgs e) => RemoveSpec();
