@@ -186,7 +186,8 @@ namespace UserInterface.Forms
             SpecsMode = EntryMode.Edit;
             //CheckSpecsID();
             InputSpecsID();
-            CheckDraftSpecsItemsCount();
+            CheckDraftSpecsItemsCount(); // => can be replaced with its body
+            //IsSpecsHasItem = drafter.DraftSpecsItemsCount() > 0;
             // Disable Specs Selection
             DisableSpecsListSelection();
 
@@ -481,7 +482,7 @@ namespace UserInterface.Forms
         private void SaveChanges()
         {
             // Save draft (new) Specs metadata
-            drafter.inputSpecsId = txtSpecsID.Text;
+            drafter.InputSpecsId = txtSpecsID.Text;
             drafter.specsName = txtSpecsName.Text;
             drafter.specsTxtPat = txtSpecsPattern.Text;
 
@@ -635,8 +636,7 @@ namespace UserInterface.Forms
         {
             if (SpecsMode != EntryMode.View && specMode == EntryMode.View)
             {
-                //drafter.inputSpecsId = txtSpecsID.Text;
-                drafter.InputSpecsId(txtSpecsID.Text);
+                drafter.InputSpecsId = txtSpecsID.Text;
                 IsValidSpecsId = drafter.IsValidSpecsId;
                 DisplayIdValidityInfo((IdStatus)drafter.IdStatus);
                 lbxSpecs.DataSource = drafter.ExistingIDs;
