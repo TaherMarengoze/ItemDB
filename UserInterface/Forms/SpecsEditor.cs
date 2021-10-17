@@ -42,17 +42,6 @@ namespace UserInterface.Forms
             }
         }
 
-        private bool _isValidSpecsId;
-        private bool IsValidSpecsId
-        {
-            get { return _isValidSpecsId; }
-            set
-            {
-                _isValidSpecsId = value;
-                CheckDraftSpecsReady();
-            }
-        }
-
         private bool _isSpecsHasItem;
         private bool IsSpecsHasItem
         {
@@ -176,18 +165,17 @@ namespace UserInterface.Forms
 
         private void EditSpecs()
         {
-            drafter = new SpecsDrafter(SpecsRepository.Read(GetSelectedSpecsId()))
-            {
-                DraftSpecsId = GetSelectedSpecsId()
-            };
+            string specsId = GetSelectedSpecsId();
+
+            drafter = new SpecsDrafter(specsId);
+            drafter.OnSpecsValidityChange += Drafter_OnSpecsValidityChange;
 
             SaveSpecsSelectionPosition();
 
             SpecsMode = EntryMode.Edit;
-            //CheckSpecsID();
+            
             InputSpecsID();
-            CheckDraftSpecsItemsCount(); // => can be replaced with its body
-            //IsSpecsHasItem = drafter.DraftSpecsItemsCount() > 0;
+            
             // Disable Specs Selection
             DisableSpecsListSelection();
 
@@ -483,8 +471,8 @@ namespace UserInterface.Forms
         {
             // Save draft (new) Specs metadata
             drafter.InputSpecsId = txtSpecsID.Text;
-            drafter.specsName = txtSpecsName.Text;
-            drafter.specsTxtPat = txtSpecsPattern.Text;
+            drafter._inputSpecsName = txtSpecsName.Text;
+            drafter._inputSpecsTxtPat = txtSpecsPattern.Text;
 
             drafter.CommitChanges();
 
@@ -637,67 +625,35 @@ namespace UserInterface.Forms
             if (SpecsMode != EntryMode.View && specMode == EntryMode.View)
             {
                 drafter.InputSpecsId = txtSpecsID.Text;
-                IsValidSpecsId = drafter.IsValidSpecsId;
                 DisplayIdValidityInfo((IdStatus)drafter.IdStatus);
                 lbxSpecs.DataSource = drafter.ExistingIDs;
             }
         }
 
-        //private void CheckSpecsID()
-        //{
-        //    if (SpecsMode != EntryMode.View && specMode == EntryMode.View)
-        //    {
-        //        string inputSpecsId = txtSpecsID.Text;
-        //        if (inputSpecsId == string.Empty)
-        //        {
-        //            DisplayIdValidityInfo(IdStatus.Blank);
-        //            IsValidSpecsId = false;
-        //        }
-        //        else
-        //        {
-        //            //ValidateInputId(inputSpecsId);
-        //            if (inputSpecsId != drafter.DraftSpecsId && DataProvider.GetSpecsIds().Contains(inputSpecsId))
-        //            {
-        //                DisplayIdValidityInfo(IdStatus.Duplicate);
-        //                txtSpecsID.FocusSelectAll();
-        //                IsValidSpecsId = false;
-        //            }
-        //            else
-        //            {
-        //                DisplayIdValidityInfo(IdStatus.Valid);
-        //                IsValidSpecsId = true;
-        //            }
-
-        //        }
-        //        FilterExistingIDs(inputSpecsId);
-        //    }
-        //}
-
-        //private void ValidateInputId(string inputSpecsId)
-        //{
-        //    if (inputSpecsId != drafter.DraftSpecsId && DataProvider.GetSpecsIds().Contains(inputSpecsId))
-        //    {
-        //        DisplayIdValidityInfo(IdStatus.Duplicate);
-        //        txtSpecsID.FocusSelectAll();
-        //        IsValidSpecsId = false;
-        //    }
-        //    else
-        //    {
-        //        DisplayIdValidityInfo(IdStatus.Valid);
-        //        IsValidSpecsId = true;
-        //    }
-        //}
-
         private void CheckDraftSpecsItemsCount()
         {
-            IsSpecsHasItem = drafter.DraftSpecsItemsCount() > 0;
+            //IsSpecsHasItem = drafter.DraftSpecsItemsCount() > 0;
         }
 
         private void CheckDraftSpecsReady()
         {
-            bool isValidDraftSpecs = IsValidSpecsId && IsSpecsHasItem;
+            bool isValidDraftSpecs = drafter.IsValidSpecsId
+                //&& IsSpecsHasItem;
+                && drafter.DraftSpecsItemsCount() > 0;
 
             if (isValidDraftSpecs)
+            {
+                btnAccept.Enabled = true;
+            }
+            else
+            {
+                btnAccept.Enabled = false;
+            }
+        }
+        
+        private void Drafter_OnSpecsValidityChange(object sender, bool specsReady)
+        {
+            if (specsReady == true)
             {
                 btnAccept.Enabled = true;
             }

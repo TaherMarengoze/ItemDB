@@ -3,6 +3,7 @@
 using ClientService;
 using Interfaces.Models;
 using Modeling.DataModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,23 +17,17 @@ namespace Drafting
             Custom = 2
         }
 
+        public enum ValidityStatus
+        {
+            Valid,
+            Duplicate,
+            Blank,
+            Invalid
+        }
+
         public SpecsDrafter()
         {
             DraftSpecs = new Specs();
-        }
-
-        public SpecsDrafter(ISpecs editSpecs)
-        {
-            refId = editSpecs.ID;
-
-            // Save edit object reference to call it on edit cancel
-            DraftSpecs = editSpecs;
-
-            // Copy edit object to temporary fields
-            inputSpecsId = editSpecs.ID;
-            specsName = editSpecs.Name;
-            specsTxtPat = editSpecs.TextPattern;
-            specsItems = editSpecs.SpecItems.Clone();
         }
 
         public SpecsDrafter(string specsId)
@@ -42,13 +37,18 @@ namespace Drafting
             refId = editSpecs.ID;
 
             // Save edit object reference to call it on edit cancel
+            DraftSpecsId = specsId;
             DraftSpecs = editSpecs;
 
             // Copy edit object to temporary fields
-            inputSpecsId = editSpecs.ID;
-            specsName = editSpecs.Name;
-            specsTxtPat = editSpecs.TextPattern;
-            specsItems = editSpecs.SpecItems.Clone();
+            //_inputSpecsId = editSpecs.ID; // original
+            InputSpecsId = editSpecs.ID;  // test
+            _inputSpecsName = editSpecs.Name;
+            _inputSpecsTxtPat = editSpecs.TextPattern;
+            _inputSpecsItems = editSpecs.SpecItems.Clone();
+
+            // Check draft specs has at least one spec item
+            IsSpecsHasItem = DraftSpecs.SpecItems.Count() > 0;
         }
 
         /// <summary>
@@ -68,25 +68,66 @@ namespace Drafting
 
         public string DraftCustomSpecId { get; set; }
 
+        private string _inputSpecsId;
         /// <summary>
         /// Temporary input for specs ID.
         /// </summary>
-        private string inputSpecsId;
+        public string InputSpecsId
+        {
+            get => _inputSpecsId;
+            set
+            {
+                _inputSpecsId = value;
+                if (_inputSpecsId == string.Empty)
+                {
+                    IsValidSpecsId = false;
+                    IdStatus = ValidityStatus.Blank;
+                }
+                else
+                {
+                    bool isInputNotDraft = _inputSpecsId != DraftSpecsId;
+                    bool isDuplicateInput = DataProvider.GetSpecsIds().Contains(_inputSpecsId);
+                    bool isValidChar = true;
+
+                    if (isInputNotDraft && isDuplicateInput)
+                    {
+                        IsValidSpecsId = false;
+                        IdStatus = ValidityStatus.Duplicate;
+                    }
+                    else
+                    {
+                        // Should also check for invalid characters
+                        if (isValidChar)
+                        {
+                            IsValidSpecsId = true;
+                            IdStatus = ValidityStatus.Valid;
+                        }
+                        else
+                        {
+                            IsValidSpecsId = false;
+                            IdStatus = ValidityStatus.Invalid;
+                        }
+
+                    }
+                }
+                ExistingIDs = FilterExistingIDs(_inputSpecsId);
+            }
+        }
 
         /// <summary>
         /// Temporary input for specs name.
         /// </summary>
-        public string specsName;
+        public string _inputSpecsName;
 
         /// <summary>
         /// Temporary input for specs text pattern.
         /// </summary>
-        public string specsTxtPat;
+        public string _inputSpecsTxtPat;
 
         /// <summary>
         /// Temporary input for specs items.
         /// </summary>
-        public List<ISpecsItem> specsItems;
+        public List<ISpecsItem> _inputSpecsItems;
 
 
         public int specIndex;
@@ -101,9 +142,9 @@ namespace Drafting
 
         public void CommitChanges()
         {
-            DraftSpecs.ID = inputSpecsId;
-            DraftSpecs.Name = specsName;
-            DraftSpecs.TextPattern = specsTxtPat;
+            DraftSpecs.ID = _inputSpecsId;
+            DraftSpecs.Name = _inputSpecsName;
+            DraftSpecs.TextPattern = _inputSpecsTxtPat;
         }
 
         public void Clear()
@@ -253,10 +294,19 @@ namespace Drafting
             }
         }
 
-        public bool IsValidSpecsId { get; private set; }
+        private bool _isValidSpecsId;
+        public bool IsValidSpecsId
+        {
+            get => _isValidSpecsId;
+            private set
+            {
+                _isValidSpecsId = value;
+                CheckDraftSpecsReady();
+            }
+        }
 
         private bool _isSpecsHasItem;
-        private bool IsSpecsHasItem
+        public bool IsSpecsHasItem
         {
             get { return _isSpecsHasItem; }
             set
@@ -270,55 +320,6 @@ namespace Drafting
 
         public List<string> ExistingIDs { get; private set; }
 
-        public string InputSpecsId
-        {
-            get => inputSpecsId;
-            set
-            {
-                inputSpecsId = value;
-                if (inputSpecsId == string.Empty)
-                {
-                    IsValidSpecsId = false;
-                    IdStatus = ValidityStatus.Blank;
-                }
-                else
-                {
-                    bool isInputNotDraft = inputSpecsId != DraftSpecsId;
-                    bool isDuplicateInput = DataProvider.GetSpecsIds().Contains(inputSpecsId);
-                    bool isValidChar = true;
-
-                    if (isInputNotDraft && isDuplicateInput)
-                    {
-                        IsValidSpecsId = false;
-                        IdStatus = ValidityStatus.Duplicate;
-                    }
-                    else
-                    {
-                        // Should also check for invalid characters
-                        if (isValidChar)
-                        {
-                            IsValidSpecsId = true;
-                            IdStatus = ValidityStatus.Valid;
-                        }
-                        else
-                        {
-                            IsValidSpecsId = false;
-                            IdStatus = ValidityStatus.Invalid;
-                        }
-
-                    }
-                }
-                ExistingIDs = FilterExistingIDs(inputSpecsId);
-            }
-        }
-
-        public enum ValidityStatus
-        {
-            Valid,
-            Duplicate,
-            Blank,
-            Invalid
-        }
 
         private List<string> FilterExistingIDs(string inputSpecsId)
         {
@@ -333,6 +334,8 @@ namespace Drafting
 
         }
 
+        public event EventHandler<bool> OnSpecsValidityChange;
+
         private void CheckDraftSpecsReady()
         {
             bool isValidDraftSpecs = IsValidSpecsId && IsSpecsHasItem;
@@ -340,10 +343,12 @@ namespace Drafting
             if (isValidDraftSpecs)
             {
                 // raise event for ready state
+                OnSpecsValidityChange?.Invoke(this, true);
             }
             else
             {
                 // raise event for not ready state
+                OnSpecsValidityChange?.Invoke(this, false);
             }
         }
     }
