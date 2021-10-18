@@ -25,30 +25,69 @@ namespace Drafting
             Invalid
         }
 
-        public SpecsDrafter()
+        public delegate void SpecsEventHandler(bool state);
+        public event SpecsEventHandler SpecsReadyEvent;
+        public event EventHandler<bool> OnSpecsValidityChange;
+
+        //public SpecsDrafter()
+        //{
+        //    DraftSpecs = new Specs();
+        //}
+
+        //public SpecsDrafter(string specsId)
+        //{
+        //    ISpecs editSpecs = SpecsRepository.Read(specsId);
+
+        //    refId = editSpecs.ID;
+
+        //    // Save edit object reference to call it on edit cancel
+        //    DraftSpecsId = specsId;
+        //    DraftSpecs = editSpecs;
+
+        //    // Copy edit object to temporary fields
+
+        //    //_inputSpecsId = editSpecs.ID; // original
+        //    InputSpecsId = editSpecs.ID;  // test
+
+        //    _inputSpecsName = editSpecs.Name;
+
+        //    _inputSpecsTxtPat = editSpecs.TextPattern;
+
+        //    InputSpecsItems = editSpecs.SpecItems.Clone();
+
+        //    // Check draft specs has at least one spec item
+
+        //    /* no need for this check as its always
+        //     * true when editing an existing specs*/
+        //    //IsSpecsHasItem = DraftSpecs.SpecItems.Count() > 0;
+
+        //    //IsSpecsHasItem = true;
+        //}
+
+        public SpecsDrafter(SpecsEventHandler handler)
         {
             DraftSpecs = new Specs();
+            SpecsReadyEvent += handler;
         }
 
-        public SpecsDrafter(string specsId)
+        public SpecsDrafter(string specsId, EventHandler<bool> handler)
         {
-            ISpecs editSpecs = SpecsRepository.Read(specsId);
+            DraftSpecs = SpecsRepository.Read(specsId);
+            OnSpecsValidityChange += handler;
 
-            refId = editSpecs.ID;
-
-            // Save edit object reference to call it on edit cancel
+            refId = DraftSpecs.ID;
             DraftSpecsId = specsId;
-            DraftSpecs = editSpecs;
 
             // Copy edit object to temporary fields
-            //_inputSpecsId = editSpecs.ID; // original
-            InputSpecsId = editSpecs.ID;  // test
-            _inputSpecsName = editSpecs.Name;
-            _inputSpecsTxtPat = editSpecs.TextPattern;
-            _inputSpecsItems = editSpecs.SpecItems.Clone();
 
-            // Check draft specs has at least one spec item
-            IsSpecsHasItem = DraftSpecs.SpecItems.Count() > 0;
+            //_inputSpecsId = editSpecs.ID; // original
+            InputSpecsId = DraftSpecs.ID;  // test
+
+            _inputSpecsName = DraftSpecs.Name;
+
+            _inputSpecsTxtPat = DraftSpecs.TextPattern;
+
+            InputSpecsItems = DraftSpecs.SpecItems.Clone();
         }
 
         /// <summary>
@@ -58,7 +97,7 @@ namespace Drafting
 
         public string DraftSpecsId { get; set; }
 
-        public ISpecs DraftSpecs { get; set; }
+        public ISpecs DraftSpecs { get; private set; }
 
         public ISpecsItem DraftSpec { get; private set; }
 
@@ -67,6 +106,8 @@ namespace Drafting
         public List<ISpecListEntry> DraftEntries { get; set; }
 
         public string DraftCustomSpecId { get; set; }
+
+        // Inputs
 
         private string _inputSpecsId;
         /// <summary>
@@ -124,16 +165,67 @@ namespace Drafting
         /// </summary>
         public string _inputSpecsTxtPat;
 
+        private List<ISpecsItem> _inputSpecsItems;
         /// <summary>
         /// Temporary input for specs items.
         /// </summary>
-        public List<ISpecsItem> _inputSpecsItems;
-
+        public List<ISpecsItem> InputSpecsItems
+        {
+            get => _inputSpecsItems;
+            set
+            {
+                _inputSpecsItems = value;
+                IsSpecsHasItem = value.Count > 0 ? true : false;
+            }
+        }
 
         public int specIndex;
         public string specName;
         public string specPattern;
 
+        #region Validators
+
+        private bool _isValidSpecsId;
+        public bool IsValidSpecsId
+        {
+            get => _isValidSpecsId;
+            private set
+            {
+                _isValidSpecsId = value;
+                CheckDraftSpecsReady();
+            }
+        }
+
+        private bool _isSpecsHasItem;
+        public bool IsSpecsHasItem
+        {
+            get { return _isSpecsHasItem; }
+            set
+            {
+                _isSpecsHasItem = value;
+                CheckDraftSpecsReady();
+            }
+        }
+
+        private void CheckDraftSpecsReady()
+        {
+            bool isValidDraftSpecs = IsValidSpecsId && IsSpecsHasItem;
+
+            if (isValidDraftSpecs)
+            {
+                // raise event for ready state
+                SpecsReadyEvent?.Invoke(true);
+                OnSpecsValidityChange?.Invoke(this, true);
+            }
+            else
+            {
+                // raise event for not ready state
+                SpecsReadyEvent?.Invoke(false);
+                OnSpecsValidityChange?.Invoke(this, false);
+            }
+        }
+
+        #endregion
 
         public int DraftSpecsItemsCount()
         {
@@ -195,6 +287,9 @@ namespace Drafting
             }
         }
 
+        /// <summary>
+        /// Adds the draft spec item to the draft specs items list.
+        /// </summary>
         public void AddSpecToSpecsItemsDrafts()
         {
             List<ISpecsItem> tempList = DraftSpecs.SpecItems.ToList();
@@ -294,28 +389,6 @@ namespace Drafting
             }
         }
 
-        private bool _isValidSpecsId;
-        public bool IsValidSpecsId
-        {
-            get => _isValidSpecsId;
-            private set
-            {
-                _isValidSpecsId = value;
-                CheckDraftSpecsReady();
-            }
-        }
-
-        private bool _isSpecsHasItem;
-        public bool IsSpecsHasItem
-        {
-            get { return _isSpecsHasItem; }
-            set
-            {
-                _isSpecsHasItem = value;
-                CheckDraftSpecsReady();
-            }
-        }
-
         public ValidityStatus IdStatus { get; private set; }
 
         public List<string> ExistingIDs { get; private set; }
@@ -332,24 +405,6 @@ namespace Drafting
                 return DataProvider.FilterSpecsIds(inputSpecsId);
             }
 
-        }
-
-        public event EventHandler<bool> OnSpecsValidityChange;
-
-        private void CheckDraftSpecsReady()
-        {
-            bool isValidDraftSpecs = IsValidSpecsId && IsSpecsHasItem;
-
-            if (isValidDraftSpecs)
-            {
-                // raise event for ready state
-                OnSpecsValidityChange?.Invoke(this, true);
-            }
-            else
-            {
-                // raise event for not ready state
-                OnSpecsValidityChange?.Invoke(this, false);
-            }
         }
     }
 }

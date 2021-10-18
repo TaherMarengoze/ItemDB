@@ -120,7 +120,14 @@ namespace UserInterface.Forms
         {
             SaveSpecsSelectionPosition();
             // Instantiate new Specs
-            drafter = new SpecsDrafter
+            //drafter = new SpecsDrafter
+            //{
+            //    // Generate new SpecsID
+            //    DraftSpecsId = GenerateNewSpecsID()
+            //};
+            //drafter.OnSpecsValidityChange += Drafter_OnSpecsValidityChange;
+
+            drafter = new SpecsDrafter(SpecsReadyAction)
             {
                 // Generate new SpecsID
                 DraftSpecsId = GenerateNewSpecsID()
@@ -167,8 +174,10 @@ namespace UserInterface.Forms
         {
             string specsId = GetSelectedSpecsId();
 
-            drafter = new SpecsDrafter(specsId);
-            drafter.OnSpecsValidityChange += Drafter_OnSpecsValidityChange;
+            //drafter = new SpecsDrafter(specsId);
+            //drafter.OnSpecsValidityChange += Drafter_OnSpecsValidityChange;
+
+            drafter = new SpecsDrafter(specsId, Drafter_OnSpecsValidityChange);
 
             SaveSpecsSelectionPosition();
 
@@ -652,6 +661,18 @@ namespace UserInterface.Forms
         }
         
         private void Drafter_OnSpecsValidityChange(object sender, bool specsReady)
+        {
+            if (specsReady == true)
+            {
+                btnAccept.Enabled = true;
+            }
+            else
+            {
+                btnAccept.Enabled = false;
+            }
+        }
+
+        private void SpecsReadyAction(bool specsReady)
         {
             if (specsReady == true)
             {
