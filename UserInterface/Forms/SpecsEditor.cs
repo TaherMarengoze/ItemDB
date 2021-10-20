@@ -127,11 +127,11 @@ namespace UserInterface.Forms
             //};
             //drafter.OnSpecsValidityChange += Drafter_OnSpecsValidityChange;
 
-            drafter = new SpecsDrafter(SpecsReadyAction)
-            {
-                // Generate new SpecsID
-                DraftSpecsId = GenerateNewSpecsID()
-            };
+            drafter = new SpecsDrafter(SpecsReadyAction);
+            //{
+            //    // Generate new SpecsID
+            //    DraftSpecsId = GenerateNewSpecsID()
+            //};
 
             // Sets a flag
             SpecsMode = EntryMode.New;
@@ -299,17 +299,18 @@ namespace UserInterface.Forms
             drafter.NewDraftSpec();
 
             // Get last SpecsItem index
-            int lastIdx = drafter.DraftSpecsItemsCount();
+            //int lastIdx = drafter.DraftSpecsItemsCount();
 
             // Set Initial member values
-            int newIdx = lastIdx + 1;
-            string name = $"SI{newIdx:000}";
+            //int newIdx = lastIdx + 1;
+            //string name = $"SI{newIdx:000}";
 
             // Set object members
-            drafter.DraftSpec.Index = newIdx;
-            drafter.DraftSpec.Name = name;
+            //drafter.DraftSpec.Index = newIdx;
+            //drafter.DraftSpec.Name = name;
 
-            SetSpecTextFieldsValue(newIdx, name, drafter.DraftSpec.ValuePattern);
+            //SetSpecTextFieldsValue(newIdx, name, drafter.DraftSpec.ValuePattern);
+            SetSpecTextFieldsValue();
 
             // Setup UI
             DisableSpecModifyUI();
@@ -324,12 +325,18 @@ namespace UserInterface.Forms
             ClearListEntriesGrid();
         }
 
-        private void SetSpecTextFieldsValue(int index, string name, string valPattern)
+        private void SetSpecTextFieldsValue()
         {
-            txtSiIndex.Text = index.ToString();
-            txtSiName.Text = name;
-            txtSiValuePattern.Text = valPattern;
+            txtSiIndex.Text = drafter.DraftSpec.Index.ToString();
+            txtSiName.Text = drafter.DraftSpec.Name;
+            txtSiValuePattern.Text = drafter.DraftSpec.ValuePattern;
         }
+        //private void SetSpecTextFieldsValue(int index, string name, string valPattern)
+        //{
+        //    txtSiIndex.Text = index.ToString();
+        //    txtSiName.Text = name;
+        //    txtSiValuePattern.Text = valPattern;
+        //}
 
         private void DoubleClickEditSpec()
         {
@@ -452,9 +459,11 @@ namespace UserInterface.Forms
                 if (ShowSpecRemoveConfirmation() == DialogResult.OK)
                 {
                     drafter.RemoveSpecFromDraftSpecsItems(GetSelectedSpecIndex());
+                    
                     ClearSpecItemsGrid();
                     dgvSpec.DataSourceResize(drafter.DraftSpecs.SpecItems.ToList());
                 }
+                siCount = drafter.DraftSpecsItemsCount();
 
                 RestoreSpecItemSelection();
 
@@ -466,14 +475,17 @@ namespace UserInterface.Forms
                     // Disable Edit and Delete buttons for Spec modification
                     btnSiAdd.Focus();
                     btnSiEdit.Enabled = false;
+                    btnSiRemove.Enabled = false;
 
                     ClearSpecMetadataEntryUI();
                     dgvListEntries.DataSource = null;
                 }
 
-                if (siCount <= 1)
-                    btnSiRemove.Enabled = false;
+                //if (siCount <= 1)
+                //    btnSiRemove.Enabled = false;
             }
+
+            drafter.RemoveSpec(GetSelectedSpecIndex());
         }
 
         private void SaveChanges()
@@ -773,26 +785,26 @@ namespace UserInterface.Forms
         }
         #endregion
 
-        private string GenerateNewSpecsID()
-        {
-            int idCount = DataProvider.GetSpecsIds().Count;
+        //private string GenerateNewSpecsID()
+        //{
+        //    int idCount = DataProvider.GetSpecsIds().Count;
 
-            string newId = $"S{idCount:0000}";
+        //    string newId = $"S{idCount:0000}";
 
-            if (DataProvider.GetSpecsIds().Contains(newId) == true)
-            {
-                int i = idCount;
-                do
-                {
-                    i++;
-                    newId = $"S{i:0000}";
-                }
-                while (DataProvider.GetSpecsIds().Contains(newId) == true && i > idCount + 1000);
+        //    if (DataProvider.GetSpecsIds().Contains(newId) == true)
+        //    {
+        //        int i = idCount;
+        //        do
+        //        {
+        //            i++;
+        //            newId = $"S{i:0000}";
+        //        }
+        //        while (DataProvider.GetSpecsIds().Contains(newId) == true && i > idCount + 1000);
 
-                return newId;
-            }
-            return newId;
-        }
+        //        return newId;
+        //    }
+        //    return newId;
+        //}
 
 
         #region User Interface

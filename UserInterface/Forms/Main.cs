@@ -95,6 +95,8 @@ namespace UserInterface.Forms
 
             Runtime.Test.AutoLoad(testLoadXmlContext);
             Runtime.Test.DoSomething(PostLoading);
+            //Runtime.Test.DoSomething(delegate { LauchEditor(new SpecsEditor()); });
+            btnSpecsEditor.PerformClick();
         }
 
         private void tsmiLoadAll_Click(object sender, EventArgs e)

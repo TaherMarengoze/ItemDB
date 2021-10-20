@@ -67,6 +67,10 @@ namespace Drafting
         public SpecsDrafter(SpecsEventHandler handler)
         {
             DraftSpecs = new Specs();
+
+            // Generate new SpecsID
+            DraftSpecsId = GenerateNewSpecsID();
+
             SpecsReadyEvent += handler;
         }
 
@@ -95,7 +99,7 @@ namespace Drafting
         /// </summary>
         private readonly string refId;
 
-        public string DraftSpecsId { get; set; }
+        public string DraftSpecsId { get; private set; }
 
         public ISpecs DraftSpecs { get; private set; }
 
@@ -297,16 +301,44 @@ namespace Drafting
             DraftSpecs.SpecItems = tempList;
         }
 
+        /// <summary>
+        /// Removes a spec item (<see cref="ISpecsItem"/>) from the spec list of the draft specs (<see cref="DraftSpecs"/>).
+        /// </summary>
+        /// <param name="specIndex">The index of the spec to remove</param>
         public void RemoveSpecFromDraftSpecsItems(int specIndex)
         {
-            DraftSpecs.SpecItems =
-                DraftSpecs.SpecItems.Where(idx => idx.Index != specIndex);
+            // FIX: its wrong to remove the spec from the draft specs; its should be removed from the temporary input
+            List<ISpecsItem> specItemsList =
+                DraftSpecs.SpecItems.ToList();
+
+            ISpecsItem specItem =
+                DraftSpecs.SpecItems.FirstOrDefault(idx => idx.Index == specIndex);
+
+            specItemsList.Remove(specItem);
 
             // Renumber SpecItems
             int i = 0;
-            foreach (ISpecsItem spec in DraftSpecs.SpecItems)
+            foreach (ISpecsItem spec in specItemsList) { spec.Index = ++i; }
+
+            DraftSpecs.SpecItems = specItemsList;
+        }
+
+        public void AddSpec()
+        {
+            InputSpecsItems.Add(DraftSpec);
+        }
+
+        // FIX: its wrong to remove the spec from the draft specs; its should be removed from the temporary input
+        public void RemoveSpec(int specIndex)
+        {
+            //int itemIndex = InputSpecsItems.FindIndex(idx => idx.Index == specIndex);
+            //InputSpecsItems.RemoveAt(itemIndex);
+            InputSpecsItems.RemoveAll(idx => idx.Index == specIndex);
+
+            // Renumber SpecItems
+            for (int i = 0; i < InputSpecsItems.Count; i++)
             {
-                spec.Index = ++i;
+                InputSpecsItems[i].Index = i + 1;
             }
         }
 
@@ -405,6 +437,27 @@ namespace Drafting
                 return DataProvider.FilterSpecsIds(inputSpecsId);
             }
 
+        }
+
+        private string GenerateNewSpecsID()
+        {
+            int idCount = DataProvider.GetSpecsIds().Count;
+
+            string newId = $"S{idCount:0000}";
+
+            if (DataProvider.GetSpecsIds().Contains(newId) == true)
+            {
+                int i = idCount;
+                do
+                {
+                    i++;
+                    newId = $"S{i:0000}";
+                }
+                while (DataProvider.GetSpecsIds().Contains(newId) == true && i > idCount + 1000);
+
+                return newId;
+            }
+            return newId;
         }
     }
 }
