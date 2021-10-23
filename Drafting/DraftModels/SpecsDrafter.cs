@@ -66,10 +66,10 @@ namespace Drafting
 
         public SpecsDrafter(SpecsEventHandler handler)
         {
-            DraftSpecs = new Specs();
+            DraftSpecs = new Specs() { ID = GenerateNewSpecsID() };
 
             // Generate new SpecsID
-            DraftSpecsId = GenerateNewSpecsID();
+            //DraftSpecsId = GenerateNewSpecsID();
 
             SpecsReadyEvent += handler;
         }
@@ -80,7 +80,7 @@ namespace Drafting
             OnSpecsValidityChange += handler;
 
             refId = DraftSpecs.ID;
-            DraftSpecsId = specsId;
+            //DraftSpecsId = specsId;
 
             // Copy edit object to temporary fields
 
@@ -99,7 +99,7 @@ namespace Drafting
         /// </summary>
         private readonly string refId;
 
-        public string DraftSpecsId { get; private set; }
+        //public string DraftSpecsId { get; private set; }
 
         public ISpecs DraftSpecs { get; private set; }
 
@@ -130,7 +130,7 @@ namespace Drafting
                 }
                 else
                 {
-                    bool isInputNotDraft = _inputSpecsId != DraftSpecsId;
+                    bool isInputNotDraft = _inputSpecsId != DraftSpecs.ID/*DraftSpecsId*/;
                     bool isDuplicateInput = DataProvider.GetSpecsIds().Contains(_inputSpecsId);
                     bool isValidChar = true;
 
@@ -184,7 +184,26 @@ namespace Drafting
         }
 
         public int specIndex;
-        public string specName;
+
+        private string _inputSpecName;
+        public string InputSpecName
+        {
+            get => _inputSpecName; set
+            {
+                _inputSpecName = value;
+                if (_inputSpecName != string.Empty)
+                {
+                    // Set a valid name flag to true
+                    //IsValidSpecName = true;
+                }
+                else
+                {
+                    // Set a valid name flag to false
+                    //IsValidSpecName = false;
+                }
+            }
+        }
+
         public string specPattern;
 
         #region Validators
@@ -424,7 +443,7 @@ namespace Drafting
         public ValidityStatus IdStatus { get; private set; }
 
         public List<string> ExistingIDs { get; private set; }
-
+        
 
         private List<string> FilterExistingIDs(string inputSpecsId)
         {
@@ -458,6 +477,16 @@ namespace Drafting
                 return newId;
             }
             return newId;
+        }
+
+        public void AddToRepository()
+        {
+            SpecsRepository.Create(DraftSpecs);
+        }
+
+        public void UpdateRepository()
+        {
+            SpecsRepository.Update(refId, DraftSpecs);
         }
     }
 }

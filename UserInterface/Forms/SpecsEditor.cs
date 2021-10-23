@@ -153,7 +153,8 @@ namespace UserInterface.Forms
             // Set Specs Meta-data initial/default values
             txtSpecsID.Focus();
 
-            txtSpecsID.Text = drafter.DraftSpecsId;
+            //txtSpecsID.Text = drafter.DraftSpecsId;
+            txtSpecsID.Text = drafter.DraftSpecs.ID;
 
             txtSpecsPattern.Text = drafter.DraftSpecs.TextPattern;
 
@@ -497,14 +498,14 @@ namespace UserInterface.Forms
 
             drafter.CommitChanges();
 
-            if (SpecsMode == EntryMode.New)
+            switch (SpecsMode)
             {
-                SpecsRepository.Create(drafter.DraftSpecs);
-            }
-
-            if (SpecsMode == EntryMode.Edit)
-            {
-                SpecsRepository.Update(drafter.DraftSpecsId, drafter.DraftSpecs);
+                case EntryMode.New:
+                    drafter.AddToRepository();
+                    break;
+                case EntryMode.Edit:
+                    drafter.UpdateRepository();
+                    break;
             }
 
             // Exit draft (New) mode
@@ -709,6 +710,8 @@ namespace UserInterface.Forms
                 {
                     IsValidSpecName = false;
                 }
+
+                drafter.InputSpecName = txtSiName.Text;
             }
         }
 
@@ -1434,6 +1437,7 @@ namespace UserInterface.Forms
             }
         }
         #endregion
+
 #pragma warning restore IDE1006 // Naming Styles
 
     }
