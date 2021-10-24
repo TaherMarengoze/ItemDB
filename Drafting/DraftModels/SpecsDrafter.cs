@@ -29,40 +29,12 @@ namespace Drafting
         public event SpecsEventHandler SpecsReadyEvent;
         public event EventHandler<bool> OnSpecsValidityChange;
 
-        //public SpecsDrafter()
-        //{
-        //    DraftSpecs = new Specs();
-        //}
+        public event EventHandler<bool> OnSpecItemValidityChange;
 
-        //public SpecsDrafter(string specsId)
-        //{
-        //    ISpecs editSpecs = SpecsRepository.Read(specsId);
+        public SpecsDrafter()
+        {
 
-        //    refId = editSpecs.ID;
-
-        //    // Save edit object reference to call it on edit cancel
-        //    DraftSpecsId = specsId;
-        //    DraftSpecs = editSpecs;
-
-        //    // Copy edit object to temporary fields
-
-        //    //_inputSpecsId = editSpecs.ID; // original
-        //    InputSpecsId = editSpecs.ID;  // test
-
-        //    _inputSpecsName = editSpecs.Name;
-
-        //    _inputSpecsTxtPat = editSpecs.TextPattern;
-
-        //    InputSpecsItems = editSpecs.SpecItems.Clone();
-
-        //    // Check draft specs has at least one spec item
-
-        //    /* no need for this check as its always
-        //     * true when editing an existing specs*/
-        //    //IsSpecsHasItem = DraftSpecs.SpecItems.Count() > 0;
-
-        //    //IsSpecsHasItem = true;
-        //}
+        }
 
         public SpecsDrafter(SpecsEventHandler handler)
         {
@@ -94,10 +66,77 @@ namespace Drafting
             InputSpecsItems = DraftSpecs.SpecItems.Clone();
         }
 
+        public void NewDraftSpecs(SpecsEventHandler handler)
+        {
+            DraftSpecs = new Specs() { ID = GenerateNewSpecsID() };
+
+            // Generate new SpecsID
+            //DraftSpecsId = GenerateNewSpecsID();
+
+            SpecsReadyEvent += handler;
+        }
+
+        public void EditSpecs(string specsId, EventHandler<bool> handler)
+        {
+            DraftSpecs = SpecsRepository.Read(specsId);
+            OnSpecsValidityChange += handler;
+
+            refId = DraftSpecs.ID;
+            //DraftSpecsId = specsId;
+
+            // Copy edit object to temporary fields
+
+            //_inputSpecsId = editSpecs.ID; // original
+            InputSpecsId = DraftSpecs.ID;  // test
+
+            _inputSpecsName = DraftSpecs.Name;
+
+            _inputSpecsTxtPat = DraftSpecs.TextPattern;
+
+            InputSpecsItems = DraftSpecs.SpecItems.Clone();
+        }
+
+        public void NewDraftSpec(EventHandler<bool> handler)
+        {
+            DraftSpec = new SpecsItem();
+
+            OnSpecItemValidityChange += handler;
+
+            int lastIdx = DraftSpecs.SpecItems.Count();
+            int newIdx = lastIdx + 1;
+
+            DraftSpec.Index = newIdx;
+            DraftSpec.Name = $"SI{newIdx:000}";
+        }
+
+        public void EditSpec(int specIndex, EventHandler<bool> handler)
+        {
+            DraftSpec = DraftSpecs.SpecItems
+                .FirstOrDefault(si => si.Index == specIndex);
+
+            OnSpecItemValidityChange += handler;
+
+            if (DraftSpec.ListEntries != null)
+            {
+                DraftSpecType = SpecType.List;
+                DraftEntries = new List<ISpecListEntry>(DraftSpec.ListEntries);
+            }
+
+            if (DraftSpec.CustomInputID != null)
+            {
+                DraftSpecType = SpecType.Custom;
+                DraftCustomSpecId = DraftSpec.CustomInputID;
+            }
+        }
+
+        public static ISpecs SelectedSpecs { get; private set; }
+
+        public static ISpecsItem SelectedSpec { get; private set; }
+
         /// <summary>
         /// Temporary value holder for edit object ID,to refer to old ID value in case it was changed.
         /// </summary>
-        private readonly string refId;
+        private string refId;
 
         //public string DraftSpecsId { get; private set; }
 
@@ -194,12 +233,12 @@ namespace Drafting
                 if (_inputSpecName != string.Empty)
                 {
                     // Set a valid name flag to true
-                    //IsValidSpecName = true;
+                    IsValidSpecName = true;
                 }
                 else
                 {
                     // Set a valid name flag to false
-                    //IsValidSpecName = false;
+                    IsValidSpecName = false;
                 }
             }
         }
@@ -230,6 +269,27 @@ namespace Drafting
             }
         }
 
+        private bool _isValidSpecName;
+        public bool IsValidSpecName
+        {
+            get => _isValidSpecName; private set
+            {
+                _isValidSpecName = value;
+                CheckDraftSpecItemReady();
+            }
+        }
+
+        private bool _isValidSpecData;
+        public bool IsValidSpecData
+        {
+            get { return _isValidSpecData; }
+            set
+            {
+                _isValidSpecData = value;
+                CheckDraftSpecItemReady();
+            }
+        }
+
         private void CheckDraftSpecsReady()
         {
             bool isValidDraftSpecs = IsValidSpecsId && IsSpecsHasItem;
@@ -248,6 +308,21 @@ namespace Drafting
             }
         }
 
+        private void CheckDraftSpecItemReady()
+        {
+            bool isValidDraftSpecItem = IsValidSpecName && IsValidSpecData;
+
+            if (isValidDraftSpecItem)
+            {
+                // raise event for ready state
+                OnSpecItemValidityChange?.Invoke(this, true);
+            }
+            else
+            {
+                // raise event for not ready state
+                OnSpecItemValidityChange?.Invoke(this, false);
+            }
+        }
         #endregion
 
         public int DraftSpecsItemsCount()
@@ -278,36 +353,6 @@ namespace Drafting
             DraftSpec = null;
             DraftEntries = null;
             DraftCustomSpecId = string.Empty;
-        }
-
-        public void NewDraftSpec()
-        {
-            // Same class attempt
-            DraftSpec = new SpecsItem();
-
-            int lastIdx = DraftSpecs.SpecItems.Count();
-            int newIdx = lastIdx + 1;
-
-            DraftSpec.Index = newIdx;
-            DraftSpec.Name = $"SI{newIdx:000}";
-        }
-
-        public void EditSpec(int specIndex)
-        {
-            DraftSpec = DraftSpecs.SpecItems
-                .FirstOrDefault(si => si.Index == specIndex);
-
-            if (DraftSpec.ListEntries != null)
-            {
-                DraftSpecType = SpecType.List;
-                DraftEntries = new List<ISpecListEntry>(DraftSpec.ListEntries);
-            }
-
-            if (DraftSpec.CustomInputID != null)
-            {
-                DraftSpecType = SpecType.Custom;
-                DraftCustomSpecId = DraftSpec.CustomInputID;
-            }
         }
 
         /// <summary>
@@ -412,6 +457,7 @@ namespace Drafting
         public void SetSpecTypeToList()
         {
             DraftSpecType = SpecType.List;
+            IsValidSpecData = IsSpecValid();
         }
 
         public void SetSpecTypeToCustom()
@@ -419,10 +465,38 @@ namespace Drafting
             DraftSpecType = SpecType.Custom;
         }
 
+        public static ISpecs GetSpecs(string specsId)
+        {
+            return SpecsRepository.Read(specsId);
+        }
+
+        public static void SetSelectedSpecs(string specsId)
+        {
+            SelectedSpecs = SpecsRepository.Read(specsId);
+        }
+
+        public static void SetSelectedSpec(int idx, SpecsDrafter drafter)
+        {
+            if (drafter == null)
+            {
+                SelectedSpec = SpecsManiuplator.GetSpecsItem(SelectedSpecs, idx);
+            }
+            else
+            {
+                SelectedSpec = SpecsManiuplator.GetSpecsItem(drafter.DraftSpecs, idx);
+            }
+        }
+
         public ISpecListEntry GetSpecListEntry(int entryId)
         {
             return
                 DraftEntries.Find(id => id.ValueID == entryId);
+        }
+
+        public void AddEntryToDraftEntries(ISpecListEntry entry)
+        {
+            DraftEntries.Add(entry);
+            IsValidSpecData = IsSpecValid();
         }
 
         public void RemoveEntryFromDraftEntries(int entryId)
@@ -440,10 +514,18 @@ namespace Drafting
             }
         }
 
+        public void SetSpecCustomId(string id)
+        {
+            if (id != string.Empty)
+            {
+                DraftCustomSpecId = id;
+            }
+            IsValidSpecData = IsSpecValid();
+        }
+
         public ValidityStatus IdStatus { get; private set; }
 
         public List<string> ExistingIDs { get; private set; }
-        
 
         private List<string> FilterExistingIDs(string inputSpecsId)
         {
