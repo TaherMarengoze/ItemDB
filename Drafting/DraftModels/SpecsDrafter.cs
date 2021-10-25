@@ -25,10 +25,7 @@ namespace Drafting
             Invalid
         }
 
-        public delegate void SpecsEventHandler(bool state);
-        public event SpecsEventHandler SpecsReadyEvent;
         public event EventHandler<bool> OnSpecsValidityChange;
-
         public event EventHandler<bool> OnSpecItemValidityChange;
 
         public SpecsDrafter()
@@ -36,14 +33,10 @@ namespace Drafting
 
         }
 
-        public SpecsDrafter(SpecsEventHandler handler)
+        public SpecsDrafter(EventHandler<bool> handler)
         {
             DraftSpecs = new Specs() { ID = GenerateNewSpecsID() };
-
-            // Generate new SpecsID
-            //DraftSpecsId = GenerateNewSpecsID();
-
-            SpecsReadyEvent += handler;
+            OnSpecsValidityChange += handler;
         }
 
         public SpecsDrafter(string specsId, EventHandler<bool> handler)
@@ -66,14 +59,10 @@ namespace Drafting
             InputSpecsItems = DraftSpecs.SpecItems.Clone();
         }
 
-        public void NewDraftSpecs(SpecsEventHandler handler)
+        public void NewDraftSpecs(EventHandler<bool> handler)
         {
             DraftSpecs = new Specs() { ID = GenerateNewSpecsID() };
-
-            // Generate new SpecsID
-            //DraftSpecsId = GenerateNewSpecsID();
-
-            SpecsReadyEvent += handler;
+            //OnSpecsValidityChange += handler;
         }
 
         public void EditSpecs(string specsId, EventHandler<bool> handler)
@@ -82,12 +71,9 @@ namespace Drafting
             OnSpecsValidityChange += handler;
 
             refId = DraftSpecs.ID;
-            //DraftSpecsId = specsId;
 
             // Copy edit object to temporary fields
-
-            //_inputSpecsId = editSpecs.ID; // original
-            InputSpecsId = DraftSpecs.ID;  // test
+            InputSpecsId = DraftSpecs.ID;
 
             _inputSpecsName = DraftSpecs.Name;
 
@@ -297,13 +283,11 @@ namespace Drafting
             if (isValidDraftSpecs)
             {
                 // raise event for ready state
-                SpecsReadyEvent?.Invoke(true);
                 OnSpecsValidityChange?.Invoke(this, true);
             }
             else
             {
                 // raise event for not ready state
-                SpecsReadyEvent?.Invoke(false);
                 OnSpecsValidityChange?.Invoke(this, false);
             }
         }

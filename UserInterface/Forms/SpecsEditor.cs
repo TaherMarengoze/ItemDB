@@ -2,7 +2,6 @@
 using ClientService;
 using CoreLibrary.Enums;
 using Drafting;
-//using Modeling.DraftModels;
 using Shared.UI;
 using System;
 using System.Drawing;
@@ -49,7 +48,13 @@ namespace UserInterface.Forms
         private int entrySelectionIndex;
 
 
-        public SpecsEditor() => InitializeComponent();
+        public SpecsEditor()
+        {
+            InitializeComponent();
+            drafter = new SpecsDrafter();
+            drafter.OnSpecsValidityChange += Drafter_OnSpecsValidityChange;
+            drafter.OnSpecItemValidityChange += Drafter_OnSpecItemValidityChange;
+        }
 
         private void SaveToDataSource()
         {
@@ -69,6 +74,10 @@ namespace UserInterface.Forms
             ClearCustomTypeSelector();
 
             EnableSpecsModifyUI();
+
+            //drafter = new SpecsDrafter();
+            //drafter.OnSpecsValidityChange += Drafter_OnSpecsValidityChange;
+            //drafter.OnSpecItemValidityChange += Drafter_OnSpecItemValidityChange;
         }
         
         private void AddNewSpecs()
@@ -76,8 +85,9 @@ namespace UserInterface.Forms
             SaveSpecsSelectionPosition();
             
             // Instantiate new Specs
-            drafter = new SpecsDrafter(SpecsReadyAction);
-            
+            //drafter = new SpecsDrafter(Drafter_OnSpecsValidityChange);
+            drafter.NewDraftSpecs(null);
+
             // Sets a flag
             SpecsMode = EntryMode.New;
 
@@ -568,25 +578,16 @@ namespace UserInterface.Forms
         
         private void Drafter_OnSpecsValidityChange(object sender, bool specsReady)
         {
-            if (specsReady == true)
+            if (SpecsMode != EntryMode.View)
             {
-                btnAccept.Enabled = true;
-            }
-            else
-            {
-                btnAccept.Enabled = false;
-            }
-        }
-
-        private void SpecsReadyAction(bool specsReady)
-        {
-            if (specsReady == true)
-            {
-                btnAccept.Enabled = true;
-            }
-            else
-            {
-                btnAccept.Enabled = false;
+                if (specsReady == true)
+                {
+                    btnAccept.Enabled = true;
+                }
+                else
+                {
+                    btnAccept.Enabled = false;
+                }
             }
         }
 
@@ -1160,7 +1161,6 @@ namespace UserInterface.Forms
                 {
                     if (lbxSpecs.SelectedIndex != -1)
                     {
-                        //ReadSelectedSpecsId();
                         ViewSelectedSpecsData();
                     }
                 }
