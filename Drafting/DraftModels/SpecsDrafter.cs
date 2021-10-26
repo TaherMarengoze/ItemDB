@@ -28,47 +28,23 @@ namespace Drafting
         public event EventHandler<bool> OnSpecsValidityChange;
         public event EventHandler<bool> OnSpecItemValidityChange;
 
-        public SpecsDrafter()
+        public void NewDraftSpecs()
         {
+            DraftSpecs = new Specs() /*{ ID = GenerateNewSpecsID() }*/;
 
+            InputSpecsId = GenerateNewSpecsID();
+            InputSpecsItems = new List<ISpecsItem>();
+
+            // TEST
+            ClearSelectionObjects();
         }
 
-        public SpecsDrafter(EventHandler<bool> handler)
-        {
-            DraftSpecs = new Specs() { ID = GenerateNewSpecsID() };
-            OnSpecsValidityChange += handler;
-        }
-
-        public SpecsDrafter(string specsId, EventHandler<bool> handler)
+        public void EditSpecs(string specsId)
         {
             DraftSpecs = SpecsRepository.Read(specsId);
-            OnSpecsValidityChange += handler;
 
-            refId = DraftSpecs.ID;
-            //DraftSpecsId = specsId;
-
-            // Copy edit object to temporary fields
-
-            //_inputSpecsId = editSpecs.ID; // original
-            InputSpecsId = DraftSpecs.ID;  // test
-
-            _inputSpecsName = DraftSpecs.Name;
-
-            _inputSpecsTxtPat = DraftSpecs.TextPattern;
-
-            InputSpecsItems = DraftSpecs.SpecItems.Clone();
-        }
-
-        public void NewDraftSpecs(EventHandler<bool> handler)
-        {
-            DraftSpecs = new Specs() { ID = GenerateNewSpecsID() };
-            //OnSpecsValidityChange += handler;
-        }
-
-        public void EditSpecs(string specsId, EventHandler<bool> handler)
-        {
-            DraftSpecs = SpecsRepository.Read(specsId);
-            OnSpecsValidityChange += handler;
+            // TEST
+            ClearSelectionObjects();
 
             refId = DraftSpecs.ID;
 
@@ -115,9 +91,9 @@ namespace Drafting
             }
         }
 
-        public static ISpecs SelectedSpecs { get; private set; }
+        public /*static*/ ISpecs SelectedSpecs { get; private set; }
 
-        public static ISpecsItem SelectedSpec { get; private set; }
+        public /*static*/ ISpecsItem SelectedSpec { get; private set; }
 
         /// <summary>
         /// Temporary value holder for edit object ID,to refer to old ID value in case it was changed.
@@ -327,6 +303,12 @@ namespace Drafting
             ClearDraftSpec();
         }
 
+        private void ClearSelectionObjects()
+        {
+            SelectedSpecs = null;
+            SelectedSpec = null;
+        }
+
         public void ClearDraftSpecs()
         {
             DraftSpecs = null;
@@ -344,9 +326,12 @@ namespace Drafting
         /// </summary>
         public void AddSpecToSpecsItemsDrafts()
         {
-            List<ISpecsItem> tempList = DraftSpecs.SpecItems.ToList();
-            tempList.Add(DraftSpec);
-            DraftSpecs.SpecItems = tempList;
+            //List<ISpecsItem> tempList = DraftSpecs.SpecItems.ToList();
+            //tempList.Add(DraftSpec);
+            //InputSpecsItems = tempList;
+            //DraftSpecs.SpecItems = tempList;
+            AddSpec();
+            DraftSpecs.SpecItems = InputSpecsItems;
         }
 
         /// <summary>
@@ -374,6 +359,7 @@ namespace Drafting
         public void AddSpec()
         {
             InputSpecsItems.Add(DraftSpec);
+            IsSpecsHasItem = InputSpecsItems.Count > 0 ? true : false;
         }
 
         // FIX: its wrong to remove the spec from the draft specs; its should be removed from the temporary input
@@ -454,21 +440,14 @@ namespace Drafting
             return SpecsRepository.Read(specsId);
         }
 
-        public static void SetSelectedSpecs(string specsId)
+        public void SetSelectedSpecs(string specsId)
         {
             SelectedSpecs = SpecsRepository.Read(specsId);
         }
 
-        public static void SetSelectedSpec(int idx, SpecsDrafter drafter)
+        public void SetSelectedSpec(int idx)
         {
-            if (drafter == null)
-            {
-                SelectedSpec = SpecsManiuplator.GetSpecsItem(SelectedSpecs, idx);
-            }
-            else
-            {
-                SelectedSpec = SpecsManiuplator.GetSpecsItem(drafter.DraftSpecs, idx);
-            }
+            SelectedSpec = SpecsManiuplator.GetSpecsItem(SelectedSpecs ?? DraftSpecs, idx);
         }
 
         public ISpecListEntry GetSpecListEntry(int entryId)
@@ -554,5 +533,15 @@ namespace Drafting
         {
             SpecsRepository.Update(refId, DraftSpecs);
         }
+
+        //public void SaveToDataSource()
+        //{
+        //    /*
+        //     * The type 'ContextEntity' is defined in an assembly that is not referenced.
+        //     * You must add a reference to assembly 'CoreLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.
+        //     */
+
+        //    ContextProvider.Save(ContextEntity.Specs);
+        //}
     }
 }

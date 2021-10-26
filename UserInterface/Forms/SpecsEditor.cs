@@ -79,14 +79,14 @@ namespace UserInterface.Forms
             //drafter.OnSpecsValidityChange += Drafter_OnSpecsValidityChange;
             //drafter.OnSpecItemValidityChange += Drafter_OnSpecItemValidityChange;
         }
-        
+
         private void AddNewSpecs()
         {
             SaveSpecsSelectionPosition();
-            
+
             // Instantiate new Specs
             //drafter = new SpecsDrafter(Drafter_OnSpecsValidityChange);
-            drafter.NewDraftSpecs(null);
+            drafter.NewDraftSpecs();
 
             // Sets a flag
             SpecsMode = EntryMode.New;
@@ -106,15 +106,13 @@ namespace UserInterface.Forms
             btnSiAdd.Enabled = true;
 
             // Clear Specs Meta-data controls
-            ClearSpecsMetadataEntryUI();
+            //ClearSpecsMetadataEntryUI();
 
             // Set Specs Meta-data initial/default values
-            txtSpecsID.Focus();
-
-            //txtSpecsID.Text = drafter.DraftSpecsId;
-            txtSpecsID.Text = drafter.DraftSpecs.ID;
-
+            txtSpecsID.Text = drafter.InputSpecsId/*DraftSpecs.ID*/;
+            txtSpecsName.Text = string.Empty;
             txtSpecsPattern.Text = drafter.DraftSpecs.TextPattern;
+            txtSpecsID.Focus();
 
             // Setup SpecsItem Meta-data controls
             ClearSpecMetadataEntryUI();
@@ -133,14 +131,15 @@ namespace UserInterface.Forms
         {
             string specsId = GetSelectedSpecsId();
 
-            drafter = new SpecsDrafter(specsId, Drafter_OnSpecsValidityChange);
+            //drafter = new SpecsDrafter(specsId, Drafter_OnSpecsValidityChange);
+            drafter.EditSpecs(specsId);
 
             SaveSpecsSelectionPosition();
 
             SpecsMode = EntryMode.Edit;
-            
+
             InputSpecsID();
-            
+
             // Disable Specs Selection
             DisableSpecsListSelection();
 
@@ -392,7 +391,7 @@ namespace UserInterface.Forms
                 if (ShowSpecRemoveConfirmation() == DialogResult.OK)
                 {
                     drafter.RemoveSpecFromDraftSpecsItems(GetSelectedSpecIndex());
-                    
+
                     ClearSpecItemsGrid();
                     dgvSpec.DataSourceResize(drafter.DraftSpecs.SpecItems.ToList());
                 }
@@ -575,7 +574,7 @@ namespace UserInterface.Forms
                 lbxSpecs.DataSource = drafter.ExistingIDs;
             }
         }
-        
+
         private void Drafter_OnSpecsValidityChange(object sender, bool specsReady)
         {
             if (SpecsMode != EntryMode.View)
@@ -598,7 +597,7 @@ namespace UserInterface.Forms
                 drafter.InputSpecName = txtSiName.Text;
             }
         }
-        
+
         private void Drafter_OnSpecItemValidityChange(object sender, bool specItemReady)
         {
             btnSiAccept.Enabled = specItemReady;
@@ -678,24 +677,24 @@ namespace UserInterface.Forms
             lbxSpecs.DataSource = DataProvider.GetSpecsIds();
         }
 
-        private void ViewSelectedSpecsData()
+        private void ViewSelectedSpecsData(string specsId)
         {
-            SpecsDrafter.SetSelectedSpecs(GetSelectedSpecsId());
-            txtSpecsID.Text = SpecsDrafter.SelectedSpecs.ID;
-            txtSpecsName.Text = SpecsDrafter.SelectedSpecs.Name;
-            txtSpecsPattern.Text = SpecsDrafter.SelectedSpecs.TextPattern;
-            dgvSpec.DataSourceResize(SpecsDrafter.SelectedSpecs.SpecItems);
+            drafter.SetSelectedSpecs(specsId);
+            txtSpecsID.Text = drafter.SelectedSpecs.ID;
+            txtSpecsName.Text = drafter.SelectedSpecs.Name;
+            txtSpecsPattern.Text = drafter.SelectedSpecs.TextPattern;
+            dgvSpec.DataSourceResize(drafter.SelectedSpecs.SpecItems);
         }
 
         private void ViewSelectedSpecData(int idx)
         {
             if (specMode == EntryMode.View)
             {
-                SpecsDrafter.SetSelectedSpec(idx, drafter);
-                
+                drafter.SetSelectedSpec(idx);
+
                 txtSiIndex.Text = idx.ToString();
-                txtSiName.Text = SpecsDrafter.SelectedSpec.Name;
-                txtSiValuePattern.Text = SpecsDrafter.SelectedSpec.ValuePattern;
+                txtSiName.Text = drafter.SelectedSpec.Name;
+                txtSiValuePattern.Text = drafter.SelectedSpec.ValuePattern;
 
                 ChangeSpecTypeSelector();
             }
@@ -712,9 +711,9 @@ namespace UserInterface.Forms
 
         private void ListTypeSpec()
         {
-            if (SpecsDrafter.SelectedSpec.ListEntries != null)
+            if (drafter.SelectedSpec.ListEntries != null)
             {
-                dgvListEntries.DataSourceResize(SpecsDrafter.SelectedSpec.ListEntries.ToList());
+                dgvListEntries.DataSourceResize(drafter.SelectedSpec.ListEntries.ToList());
                 rdoListType.Checked = true;
             }
             else
@@ -726,9 +725,9 @@ namespace UserInterface.Forms
 
         private void CustomTypeSpec()
         {
-            if (SpecsDrafter.SelectedSpec.CustomInputID != null && SpecsDrafter.SelectedSpec.CustomInputID != "")
+            if (drafter.SelectedSpec.CustomInputID != null && drafter.SelectedSpec.CustomInputID != "")
             {
-                cboCustomTypeSelector.Text = SpecsDrafter.SelectedSpec.CustomInputID;
+                cboCustomTypeSelector.Text = drafter.SelectedSpec.CustomInputID;
                 rdoCustomType.Checked = true;
             }
             else
@@ -1138,7 +1137,7 @@ namespace UserInterface.Forms
             lblSpecsIdValidator.Text = string.Empty;
             txtSpecsID.BackColor = SystemColors.Window;
         }
-        
+
         private void SelectTextbox(TextBox textBox)
         {
             textBox.SelectAll();
@@ -1155,17 +1154,13 @@ namespace UserInterface.Forms
         }
         private void lbxSpecs_SelectedIndexChanged(object sender, EventArgs e)
         {
-            try
+            if (SpecsMode == EntryMode.View)
             {
-                if (SpecsMode == EntryMode.View)
+                if (lbxSpecs.SelectedIndex != -1)
                 {
-                    if (lbxSpecs.SelectedIndex != -1)
-                    {
-                        ViewSelectedSpecsData();
-                    }
+                    ViewSelectedSpecsData(GetSelectedSpecsId());
                 }
             }
-            catch (Exception) { }
         }
         private void lbxSpecs_MouseDoubleClick(object sender, MouseEventArgs e)
         {
