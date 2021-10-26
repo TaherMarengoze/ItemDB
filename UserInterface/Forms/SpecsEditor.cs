@@ -85,7 +85,6 @@ namespace UserInterface.Forms
             SaveSpecsSelectionPosition();
 
             // Instantiate new Specs
-            //drafter = new SpecsDrafter(Drafter_OnSpecsValidityChange);
             drafter.NewDraftSpecs();
 
             // Sets a flag
@@ -105,13 +104,10 @@ namespace UserInterface.Forms
             btnAccept.Enabled = false;
             btnSiAdd.Enabled = true;
 
-            // Clear Specs Meta-data controls
-            //ClearSpecsMetadataEntryUI();
-
-            // Set Specs Meta-data initial/default values
-            txtSpecsID.Text = drafter.InputSpecsId/*DraftSpecs.ID*/;
-            txtSpecsName.Text = string.Empty;
-            txtSpecsPattern.Text = drafter.DraftSpecs.TextPattern;
+            // Set Specs Metadata initial/default values
+            txtSpecsID.Text = drafter.InputSpecsId;
+            txtSpecsName.Text = drafter.InputSpecsName;
+            txtSpecsPattern.Text = drafter.InputSpecsTxtPat;
             txtSpecsID.Focus();
 
             // Setup SpecsItem Meta-data controls
@@ -131,14 +127,15 @@ namespace UserInterface.Forms
         {
             string specsId = GetSelectedSpecsId();
 
-            //drafter = new SpecsDrafter(specsId, Drafter_OnSpecsValidityChange);
             drafter.EditSpecs(specsId);
 
             SaveSpecsSelectionPosition();
 
             SpecsMode = EntryMode.Edit;
 
-            InputSpecsID();
+            //InputSpecsID();
+            DisplayIdValidityInfo((IdStatus)drafter.IdStatus);
+            lbxSpecs.DataSource = drafter.ExistingIDs;
 
             // Disable Specs Selection
             DisableSpecsListSelection();
@@ -251,7 +248,7 @@ namespace UserInterface.Forms
             specMode = EntryMode.New;
 
             // Instantiate new Spec
-            drafter.NewDraftSpec(Drafter_OnSpecItemValidityChange);
+            drafter.NewDraftSpec();
             SetSpecTextFieldsValue();
 
             // Setup UI
@@ -284,7 +281,7 @@ namespace UserInterface.Forms
         {
             specMode = EntryMode.Edit;
 
-            drafter.EditSpec(GetSelectedSpecIndex(), Drafter_OnSpecItemValidityChange);
+            drafter.EditSpec(GetSelectedSpecIndex());
 
             // Setup UI
             DisableSpecModifyUI();
@@ -424,8 +421,8 @@ namespace UserInterface.Forms
         {
             // Save draft (new) Specs metadata
             drafter.InputSpecsId = txtSpecsID.Text;
-            drafter._inputSpecsName = txtSpecsName.Text;
-            drafter._inputSpecsTxtPat = txtSpecsPattern.Text;
+            drafter.InputSpecsName = txtSpecsName.Text;
+            drafter.InputSpecsTxtPat = txtSpecsPattern.Text;
 
             drafter.CommitChanges();
 
