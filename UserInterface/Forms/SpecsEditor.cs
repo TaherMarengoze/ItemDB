@@ -51,6 +51,7 @@ namespace UserInterface.Forms
         public SpecsEditor()
         {
             InitializeComponent();
+
             drafter = new SpecsDrafter();
             drafter.OnSpecsValidityChange += Drafter_OnSpecsValidityChange;
             drafter.OnSpecItemValidityChange += Drafter_OnSpecItemValidityChange;
@@ -73,12 +74,7 @@ namespace UserInterface.Forms
                 DataManager.GetCustomSpecsList();
 
             ClearCustomTypeSelector();
-
             EnableSpecsModifyUI();
-
-            //drafter = new SpecsDrafter();
-            //drafter.OnSpecsValidityChange += Drafter_OnSpecsValidityChange;
-            //drafter.OnSpecItemValidityChange += Drafter_OnSpecItemValidityChange;
         }
 
         private void AddNewSpecs()
@@ -135,7 +131,6 @@ namespace UserInterface.Forms
             SpecsMode = EntryMode.Edit;
 
             //InputSpecsID();
-            //DisplayIdValidityInfo((IdStatus)drafter.IdStatus);
             lbxSpecs.DataSource = drafter.ExistingIDs;
 
             // Disable Specs Selection
@@ -568,7 +563,6 @@ namespace UserInterface.Forms
             if (SpecsMode != EntryMode.View && specMode == EntryMode.View)
             {
                 drafter.InputSpecsId = txtSpecsID.Text;
-                //DisplayIdValidityInfo((IdStatus)drafter.IdStatus);
                 lbxSpecs.DataSource = drafter.ExistingIDs;
             }
         }
@@ -1104,31 +1098,6 @@ namespace UserInterface.Forms
 
             return DialogResult.OK;
         }
-
-        //private void DisplayIdValidityInfo(IdStatus status)
-        //{
-        //    switch (status)
-        //    {
-        //        case IdStatus.Valid:
-        //            //lblSpecsIdValidator.Text = string.Empty;
-        //            //txtSpecsID.BackColor = SystemColors.Window;
-        //            ResetIdValidityInfo();
-        //            break;
-
-        //        case IdStatus.Duplicate:
-        //            lblSpecsIdValidator.Text = "* Duplicate ID";
-        //            txtSpecsID.BackColor = Color.HotPink;
-        //            break;
-
-        //        case IdStatus.Blank:
-        //            lblSpecsIdValidator.Text = "* Blank ID";
-        //            txtSpecsID.BackColor = Color.Pink;
-        //            break;
-
-        //        default:
-        //            break;
-        //    }
-        //}
 
         private void Drafter_OnSpecsIdValidityChange(object sender, SpecsDrafter.ValidityStatus status)
         {
