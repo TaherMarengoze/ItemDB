@@ -54,6 +54,7 @@ namespace UserInterface.Forms
             drafter = new SpecsDrafter();
             drafter.OnSpecsValidityChange += Drafter_OnSpecsValidityChange;
             drafter.OnSpecItemValidityChange += Drafter_OnSpecItemValidityChange;
+            drafter.OnSpecsIdValidityChange += Drafter_OnSpecsIdValidityChange;
         }
 
         private void SaveToDataSource()
@@ -134,7 +135,7 @@ namespace UserInterface.Forms
             SpecsMode = EntryMode.Edit;
 
             //InputSpecsID();
-            DisplayIdValidityInfo((IdStatus)drafter.IdStatus);
+            //DisplayIdValidityInfo((IdStatus)drafter.IdStatus);
             lbxSpecs.DataSource = drafter.ExistingIDs;
 
             // Disable Specs Selection
@@ -248,7 +249,7 @@ namespace UserInterface.Forms
             specMode = EntryMode.New;
 
             // Instantiate new Spec
-            drafter.NewDraftSpec();
+            drafter.NewDraftSpecsItem();
             SetSpecTextFieldsValue();
 
             // Setup UI
@@ -266,9 +267,9 @@ namespace UserInterface.Forms
 
         private void SetSpecTextFieldsValue()
         {
-            txtSiIndex.Text = drafter.DraftSpec.Index.ToString();
-            txtSiName.Text = drafter.DraftSpec.Name;
-            txtSiValuePattern.Text = drafter.DraftSpec.ValuePattern;
+            txtSiIndex.Text = drafter.DraftSpecsItem.Index.ToString();
+            txtSiName.Text = drafter.DraftSpecsItem.Name;
+            txtSiValuePattern.Text = drafter.DraftSpecsItem.ValuePattern;
         }
 
         private void DoubleClickEditSpec()
@@ -281,7 +282,7 @@ namespace UserInterface.Forms
         {
             specMode = EntryMode.Edit;
 
-            drafter.EditSpec(GetSelectedSpecIndex());
+            drafter.EditSpecsItem(GetSelectedSpecIndex());
 
             // Setup UI
             DisableSpecModifyUI();
@@ -567,7 +568,7 @@ namespace UserInterface.Forms
             if (SpecsMode != EntryMode.View && specMode == EntryMode.View)
             {
                 drafter.InputSpecsId = txtSpecsID.Text;
-                DisplayIdValidityInfo((IdStatus)drafter.IdStatus);
+                //DisplayIdValidityInfo((IdStatus)drafter.IdStatus);
                 lbxSpecs.DataSource = drafter.ExistingIDs;
             }
         }
@@ -690,8 +691,8 @@ namespace UserInterface.Forms
                 drafter.SetSelectedSpec(idx);
 
                 txtSiIndex.Text = idx.ToString();
-                txtSiName.Text = drafter.SelectedSpec.Name;
-                txtSiValuePattern.Text = drafter.SelectedSpec.ValuePattern;
+                txtSiName.Text = drafter.SelectedSpecsItem.Name;
+                txtSiValuePattern.Text = drafter.SelectedSpecsItem.ValuePattern;
 
                 ChangeSpecTypeSelector();
             }
@@ -708,9 +709,9 @@ namespace UserInterface.Forms
 
         private void ListTypeSpec()
         {
-            if (drafter.SelectedSpec.ListEntries != null)
+            if (drafter.SelectedSpecsItem.ListEntries != null)
             {
-                dgvListEntries.DataSourceResize(drafter.SelectedSpec.ListEntries.ToList());
+                dgvListEntries.DataSourceResize(drafter.SelectedSpecsItem.ListEntries.ToList());
                 rdoListType.Checked = true;
             }
             else
@@ -722,9 +723,9 @@ namespace UserInterface.Forms
 
         private void CustomTypeSpec()
         {
-            if (drafter.SelectedSpec.CustomInputID != null && drafter.SelectedSpec.CustomInputID != "")
+            if (drafter.SelectedSpecsItem.CustomInputID != null && drafter.SelectedSpecsItem.CustomInputID != "")
             {
-                cboCustomTypeSelector.Text = drafter.SelectedSpec.CustomInputID;
+                cboCustomTypeSelector.Text = drafter.SelectedSpecsItem.CustomInputID;
                 rdoCustomType.Checked = true;
             }
             else
@@ -1104,13 +1105,36 @@ namespace UserInterface.Forms
             return DialogResult.OK;
         }
 
-        private void DisplayIdValidityInfo(IdStatus status)
+        //private void DisplayIdValidityInfo(IdStatus status)
+        //{
+        //    switch (status)
+        //    {
+        //        case IdStatus.Valid:
+        //            //lblSpecsIdValidator.Text = string.Empty;
+        //            //txtSpecsID.BackColor = SystemColors.Window;
+        //            ResetIdValidityInfo();
+        //            break;
+
+        //        case IdStatus.Duplicate:
+        //            lblSpecsIdValidator.Text = "* Duplicate ID";
+        //            txtSpecsID.BackColor = Color.HotPink;
+        //            break;
+
+        //        case IdStatus.Blank:
+        //            lblSpecsIdValidator.Text = "* Blank ID";
+        //            txtSpecsID.BackColor = Color.Pink;
+        //            break;
+
+        //        default:
+        //            break;
+        //    }
+        //}
+
+        private void Drafter_OnSpecsIdValidityChange(object sender, SpecsDrafter.ValidityStatus status)
         {
-            switch (status)
+            switch ((IdStatus)status)
             {
                 case IdStatus.Valid:
-                    //lblSpecsIdValidator.Text = string.Empty;
-                    //txtSpecsID.BackColor = SystemColors.Window;
                     ResetIdValidityInfo();
                     break;
 

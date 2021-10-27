@@ -12,7 +12,7 @@ namespace Drafting
         {
             IEnumerable<ISpecsItem> clonedItems =
                 from spec in specItems
-                select new SpecsItem()
+                select new Modeling.DataModels.SpecsItem()
                 {
                     Index = spec.Index,
                     Name = spec.Name,
