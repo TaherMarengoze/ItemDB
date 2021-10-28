@@ -24,13 +24,7 @@ namespace Drafting
             Blank,
             Invalid
         }
-
-        /// <summary>
-        /// Temporary value holder for edit object ID,to refer to old ID value in case it was changed.
-        /// </summary>
-        private string refId;
-
-
+        
         public event EventHandler<bool> OnSpecsValidityChange;
         public event EventHandler<bool> OnSpecItemValidityChange;
         public event EventHandler<ValidityStatus> OnSpecsIdValidityChange;
@@ -49,7 +43,6 @@ namespace Drafting
 
         public string DraftCustomSpecId { get; set; }
 
-        private string _inputSpecsId;
         /// <summary>
         /// Temporary input for specs ID.
         /// </summary>
@@ -86,25 +79,23 @@ namespace Drafting
             }
         }
 
-        private string inputSpecsName;
         /// <summary>
         /// Temporary input for specs name.
         /// </summary>
         public string InputSpecsName
         {
-            get => inputSpecsName; set => inputSpecsName = value;
+            get => _inputSpecsName; set => _inputSpecsName = value;
         }
 
-        private string inputSpecsTxtPat;
         /// <summary>
         /// Temporary input for specs text pattern.
         /// </summary>
         public string InputSpecsTxtPat
         {
-            get => inputSpecsTxtPat; set => inputSpecsTxtPat = value;
+            get => _inputSpecsTxtPat; set => _inputSpecsTxtPat = value;
         }
 
-        private List<ISpecsItem> _inputSpecsItems;
+        
         /// <summary>
         /// Temporary input for specs items.
         /// </summary>
@@ -118,7 +109,7 @@ namespace Drafting
             }
         }
 
-        // TEST / TRIAL
+        #region TEST / TRIAL
         public System.Collections.ObjectModel.ObservableCollection<ISpecsItem> SpecsItems { get; set; }
 
         private void TestMethod()
@@ -131,9 +122,8 @@ namespace Drafting
             IsSpecsHasItem =
             ((System.Collections.ObjectModel.ObservableCollection<ISpecsItem>)sender).Count > 0 ? true : false;
         }
-        // END TEST / TRIAL
+        #endregion
 
-        private string _inputSpecName;
         public string InputSpecName
         {
             get => _inputSpecName; set
@@ -152,10 +142,10 @@ namespace Drafting
             }
         }
 
-        public int specIndex;
-        public string specPattern;
+        public int SpecIndex { get; set; }
 
-        private ValidityStatus _idStatus;
+        public string SpecPattern { get; set; }
+
         public ValidityStatus IdStatus
         {
             get => _idStatus;
@@ -169,8 +159,7 @@ namespace Drafting
                 CheckSpecsReady();
             }
         }
-
-        private bool _isSpecsHasItem;
+        
         public bool IsSpecsHasItem
         {
             get { return _isSpecsHasItem; }
@@ -181,7 +170,6 @@ namespace Drafting
             }
         }
 
-        private bool _isValidSpecName;
         public bool IsValidSpecName
         {
             get => _isValidSpecName; private set
@@ -191,7 +179,6 @@ namespace Drafting
             }
         }
 
-        private bool _isValidSpecData;
         public bool IsValidSpecData
         {
             get { return _isValidSpecData; }
@@ -202,11 +189,25 @@ namespace Drafting
             }
         }
 
+        /// <summary>
+        /// Temporary value holder for edit object ID,to refer to old ID value in case it was changed.
+        /// </summary>
+        private string refId;
+        private string _inputSpecsId;
+        private string _inputSpecsName;
+        private string _inputSpecsTxtPat;
+        private List<ISpecsItem> _inputSpecsItems;
+        private string _inputSpecName;
+        private ValidityStatus _idStatus;
+        private bool _isSpecsHasItem;
+        private bool _isValidSpecName;
+        private bool _isValidSpecData;
+
         #region Drafting Initializers
 
         public void NewDraftSpecs()
         {
-            DraftSpecs = new Specs() /*{ ID = GenerateNewSpecsID() }*/;
+            DraftSpecs = new Specs();
 
             InputSpecsId = GenerateNewSpecsID();
             InputSpecsName = string.Empty;
@@ -219,6 +220,19 @@ namespace Drafting
 
         public void EditSpecs(string specsId)
         {
+            // This code needs fix:
+            // We are setting the DraftSpecs to reference
+            // a Specs from the repository, so any change
+            // to the DraftSpecs will change the same object
+            // in the repository that the DraftSpecs is referncing;
+            // this will retain changes made to the Specs object
+            // if drafting was cancelled.
+            // To solve this we need a copy of the object
+            // The other work around is set DraftSpecs to reference
+            // the object in the repository without changing any of
+            // its members, and once drafting is confirmed change it
+            // so that we no longer need to replace the object in
+            // the repository
             DraftSpecs = SpecsRepository.Read(specsId);
 
             // TEST
@@ -276,16 +290,8 @@ namespace Drafting
         {
             bool isValidDraftSpecItem = IsValidSpecName && IsValidSpecData;
 
-            if (isValidDraftSpecItem)
-            {
-                // raise event for ready state
-                OnSpecItemValidityChange?.Invoke(this, true);
-            }
-            else
-            {
-                // raise event for not ready state
-                OnSpecItemValidityChange?.Invoke(this, false);
-            }
+            // raise event for ready state
+            OnSpecItemValidityChange?.Invoke(this, isValidDraftSpecItem);
         }
 
         public int DraftSpecsItemsCount()
@@ -296,8 +302,17 @@ namespace Drafting
         public void CommitChanges()
         {
             DraftSpecs.ID = _inputSpecsId;
-            DraftSpecs.Name = InputSpecsName;
-            DraftSpecs.TextPattern = InputSpecsTxtPat;
+            DraftSpecs.Name = _inputSpecsName;
+            DraftSpecs.TextPattern = _inputSpecsTxtPat;
+
+            if (refId == null)
+            {
+                AddToRepository();
+            }
+            else
+            {
+                UpdateRepository();
+            }
         }
 
         public void Clear()
@@ -327,14 +342,14 @@ namespace Drafting
         /// <summary>
         /// Adds the draft spec item to the draft specs items list.
         /// </summary>
-        public void AddSpecToSpecsItemsDrafts()
+        public void AddSpecsItem()
         {
-            //List<ISpecsItem> tempList = DraftSpecs.SpecItems.ToList();
-            //tempList.Add(DraftSpec);
-            //InputSpecsItems = tempList;
-            //DraftSpecs.SpecItems = tempList;
-            AddSpec();
-            DraftSpecs.SpecItems = InputSpecsItems;
+            List<ISpecsItem> tempList = DraftSpecs.SpecItems.ToList();
+            tempList.Add(DraftSpecsItem);
+            InputSpecsItems = tempList;
+            DraftSpecs.SpecItems = tempList;
+            //AddSpec();
+            //DraftSpecs.SpecItems = InputSpecsItems;
         }
 
         /// <summary>
@@ -359,7 +374,7 @@ namespace Drafting
             DraftSpecs.SpecItems = specItemsList;
         }
 
-        public void AddSpec()
+        private void AddSpec()
         {
             InputSpecsItems.Add(DraftSpecsItem);
             IsSpecsHasItem = InputSpecsItems.Count > 0 ? true : false;

@@ -119,6 +119,7 @@
             this.txtSpecsPattern.ReadOnly = true;
             this.txtSpecsPattern.Size = new System.Drawing.Size(162, 20);
             this.txtSpecsPattern.TabIndex = 9;
+            this.txtSpecsPattern.TextChanged += new System.EventHandler(this.txtSpecsPattern_TextChanged);
             // 
             // lblSpecsPattern
             // 
@@ -689,6 +690,7 @@
             this.txtSpecsName.ReadOnly = true;
             this.txtSpecsName.Size = new System.Drawing.Size(162, 20);
             this.txtSpecsName.TabIndex = 7;
+            this.txtSpecsName.TextChanged += new System.EventHandler(this.txtSpecsName_TextChanged);
             // 
             // lblSpecsName
             // 

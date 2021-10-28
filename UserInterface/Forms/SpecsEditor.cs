@@ -311,7 +311,7 @@ namespace UserInterface.Forms
             // Add the created Spec to Spec list of the new Specs
             if (specMode == EntryMode.New)
             {
-                drafter.AddSpecToSpecsItemsDrafts();
+                drafter.AddSpecsItem();
             }
 
             // Set EntryMode to View
@@ -415,22 +415,7 @@ namespace UserInterface.Forms
 
         private void SaveChanges()
         {
-            // Save draft (new) Specs metadata
-            drafter.InputSpecsId = txtSpecsID.Text;
-            drafter.InputSpecsName = txtSpecsName.Text;
-            drafter.InputSpecsTxtPat = txtSpecsPattern.Text;
-
             drafter.CommitChanges();
-
-            switch (SpecsMode)
-            {
-                case EntryMode.New:
-                    drafter.AddToRepository();
-                    break;
-                case EntryMode.Edit:
-                    drafter.UpdateRepository();
-                    break;
-            }
 
             // Exit draft (New) mode
             SpecsMode = EntryMode.View;
@@ -564,6 +549,22 @@ namespace UserInterface.Forms
             {
                 drafter.InputSpecsId = txtSpecsID.Text;
                 lbxSpecs.DataSource = drafter.ExistingIDs;
+            }
+        }
+
+        private void InputSpecsName()
+        {
+            if (SpecsMode != EntryMode.View && specMode == EntryMode.View)
+            {
+                drafter.InputSpecsName = txtSpecsName.Text;
+            }
+        }
+
+        private void InputSpecsPattern()
+        {
+            if (SpecsMode != EntryMode.View && specMode == EntryMode.View)
+            {
+                drafter.InputSpecsTxtPat = txtSpecsPattern.Text;
             }
         }
 
@@ -1194,6 +1195,8 @@ namespace UserInterface.Forms
         private void btnCancel_Click(object sender, EventArgs e) => CancelSpecsDrafting();
         private void btnRemoveSpecs_Click(object sender, EventArgs e) => RemoveSpecs();
         private void txtSpecsID_TextChanged(object sender, EventArgs e) => InputSpecsID();
+        private void txtSpecsName_TextChanged(object sender, EventArgs e) => InputSpecsName();
+        private void txtSpecsPattern_TextChanged(object sender, EventArgs e) => InputSpecsPattern();
         private void btnSiAdd_Click(object sender, EventArgs e) => NewSpec();
         private void btnSiEdit_Click(object sender, EventArgs e) => EditSpec();
         private void btnSiRemove_Click(object sender, EventArgs e) => RemoveSpec();
