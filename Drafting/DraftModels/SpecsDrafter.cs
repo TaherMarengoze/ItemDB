@@ -205,12 +205,12 @@ namespace Drafting
 
         #region Drafting Initializers
 
-        public void NewDraftSpecs()
+        public void NewSpecs()
         {
             DraftSpecs = new Specs();
 
             InputSpecsId = GenerateNewSpecsID();
-            InputSpecsName = string.Empty;
+            InputSpecsName = GenerateSpecsName(InputSpecsId)/*string.Empty*/;
             InputSpecsTxtPat = DraftSpecs.TextPattern;
             InputSpecsItems = new List<ISpecsItem>();
 
@@ -220,25 +220,12 @@ namespace Drafting
 
         public void EditSpecs(string specsId)
         {
-            // This code needs fix:
-            // We are setting the DraftSpecs to reference
-            // a Specs from the repository, so any change
-            // to the DraftSpecs will change the same object
-            // in the repository that the DraftSpecs is referncing;
-            // this will retain changes made to the Specs object
-            // if drafting was cancelled.
-            // To solve this we need a copy of the object
-            // The other work around is set DraftSpecs to reference
-            // the object in the repository without changing any of
-            // its members, and once drafting is confirmed change it
-            // so that we no longer need to replace the object in
-            // the repository
-            DraftSpecs = SpecsRepository.Read(specsId);
+            DraftSpecs = SpecsRepository.Read(specsId).Clone();
 
             // TEST
             ClearSelectionObjects();
 
-            refId = DraftSpecs.ID;
+            refId = specsId/*DraftSpecs.ID*/;
 
             // Copy edit object to temporary fields
             InputSpecsId = DraftSpecs.ID;
@@ -247,12 +234,15 @@ namespace Drafting
             InputSpecsItems = DraftSpecs.SpecItems.Clone();
         }
 
-        public void NewDraftSpecsItem()
+        public void NewSpecsItem()
         {
             DraftSpecsItem = new SpecsItem();
 
             int lastIdx = DraftSpecs.SpecItems.Count();
             int newIdx = lastIdx + 1;
+
+            // TEST
+            //newIdx = InputSpecsItems.Count + 1;
 
             DraftSpecsItem.Index = newIdx;
             DraftSpecsItem.Name = $"SI{newIdx:000}";
@@ -305,7 +295,7 @@ namespace Drafting
             DraftSpecs.Name = _inputSpecsName;
             DraftSpecs.TextPattern = _inputSpecsTxtPat;
 
-            if (refId == null)
+            if (refId == null || refId == string.Empty)
             {
                 AddToRepository();
             }
@@ -340,16 +330,15 @@ namespace Drafting
         }
 
         /// <summary>
-        /// Adds the draft spec item to the draft specs items list.
+        /// Adds the draft specs item to the draft specs items list.
         /// </summary>
         public void AddSpecsItem()
         {
-            List<ISpecsItem> tempList = DraftSpecs.SpecItems.ToList();
-            tempList.Add(DraftSpecsItem);
-            InputSpecsItems = tempList;
-            DraftSpecs.SpecItems = tempList;
-            //AddSpec();
-            //DraftSpecs.SpecItems = InputSpecsItems;
+            // TEST
+            _inputSpecsItems.Add(DraftSpecsItem);
+            InputSpecsItems = _inputSpecsItems;
+
+            DraftSpecs.SpecItems = InputSpecsItems;
         }
 
         /// <summary>
@@ -465,7 +454,8 @@ namespace Drafting
 
         public void SetSelectedSpec(int idx)
         {
-            SelectedSpecsItem = SpecsManiuplator.GetSpecsItem(SelectedSpecs ?? DraftSpecs, idx);
+            SelectedSpecsItem =
+                SpecsManiuplator.GetSpecsItem(SelectedSpecs ?? DraftSpecs, idx);
         }
 
         public ISpecListEntry GetSpecListEntry(int entryId)
@@ -541,6 +531,12 @@ namespace Drafting
                 return newId;
             }
             return newId;
+        }
+
+        private string GenerateSpecsName(string specsId)
+        {
+            return
+                $"Specs_{ specsId }";
         }
 
         public void AddToRepository()

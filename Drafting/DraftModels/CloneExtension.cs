@@ -8,6 +8,18 @@ namespace Drafting
 {
     internal static class CloneExtension
     {
+        public static ISpecs Clone(this ISpecs specs)
+        {
+            return
+                new Specs()
+                {
+                    ID = specs.ID,
+                    Name = specs.Name,
+                    TextPattern = specs.TextPattern,
+                    SpecItems = specs.SpecItems.Clone()
+                };
+        }
+
         public static List<ISpecsItem> Clone(this IEnumerable<ISpecsItem> specItems)
         {
             IEnumerable<ISpecsItem> clonedItems =

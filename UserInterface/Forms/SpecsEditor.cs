@@ -82,7 +82,7 @@ namespace UserInterface.Forms
             SaveSpecsSelectionPosition();
 
             // Instantiate new Specs
-            drafter.NewDraftSpecs();
+            drafter.NewSpecs();
 
             // Sets a flag
             SpecsMode = EntryMode.New;
@@ -244,7 +244,7 @@ namespace UserInterface.Forms
             specMode = EntryMode.New;
 
             // Instantiate new Spec
-            drafter.NewDraftSpecsItem();
+            drafter.NewSpecsItem();
             SetSpecTextFieldsValue();
 
             // Setup UI
@@ -319,6 +319,7 @@ namespace UserInterface.Forms
 
             // Null draft objects
             ClearSpecsDrafts();
+
             ResetSpecUI();
             btnSiAdd.Focus();
         }
@@ -333,18 +334,18 @@ namespace UserInterface.Forms
 
             ResetSpecUI();
 
-            if (drafter.DraftSpecs.SpecItems.Count() <= 0)
-            {
-                // Set to null to remove columns
-                ClearSpecItemsGrid();
+            //if (drafter.DraftSpecs.SpecItems.Count() <= 0)
+            //{
+            //    // Set to null to remove columns
+            //    ClearSpecItemsGrid();
 
-                // Disable Edit and Delete buttons for Spec modification
-                btnSiAdd.Focus();
-                btnSiEdit.Enabled = false;
-                btnSiRemove.Enabled = false;
+            //    // Disable Edit and Delete buttons for Spec modification
+            //    btnSiAdd.Focus();
+            //    btnSiEdit.Enabled = false;
+            //    btnSiRemove.Enabled = false;
 
-                dgvListEntries.DataSource = null;
-            }
+            //    dgvListEntries.DataSource = null;
+            //}
         }
 
         private void ResetSpecUI()
@@ -355,7 +356,7 @@ namespace UserInterface.Forms
             // Setup UI
             EnableSpecModifyUI();
 
-            if (drafter.DraftSpecsItemsCount() <= 1)
+            if (drafter.InputSpecsItems.Count/*DraftSpecsItemsCount()*/ <= 1)
                 btnSiRemove.Enabled = false;
 
             HideSpecReviewUI();
@@ -370,7 +371,17 @@ namespace UserInterface.Forms
             // Refresh View
             ClearSpecItemsGrid();
 
-            dgvSpec.DataSourceResize(drafter.DraftSpecs.SpecItems.ToList());
+            if (drafter.InputSpecsItems.Count/*DraftSpecs.SpecItems.Count()*/ > 0)
+            {
+                dgvSpec.DataSourceResize(drafter.InputSpecsItems);
+            }
+            else
+            {
+                // Disable Edit and Delete buttons for Spec modification
+                btnSiAdd.Focus();
+                btnSiEdit.Enabled = false;
+                btnSiRemove.Enabled = false;
+            }
         }
 
         private void RemoveSpec()
