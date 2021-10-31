@@ -12,14 +12,6 @@ namespace UserInterface.Forms
 {
     public partial class SpecsEditor : Form
     {
-        private enum IdStatus
-        {
-            Valid,
-            Duplicate,
-            Blank,
-            Invalid
-        }
-
         private EntryMode _specsMode = EntryMode.View;
         private EntryMode SpecsMode
         {
@@ -56,12 +48,68 @@ namespace UserInterface.Forms
             drafter.OnSpecsValidityChange += Drafter_OnSpecsValidityChange;
             drafter.OnSpecItemValidityChange += Drafter_OnSpecItemValidityChange;
             drafter.OnSpecsIdValidityChange += Drafter_OnSpecsIdValidityChange;
+            drafter.OnSpecsItemPatternChange += Drafter_OnSpecsItemPatternChange;
         }
 
-        private void SaveToDataSource()
+        private void Drafter_OnSpecsValidityChange(object sender, bool specsReady)
         {
-            ContextProvider.Save(ContextEntity.Specs);
+            if (SpecsMode != EntryMode.View)
+            {
+                if (specsReady == true)
+                {
+                    btnAccept.Enabled = true;
+                }
+                else
+                {
+                    btnAccept.Enabled = false;
+                }
+            }
         }
+
+        private void Drafter_OnSpecItemValidityChange(object sender, bool specItemReady)
+        {
+            btnSiAccept.Enabled = specItemReady;
+        }
+
+        private void Drafter_OnSpecsIdValidityChange(object sender, SpecsDrafter.ValidityStatus status)
+        {
+            switch (/*(IdStatus)*/status)
+            {
+                case /*IdStatus*/SpecsDrafter.ValidityStatus.Valid:
+                    ResetIdValidityInfo();
+                    break;
+
+                case /*IdStatus*/SpecsDrafter.ValidityStatus.Duplicate:
+                    lblSpecsIdValidator.Text = "* Duplicate ID";
+                    txtSpecsID.BackColor = Color.HotPink;
+                    break;
+
+                case /*IdStatus*/SpecsDrafter.ValidityStatus.Blank:
+                    lblSpecsIdValidator.Text = "* Blank ID";
+                    txtSpecsID.BackColor = Color.Pink;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private void Drafter_OnSpecsItemPatternChange(object sender, string textValue)
+        {
+            if (textValue.Contains("{val}"))
+            {
+                btnSiInsertVal.Enabled = false;
+            }
+            else
+            {
+                btnSiInsertVal.Enabled = true;
+            }
+        }
+
+        //private void SaveToDataSource()
+        //{
+        //    ContextProvider.Save(ContextEntity.Specs);
+        //}
 
         #region Processes
 
@@ -262,9 +310,9 @@ namespace UserInterface.Forms
 
         private void SetSpecTextFieldsValue()
         {
-            txtSiIndex.Text = drafter.DraftSpecsItem.Index.ToString();
-            txtSiName.Text = drafter.DraftSpecsItem.Name;
-            txtSiValuePattern.Text = drafter.DraftSpecsItem.ValuePattern;
+            txtSiIndex.Text = drafter./*DraftSpecsItem.Index*/InputSpecIndex.ToString();
+            txtSiName.Text = drafter./*DraftSpecsItem.Name*/InputSpecName;
+            txtSiValuePattern.Text = drafter./*DraftSpecsItem.ValuePattern*/InputSpecPattern;
         }
 
         private void DoubleClickEditSpec()
@@ -306,7 +354,7 @@ namespace UserInterface.Forms
         private void SaveDraftSpec()
         {
             // Save new Spec data
-            drafter.SaveDraftSpec(int.Parse(txtSiIndex.Text), txtSiName.Text, txtSiValuePattern.Text);
+            drafter.SaveDraftSpec();
 
             // Add the created Spec to Spec list of the new Specs
             if (specMode == EntryMode.New)
@@ -318,7 +366,7 @@ namespace UserInterface.Forms
             specMode = EntryMode.View;
 
             // Null draft objects
-            ClearSpecsDrafts();
+            drafter.ClearSpecsItem();
 
             ResetSpecUI();
             btnSiAdd.Focus();
@@ -330,7 +378,7 @@ namespace UserInterface.Forms
             specMode = EntryMode.View;
 
             // Null draft objects
-            ClearSpecsDrafts();
+            drafter.ClearSpecsItem();
 
             ResetSpecUI();
 
@@ -549,11 +597,6 @@ namespace UserInterface.Forms
             }
         }
 
-        private void ClearSpecsDrafts()
-        {
-            drafter.ClearDraftSpec();
-        }
-
         private void InputSpecsID()
         {
             if (SpecsMode != EntryMode.View && specMode == EntryMode.View)
@@ -579,22 +622,7 @@ namespace UserInterface.Forms
             }
         }
 
-        private void Drafter_OnSpecsValidityChange(object sender, bool specsReady)
-        {
-            if (SpecsMode != EntryMode.View)
-            {
-                if (specsReady == true)
-                {
-                    btnAccept.Enabled = true;
-                }
-                else
-                {
-                    btnAccept.Enabled = false;
-                }
-            }
-        }
-
-        private void CheckSpecName()
+        private void InputSpecsItemName()
         {
             if (specMode != EntryMode.View)
             {
@@ -602,17 +630,18 @@ namespace UserInterface.Forms
             }
         }
 
-        private void Drafter_OnSpecItemValidityChange(object sender, bool specItemReady)
+        private void InputSpecsItemTextPattern()
         {
-            btnSiAccept.Enabled = specItemReady;
+            if (specMode != EntryMode.View)
+            {
+                drafter.InputSpecPattern = txtSiValuePattern.Text;
+            }
         }
-
+        
         private void SetDefaultValuePattern()
         {
             txtSiValuePattern.Text = "{val}";
-            txtSiValuePattern.SelectAll();
-            txtSiValuePattern.Focus();
-            CheckTextPattern();
+            txtSiValuePattern.FocusSelectAll();
         }
 
         private void InsertValueToken()
@@ -627,23 +656,7 @@ namespace UserInterface.Forms
                 valPattern = valPattern.Insert(insertLoc, "{val}");
 
             txtSiValuePattern.Text = valPattern;
-            txtSiValuePattern.SelectAll();
-            txtSiValuePattern.Focus();
-            CheckTextPattern();
-        }
-
-        private void CheckTextPattern()
-        {
-            string valPattern = txtSiValuePattern.Text;
-
-            if (valPattern.Contains("{val}"))
-            {
-                btnSiInsertVal.Enabled = false;
-            }
-            else
-            {
-                btnSiInsertVal.Enabled = true;
-            }
+            txtSiValuePattern.FocusSelectAll();
         }
         #endregion
 
@@ -1111,29 +1124,6 @@ namespace UserInterface.Forms
             return DialogResult.OK;
         }
 
-        private void Drafter_OnSpecsIdValidityChange(object sender, SpecsDrafter.ValidityStatus status)
-        {
-            switch ((IdStatus)status)
-            {
-                case IdStatus.Valid:
-                    ResetIdValidityInfo();
-                    break;
-
-                case IdStatus.Duplicate:
-                    lblSpecsIdValidator.Text = "* Duplicate ID";
-                    txtSpecsID.BackColor = Color.HotPink;
-                    break;
-
-                case IdStatus.Blank:
-                    lblSpecsIdValidator.Text = "* Blank ID";
-                    txtSpecsID.BackColor = Color.Pink;
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
         private void ResetIdValidityInfo()
         {
             lblSpecsIdValidator.Text = string.Empty;
@@ -1152,7 +1142,7 @@ namespace UserInterface.Forms
         #region Event Responses
         private void mnuItmSaveFile_Click(object sender, EventArgs e)
         {
-            SaveToDataSource();
+            drafter?.SaveToDataSource();
         }
         private void lbxSpecs_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1213,8 +1203,8 @@ namespace UserInterface.Forms
         private void btnSiRemove_Click(object sender, EventArgs e) => RemoveSpec();
         private void btnSiAccept_Click(object sender, EventArgs e) => SaveDraftSpec();
         private void btnSiCancel_Click(object sender, EventArgs e) => CancelSpecChanges();
-        private void txtSiName_TextChanged(object sender, EventArgs e) => CheckSpecName();
-        private void txtSiValuePattern_TextChanged(object sender, EventArgs e) => CheckTextPattern();
+        private void txtSiName_TextChanged(object sender, EventArgs e) => InputSpecsItemName();
+        private void txtSiValuePattern_TextChanged(object sender, EventArgs e) => InputSpecsItemTextPattern();
         private void btnSiDefaultVal_Click(object sender, EventArgs e) => SetDefaultValuePattern();
         private void btnSiInsertVal_Click(object sender, EventArgs e) => InsertValueToken();
         private void rdoListType_CheckedChanged(object sender, EventArgs e) => CheckSpecListType();

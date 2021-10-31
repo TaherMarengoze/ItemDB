@@ -50,6 +50,10 @@
       <Project>{2ec19893-87bd-41aa-a165-bf544d2a1bcb}</Project>
       <Name>ClientService</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj">
+      <Project>{90C23753-2A1C-4F04-A4E7-3B12CE02FA7F}</Project>
+      <Name>CoreLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ModelAbstraction\Interfaces.csproj">
       <Project>{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}</Project>
       <Name>Interfaces</Name>

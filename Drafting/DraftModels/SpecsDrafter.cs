@@ -1,5 +1,5 @@
 ﻿
-//using CoreLibrary.Enums;
+using CoreLibrary.Enums;
 using ClientService;
 using Interfaces.Models;
 using Modeling.DataModels;
@@ -24,10 +24,12 @@ namespace Drafting
             Blank,
             Invalid
         }
-        
+
         public event EventHandler<bool> OnSpecsValidityChange;
         public event EventHandler<bool> OnSpecItemValidityChange;
         public event EventHandler<ValidityStatus> OnSpecsIdValidityChange;
+
+        public event EventHandler<string> OnSpecsItemPatternChange;
 
         public ISpecs SelectedSpecs { get; private set; }
 
@@ -95,7 +97,7 @@ namespace Drafting
             get => _inputSpecsTxtPat; set => _inputSpecsTxtPat = value;
         }
 
-        
+
         /// <summary>
         /// Temporary input for specs items.
         /// </summary>
@@ -124,6 +126,8 @@ namespace Drafting
         }
         #endregion
 
+        public int InputSpecIndex { get => _inputSpecIndex; set => _inputSpecIndex = value; }
+
         public string InputSpecName
         {
             get => _inputSpecName; set
@@ -142,9 +146,15 @@ namespace Drafting
             }
         }
 
-        public int SpecIndex { get; set; }
-
-        public string SpecPattern { get; set; }
+        public string InputSpecPattern
+        {
+            get => _inputSpecPattern;
+            set
+            {
+                _inputSpecPattern = value;
+                OnSpecsItemPatternChange?.Invoke(this, value);
+            }
+        }
 
         public ValidityStatus IdStatus
         {
@@ -159,7 +169,7 @@ namespace Drafting
                 CheckSpecsReady();
             }
         }
-        
+
         public bool IsSpecsHasItem
         {
             get { return _isSpecsHasItem; }
@@ -197,10 +207,12 @@ namespace Drafting
         private string _inputSpecsName;
         private string _inputSpecsTxtPat;
         private List<ISpecsItem> _inputSpecsItems;
+        private int _inputSpecIndex;
         private string _inputSpecName;
         private ValidityStatus _idStatus;
         private bool _isSpecsHasItem;
         private bool _isValidSpecName;
+        private string _inputSpecPattern;
         private bool _isValidSpecData;
 
         #region Drafting Initializers
@@ -209,13 +221,14 @@ namespace Drafting
         {
             DraftSpecs = new Specs();
 
+            // TEST
+            ClearSelectionObjects();
+
+            // Set input fields initial value
             InputSpecsId = GenerateNewSpecsID();
             InputSpecsName = GenerateSpecsName(InputSpecsId)/*string.Empty*/;
             InputSpecsTxtPat = DraftSpecs.TextPattern;
             InputSpecsItems = new List<ISpecsItem>();
-
-            // TEST
-            ClearSelectionObjects();
         }
 
         public void EditSpecs(string specsId)
@@ -227,7 +240,7 @@ namespace Drafting
 
             refId = specsId/*DraftSpecs.ID*/;
 
-            // Copy edit object to temporary fields
+            // Set input fields value to edit object data
             InputSpecsId = DraftSpecs.ID;
             InputSpecsName = DraftSpecs.Name;
             InputSpecsTxtPat = DraftSpecs.TextPattern;
@@ -244,14 +257,19 @@ namespace Drafting
             // TEST
             //newIdx = InputSpecsItems.Count + 1;
 
-            DraftSpecsItem.Index = newIdx;
-            DraftSpecsItem.Name = $"SI{newIdx:000}";
+            //DraftSpecsItem.Index = newIdx;
+            //DraftSpecsItem.Name = $"Specs Item #{newIdx:000}";
+
+            // Set input fields initial value
+            InputSpecIndex = newIdx;
+            InputSpecName = $"Specs Item #{newIdx:000}";
+            InputSpecPattern = DraftSpecsItem.ValuePattern;
         }
 
         public void EditSpecsItem(int specsItemIndex)
         {
             DraftSpecsItem = DraftSpecs.SpecItems
-                .FirstOrDefault(si => si.Index == specsItemIndex);
+                .FirstOrDefault(si => si.Index == specsItemIndex).Clone();
 
             if (DraftSpecsItem.ListEntries != null)
             {
@@ -264,6 +282,11 @@ namespace Drafting
                 DraftSpecsItemType = SpecType.Custom;
                 DraftCustomSpecId = DraftSpecsItem.CustomInputID;
             }
+
+            // Set input fields value to edit object data
+            InputSpecIndex = DraftSpecsItem.Index;
+            InputSpecName = DraftSpecsItem.Name;
+            InputSpecPattern = DraftSpecsItem.ValuePattern;
         }
 
         #endregion
@@ -295,6 +318,9 @@ namespace Drafting
             DraftSpecs.Name = _inputSpecsName;
             DraftSpecs.TextPattern = _inputSpecsTxtPat;
 
+            // TEST
+            DraftSpecs.SpecItems = InputSpecsItems;
+
             if (refId == null || refId == string.Empty)
             {
                 AddToRepository();
@@ -308,7 +334,7 @@ namespace Drafting
         public void Clear()
         {
             ClearDraftSpecs();
-            ClearDraftSpec();
+            ClearSpecsItem();
         }
 
         private void ClearSelectionObjects()
@@ -322,7 +348,7 @@ namespace Drafting
             DraftSpecs = null;
         }
 
-        public void ClearDraftSpec()
+        public void ClearSpecsItem()
         {
             DraftSpecsItem = null;
             DraftEntries = null;
@@ -338,7 +364,8 @@ namespace Drafting
             _inputSpecsItems.Add(DraftSpecsItem);
             InputSpecsItems = _inputSpecsItems;
 
-            DraftSpecs.SpecItems = InputSpecsItems;
+            // TEST: Uncomment below
+            //DraftSpecs.SpecItems = InputSpecsItems;
         }
 
         /// <summary>
@@ -392,6 +419,27 @@ namespace Drafting
                     DraftSpecsItem.ListEntries == null ?
                     new List<ISpecListEntry>() :
                     new List<ISpecListEntry>(DraftSpecsItem.ListEntries);
+            }
+        }
+
+        public void SaveDraftSpec()
+        {
+            DraftSpecsItem.Index = InputSpecIndex;
+            DraftSpecsItem.Name = InputSpecName;
+            DraftSpecsItem.ValuePattern = InputSpecPattern;
+
+            switch (DraftSpecsItemType)
+            {
+                case SpecType.List:
+                    DraftSpecsItem.ListEntries = new List<ISpecListEntry>(DraftEntries);
+                    DraftSpecsItem.CustomInputID = null;
+
+                    break;
+                case SpecType.Custom:
+                    DraftSpecsItem.CustomInputID = DraftCustomSpecId;
+                    DraftSpecsItem.ListEntries = null;
+
+                    break;
             }
         }
 
@@ -549,14 +597,14 @@ namespace Drafting
             SpecsRepository.Update(refId, DraftSpecs);
         }
 
-        //public void SaveToDataSource()
-        //{
-        //    /*
-        //     * The type 'ContextEntity' is defined in an assembly that is not referenced.
-        //     * You must add a reference to assembly 'CoreLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.
-        //     */
+        public void SaveToDataSource()
+        {
+            /*
+             * The type 'ContextEntity' is defined in an assembly that is not referenced.
+             * You must add a reference to assembly 'CoreLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.
+             */
 
-        //    ContextProvider.Save(ContextEntity.Specs);
-        //}
+            ContextProvider.Save(ContextEntity.Specs);
+        }
     }
 }

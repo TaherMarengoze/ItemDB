@@ -20,11 +20,24 @@ namespace Drafting
                 };
         }
 
+        public static ISpecsItem Clone(this ISpecsItem specsItem)
+        {
+            return
+                new SpecsItem()
+                {
+                    Index = specsItem.Index,
+                    Name = specsItem.Name,
+                    ValuePattern = specsItem.ValuePattern,
+                    ListEntries = specsItem.ListEntries.Clone(),
+                    CustomInputID = specsItem.CustomInputID
+                };
+        }
+
         public static List<ISpecsItem> Clone(this IEnumerable<ISpecsItem> specItems)
         {
             IEnumerable<ISpecsItem> clonedItems =
                 from spec in specItems
-                select new Modeling.DataModels.SpecsItem()
+                select new SpecsItem()
                 {
                     Index = spec.Index,
                     Name = spec.Name,
@@ -36,7 +49,7 @@ namespace Drafting
             return clonedItems.ToList();
         }
 
-        private static IEnumerable<ISpecListEntry> Clone(this IEnumerable<ISpecListEntry> listEntries)
+        private static List<ISpecListEntry> Clone(this IEnumerable<ISpecListEntry> listEntries)
         {
             if (listEntries == null)
             {
@@ -52,7 +65,7 @@ namespace Drafting
                     Display = entry.Display
                 };
 
-            return clonedEntries;
+            return clonedEntries.ToList();
         }
 
         public static IEnumerable<T> Add<T>(this IEnumerable<T> e, T value)
