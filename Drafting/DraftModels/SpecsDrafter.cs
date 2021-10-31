@@ -287,6 +287,7 @@ namespace Drafting
             InputSpecIndex = DraftSpecsItem.Index;
             InputSpecName = DraftSpecsItem.Name;
             InputSpecPattern = DraftSpecsItem.ValuePattern;
+            InputSpecsItems = DraftSpecs.SpecItems.Clone();
         }
 
         #endregion
@@ -422,7 +423,7 @@ namespace Drafting
             }
         }
 
-        public void SaveDraftSpec()
+        public void SaveSpecsItem()
         {
             DraftSpecsItem.Index = InputSpecIndex;
             DraftSpecsItem.Name = InputSpecName;
@@ -431,28 +432,7 @@ namespace Drafting
             switch (DraftSpecsItemType)
             {
                 case SpecType.List:
-                    DraftSpecsItem.ListEntries = new List<ISpecListEntry>(DraftEntries);
-                    DraftSpecsItem.CustomInputID = null;
-
-                    break;
-                case SpecType.Custom:
-                    DraftSpecsItem.CustomInputID = DraftCustomSpecId;
-                    DraftSpecsItem.ListEntries = null;
-
-                    break;
-            }
-        }
-
-        public void SaveDraftSpec(int index, string name, string valPattern)
-        {
-            DraftSpecsItem.Index = index;
-            DraftSpecsItem.Name = name;
-            DraftSpecsItem.ValuePattern = valPattern;
-
-            switch (DraftSpecsItemType)
-            {
-                case SpecType.List:
-                    DraftSpecsItem.ListEntries = new List<ISpecListEntry>(DraftEntries);
+                    DraftSpecsItem.ListEntries = DraftEntries.ToList();                
                     DraftSpecsItem.CustomInputID = null;
 
                     break;
@@ -503,7 +483,8 @@ namespace Drafting
         public void SetSelectedSpec(int idx)
         {
             SelectedSpecsItem =
-                SpecsManiuplator.GetSpecsItem(SelectedSpecs ?? DraftSpecs, idx);
+                SpecsManiuplator.GetSpecsItem(SelectedSpecs /*?? DraftSpecs*/, idx) ??
+                InputSpecsItems.FirstOrDefault(si => si.Index == idx);
         }
 
         public ISpecListEntry GetSpecListEntry(int entryId)

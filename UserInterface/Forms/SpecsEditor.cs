@@ -354,10 +354,10 @@ namespace UserInterface.Forms
         private void SaveDraftSpec()
         {
             // Save new Spec data
-            drafter.SaveDraftSpec();
+            drafter.SaveSpecsItem();
 
             // Add the created Spec to Spec list of the new Specs
-            if (specMode == EntryMode.New)
+            if (specMode == EntryMode.New || true)
             {
                 drafter.AddSpecsItem();
             }
