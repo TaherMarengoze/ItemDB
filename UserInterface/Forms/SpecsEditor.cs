@@ -73,18 +73,18 @@ namespace UserInterface.Forms
 
         private void Drafter_OnSpecsIdValidityChange(object sender, SpecsDrafter.ValidityStatus status)
         {
-            switch (/*(IdStatus)*/status)
+            switch (status)
             {
-                case /*IdStatus*/SpecsDrafter.ValidityStatus.Valid:
+                case SpecsDrafter.ValidityStatus.Valid:
                     ResetIdValidityInfo();
                     break;
 
-                case /*IdStatus*/SpecsDrafter.ValidityStatus.Duplicate:
+                case SpecsDrafter.ValidityStatus.Duplicate:
                     lblSpecsIdValidator.Text = "* Duplicate ID";
                     txtSpecsID.BackColor = Color.HotPink;
                     break;
 
-                case /*IdStatus*/SpecsDrafter.ValidityStatus.Blank:
+                case SpecsDrafter.ValidityStatus.Blank:
                     lblSpecsIdValidator.Text = "* Blank ID";
                     txtSpecsID.BackColor = Color.Pink;
                     break;
@@ -105,11 +105,6 @@ namespace UserInterface.Forms
                 btnSiInsertVal.Enabled = true;
             }
         }
-
-        //private void SaveToDataSource()
-        //{
-        //    ContextProvider.Save(ContextEntity.Specs);
-        //}
 
         #region Processes
 
@@ -196,6 +191,46 @@ namespace UserInterface.Forms
             btnCancel.Focus();
             EnableSpecModifyUI();
             DisableListEntryModifyUI();
+        }
+
+        private void SaveChanges()
+        {
+            drafter.CommitChanges();
+
+            // Check if entry mode is edit
+            bool isEditEntryMode = SpecsMode == EntryMode.Edit;
+
+            // Exit draft (New) mode
+            SpecsMode = EntryMode.View;
+
+            // Null draft objects
+            drafter.Clear();
+
+            // Setup UI
+            EnableSpecsListSelection();
+            EnableSpecsModifyUI();
+            HideSpecsReviewUI();
+            DisableSpecsMetadataEntryUI();
+            DisableSpecModifyUI();
+            HideSpecReviewUI();
+
+            // Disable Spec pattern UI
+            btnSiDefaultVal.Visible = false;
+
+            DisableSpecMetadataEntryUI();
+            DisableListEntryModifyUI();
+
+            // Reload and Repopulate Specs list
+            RefreshSpecsList();
+
+            if (isEditEntryMode)
+            {
+                RestoreSpecsSelection();
+            }
+            else
+            {
+                SelectLastSpecs();
+            }
         }
 
         private void CancelSpecsDrafting()
@@ -287,7 +322,7 @@ namespace UserInterface.Forms
             }
         }
 
-        private void NewSpec()
+        private void NewSpecsItem()
         {
             specMode = EntryMode.New;
 
@@ -310,18 +345,18 @@ namespace UserInterface.Forms
 
         private void SetSpecTextFieldsValue()
         {
-            txtSiIndex.Text = drafter./*DraftSpecsItem.Index*/InputSpecIndex.ToString();
-            txtSiName.Text = drafter./*DraftSpecsItem.Name*/InputSpecName;
-            txtSiValuePattern.Text = drafter./*DraftSpecsItem.ValuePattern*/InputSpecPattern;
+            txtSiIndex.Text = drafter.InputSpecIndex.ToString();
+            txtSiName.Text = drafter.InputSpecName;
+            txtSiValuePattern.Text = drafter.InputSpecPattern;
         }
 
         private void DoubleClickEditSpec()
         {
             if (SpecsMode != EntryMode.View && specMode == EntryMode.View)
-                EditSpec();
+                EditSpecsItem();
         }
 
-        private void EditSpec()
+        private void EditSpecsItem()
         {
             specMode = EntryMode.Edit;
 
@@ -351,22 +386,16 @@ namespace UserInterface.Forms
             //else Do Nothing
         }
 
-        private void SaveDraftSpec()
+        private void SaveDraftSpecsItem()
         {
             // Save new Spec data
-            drafter.SaveSpecsItem();
-
-            // Add the created Spec to Spec list of the new Specs
-            if (specMode == EntryMode.New || true)
-            {
-                drafter.AddSpecsItem();
-            }
+            drafter.CommitSpecsItemChanges();
 
             // Set EntryMode to View
             specMode = EntryMode.View;
 
             // Null draft objects
-            drafter.ClearSpecsItem();
+            drafter.ClearDraftSpecsItem();
 
             ResetSpecUI();
             btnSiAdd.Focus();
@@ -378,7 +407,7 @@ namespace UserInterface.Forms
             specMode = EntryMode.View;
 
             // Null draft objects
-            drafter.ClearSpecsItem();
+            drafter.ClearDraftSpecsItem();
 
             ResetSpecUI();
 
@@ -404,7 +433,7 @@ namespace UserInterface.Forms
             // Setup UI
             EnableSpecModifyUI();
 
-            if (drafter.InputSpecsItems.Count/*DraftSpecsItemsCount()*/ <= 1)
+            if (drafter.InputSpecsItems.Count <= 1)
                 btnSiRemove.Enabled = false;
 
             HideSpecReviewUI();
@@ -419,7 +448,7 @@ namespace UserInterface.Forms
             // Refresh View
             ClearSpecItemsGrid();
 
-            if (drafter.InputSpecsItems.Count/*DraftSpecs.SpecItems.Count()*/ > 0)
+            if (drafter.InputSpecsItems.Count > 0)
             {
                 dgvSpec.DataSourceResize(drafter.InputSpecsItems);
             }
@@ -432,7 +461,7 @@ namespace UserInterface.Forms
             }
         }
 
-        private void RemoveSpec()
+        private void RemoveSpecsItem()
         {
             if ((SpecsMode != EntryMode.New || SpecsMode == EntryMode.Edit) && specMode == EntryMode.View)
             {
@@ -470,35 +499,6 @@ namespace UserInterface.Forms
             }
 
             drafter.RemoveSpec(GetSelectedSpecIndex());
-        }
-
-        private void SaveChanges()
-        {
-            drafter.CommitChanges();
-
-            // Exit draft (New) mode
-            SpecsMode = EntryMode.View;
-
-            // Setup UI
-            EnableSpecsListSelection();
-            EnableSpecsModifyUI();
-            HideSpecsReviewUI();
-            DisableSpecsMetadataEntryUI();
-            DisableSpecModifyUI();
-            HideSpecReviewUI();
-
-            // Disable Spec pattern UI
-            btnSiDefaultVal.Visible = false;
-
-            DisableSpecMetadataEntryUI();
-            DisableListEntryModifyUI();
-
-            // Reload and Repopulate Specs list
-            RefreshSpecsList();
-            SelectSpecs(drafter.DraftSpecs.ID);
-
-            // TEST
-            drafter.Clear();
         }
 
         private void AddNewListEntry()
@@ -1035,6 +1035,11 @@ namespace UserInterface.Forms
             }
         }
 
+        private void SelectLastSpecs()
+        {
+            lbxSpecs.SelectedIndex = lbxSpecs.Items.Count - 1;
+        }
+
         private void SaveSpecItemSelectionPosition(int itemsCount)
         {
             int selectedIndex = dgvSpec.SelectedRows[0].Index;
@@ -1198,10 +1203,10 @@ namespace UserInterface.Forms
         private void txtSpecsID_TextChanged(object sender, EventArgs e) => InputSpecsID();
         private void txtSpecsName_TextChanged(object sender, EventArgs e) => InputSpecsName();
         private void txtSpecsPattern_TextChanged(object sender, EventArgs e) => InputSpecsPattern();
-        private void btnSiAdd_Click(object sender, EventArgs e) => NewSpec();
-        private void btnSiEdit_Click(object sender, EventArgs e) => EditSpec();
-        private void btnSiRemove_Click(object sender, EventArgs e) => RemoveSpec();
-        private void btnSiAccept_Click(object sender, EventArgs e) => SaveDraftSpec();
+        private void btnSiAdd_Click(object sender, EventArgs e) => NewSpecsItem();
+        private void btnSiEdit_Click(object sender, EventArgs e) => EditSpecsItem();
+        private void btnSiRemove_Click(object sender, EventArgs e) => RemoveSpecsItem();
+        private void btnSiAccept_Click(object sender, EventArgs e) => SaveDraftSpecsItem();
         private void btnSiCancel_Click(object sender, EventArgs e) => CancelSpecChanges();
         private void txtSiName_TextChanged(object sender, EventArgs e) => InputSpecsItemName();
         private void txtSiValuePattern_TextChanged(object sender, EventArgs e) => InputSpecsItemTextPattern();

@@ -40,6 +40,7 @@ namespace ClientService
 
             // Update the list in the Globals class
             //>
+            DataManager.UpdateSpecsList();
         }
 
         public static void Delete(string entityId)

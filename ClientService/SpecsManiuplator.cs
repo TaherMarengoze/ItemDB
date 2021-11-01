@@ -25,11 +25,11 @@ namespace ClientService
                 .FirstOrDefault(spec => spec.Index == specIndex);
         }
 
-        public static ISpecsItem GetSpecsItem(ISpecs specs, int specIndex)
+        public static ISpecsItem GetSpecsItem(IEnumerable<ISpecsItem> specsItems, int specsItemIndex)
         {
             return
-                specs.SpecItems
-                .FirstOrDefault(spec => spec.Index == specIndex);
+                specsItems
+                .FirstOrDefault(si => si.Index == specsItemIndex);
         }
 
         public static IEnumerable<ISpecListEntry> GetSpecsItemListEntries(string specsId, int specsItemIndex)
