@@ -56,10 +56,10 @@ namespace ClientService
 
             // Option 2:
             //    Find the item by ID and delete it from the global list
-            ISpecs entityToRemove =
+            /*ISpecs entityToRemove =
                 Globals.ModelLists.Specs.Find(entity => entity.ID == entityId);
 
-            Globals.ModelLists.Specs.Remove(entityToRemove);
+            Globals.ModelLists.Specs.Remove(entityToRemove);*/
         }
     }
 }

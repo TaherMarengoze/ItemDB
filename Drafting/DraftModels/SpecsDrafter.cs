@@ -26,8 +26,11 @@ namespace Drafting
         }
 
         public event EventHandler<bool> OnSpecsValidityChange;
-        public event EventHandler<bool> OnSpecItemValidityChange;
+        public event EventHandler<bool> OnSpecsItemValidityChange;
         public event EventHandler<ValidityStatus> OnSpecsIdValidityChange;
+
+        public event EventHandler<int> OnSpecsRemove;
+        public event EventHandler<int> OnSpecsItemRemove;
 
         public event EventHandler<string> OnSpecsItemPatternChange;
 
@@ -45,10 +48,12 @@ namespace Drafting
 
         public string DraftCustomSpecId { get; set; }
 
+        public List<string> SpecsIDs => DataProvider.GetSpecsIds();
+
         public List<string> ExistingIDs { get; private set; }
 
         /// <summary>
-        /// Temporary input for specs ID.
+        /// Temporary parameter that represents the input value from the UI that represents the <see cref="Specs.ID"/>.
         /// </summary>
         public string InputSpecsId
         {
@@ -300,7 +305,7 @@ namespace Drafting
             bool isValidDraftSpecItem = IsValidSpecName && IsValidSpecData;
 
             // raise event for ready state
-            OnSpecItemValidityChange?.Invoke(this, isValidDraftSpecItem);
+            OnSpecsItemValidityChange?.Invoke(this, isValidDraftSpecItem);
         }
 
         public int DraftSpecsItemsCount()
@@ -416,39 +421,25 @@ namespace Drafting
             // Null edit object reference index
             refIndex = null;
 
-            // Clear/Null input objects
+            // Clear / Null input objects
             InputSpecIndex = 0;
             InputSpecName = null;
             InputSpecPattern = null;
         }
 
-        /// <summary>
-        /// Removes a spec item (<see cref="ISpecsItem"/>) from the spec list of the draft specs (<see cref="DraftSpecs"/>).
-        /// </summary>
-        /// <param name="specIndex">The index of the spec to remove</param>
-        public void RemoveSpecFromDraftSpecsItems(int specIndex)
+        public void RemoveSpecs()
         {
-            // FIX: its wrong to remove the spec from the draft specs; its should be removed from the temporary input
-            List<ISpecsItem> specItemsList =
-                DraftSpecs.SpecItems.ToList();
+            SpecsRepository.Delete(SelectedSpecs.ID);
 
-            ISpecsItem specItem =
-                DraftSpecs.SpecItems.FirstOrDefault(idx => idx.Index == specIndex);
-
-            specItemsList.Remove(specItem);
-
-            // Renumber SpecItems
-            int i = 0;
-            foreach (ISpecsItem spec in specItemsList) { spec.Index = ++i; }
-
-            DraftSpecs.SpecItems = specItemsList;
+            OnSpecsRemove?.Invoke(this, DataProvider.SpecsCount);
         }
-        
-        // FIX: its wrong to remove the spec from the draft specs; its should be removed from the temporary input
-        public void RemoveSpec(int specIndex)
+
+        /// <summary>
+        /// Removes a <see cref="ISpecsItem"/> from the <see cref="InputSpecsItems"/> list.
+        /// </summary>
+        /// <param name="specIndex">The index of the <see cref="ISpecsItem"/> to remove.</param>
+        public void RemoveSpecsItem(int specIndex)
         {
-            //int itemIndex = InputSpecsItems.FindIndex(idx => idx.Index == specIndex);
-            //InputSpecsItems.RemoveAt(itemIndex);
             InputSpecsItems.RemoveAll(idx => idx.Index == specIndex);
 
             // Renumber SpecItems
@@ -456,6 +447,8 @@ namespace Drafting
             {
                 InputSpecsItems[i].Index = i + 1;
             }
+
+            OnSpecsItemRemove?.Invoke(this, InputSpecsItems.Count);
         }
 
         public void CopyEntriesToDraft()
@@ -542,7 +535,7 @@ namespace Drafting
             }
             IsValidSpecData = IsSpecValid();
         }
-        
+
         private List<string> FilterExistingIDs(string inputSpecsId)
         {
             if (inputSpecsId == string.Empty)

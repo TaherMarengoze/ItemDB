@@ -27,6 +27,9 @@
         </entry>
       </list>
     </specsItem>
+    <specsItem index="5" name="Specs Item #005" valuePattern="{val}">
+      <custom>smpleCustSpec</custom>
+    </specsItem>
   </specs>
   <specs specsID="S010" name="Black Steel Pipe" textPattern="{1} {base} {2}">
     <specsItem index="1" name="Type" valuePattern="{val} ">

@@ -21,8 +21,12 @@ namespace Shared.UI
         /// </summary>
         /// <param name="dgv">The <see cref="DataGridView"/> instance.</param>
         /// <param name="dataSource">The <see cref="object"/> of the datasource.</param>
-        public static void DataSourceResize(this DataGridView dgv, object dataSource)
+        public static void DataSourceResize(this DataGridView dgv, object dataSource, bool refresh = false)
         {
+            if (refresh)
+            {
+                dgv.DataSource = null;
+            }
             dgv.DataSource = dataSource;
             dgv.AutoResizeColumns();
             dgv.AutoResizeRows();
