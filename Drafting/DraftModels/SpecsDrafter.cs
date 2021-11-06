@@ -29,6 +29,8 @@ namespace Drafting
         public event EventHandler<bool> OnSpecsItemValidityChange;
         public event EventHandler<ValidityStatus> OnSpecsIdValidityChange;
 
+        public event EventHandler<string> OnSpecsAdd;
+        public event EventHandler<string> OnSpecsUpdate;
         public event EventHandler<int> OnSpecsRemove;
         public event EventHandler<int> OnSpecsItemRemove;
 
@@ -49,6 +51,10 @@ namespace Drafting
         public string DraftCustomSpecId { get; set; }
 
         public List<string> SpecsIDs => DataProvider.GetSpecsIds();
+
+        public int SpecsCount => DataProvider.SpecsCount;
+
+        public List<string> CustomSpecsIDs => DataManager.GetCustomSpecsList();
 
         public List<string> ExistingIDs { get; private set; }
 
@@ -365,11 +371,15 @@ namespace Drafting
         private void AddToRepository()
         {
             SpecsRepository.Create(DraftSpecs);
+
+            OnSpecsAdd?.Invoke(this, DraftSpecs.ID);
         }
 
         private void UpdateRepository()
         {
             SpecsRepository.Update(refId, DraftSpecs);
+
+            OnSpecsUpdate?.Invoke(this, DraftSpecs.ID);
         }
 
         private void AddSpecsItem()
@@ -382,6 +392,30 @@ namespace Drafting
             int index = (int)refIndex - 1;
             _inputSpecsItems.RemoveAt(index);
             _inputSpecsItems.Insert(index, DraftSpecsItem);
+        }
+
+        public void RemoveSpecs()
+        {
+            SpecsRepository.Delete(SelectedSpecs.ID);
+
+            OnSpecsRemove?.Invoke(this, DataProvider.SpecsCount);
+        }
+
+        /// <summary>
+        /// Removes a <see cref="ISpecsItem"/> from the <see cref="InputSpecsItems"/> list.
+        /// </summary>
+        /// <param name="specIndex">The index of the <see cref="ISpecsItem"/> to remove.</param>
+        public void RemoveSpecsItem(int specIndex)
+        {
+            InputSpecsItems.RemoveAll(idx => idx.Index == specIndex);
+
+            // Renumber SpecItems
+            for (int i = 0; i < InputSpecsItems.Count; i++)
+            {
+                InputSpecsItems[i].Index = i + 1;
+            }
+
+            OnSpecsItemRemove?.Invoke(this, InputSpecsItems.Count);
         }
 
         private void ClearSelectionObjects()
@@ -425,30 +459,6 @@ namespace Drafting
             InputSpecIndex = 0;
             InputSpecName = null;
             InputSpecPattern = null;
-        }
-
-        public void RemoveSpecs()
-        {
-            SpecsRepository.Delete(SelectedSpecs.ID);
-
-            OnSpecsRemove?.Invoke(this, DataProvider.SpecsCount);
-        }
-
-        /// <summary>
-        /// Removes a <see cref="ISpecsItem"/> from the <see cref="InputSpecsItems"/> list.
-        /// </summary>
-        /// <param name="specIndex">The index of the <see cref="ISpecsItem"/> to remove.</param>
-        public void RemoveSpecsItem(int specIndex)
-        {
-            InputSpecsItems.RemoveAll(idx => idx.Index == specIndex);
-
-            // Renumber SpecItems
-            for (int i = 0; i < InputSpecsItems.Count; i++)
-            {
-                InputSpecsItems[i].Index = i + 1;
-            }
-
-            OnSpecsItemRemove?.Invoke(this, InputSpecsItems.Count);
         }
 
         public void CopyEntriesToDraft()

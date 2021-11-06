@@ -1,6 +1,4 @@
-﻿
-using ClientService;
-using CoreLibrary.Enums;
+﻿using CoreLibrary.Enums;
 using Drafting;
 using Shared.UI;
 using System;
@@ -12,6 +10,41 @@ namespace UserInterface.Forms
 {
     public partial class SpecsEditor : Form
     {
+        private EntryMode _mainMode;
+        private EntryMode _subMode;
+
+        EntryMode MainMode
+        {
+            get => _mainMode;
+            set
+            {
+                _mainMode = value;
+                if (value == EntryMode.View)
+                {
+                    if (SubMode != EntryMode.View)
+                    {
+                        SubMode = EntryMode.View;
+                    }
+
+                    // do some stuff
+                }
+            }
+        }
+
+        EntryMode SubMode
+        {
+            get => _subMode;
+            set
+            {
+                _subMode = value;
+
+                if (value == EntryMode.View)
+                {
+                    // do some stuff once
+                }
+            }
+        }
+
         private EntryMode _specsMode = EntryMode.View;
         private EntryMode SpecsMode
         {
@@ -19,26 +52,148 @@ namespace UserInterface.Forms
             set
             {
                 _specsMode = value;
-                if (value == EntryMode.View)
+
+                if (_specsMode == EntryMode.View)
                 {
+                    //if (SpecsItemMode != EntryMode.View)
+                    SpecsItemMode = EntryMode.View;
+
                     // Enable Save UI
                     tsmiSaveFile.Enabled = true;
+
+                    // Enable Specs Add, Edit & Remove buttons
+                    btnNewSpecs.Enabled = true;
+                    btnEditSpecs.Enabled = true;
+                    btnRemoveSpecs.Enabled = true;
+
+                    // Disable & Hide Specs Review Buttons (Accept & Cancel)
+                    btnAccept.Enabled = false;
+                    btnAccept.Visible = false;
+
+                    // btnCancel is always enabled
+                    btnCancel.Visible = false;
+
+                    // Disable & Hide SpecsItem Add, Edit & Remove buttons
+                    // btnSiAdd always enabled
+                    btnSiAdd.Visible = false;
+
+                    btnSiEdit.Enabled = false;
+                    btnSiEdit.Visible = false;
+
+                    btnSiRemove.Enabled = false;
+                    btnSiRemove.Visible = false;
+
+                    chkSpecConfirmRemove.Visible = false;
+
+                    // Disable & Hide SpecsItem Review Buttons (Accept & Cancel)
+                    btnSiAccept.Enabled = false;
+                    btnSiAccept.Visible = false;
+
+                    // btnSiCancel is always enabled
+                    btnSiCancel.Visible = false;
+
+                    // Disable data entry UI for Specs
+                    txtSpecsID.ReadOnly = true;
+                    txtSpecsID.BackColor = SystemColors.Control;
+
+                    txtSpecsName.ReadOnly = true;
+                    txtSpecsPattern.ReadOnly = true;
                 }
                 else
                 {
                     // Disable Save UI
                     tsmiSaveFile.Enabled = false;
+
+                    // Save the position of selection
+                    SaveSelection(lbxSpecs);
+
+                    // Disable Specs List Selection UI
+                    lbxSpecs.SelectionMode = SelectionMode.None;
+
+                    // Disable Specs Add, Edit & Remove buttons
+                    btnNewSpecs.Enabled = false;
+                    btnEditSpecs.Enabled = false;
+                    btnRemoveSpecs.Enabled = false;
+
+                    // Show Specs Review Buttons (Accept & Cancel)
+                    btnAccept.Visible = true;
+                    btnCancel.Visible = true;
+
+                    // Enable Specs Review Buttons
+                    btnAccept.Enabled = false;
+                    // btnCancel is always enabled
+
+                    // enable Specs data entry UI
+                    txtSpecsID.ReadOnly = false;
+                    txtSpecsName.ReadOnly = false;
+                    txtSpecsPattern.ReadOnly = false;
+
+                    // Show SpecsItem Add, Edit & Remove buttons
+                    btnSiAdd.Visible = true;
+                    btnSiEdit.Visible = true;
+                    btnSiRemove.Visible = true;
+
+                    // show SpecsItem remove confirmation check box
+                    chkSpecConfirmRemove.Visible = true;
                 }
             }
         }
 
-        private EntryMode specMode = EntryMode.View;
+        private EntryMode _specsItemMode = EntryMode.View;
+        private EntryMode SpecsItemMode
+        {
+            get => _specsItemMode;
+            set
+            {
+                if (_specsItemMode == EntryMode.View & value != EntryMode.View)
+                {
+                    // set mode to non-view
+                    _specsItemMode = value;
+
+                    // do non-view mode stuff
+                    
+
+                    //DisableSpecsItemModifyUI();
+
+                    //if (_specsMode != EntryMode.View)
+                    dgvSpec.Enabled = false;
+
+                    btnSiAdd.Enabled = false;
+                    btnSiEdit.Enabled = false;
+                    btnSiRemove.Enabled = false;
+
+                }
+                else if (_specsItemMode != EntryMode.View & value == EntryMode.View)
+                {
+                    // set mode
+                    _specsItemMode = value;
+
+                    // do view mode stuff that should be executed once
+
+                    //EnableSpecsItemModifyUI();
+
+                    dgvSpec.Enabled = true;
+
+                    btnSiAdd.Enabled = true;
+                    btnSiEdit.Enabled = true;
+                    btnSiRemove.Enabled = true;
+                }
+
+                if (_specsItemMode == EntryMode.View)
+                {
+                    //txtSiName.ReadOnly = true;
+                    //txtSiValuePattern.ReadOnly = true;
+                    //btnSiDefaultVal.Visible = false;
+                    //btnSiInsertVal.Visible = false;
+                }
+            }
+        }
+
         private SpecsDrafter drafter;
 
         private int specsSelectionIndex = 0;
         //private int specSelectionIndex;
         private int entrySelectionIndex;
-
 
         public SpecsEditor()
         {
@@ -49,6 +204,8 @@ namespace UserInterface.Forms
             drafter.OnSpecsItemValidityChange += Drafter_OnSpecItemValidityChange;
             drafter.OnSpecsIdValidityChange += Drafter_OnSpecsIdValidityChange;
             drafter.OnSpecsItemPatternChange += Drafter_OnSpecsItemPatternChange;
+            drafter.OnSpecsAdd += Drafter_OnSpecsAdd;
+            drafter.OnSpecsUpdate += Drafter_OnSpecsUpdate;
             drafter.OnSpecsRemove += Drafter_OnSpecsRemove;
             drafter.OnSpecsItemRemove += Drafter_OnSpecsItemRemove;
         }
@@ -108,10 +265,50 @@ namespace UserInterface.Forms
             }
         }
 
+        private void Drafter_OnSpecsAdd(object sender, string e)
+        {
+            // Exit draft (New) mode
+            SpecsMode = EntryMode.View;
+
+            // Null draft objects
+            drafter.Clear();
+
+            // Disable Spec pattern UI
+            btnSiDefaultVal.Visible = false;
+
+            //DisableSpecMetadataEntryUI();
+            DisableListEntryModifyUI();
+
+            // Reload and Repopulate Specs list
+            RefreshSpecsList();
+            EnableSpecsListSelection();
+            lbxSpecs.Text = e;
+            btnNewSpecs.Focus();
+        }
+
+        private void Drafter_OnSpecsUpdate(object sender, string e)
+        {
+            // Exit draft (Edit) mode
+            SpecsMode = EntryMode.View;
+
+            // Null draft objects
+            drafter.Clear();
+
+            // Disable Spec pattern UI
+            btnSiDefaultVal.Visible = false;
+
+            //DisableSpecMetadataEntryUI();
+            DisableListEntryModifyUI();
+
+            // Reload and Repopulate Specs list
+            RefreshSpecsList();
+            EnableSpecsListSelection();
+            lbxSpecs.Text = e;
+            btnNewSpecs.Focus();
+        }
+
         private void Drafter_OnSpecsRemove(object sender, int count)
         {
-            //throw new NotImplementedException();
-
             if (count > 0) // has one or more item
             {
                 SaveAndRestoreSelection(lbxSpecs, PopulateSpecsList);
@@ -122,7 +319,7 @@ namespace UserInterface.Forms
             else // has no item
             {
                 lbxSpecs.DataSource = null;
-                
+
                 btnNewSpecs.Focus();
                 btnRemoveSpecs.Enabled = false;
                 btnEditSpecs.Enabled = false;
@@ -161,44 +358,29 @@ namespace UserInterface.Forms
             RefreshSpecsList();
 
             // Bind Custom Specs Selector
-            cboCustomTypeSelector.DataSource =
-                DataManager.GetCustomSpecsList();
+            cboCustomTypeSelector.DataSource = drafter.CustomSpecsIDs;
 
             ClearCustomTypeSelector();
-            EnableSpecsModifyUI();
+            btnNewSpecs.Enabled = true;
+            btnEditSpecs.Enabled = true;
+            btnRemoveSpecs.Enabled = true;
         }
 
         private void AddNewSpecs()
         {
-            SaveSpecsSelectionPosition();
-
             // Instantiate new Specs
             drafter.NewSpecs();
 
             // Sets a flag
             SpecsMode = EntryMode.New;
 
-            // Disable Specs Selection
-            DisableSpecsListSelection();
-
-            // Disable Specs main controls
-            DisableSpecsModifyUI();
-
-            // Show mode Accept/Cancel controls
-            ShowSpecsReviewUI();
-
-            // Setup Specs Meta-data controls
-            EnableSpecsMetadataEntryUI();
-            btnAccept.Enabled = false;
-            btnSiAdd.Enabled = true;
-
-            // Set Specs Metadata initial/default values
+            // Set Specs data initial/default values
             txtSpecsID.Text = drafter.InputSpecsId;
             txtSpecsName.Text = drafter.InputSpecsName;
             txtSpecsPattern.Text = drafter.InputSpecsTxtPat;
             txtSpecsID.Focus();
 
-            // Setup SpecsItem Meta-data controls
+            // Setup SpecsItem data controls
             ClearSpecsItemEntryUI();
 
             // Clear DGVs from any data
@@ -213,99 +395,54 @@ namespace UserInterface.Forms
 
         private void EditSpecs()
         {
-            string specsId = GetSelectedSpecsId();
-
-            drafter.EditSpecs(specsId);
-
-            SaveSpecsSelectionPosition();
+            drafter.EditSpecs(GetSelectedSpecsId());
 
             SpecsMode = EntryMode.Edit;
 
-            //InputSpecsID();
             lbxSpecs.DataSource = drafter.ExistingIDs;
 
-            // Disable Specs Selection
-            DisableSpecsListSelection();
-
-            // Disable Specs main controls
-            DisableSpecsModifyUI();
-
-            // Show mode Accept/Cancel controls
-            ShowSpecsReviewUI();
-
-            // Setup Specs Meta-data controls
-            EnableSpecsMetadataEntryUI();
-
             btnCancel.Focus();
-            EnableSpecModifyUI();
+            EnableSpecsItemModifyUI();
             DisableListEntryModifyUI();
         }
 
         private void SaveChanges()
         {
             drafter.CommitChanges();
-
-            // Check if entry mode is edit
-            bool isEditEntryMode = SpecsMode == EntryMode.Edit;
-
-            // Exit draft (New) mode
-            SpecsMode = EntryMode.View;
-
-            // Null draft objects
-            drafter.Clear();
-
-            // Setup UI
-            EnableSpecsListSelection();
-            EnableSpecsModifyUI();
-            HideSpecsReviewUI();
-            DisableSpecsMetadataEntryUI();
-            DisableSpecModifyUI();
-            HideSpecReviewUI();
-
-            // Disable Spec pattern UI
-            btnSiDefaultVal.Visible = false;
-
-            DisableSpecMetadataEntryUI();
-            DisableListEntryModifyUI();
-
-            // Reload and Repopulate Specs list
-            RefreshSpecsList();
-
-            if (isEditEntryMode)
-            {
-                RestoreSpecsSelectionPosition();
-            }
-            else
-            {
-                SelectLastSpecs();
-            }
         }
 
         private void CancelSpecsDrafting()
         {
             SpecsMode = EntryMode.View;
-            specMode = EntryMode.View;
+
+            // disable Specs Edit & Remove buttons, if no specs exists
+            if (drafter.SpecsCount <= 0)
+            {
+                btnEditSpecs.Enabled = false;
+                btnRemoveSpecs.Enabled = false;
+            }
 
             drafter.Clear();
 
             EnableSpecsListSelection();
 
-            if (DataProvider.GetSpecsIds().Count > 0)
-            {
-                EnableSpecsModifyUI();
-            }
-            else
-            {
-                btnNewSpecs.Enabled = true;
-                btnEditSpecs.Enabled = false;
-                btnRemoveSpecs.Enabled = false;
-            }
+            //btnNewSpecs.Enabled = true;
+            //if (DataProvider.GetSpecsIds().Count > 0)
+            //{
+            //    btnEditSpecs.Enabled = true;
+            //    btnRemoveSpecs.Enabled = true;
+            //}
+            //else
+            //{
+            //    btnEditSpecs.Enabled = false;
+            //    btnRemoveSpecs.Enabled = false;
+            //}
 
-            HideSpecsReviewUI();
-            DisableSpecsMetadataEntryUI();
+            //HideSpecsReviewUI();
+            //DisableSpecsEntryUI();
             ClearSpecsMetadataEntryUI();
 
-            DisableSpecModifyUI();
+            //DisableSpecsItemModifyUI();
             dgvSpec.Enabled = true;
             HideSpecReviewUI();
             DisableSpecMetadataEntryUI();
@@ -319,8 +456,7 @@ namespace UserInterface.Forms
             ResetSpecTypeUI();
             DisableSpecTypeUI();
             PopulateSpecsList();
-
-            RestoreSpecsSelectionPosition();
+            RestoreSelection(lbxSpecs);
 
             btnNewSpecs.Focus();
         }
@@ -329,23 +465,24 @@ namespace UserInterface.Forms
         {
             if (lbxSpecs.SelectedItems.Count == 0)
                 return;
-            
+
             if (ShowSpecsRemoveConfirmation() == DialogResult.OK)
             {
                 drafter.RemoveSpecs();
             }
         }
 
-        private void NewSpecsItem()
+        private void AddNewSpecsItem()
         {
-            specMode = EntryMode.New;
+            SpecsItemMode = EntryMode.New;
 
             // Instantiate new Spec
             drafter.NewSpecsItem();
             SetSpecTextFieldsValue();
 
             // Setup UI
-            DisableSpecModifyUI();
+            //DisableSpecsItemModifyUI(); // move to property setter
+
             btnSiAccept.Enabled = false;
             ShowSpecReviewUI();
             EnableSpecMetadataEntryUI();
@@ -366,18 +503,19 @@ namespace UserInterface.Forms
 
         private void DoubleClickEditSpec()
         {
-            if (SpecsMode != EntryMode.View && specMode == EntryMode.View)
+            if (SpecsMode != EntryMode.View && SpecsItemMode == EntryMode.View)
                 EditSpecsItem();
         }
 
         private void EditSpecsItem()
         {
-            specMode = EntryMode.Edit;
+            SpecsItemMode = EntryMode.Edit;
 
             drafter.EditSpecsItem(GetSelectedSpecIndex());
 
             // Setup UI
-            DisableSpecModifyUI();
+            //DisableSpecsItemModifyUI(); // move to property setter
+
             ShowSpecReviewUI();
             EnableSpecMetadataEntryUI();
             txtSiName.Focus();
@@ -406,7 +544,7 @@ namespace UserInterface.Forms
             drafter.CommitSpecsItemChanges();
 
             // Set EntryMode to View
-            specMode = EntryMode.View;
+            SpecsItemMode = EntryMode.View;
 
             // Null draft objects
             drafter.ClearDraftSpecsItem();
@@ -418,7 +556,7 @@ namespace UserInterface.Forms
         private void CancelSpecChanges()
         {
             // Set EntryMode to View
-            specMode = EntryMode.View;
+            SpecsItemMode = EntryMode.View;
 
             // Null draft objects
             drafter.ClearDraftSpecsItem();
@@ -445,7 +583,7 @@ namespace UserInterface.Forms
             ClearSpecsItemEntryUI();
 
             // Setup UI
-            EnableSpecModifyUI();
+            //EnableSpecModifyUI(); // move to property setter
 
             if (drafter.InputSpecsItems.Count <= 1)
                 btnSiRemove.Enabled = false;
@@ -477,7 +615,7 @@ namespace UserInterface.Forms
 
         private void RemoveSpecsItem()
         {
-            if (specMode == EntryMode.View)
+            if (SpecsItemMode == EntryMode.View)
             {
                 if (ShowSpecRemoveConfirmation() == DialogResult.OK)
                 {
@@ -522,7 +660,7 @@ namespace UserInterface.Forms
 
         private void DoubleClickEditListEntry()
         {
-            if (SpecsMode != EntryMode.View && specMode != EntryMode.View)
+            if (SpecsMode != EntryMode.View && SpecsItemMode != EntryMode.View)
                 EditListEntry();
         }
 
@@ -567,7 +705,7 @@ namespace UserInterface.Forms
 
         private void ChangeSpecCustomId()
         {
-            switch (specMode)
+            switch (SpecsItemMode)
             {
                 case EntryMode.View:
                     break;
@@ -589,7 +727,7 @@ namespace UserInterface.Forms
 
         private void InputSpecsID()
         {
-            if (SpecsMode != EntryMode.View && specMode == EntryMode.View)
+            if (SpecsMode != EntryMode.View && SpecsItemMode == EntryMode.View)
             {
                 drafter.InputSpecsId = txtSpecsID.Text;
                 lbxSpecs.DataSource = drafter.ExistingIDs;
@@ -598,7 +736,7 @@ namespace UserInterface.Forms
 
         private void InputSpecsName()
         {
-            if (SpecsMode != EntryMode.View && specMode == EntryMode.View)
+            if (SpecsMode != EntryMode.View && SpecsItemMode == EntryMode.View)
             {
                 drafter.InputSpecsName = txtSpecsName.Text;
             }
@@ -606,7 +744,7 @@ namespace UserInterface.Forms
 
         private void InputSpecsPattern()
         {
-            if (SpecsMode != EntryMode.View && specMode == EntryMode.View)
+            if (SpecsMode != EntryMode.View && SpecsItemMode == EntryMode.View)
             {
                 drafter.InputSpecsTxtPat = txtSpecsPattern.Text;
             }
@@ -614,7 +752,7 @@ namespace UserInterface.Forms
 
         private void InputSpecsItemName()
         {
-            if (specMode != EntryMode.View)
+            if (SpecsItemMode != EntryMode.View)
             {
                 drafter.InputSpecName = txtSiName.Text;
             }
@@ -622,7 +760,7 @@ namespace UserInterface.Forms
 
         private void InputSpecsItemTextPattern()
         {
-            if (specMode != EntryMode.View)
+            if (SpecsItemMode != EntryMode.View)
             {
                 drafter.InputSpecPattern = txtSiValuePattern.Text;
             }
@@ -677,7 +815,7 @@ namespace UserInterface.Forms
         {
             PopulateSpecsList();
 
-            if (DataProvider.SpecsCount < 1)
+            if (/*DataProvider.SpecsCount*/drafter.SpecsCount < 1)
             {
                 btnRemoveSpecs.Enabled = false;
                 btnEditSpecs.Enabled = false;
@@ -705,7 +843,7 @@ namespace UserInterface.Forms
 
         private void ViewSelectedSpecData(int idx)
         {
-            if (specMode == EntryMode.View)
+            if (SpecsItemMode == EntryMode.View)
             {
                 drafter.SetSelectedSpec(idx);
 
@@ -760,26 +898,11 @@ namespace UserInterface.Forms
             btnCancel.Visible = true;
         }
 
-        private void HideSpecsReviewUI()
-        {
-            btnAccept.Visible = false;
-            btnCancel.Visible = false;
-        }
-
         private void EnableSpecsMetadataEntryUI()
         {
             txtSpecsID.ReadOnly = false;
             txtSpecsName.ReadOnly = false;
             txtSpecsPattern.ReadOnly = false;
-        }
-
-        private void DisableSpecsMetadataEntryUI()
-        {
-            txtSpecsID.ReadOnly = true;
-            txtSpecsID.BackColor = SystemColors.Control;
-
-            txtSpecsName.ReadOnly = true;
-            txtSpecsPattern.ReadOnly = true;
         }
 
         private void ShowSpecReviewUI()
@@ -827,13 +950,6 @@ namespace UserInterface.Forms
             lbxSpecs.SelectionMode = SelectionMode.None;
         }
 
-        private void EnableSpecsModifyUI()
-        {
-            btnNewSpecs.Enabled = true;
-            btnEditSpecs.Enabled = true;
-            btnRemoveSpecs.Enabled = true;
-        }
-
         private void DisableSpecsModifyUI()
         {
             btnNewSpecs.Enabled = false;
@@ -841,7 +957,7 @@ namespace UserInterface.Forms
             btnRemoveSpecs.Enabled = false;
         }
 
-        private void EnableSpecModifyUI()
+        private void EnableSpecsItemModifyUI()
         {
             //TEST
             dgvSpec.Enabled = true;
@@ -851,7 +967,7 @@ namespace UserInterface.Forms
             btnSiRemove.Enabled = true;
         }
 
-        private void DisableSpecModifyUI()
+        private void DisableSpecsItemModifyUI()
         {
             //TEST
             if (SpecsMode != EntryMode.View)
@@ -892,12 +1008,12 @@ namespace UserInterface.Forms
         {
             if (rdoListType.Checked)
             {
-                if (specMode == EntryMode.New || specMode == EntryMode.Edit)
+                if (SpecsItemMode == EntryMode.New || SpecsItemMode == EntryMode.Edit)
                     SelectListType();
             }
             else
             {
-                if (specMode == EntryMode.New || specMode == EntryMode.Edit)
+                if (SpecsItemMode == EntryMode.New || SpecsItemMode == EntryMode.Edit)
                     DeselectListType();
             }
         }
@@ -935,12 +1051,12 @@ namespace UserInterface.Forms
         {
             if (rdoCustomType.Checked)
             {
-                if (specMode == EntryMode.New || specMode == EntryMode.Edit)
+                if (SpecsItemMode == EntryMode.New || SpecsItemMode == EntryMode.Edit)
                     SelectCustomType();
             }
             else
             {
-                if (specMode == EntryMode.New || specMode == EntryMode.Edit)
+                if (SpecsItemMode == EntryMode.New || SpecsItemMode == EntryMode.Edit)
                     DeselectCustomType();
             }
         }
@@ -1029,13 +1145,32 @@ namespace UserInterface.Forms
             }
         }
 
+        private void SaveSelection(ListBox listBox)
+        {
+            specsSelectionIndex = listBox.SelectedIndex;
+        }
+
+        private void RestoreSelection(ListBox listBox)
+        {
+            int itemsCount = listBox.Items.Count;
+
+            if (specsSelectionIndex > -1 && itemsCount > 0)
+            {
+                // Check if selection index exists in the list
+                if (specsSelectionIndex >= itemsCount)
+                    specsSelectionIndex = itemsCount - 1;
+
+                listBox.SelectedIndex = specsSelectionIndex;                
+            }
+        }
+
         private void SaveSpecsSelectionPosition(bool shiftUp = false)
         {
             int selectedIndex = lbxSpecs.SelectedIndex;
-
-            if (selectedIndex == DataProvider.GetSpecsIds().Count - 1)
+            int count = /*drafter.SpecsCount*/lbxSpecs.Items.Count;
+            if (selectedIndex == count - 1)
             {
-                specsSelectionIndex = DataProvider.GetSpecsIds().Count - 1;
+                specsSelectionIndex = count - 1;
 
                 if (shiftUp)
                 {
@@ -1214,7 +1349,15 @@ namespace UserInterface.Forms
             }
         }
         private void cboCustomTypeSelector_SelectedIndexChanged(object sender, EventArgs e) => ChangeSpecCustomId();
-        private void btnNewSpecs_Click(object sender, EventArgs e) => AddNewSpecs();
+        private void btnNewSpecs_Click(object sender, EventArgs e)
+        {
+            AddNewSpecs();
+
+            //test
+            //DisableSpecsListSelection();
+            //EnableSpecsListSelection();
+        }
+
         private void btnEditSpecs_Click(object sender, EventArgs e) => EditSpecs();
         private void btnAccept_Click(object sender, EventArgs e) => SaveChanges();
         private void btnCancel_Click(object sender, EventArgs e) => CancelSpecsDrafting();
@@ -1222,7 +1365,7 @@ namespace UserInterface.Forms
         private void txtSpecsID_TextChanged(object sender, EventArgs e) => InputSpecsID();
         private void txtSpecsName_TextChanged(object sender, EventArgs e) => InputSpecsName();
         private void txtSpecsPattern_TextChanged(object sender, EventArgs e) => InputSpecsPattern();
-        private void btnSiAdd_Click(object sender, EventArgs e) => NewSpecsItem();
+        private void btnSiAdd_Click(object sender, EventArgs e) => AddNewSpecsItem();
         private void btnSiEdit_Click(object sender, EventArgs e) => EditSpecsItem();
         private void btnSiRemove_Click(object sender, EventArgs e) => RemoveSpecsItem();
         private void btnSiAccept_Click(object sender, EventArgs e) => SaveDraftSpecsItem();
@@ -1262,7 +1405,7 @@ namespace UserInterface.Forms
         {
             if (e.Button == MouseButtons.Right)
             {
-                if (dgvSpec.SelectedRows.Count > 0 && SpecsMode != EntryMode.View && specMode == EntryMode.View)
+                if (dgvSpec.SelectedRows.Count > 0 && SpecsMode != EntryMode.View && SpecsItemMode == EntryMode.View)
                 {
                     tsmiInsertToken.Enabled = true;
                 }

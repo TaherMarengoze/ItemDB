@@ -253,7 +253,7 @@
       <Name>AppCore</Name>
     </ProjectReference>
     <ProjectReference Include="..\ClientService\ClientService.csproj">
-      <Project>{2EC19893-87BD-41AA-A165-BF544D2A1BCB}</Project>
+      <Project>{2ec19893-87bd-41aa-a165-bf544d2a1bcb}</Project>
       <Name>ClientService</Name>
     </ProjectReference>
     <ProjectReference Include="..\Common\Shared.csproj">
