@@ -101,25 +101,25 @@ namespace UserInterface.Forms
                 }
                 else
                 {
-                    // Disable Save UI
+                    // disable Save UI
                     tsmiSaveFile.Enabled = false;
 
-                    // Save the position of selection
+                    // save the position of selection
                     SaveSelection(lbxSpecs);
 
-                    // Disable Specs List Selection UI
+                    // disable Specs List Selection UI
                     lbxSpecs.SelectionMode = SelectionMode.None;
 
-                    // Disable Specs Add, Edit & Remove buttons
+                    // disable Specs Add, Edit & Remove buttons
                     btnNewSpecs.Enabled = false;
                     btnEditSpecs.Enabled = false;
                     btnRemoveSpecs.Enabled = false;
 
-                    // Show Specs Review Buttons (Accept & Cancel)
+                    // show Specs Review Buttons (Accept & Cancel)
                     btnAccept.Visible = true;
                     btnCancel.Visible = true;
 
-                    // Enable Specs Review Buttons
+                    // enable Specs Review Buttons
                     btnAccept.Enabled = false;
                     // btnCancel is always enabled
 
@@ -128,7 +128,7 @@ namespace UserInterface.Forms
                     txtSpecsName.ReadOnly = false;
                     txtSpecsPattern.ReadOnly = false;
 
-                    // Show SpecsItem Add, Edit & Remove buttons
+                    // show SpecsItem Add, Edit & Remove buttons
                     btnSiAdd.Visible = true;
                     btnSiEdit.Visible = true;
                     btnSiRemove.Visible = true;
@@ -150,30 +150,41 @@ namespace UserInterface.Forms
                     // set mode to non-view
                     _specsItemMode = value;
 
-                    // do non-view mode stuff
-                    
+                    /* DO NON-VIEW MODE STUFF */
 
-                    //DisableSpecsItemModifyUI();
-
-                    //if (_specsMode != EntryMode.View)
+                    // disable SpecsItem Add, Edit & Remove buttons
                     dgvSpec.Enabled = false;
-
                     btnSiAdd.Enabled = false;
                     btnSiEdit.Enabled = false;
                     btnSiRemove.Enabled = false;
 
+                    // show SpecsItem review buttons (Accept & Cancel)
+                    btnSiAccept.Visible = true;
+                    btnSiCancel.Visible = true;
+
+                    // disable Accept button
+                    btnSiAccept.Enabled = false;
+                    // btnSiCancel is always enabled
+
+                    // enable SpecsItem data entry UI
+                    txtSiName.ReadOnly = false;
+                    txtSiValuePattern.ReadOnly = false;
+
+                    btnSiDefaultVal.Visible = true;
+                    btnSiInsertVal.Visible = true;
+
+                    // enable SpecsItem type UI
+                    grpSpecType.Enabled = true;
+
                 }
                 else if (_specsItemMode != EntryMode.View & value == EntryMode.View)
                 {
-                    // set mode
+                    // set mode to view
                     _specsItemMode = value;
 
-                    // do view mode stuff that should be executed once
-
-                    //EnableSpecsItemModifyUI();
+                    /* DO VIEW MODE STUFF THAT SHOULD BE EXECUTED ONCE */
 
                     dgvSpec.Enabled = true;
-
                     btnSiAdd.Enabled = true;
                     btnSiEdit.Enabled = true;
                     btnSiRemove.Enabled = true;
@@ -324,9 +335,9 @@ namespace UserInterface.Forms
                 btnRemoveSpecs.Enabled = false;
                 btnEditSpecs.Enabled = false;
 
-                ClearSpecsMetadataEntryUI();
-                ClearSpecsItemEntryUI();
-                ClearSpecsItemsList();
+                ClearSpecsFields();
+                ClearSpecsItemFields();
+                ClearSpecsItemList();
                 ClearListEntriesGrid();
             }
         }
@@ -339,14 +350,14 @@ namespace UserInterface.Forms
             }
             else
             {
-                ClearSpecsItemsList();
+                ClearSpecsItemList();
 
                 // Disable Specs Item Edit and Delete buttons.
                 btnSiAdd.Focus();
                 btnSiEdit.Enabled = false;
                 btnSiRemove.Enabled = false;
 
-                ClearSpecsItemEntryUI();
+                ClearSpecsItemFields();
                 dgvListEntries.DataSource = null;
             }
         }
@@ -368,29 +379,23 @@ namespace UserInterface.Forms
 
         private void AddNewSpecs()
         {
-            // Instantiate new Specs
             drafter.NewSpecs();
 
             // Sets a flag
             SpecsMode = EntryMode.New;
 
-            // Set Specs data initial/default values
-            txtSpecsID.Text = drafter.InputSpecsId;
-            txtSpecsName.Text = drafter.InputSpecsName;
-            txtSpecsPattern.Text = drafter.InputSpecsTxtPat;
+            // Set Specs data initial values
+            FillSpecsFields(
+                drafter.InputSpecsId,
+                drafter.InputSpecsName,
+                drafter.InputSpecsTxtPat);
+
             txtSpecsID.Focus();
 
-            // Setup SpecsItem data controls
-            ClearSpecsItemEntryUI();
-
-            // Clear DGVs from any data
-            ClearSpecsItemsList();
-
-            //ClearListEntriesGrid();
-            ResetSpecTypeUI();
-
-            // Reset SpecsItems list type controls
-            DeselectListType();
+            ClearSpecsItemFields();
+            ClearSpecsItemList();
+            ClearSpecsItemTypeSelector();
+            DisableListTypeUI();
         }
 
         private void EditSpecs()
@@ -400,9 +405,10 @@ namespace UserInterface.Forms
             SpecsMode = EntryMode.Edit;
 
             lbxSpecs.DataSource = drafter.ExistingIDs;
-
             btnCancel.Focus();
-            EnableSpecsItemModifyUI();
+            btnSiEdit.Enabled = true;
+            btnSiRemove.Enabled = true;
+
             DisableListEntryModifyUI();
         }
 
@@ -440,20 +446,20 @@ namespace UserInterface.Forms
 
             //HideSpecsReviewUI();
             //DisableSpecsEntryUI();
-            ClearSpecsMetadataEntryUI();
+            ClearSpecsFields();
 
             //DisableSpecsItemModifyUI();
             dgvSpec.Enabled = true;
             HideSpecReviewUI();
             DisableSpecMetadataEntryUI();
-            ClearSpecsItemEntryUI();
+            ClearSpecsItemFields();
 
             DisableListEntryModifyUI();
 
-            ClearSpecsItemsList();
+            ClearSpecsItemList();
             ClearListEntriesGrid();
             ResetIdValidityInfo();
-            ResetSpecTypeUI();
+            ClearSpecsItemTypeSelector();
             DisableSpecTypeUI();
             PopulateSpecsList();
             RestoreSelection(lbxSpecs);
@@ -474,31 +480,19 @@ namespace UserInterface.Forms
 
         private void AddNewSpecsItem()
         {
+            drafter.NewSpecsItem();
+
             SpecsItemMode = EntryMode.New;
 
-            // Instantiate new Spec
-            drafter.NewSpecsItem();
-            SetSpecTextFieldsValue();
+            FillSpecsItemFields(
+                drafter.InputSpecIndex,
+                drafter.InputSpecName,
+                drafter.InputSpecPattern);
 
-            // Setup UI
-            //DisableSpecsItemModifyUI(); // move to property setter
-
-            btnSiAccept.Enabled = false;
-            ShowSpecReviewUI();
-            EnableSpecMetadataEntryUI();
             txtSiName.Focus();
-            grpSpecType.Enabled = true;
-
-            // Clear
-            ResetSpecTypeUI();
+            
+            ClearSpecsItemTypeSelector();
             ClearListEntriesGrid();
-        }
-
-        private void SetSpecTextFieldsValue()
-        {
-            txtSiIndex.Text = drafter.InputSpecIndex.ToString();
-            txtSiName.Text = drafter.InputSpecName;
-            txtSiValuePattern.Text = drafter.InputSpecPattern;
         }
 
         private void DoubleClickEditSpec()
@@ -509,17 +503,11 @@ namespace UserInterface.Forms
 
         private void EditSpecsItem()
         {
-            SpecsItemMode = EntryMode.Edit;
-
             drafter.EditSpecsItem(GetSelectedSpecIndex());
 
-            // Setup UI
-            //DisableSpecsItemModifyUI(); // move to property setter
+            SpecsItemMode = EntryMode.Edit;
 
-            ShowSpecReviewUI();
-            EnableSpecMetadataEntryUI();
             txtSiName.Focus();
-            grpSpecType.Enabled = true;
 
             if (rdoListType.Checked)
             {
@@ -527,15 +515,13 @@ namespace UserInterface.Forms
                 DisplayDraftEntries();
                 EnableListEntryModifyUI();
                 CheckEntriesCount(drafter.DraftEntries.Count);
-            }
-            //else Do Nothing
+            }//else Do Nothing
 
             if (rdoCustomType.Checked)
             {
                 cboCustomTypeSelector.Enabled = true;
                 cboCustomTypeSelector.Text = drafter.DraftCustomSpecId;
-            }
-            //else Do Nothing
+            }//else Do Nothing
         }
 
         private void SaveDraftSpecsItem()
@@ -580,7 +566,7 @@ namespace UserInterface.Forms
         private void ResetSpecUI()
         {
             // Clear Text boxes
-            ClearSpecsItemEntryUI();
+            ClearSpecsItemFields();
 
             // Setup UI
             //EnableSpecModifyUI(); // move to property setter
@@ -591,14 +577,14 @@ namespace UserInterface.Forms
             HideSpecReviewUI();
             DisableSpecMetadataEntryUI();
             DisableSpecTypeUI();
-            ResetSpecTypeUI();
+            ClearSpecsItemTypeSelector();
             DisableListEntryModifyUI();
 
             // Clear the list entries
             ClearListEntriesGrid();
 
             // Refresh View
-            ClearSpecsItemsList();
+            ClearSpecsItemList();
 
             if (drafter.InputSpecsItems.Count > 0)
             {
@@ -835,10 +821,27 @@ namespace UserInterface.Forms
         private void ViewSelectedSpecsData(string specsId)
         {
             drafter.SetSelectedSpecs(specsId);
-            txtSpecsID.Text = drafter.SelectedSpecs.ID;
-            txtSpecsName.Text = drafter.SelectedSpecs.Name;
-            txtSpecsPattern.Text = drafter.SelectedSpecs.TextPattern;
+
+            FillSpecsFields(
+                drafter.SelectedSpecs.ID,
+                drafter.SelectedSpecs.Name,
+                drafter.SelectedSpecs.TextPattern);
+
             dgvSpec.DataSourceResize(drafter.SelectedSpecs.SpecItems);
+        }
+
+        private void FillSpecsFields(string id, string name, string pattern)
+        {
+            txtSpecsID.Text = id;
+            txtSpecsName.Text = name;
+            txtSpecsPattern.Text = pattern;
+        }
+
+        private void FillSpecsItemFields(int index, string name, string pattern)
+        {
+            txtSiIndex.Text = index.ToString();
+            txtSiName.Text = name;
+            txtSiValuePattern.Text = pattern;
         }
 
         private void ViewSelectedSpecData(int idx)
@@ -960,9 +963,9 @@ namespace UserInterface.Forms
         private void EnableSpecsItemModifyUI()
         {
             //TEST
-            dgvSpec.Enabled = true;
+            //dgvSpec.Enabled = true;
 
-            btnSiAdd.Enabled = true;
+            //btnSiAdd.Enabled = true;
             btnSiEdit.Enabled = true;
             btnSiRemove.Enabled = true;
         }
@@ -1013,8 +1016,8 @@ namespace UserInterface.Forms
             }
             else
             {
-                if (SpecsItemMode == EntryMode.New || SpecsItemMode == EntryMode.Edit)
-                    DeselectListType();
+                if (SpecsItemMode != EntryMode.View)
+                    DisableListTypeUI();
             }
         }
 
@@ -1039,7 +1042,7 @@ namespace UserInterface.Forms
             }
         }
 
-        private void DeselectListType()
+        private void DisableListTypeUI()
         {
             grpListEntries.Enabled = false;
             ClearListEntriesGrid();
@@ -1091,20 +1094,20 @@ namespace UserInterface.Forms
             grpSpecType.Enabled = false;
         }
 
-        private void ResetSpecTypeUI()
+        private void ClearSpecsItemTypeSelector()
         {
             rdoListType.Checked = false;
             rdoCustomType.Checked = false;
         }
 
-        private void ClearSpecsMetadataEntryUI()
+        private void ClearSpecsFields()
         {
             txtSpecsID.Clear();
             txtSpecsName.Clear();
             txtSpecsPattern.Clear();
         }
 
-        private void ClearSpecsItemEntryUI()
+        private void ClearSpecsItemFields()
         {
             txtSiIndex.Clear();
             txtSiName.Clear();
@@ -1116,7 +1119,7 @@ namespace UserInterface.Forms
             dgvListEntries.DataSourceResize(drafter.DraftEntries);
         }
 
-        private void ClearSpecsItemsList()
+        private void ClearSpecsItemList()
         {
             dgvSpec.DataSource = null;
         }

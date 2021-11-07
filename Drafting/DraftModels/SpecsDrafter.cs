@@ -164,6 +164,7 @@ namespace Drafting
                 {
                     OnSpecsItemPatternChange?.Invoke(this, value);
                 }
+                CheckSpecsItemReady();
             }
         }
 
@@ -203,7 +204,7 @@ namespace Drafting
         public bool IsValidSpecData
         {
             get { return _isValidSpecData; }
-            set
+            private set
             {
                 _isValidSpecData = value;
                 CheckSpecsItemReady();
@@ -282,12 +283,14 @@ namespace Drafting
             {
                 DraftSpecsItemType = SpecType.List;
                 DraftEntries = new List<ISpecListEntry>(DraftSpecsItem.ListEntries);
+                _isValidSpecData = true;
             }
 
             if (DraftSpecsItem.CustomInputID != null)
             {
                 DraftSpecsItemType = SpecType.Custom;
                 DraftCustomSpecId = DraftSpecsItem.CustomInputID;
+                _isValidSpecData = true;
             }
 
             // Set input fields value to edit object data
