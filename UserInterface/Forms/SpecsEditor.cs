@@ -184,18 +184,25 @@ namespace UserInterface.Forms
 
                     /* DO VIEW MODE STUFF THAT SHOULD BE EXECUTED ONCE */
 
+                    // enable SpecsItem Add, Edit & Remove buttons
                     dgvSpec.Enabled = true;
                     btnSiAdd.Enabled = true;
                     btnSiEdit.Enabled = true;
                     btnSiRemove.Enabled = true;
-                }
 
-                if (_specsItemMode == EntryMode.View)
-                {
-                    //txtSiName.ReadOnly = true;
-                    //txtSiValuePattern.ReadOnly = true;
-                    //btnSiDefaultVal.Visible = false;
-                    //btnSiInsertVal.Visible = false;
+                    // hide SpecsItem review buttons (Accept & Cancel)
+                    btnSiAccept.Visible = false;
+                    btnSiCancel.Visible = false;
+
+                    // disable SpecsItem data entry UI
+                    txtSiName.ReadOnly = true;
+                    txtSiValuePattern.ReadOnly = true;
+
+                    btnSiDefaultVal.Visible = false;
+                    btnSiInsertVal.Visible = false;
+
+                    // disable SpecsItem type UI
+                    grpSpecType.Enabled = false;
                 }
             }
         }
@@ -220,7 +227,7 @@ namespace UserInterface.Forms
             drafter.OnSpecsRemove += Drafter_OnSpecsRemove;
             drafter.OnSpecsItemRemove += Drafter_OnSpecsItemRemove;
         }
-        
+
         private void Drafter_OnSpecsValidityChange(object sender, bool specsReady)
         {
             if (SpecsMode != EntryMode.View)
@@ -490,7 +497,7 @@ namespace UserInterface.Forms
                 drafter.InputSpecPattern);
 
             txtSiName.Focus();
-            
+
             ClearSpecsItemTypeSelector();
             ClearListEntriesGrid();
         }
@@ -516,8 +523,7 @@ namespace UserInterface.Forms
                 EnableListEntryModifyUI();
                 CheckEntriesCount(drafter.DraftEntries.Count);
             }//else Do Nothing
-
-            if (rdoCustomType.Checked)
+            else if (rdoCustomType.Checked)
             {
                 cboCustomTypeSelector.Enabled = true;
                 cboCustomTypeSelector.Text = drafter.DraftCustomSpecId;
@@ -536,7 +542,7 @@ namespace UserInterface.Forms
             drafter.ClearDraftSpecsItem();
 
             ResetSpecUI();
-            btnSiAdd.Focus();
+            //btnSiAdd.Focus();
         }
 
         private void CancelSpecChanges()
@@ -546,42 +552,29 @@ namespace UserInterface.Forms
 
             // Null draft objects
             drafter.ClearDraftSpecsItem();
-
+            
             ResetSpecUI();
-
-            //if (drafter.DraftSpecs.SpecItems.Count() <= 0)
-            //{
-            //    // Set to null to remove columns
-            //    ClearSpecItemsGrid();
-
-            //    // Disable Edit and Delete buttons for Spec modification
-            //    btnSiAdd.Focus();
-            //    btnSiEdit.Enabled = false;
-            //    btnSiRemove.Enabled = false;
-
-            //    dgvListEntries.DataSource = null;
-            //}
         }
 
         private void ResetSpecUI()
         {
             // Clear Text boxes
-            ClearSpecsItemFields();
+            //ClearSpecsItemFields();
 
             // Setup UI
             //EnableSpecModifyUI(); // move to property setter
 
-            if (drafter.InputSpecsItems.Count <= 1)
-                btnSiRemove.Enabled = false;
+            //if (drafter.InputSpecsItems.Count < 1)
+            //    btnSiRemove.Enabled = false;
 
-            HideSpecReviewUI();
-            DisableSpecMetadataEntryUI();
-            DisableSpecTypeUI();
-            ClearSpecsItemTypeSelector();
-            DisableListEntryModifyUI();
+            //HideSpecReviewUI();
+            //DisableSpecMetadataEntryUI();
+            //DisableSpecTypeUI();
+            //ClearSpecsItemTypeSelector();
+            //DisableListEntryModifyUI();
 
             // Clear the list entries
-            ClearListEntriesGrid();
+            //ClearListEntriesGrid();
 
             // Refresh View
             ClearSpecsItemList();
@@ -593,10 +586,13 @@ namespace UserInterface.Forms
             else
             {
                 // Disable Edit and Delete buttons for Spec modification
-                btnSiAdd.Focus();
                 btnSiEdit.Enabled = false;
                 btnSiRemove.Enabled = false;
             }
+            btnSiAdd.Focus();
+
+            DisableListEntryModifyUI();
+            //ClearListEntriesGrid();
         }
 
         private void RemoveSpecsItem()
@@ -1011,7 +1007,7 @@ namespace UserInterface.Forms
         {
             if (rdoListType.Checked)
             {
-                if (SpecsItemMode == EntryMode.New || SpecsItemMode == EntryMode.Edit)
+                if (SpecsItemMode != EntryMode.View)
                     SelectListType();
             }
             else
@@ -1163,7 +1159,7 @@ namespace UserInterface.Forms
                 if (specsSelectionIndex >= itemsCount)
                     specsSelectionIndex = itemsCount - 1;
 
-                listBox.SelectedIndex = specsSelectionIndex;                
+                listBox.SelectedIndex = specsSelectionIndex;
             }
         }
 
