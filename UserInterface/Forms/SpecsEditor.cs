@@ -172,6 +172,9 @@ namespace UserInterface.Forms
                     // disable SpecsItem type UI
                     grpSpecType.Enabled = false;
 
+                    // enable List Type grid UI
+                    grpListEntries.Enabled = true;
+
                     // disable List Type SpecsItem UI
                     DisableListEntryModifyUI();
                 }

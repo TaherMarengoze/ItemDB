@@ -151,6 +151,10 @@ namespace Drafting
                         IsValidSpecName = false;
                     }
                 }
+                else
+                {
+                    IsValidSpecName = false;
+                }
             }
         }
 
@@ -462,6 +466,9 @@ namespace Drafting
             InputSpecIndex = 0;
             InputSpecName = null;
             InputSpecPattern = null;
+
+            // reset bool flags
+            IsValidSpecData = false;
         }
 
         public void CopyEntriesToDraft()
