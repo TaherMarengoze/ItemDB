@@ -330,15 +330,14 @@ namespace UserInterface.Forms
 
         private void PostLoading()
         {
+            SpecsMode = EntryMode.View;
+
             RefreshSpecsList();
 
             // Bind Custom Specs Selector
             cboCustomTypeSelector.DataSource = drafter.CustomSpecsIDs;
 
             ClearCustomTypeSelector();
-            btnNewSpecs.Enabled = true;
-            btnEditSpecs.Enabled = true;
-            btnRemoveSpecs.Enabled = true;
         }
 
         private void AddNewSpecs()
@@ -1305,10 +1304,7 @@ namespace UserInterface.Forms
         private void lblSpecIndex_Click(object sender, EventArgs e) => SelectTextbox(txtSiIndex);
         private void lblSpecName_Click(object sender, EventArgs e) => SelectTextbox(txtSiName);
         private void lblSpecValuePattern_Click(object sender, EventArgs e) => SelectTextbox(txtSiValuePattern);
-        private void SpecsEditor_Load(object sender, EventArgs e)
-        {
-            PostLoading();
-        }
+        private void SpecsEditor_Load(object sender, EventArgs e) => PostLoading();
         private void tsmiClose_Click(object sender, EventArgs e)
         {
             Close();
