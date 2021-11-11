@@ -259,29 +259,37 @@ namespace UserInterface.Forms
 
         private void Drafter_OnSpecsAdd(object sender, string e)
         {
-            // Exit draft (New) mode
+            // exit draft mode (New)
             SpecsMode = EntryMode.View;
 
             // Null draft objects
             drafter.Clear();
 
-            // Reload and Repopulate Specs list
-            RefreshSpecsList();
+            // populate Specs list
+            PopulateSpecsList();
+            //CheckSpecsListCount();
             lbxSpecs.Text = e;
+
             btnNewSpecs.Focus();
+
+            // enable Specs Edit & Remove buttons
+            //btnEditSpecs.Enabled = true;
+            //btnRemoveSpecs.Enabled = true;
         }
 
         private void Drafter_OnSpecsUpdate(object sender, string e)
         {
-            // Exit draft (Edit) mode
+            // exit draft mode (Edit)
             SpecsMode = EntryMode.View;
 
             // Null draft objects
             drafter.Clear();
             
-            // Reload and Repopulate Specs list
-            RefreshSpecsList();
+            // populate Specs list
+            //RefreshSpecsList();
+            PopulateSpecsList();
             lbxSpecs.Text = e;
+
             btnNewSpecs.Focus();
         }
 
@@ -293,16 +301,15 @@ namespace UserInterface.Forms
             }
             else // has no item
             {
-                lbxSpecs.DataSource = null;
-
-                btnNewSpecs.Focus();
-                btnRemoveSpecs.Enabled = false;
-                btnEditSpecs.Enabled = false;
-
+                ClearSpecsList();
                 ClearSpecsFields();
                 ClearSpecsItemFields();
                 ClearSpecsItemList();
                 ClearListEntriesGrid();
+
+                btnNewSpecs.Focus();
+                //btnRemoveSpecs.Enabled = false;
+                //btnEditSpecs.Enabled = false;
             }
         }
 
@@ -332,7 +339,8 @@ namespace UserInterface.Forms
         {
             SpecsMode = EntryMode.View;
 
-            RefreshSpecsList();
+            PopulateSpecsList();
+            CheckSpecsListCount();
 
             // Bind Custom Specs Selector
             cboCustomTypeSelector.DataSource = drafter.CustomSpecsIDs;
@@ -717,8 +725,19 @@ namespace UserInterface.Forms
         private void RefreshSpecsList()
         {
             PopulateSpecsList();
+            CheckSpecsListCount();
+        }
 
-            if (drafter.SpecsCount < 1)
+        private void PopulateSpecsList()
+        {
+            lbxSpecs.DataSource =
+                drafter.SpecsCount > 0 ? drafter.SpecsIDs : null;
+        }
+
+        private void CheckSpecsListCount()
+        {
+            
+            if (lbxSpecs.Items.Count < 1/*drafter.SpecsCount < 1*/)
             {
                 btnRemoveSpecs.Enabled = false;
                 btnEditSpecs.Enabled = false;
@@ -728,11 +747,6 @@ namespace UserInterface.Forms
                 btnRemoveSpecs.Enabled = true;
                 btnEditSpecs.Enabled = true;
             }
-        }
-
-        private void PopulateSpecsList()
-        {
-            lbxSpecs.DataSource = drafter.SpecsIDs;
         }
 
         private void ViewSelectedSpecsData(string specsId)
@@ -1015,6 +1029,11 @@ namespace UserInterface.Forms
         {
             rdoListType.Checked = false;
             rdoCustomType.Checked = false;
+        }
+
+        private void ClearSpecsList()
+        {
+            lbxSpecs.DataSource = null;
         }
 
         private void ClearSpecsFields()
@@ -1348,6 +1367,23 @@ namespace UserInterface.Forms
             else
             {
                 txtSpecsPattern.Text = $"{txtSpecsPattern.Text}{specToken}";
+            }
+        }
+
+        private void lbxSpecs_DataSourceChanged(object sender, EventArgs e)
+        {
+            if (SpecsMode == EntryMode.View)
+            {
+                if (lbxSpecs.DataSource == null/*Items.Count < 1*/)
+                {
+                    btnRemoveSpecs.Enabled = false;
+                    btnEditSpecs.Enabled = false;
+                }
+                else
+                {
+                    btnRemoveSpecs.Enabled = true;
+                    btnEditSpecs.Enabled = true;
+                }
             }
         }
         #endregion

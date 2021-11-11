@@ -92,7 +92,7 @@ namespace Drafting
                                 IdStatus = ValidityStatus.Invalid;
                         }
                     }
-                    ExistingIDs = FilterExistingIDs(_inputSpecsId);
+                    ExistingIDs = FilterSimilarIDs(_inputSpecsId);
                 }
             }
         }
@@ -556,7 +556,7 @@ namespace Drafting
             IsValidSpecData = IsSpecValid();
         }
 
-        private List<string> FilterExistingIDs(string inputSpecsId)
+        private List<string> FilterSimilarIDs(string inputSpecsId)
         {
             if (inputSpecsId == string.Empty)
             {
