@@ -372,7 +372,7 @@ namespace Drafting
                 UpdateSpecsItem();
             }
 
-            InputSpecsItems = _inputSpecsItems;
+            AddRemoveInputSpecsItems();
         }
 
         private void AddToRepository()
@@ -423,6 +423,12 @@ namespace Drafting
             }
 
             OnSpecsItemRemove?.Invoke(this, InputSpecsItems.Count);
+            AddRemoveInputSpecsItems();
+        }
+
+        private void AddRemoveInputSpecsItems()
+        {
+            InputSpecsItems = _inputSpecsItems;
         }
 
         private void ClearSelectionObjects()
