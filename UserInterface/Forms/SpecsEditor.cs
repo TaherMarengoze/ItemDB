@@ -322,10 +322,12 @@ namespace UserInterface.Forms
             drafter.OnSpecsCancel += Drafter_OnSpecsCancel;
 
             drafter.OnSpecsRemove += Drafter_OnSpecsRemove;
+
+            drafter.OnSpecsItemSet += Drafter_OnSpecsItemSet;
             drafter.OnSpecsItemRemove += Drafter_OnSpecsItemRemove;
 
         }
-        
+
         private void Drafter_OnSpecsValidityChange(object sender, bool specsReady)
         {
             if (SpecsMode != EntryMode.View)
@@ -454,6 +456,15 @@ namespace UserInterface.Forms
 
                 btnNewSpecs.Focus();
             }
+        }
+
+        private void Drafter_OnSpecsItemSet(object sender, int e)
+        {
+            //ResetSpecsItemUI();
+            SpecsItemMode = EntryMode.View;
+            dgvSpec.DataSourceResize(drafter.InputSpecsItems, true);
+            // select added or updated SpecsItem from the list
+            btnSiAdd.Focus();
         }
 
         private void Drafter_OnSpecsItemRemove(object sender, int count)
@@ -592,7 +603,7 @@ namespace UserInterface.Forms
         private void SaveSpecsItemChanges()
         {
             drafter.CommitSpecsItemChanges();
-            ResetSpecsItemUI();
+            //ResetSpecsItemUI();
         }
 
         private void CancelSpecsItemDrafting()

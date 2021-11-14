@@ -408,7 +408,7 @@ namespace Drafting
 
             OnSpecsItemSet?.Invoke(this, DraftSpecsItem.Index);
 
-            NotifyChangeInputSpecsItems();
+            IsSpecsHasItem = true;
 
             ClearDraftSpecsItem();
         }
