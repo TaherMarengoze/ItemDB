@@ -9,6 +9,13 @@ using System.Linq;
 
 namespace Drafting
 {
+    public class DrafterSetEventArgs : EventArgs
+    {
+        public string SetID { get; set; }
+
+        public bool Existing { get; set; }
+    }
+
     public partial class SpecsDrafter : Interfaces.General.IDraftable
     {
         public enum SpecType
@@ -29,13 +36,17 @@ namespace Drafting
         public event EventHandler<bool> OnSpecsItemValidityChange;
         public event EventHandler<ValidityStatus> OnSpecsIdValidityChange;
 
-        public event EventHandler<string> OnSpecsAdd;
-        public event EventHandler<string> OnSpecsUpdate;
+        public event EventHandler<DrafterSetEventArgs> OnSpecsSet;
+        //public event EventHandler<string> OnSpecsAdd;
+        //public event EventHandler<string> OnSpecsUpdate;
         public event EventHandler<int> OnSpecsRemove;
+        public event EventHandler<string> OnSpecsCancel;
+
+        public event EventHandler<int> OnSpecsItemSet;
         public event EventHandler<int> OnSpecsItemRemove;
 
         public event EventHandler<string> OnSpecsItemPatternChange;
-
+        
         public ISpecs SelectedSpecs { get; private set; }
 
         public ISpecsItem SelectedSpecsItem { get; private set; }
@@ -215,6 +226,7 @@ namespace Drafting
             }
         }
 
+        private string restoreSpecsId;
         /// <summary>
         /// Temporary value holder for edit object ID,to refer to old ID value in case it was changed.
         /// </summary>
@@ -333,14 +345,36 @@ namespace Drafting
             DraftSpecs.TextPattern = _inputSpecsTxtPat;
             DraftSpecs.SpecItems = InputSpecsItems;
 
-            if (refId == null || refId == string.Empty)
+            bool isNewSpecs = refId == null || refId == string.Empty;
+
+            if (isNewSpecs)
             {
                 AddToRepository();
+                //OnSpecsAdd?.Invoke(this, DraftSpecs.ID);
             }
             else
             {
                 UpdateRepository();
+                //OnSpecsUpdate?.Invoke(this, DraftSpecs.ID);
             }
+
+            // raise an event: Specs is set
+            OnSpecsSet?.Invoke(this,
+                new DrafterSetEventArgs()
+                {
+                    SetID = DraftSpecs.ID,
+                    Existing = !isNewSpecs
+                });
+
+            Clear();
+        }
+
+        public void CancelChanges()
+        {
+            Clear();
+
+            // raise cancel event
+            OnSpecsCancel?.Invoke(this, restoreSpecsId);
         }
 
         public void CommitSpecsItemChanges()
@@ -372,21 +406,26 @@ namespace Drafting
                 UpdateSpecsItem();
             }
 
-            AddRemoveInputSpecsItems();
+            OnSpecsItemSet?.Invoke(this, DraftSpecsItem.Index);
+
+            NotifyChangeInputSpecsItems();
+
+            ClearDraftSpecsItem();
+        }
+
+        public void CancelSpecsItemChanges()
+        {
+            ClearDraftSpecsItem();
         }
 
         private void AddToRepository()
         {
             SpecsRepository.Create(DraftSpecs);
-
-            OnSpecsAdd?.Invoke(this, DraftSpecs.ID);
         }
 
         private void UpdateRepository()
         {
             SpecsRepository.Update(refId, DraftSpecs);
-
-            OnSpecsUpdate?.Invoke(this, DraftSpecs.ID);
         }
 
         private void AddSpecsItem()
@@ -423,27 +462,30 @@ namespace Drafting
             }
 
             OnSpecsItemRemove?.Invoke(this, InputSpecsItems.Count);
-            AddRemoveInputSpecsItems();
+            NotifyChangeInputSpecsItems();
         }
 
-        private void AddRemoveInputSpecsItems()
+        private void NotifyChangeInputSpecsItems()
         {
             InputSpecsItems = _inputSpecsItems;
         }
 
         private void ClearSelectionObjects()
         {
+            // save selected Specs ID in case we need to restore it
+            restoreSpecsId = SelectedSpecs.ID;
+
             SelectedSpecs = null;
             SelectedSpecsItem = null;
         }
 
-        public void Clear()
+        private void Clear()
         {
             ClearDraftSpecs();
             ClearDraftSpecsItem();
         }
 
-        public void ClearDraftSpecs()
+        private void ClearDraftSpecs()
         {
             // Clear draft object
             DraftSpecs = null;
@@ -458,7 +500,7 @@ namespace Drafting
             InputSpecsItems = null;
         }
 
-        public void ClearDraftSpecsItem()
+        private void ClearDraftSpecsItem()
         {
             // Clear draft object
             DraftSpecsItem = null;

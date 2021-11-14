@@ -79,7 +79,7 @@ namespace UserInterface.Forms
                     tsmiSaveFile.Enabled = false;
 
                     // save the position of selection
-                    SaveSelection(lbxSpecs);
+                    //SaveSelection(lbxSpecs);
 
                     // disable Specs List Selection UI
                     lbxSpecs.SelectionMode = SelectionMode.None;
@@ -300,7 +300,7 @@ namespace UserInterface.Forms
 
         private SpecsDrafter drafter;
 
-        private int specsSelectionIndex = 0;
+        //private int specsSelectionIndex = 0;
         //private int specSelectionIndex;
         private int entrySelectionIndex;
 
@@ -315,12 +315,17 @@ namespace UserInterface.Forms
             drafter.OnSpecsItemValidityChange += Drafter_OnSpecItemValidityChange;
             drafter.OnSpecsIdValidityChange += Drafter_OnSpecsIdValidityChange;
             drafter.OnSpecsItemPatternChange += Drafter_OnSpecsItemPatternChange;
-            drafter.OnSpecsAdd += Drafter_OnSpecsAdd;
-            drafter.OnSpecsUpdate += Drafter_OnSpecsUpdate;
+
+            drafter.OnSpecsSet += Drafter_OnSpecsSet;
+            //drafter.OnSpecsAdd += Drafter_OnSpecsAdd;
+            //drafter.OnSpecsUpdate += Drafter_OnSpecsUpdate;
+            drafter.OnSpecsCancel += Drafter_OnSpecsCancel;
+
             drafter.OnSpecsRemove += Drafter_OnSpecsRemove;
             drafter.OnSpecsItemRemove += Drafter_OnSpecsItemRemove;
-        }
 
+        }
+        
         private void Drafter_OnSpecsValidityChange(object sender, bool specsReady)
         {
             if (SpecsMode != EntryMode.View)
@@ -379,34 +384,56 @@ namespace UserInterface.Forms
             }
         }
 
-        private void Drafter_OnSpecsAdd(object sender, string e)
+        private void Drafter_OnSpecsSet(object sender, DrafterSetEventArgs e)
         {
-            // exit draft mode (New)
             SpecsMode = EntryMode.View;
-
-            // Null draft objects
-            drafter.Clear();
-
-            // populate Specs list
             BindSpecsList();
-            //CheckSpecsListCount();
-            lbxSpecs.Text = e;
-
+            SelectSpecs(e.SetID);
             btnNewSpecs.Focus();
         }
 
-        private void Drafter_OnSpecsUpdate(object sender, string e)
+        //private void Drafter_OnSpecsAdd(object sender, string e)
+        //{
+        //    // exit draft mode (New)
+        //    SpecsMode = EntryMode.View;
+        //    BindSpecsList();
+        //    lbxSpecs.Text = e;
+        //    btnNewSpecs.Focus();
+        //}
+
+        //private void Drafter_OnSpecsUpdate(object sender, string e)
+        //{
+        //    // exit draft mode (Edit)
+        //    SpecsMode = EntryMode.View;
+        //    BindSpecsList();
+        //    lbxSpecs.Text = e;
+        //    btnNewSpecs.Focus();
+        //}
+
+        private void Drafter_OnSpecsCancel(object sender, string e)
         {
-            // exit draft mode (Edit)
             SpecsMode = EntryMode.View;
 
-            // Null draft objects
-            drafter.Clear();
-            
-            // populate Specs list
-            //RefreshSpecsList();
-            BindSpecsList();
-            lbxSpecs.Text = e;
+            // check if no specs exists
+            if (drafter.SpecsCount > 0)
+            {
+                BindSpecsList();
+                SelectSpecs(e);
+            }
+            else
+            {
+                // disable Specs Edit & Remove buttons
+                btnEditSpecs.Enabled = false;
+                btnRemoveSpecs.Enabled = false;
+
+                UnbindSpecsList(); // order: 6
+                UnbindSpecsItemList(); // order: 3
+                UnbindEntriesList(); // order: 4
+
+                ClearSpecsFields(); // order: 1
+                ClearSpecsItemFields(); // order: 2
+                ResetSpecsItemTypeSelector(); // order: 5
+            }
 
             btnNewSpecs.Focus();
         }
@@ -502,36 +529,14 @@ namespace UserInterface.Forms
             DisableListEntryModifyUI();
         }
 
-        private void SaveSpecsChanges()
+        private void SaveSpecsDrafting()
         {
             drafter.CommitChanges();
         }
 
         private void CancelSpecsDrafting()
         {
-            SpecsMode = EntryMode.View;
-
-            drafter.Clear();
-
-            // disable Specs Edit & Remove buttons, if no specs exists
-            if (drafter.SpecsCount <= 0)
-            {
-                btnEditSpecs.Enabled = false;
-                btnRemoveSpecs.Enabled = false;
-                ClearSpecsFields();
-                ClearSpecsItemFields();
-                UnbindSpecsItemList();
-                UnbindEntriesList();
-                ResetSpecsItemTypeSelector();
-                lbxSpecs.DataSource = null;
-            }
-            else
-            {
-                lbxSpecs.DataSource = drafter.SpecsIDs;
-                RestoreSelection(lbxSpecs);
-            }
-            
-            btnNewSpecs.Focus();
+            drafter.CancelChanges();
         }
 
         private void RemoveSpecs()
@@ -592,13 +597,12 @@ namespace UserInterface.Forms
 
         private void CancelSpecsItemDrafting()
         {
+            drafter.CancelSpecsItemChanges();
             ResetSpecsItemUI();
         }
 
         private void ResetSpecsItemUI()
         {
-            drafter.ClearDraftSpecsItem();
-
             SpecsItemMode = EntryMode.View;
 
             UnbindSpecsItemList();
@@ -1157,6 +1161,55 @@ namespace UserInterface.Forms
             dgvListEntries.DataSourceResize(drafter.DraftEntries);
         }
         
+        //private void SaveSelection(ListBox listBox)
+        //{
+        //    specsSelectionIndex = listBox.SelectedIndex;
+        //}
+
+        //private void RestoreSelection(ListBox listBox)
+        //{
+        //    int itemsCount = listBox.Items.Count;
+
+        //    if (specsSelectionIndex > -1 && itemsCount > 0)
+        //    {
+        //        // Check if selection index exists in the list
+        //        if (specsSelectionIndex >= itemsCount)
+        //            specsSelectionIndex = itemsCount - 1;
+
+        //        listBox.SelectedIndex = specsSelectionIndex;
+        //    }
+        //}
+
+        //private void SaveSpecsSelectionPosition(bool shiftUp = false)
+        //{
+        //    int selectedIndex = lbxSpecs.SelectedIndex;
+        //    int count = /*drafter.SpecsCount*/lbxSpecs.Items.Count;
+        //    if (selectedIndex == count - 1)
+        //    {
+        //        specsSelectionIndex = count - 1;
+
+        //        if (shiftUp)
+        //        {
+        //            specsSelectionIndex -= 1;
+        //        }
+        //    }
+        //    else
+        //        specsSelectionIndex = selectedIndex;
+        //}
+
+        //private void RestoreSpecsSelectionPosition()
+        //{
+        //    if (specsSelectionIndex > -1)
+        //    {
+        //        lbxSpecs.SelectedIndex = specsSelectionIndex;
+        //    }
+        //}
+
+        //private void SelectLastSpecs()
+        //{
+        //    lbxSpecs.SelectedIndex = lbxSpecs.Items.Count - 1;
+        //}
+
         private void SaveAndRestoreSelection(ListBox listBox, Action action)
         {
             int _specsSelectionIndex = lbxSpecs.SelectedIndex;
@@ -1174,55 +1227,6 @@ namespace UserInterface.Forms
             {
                 lbxSpecs.SelectedIndex = _specsSelectionIndex;
             }
-        }
-
-        private void SaveSelection(ListBox listBox)
-        {
-            specsSelectionIndex = listBox.SelectedIndex;
-        }
-
-        private void RestoreSelection(ListBox listBox)
-        {
-            int itemsCount = listBox.Items.Count;
-
-            if (specsSelectionIndex > -1 && itemsCount > 0)
-            {
-                // Check if selection index exists in the list
-                if (specsSelectionIndex >= itemsCount)
-                    specsSelectionIndex = itemsCount - 1;
-
-                listBox.SelectedIndex = specsSelectionIndex;
-            }
-        }
-
-        private void SaveSpecsSelectionPosition(bool shiftUp = false)
-        {
-            int selectedIndex = lbxSpecs.SelectedIndex;
-            int count = /*drafter.SpecsCount*/lbxSpecs.Items.Count;
-            if (selectedIndex == count - 1)
-            {
-                specsSelectionIndex = count - 1;
-
-                if (shiftUp)
-                {
-                    specsSelectionIndex -= 1;
-                }
-            }
-            else
-                specsSelectionIndex = selectedIndex;
-        }
-
-        private void RestoreSpecsSelectionPosition()
-        {
-            if (specsSelectionIndex > -1)
-            {
-                lbxSpecs.SelectedIndex = specsSelectionIndex;
-            }
-        }
-
-        private void SelectLastSpecs()
-        {
-            lbxSpecs.SelectedIndex = lbxSpecs.Items.Count - 1;
         }
 
         private void SaveAndRestoreSelection(DataGridView dataGridView, Action action)
@@ -1387,7 +1391,7 @@ namespace UserInterface.Forms
         private void cboCustomTypeSelector_SelectedIndexChanged(object sender, EventArgs e) => ChangeSpecCustomId();
         private void btnNewSpecs_Click(object sender, EventArgs e) => AddNewSpecs();
         private void btnEditSpecs_Click(object sender, EventArgs e) => EditSpecs();
-        private void btnAccept_Click(object sender, EventArgs e) => SaveSpecsChanges();
+        private void btnAccept_Click(object sender, EventArgs e) => SaveSpecsDrafting();
         private void btnCancel_Click(object sender, EventArgs e) => CancelSpecsDrafting();
         private void btnRemoveSpecs_Click(object sender, EventArgs e) => RemoveSpecs();
         private void txtSpecsID_TextChanged(object sender, EventArgs e) => InputSpecsID();
