@@ -21,6 +21,7 @@ namespace Shared.UI
         /// </summary>
         /// <param name="dgv">The <see cref="DataGridView"/> instance.</param>
         /// <param name="dataSource">The <see cref="object"/> of the datasource.</param>
+        /// <param name="refresh">Indicates whether to refresh the <see cref="DataGridView"/> before binding or not.</param>
         public static void DataSourceResize(this DataGridView dgv, object dataSource, bool refresh = false)
         {
             if (refresh)

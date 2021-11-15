@@ -320,14 +320,15 @@ namespace UserInterface.Forms
             //drafter.OnSpecsAdd += Drafter_OnSpecsAdd;
             //drafter.OnSpecsUpdate += Drafter_OnSpecsUpdate;
             drafter.OnSpecsCancel += Drafter_OnSpecsCancel;
-
             drafter.OnSpecsRemove += Drafter_OnSpecsRemove;
 
+
             drafter.OnSpecsItemSet += Drafter_OnSpecsItemSet;
+            drafter.OnSpecsItemCancel += Drafter_OnSpecsItemCancel;
             drafter.OnSpecsItemRemove += Drafter_OnSpecsItemRemove;
 
         }
-
+        
         private void Drafter_OnSpecsValidityChange(object sender, bool specsReady)
         {
             if (SpecsMode != EntryMode.View)
@@ -386,7 +387,7 @@ namespace UserInterface.Forms
             }
         }
 
-        private void Drafter_OnSpecsSet(object sender, DrafterSetEventArgs e)
+        private void Drafter_OnSpecsSet(object sender, SpecsSetEventArgs e)
         {
             SpecsMode = EntryMode.View;
             BindSpecsList();
@@ -460,10 +461,32 @@ namespace UserInterface.Forms
 
         private void Drafter_OnSpecsItemSet(object sender, int e)
         {
-            //ResetSpecsItemUI();
             SpecsItemMode = EntryMode.View;
             dgvSpec.DataSourceResize(drafter.InputSpecsItems, true);
+
             // select added or updated SpecsItem from the list
+            dgvSpec.CurrentCell = dgvSpec["Index", e - 1];
+
+            btnSiAdd.Focus();
+        }
+
+        private void Drafter_OnSpecsItemCancel(object sender, SpecsItemCancelEventArgs e)
+        {
+            SpecsItemMode = EntryMode.View;
+            
+            if (e.HasItems)
+            {
+                dgvSpec.DataSourceResize(drafter.InputSpecsItems, true);
+                dgvSpec.CurrentCell = dgvSpec["Index", e.Index - 1];
+            }
+            else
+            {
+                UnbindSpecsItemList();
+
+                // disable SpecsItem Edit and Remove buttons
+                btnSiEdit.Enabled = false;
+                btnSiRemove.Enabled = false;
+            }
             btnSiAdd.Focus();
         }
 
@@ -603,13 +626,12 @@ namespace UserInterface.Forms
         private void SaveSpecsItemChanges()
         {
             drafter.CommitSpecsItemChanges();
-            //ResetSpecsItemUI();
         }
 
         private void CancelSpecsItemDrafting()
         {
             drafter.CancelSpecsItemChanges();
-            ResetSpecsItemUI();
+            //ResetSpecsItemUI();
         }
 
         private void ResetSpecsItemUI()

@@ -9,11 +9,18 @@ using System.Linq;
 
 namespace Drafting
 {
-    public class DrafterSetEventArgs : EventArgs
+    public class SpecsSetEventArgs : EventArgs
     {
         public string SetID { get; set; }
 
         public bool Existing { get; set; }
+    }
+
+    public class SpecsItemCancelEventArgs : EventArgs
+    {
+        public bool HasItems { get; set; }
+
+        public int Index { get; set; }
     }
 
     public partial class SpecsDrafter : Interfaces.General.IDraftable
@@ -36,7 +43,7 @@ namespace Drafting
         public event EventHandler<bool> OnSpecsItemValidityChange;
         public event EventHandler<ValidityStatus> OnSpecsIdValidityChange;
 
-        public event EventHandler<DrafterSetEventArgs> OnSpecsSet;
+        public event EventHandler<SpecsSetEventArgs> OnSpecsSet;
         //public event EventHandler<string> OnSpecsAdd;
         //public event EventHandler<string> OnSpecsUpdate;
         public event EventHandler<int> OnSpecsRemove;
@@ -44,6 +51,7 @@ namespace Drafting
 
         public event EventHandler<int> OnSpecsItemSet;
         public event EventHandler<int> OnSpecsItemRemove;
+        public event EventHandler<SpecsItemCancelEventArgs> OnSpecsItemCancel;
 
         public event EventHandler<string> OnSpecsItemPatternChange;
         
@@ -227,6 +235,7 @@ namespace Drafting
         }
 
         private string restoreSpecsId;
+        private int restoreSpecsItemIdx;
         /// <summary>
         /// Temporary value holder for edit object ID,to refer to old ID value in case it was changed.
         /// </summary>
@@ -360,7 +369,7 @@ namespace Drafting
 
             // raise an event: Specs is set
             OnSpecsSet?.Invoke(this,
-                new DrafterSetEventArgs()
+                new SpecsSetEventArgs()
                 {
                     SetID = DraftSpecs.ID,
                     Existing = !isNewSpecs
@@ -416,6 +425,14 @@ namespace Drafting
         public void CancelSpecsItemChanges()
         {
             ClearDraftSpecsItem();
+
+            // raise cancel event
+            OnSpecsItemCancel?.Invoke(this,
+                new SpecsItemCancelEventArgs()
+                {
+                    HasItems = InputSpecsItems.Count > 0,
+                    Index = restoreSpecsItemIdx
+                });
         }
 
         private void AddToRepository()
@@ -474,6 +491,7 @@ namespace Drafting
         {
             // save selected Specs ID in case we need to restore it
             restoreSpecsId = SelectedSpecs.ID;
+            restoreSpecsItemIdx = SelectedSpecsItem.Index;
 
             SelectedSpecs = null;
             SelectedSpecsItem = null;
