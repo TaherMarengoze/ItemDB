@@ -18,9 +18,11 @@ namespace Drafting
 
     public class SpecsItemCancelEventArgs : EventArgs
     {
-        public bool HasItems { get; set; }
+        public bool NoItem { get; set; }
 
         public int Index { get; set; }
+
+        public List<ISpecsItem> SpecsItems { get; set; }
     }
 
     public partial class SpecsDrafter : Interfaces.General.IDraftable
@@ -259,8 +261,8 @@ namespace Drafting
         {
             DraftSpecs = new Specs();
 
-            // TEST
-            ClearSelectionObjects();
+            // clear selection object
+            ClearSelectedSpecs();
 
             // Set input fields initial value
             InputSpecsId = GenerateNewSpecsID();
@@ -274,8 +276,8 @@ namespace Drafting
             DraftSpecs = SpecsRepository.Read(specsId).Clone();
             refId = specsId;
 
-            // TEST
-            ClearSelectionObjects();
+            // clear selection object
+            ClearSelectedSpecs();
 
             // Set input fields value to edit object data
             InputSpecsId = DraftSpecs.ID;
@@ -287,6 +289,9 @@ namespace Drafting
         public void NewSpecsItem()
         {
             DraftSpecsItem = new SpecsItem();
+
+            // clear selection object
+            ClearSelectedSpecsItem();
 
             int lastIdx = InputSpecsItems.Count;
             int newIdx = lastIdx + 1;
@@ -303,6 +308,9 @@ namespace Drafting
                 .FirstOrDefault(si => si.Index == specsItemIndex).Clone();
 
             refIndex = specsItemIndex;
+
+            // clear selection object
+            ClearSelectedSpecsItem();
 
             if (DraftSpecsItem.ListEntries != null)
             {
@@ -430,8 +438,9 @@ namespace Drafting
             OnSpecsItemCancel?.Invoke(this,
                 new SpecsItemCancelEventArgs()
                 {
-                    HasItems = InputSpecsItems.Count > 0,
-                    Index = restoreSpecsItemIdx
+                    NoItem = InputSpecsItems.Count < 1,
+                    Index = restoreSpecsItemIdx,
+                    SpecsItems = InputSpecsItems
                 });
         }
 
@@ -487,13 +496,18 @@ namespace Drafting
             InputSpecsItems = _inputSpecsItems;
         }
 
-        private void ClearSelectionObjects()
+        private void ClearSelectedSpecs()
         {
             // save selected Specs ID in case we need to restore it
             restoreSpecsId = SelectedSpecs.ID;
-            restoreSpecsItemIdx = SelectedSpecsItem.Index;
-
             SelectedSpecs = null;
+            SelectedSpecsItem = null;
+        }
+
+        private void ClearSelectedSpecsItem()
+        {
+            // save selected SpecsItem index in case we need to restore it
+            restoreSpecsItemIdx = SelectedSpecsItem?.Index ?? 0;
             SelectedSpecsItem = null;
         }
 
@@ -580,7 +594,7 @@ namespace Drafting
             SelectedSpecs = SpecsRepository.Read(specsId);
         }
 
-        public void SetSelectedSpec(int idx)
+        public void SetSelectedSpecsItem(int idx)
         {
             SelectedSpecsItem =
                 SpecsManiuplator.GetSpecsItem(SelectedSpecs?.SpecItems ?? InputSpecsItems, idx);
