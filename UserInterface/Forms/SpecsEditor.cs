@@ -132,8 +132,42 @@ namespace UserInterface.Forms
 
                         /* DO NON-VIEW MODE STUFF */
 
-                        // disable SpecsItem Add, Edit & Remove buttons
+                        switch (value)
+                        {
+                            //case EntryMode.New:
+                            //    // clear SpecsItem selection from the list
+                            //    dgvSpec.ClearSelection();
+
+                            //    // hide the row header arrow
+                            //    dgvSpec.RowHeadersDefaultCellStyle.Padding =
+                            //        new Padding(dgvSpec.RowHeadersWidth);
+                            //    break;
+
+                            case EntryMode.Edit:
+
+                                // get selected row
+                                DataGridViewRow row = dgvSpec.SelectedRows[0];
+
+                                // format the row being edited
+                                row.DefaultCellStyle.BackColor = Color.Aquamarine;
+                                row.DefaultCellStyle.ForeColor = Color.DarkGray;
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                        // clear SpecsItem selection from the list
+                        dgvSpec.ClearSelection();
+
+                        // hide the row header arrow
+                        dgvSpec.RowHeadersDefaultCellStyle.Padding =
+                            new Padding(dgvSpec.RowHeadersWidth);
+
+                        // disable SpecsItem list
                         dgvSpec.Enabled = false;
+
+                        // disable SpecsItem Add, Edit & Remove buttons
                         btnSiAdd.Enabled = false;
                         btnSiEdit.Enabled = false;
                         btnSiRemove.Enabled = false;
@@ -174,8 +208,12 @@ namespace UserInterface.Forms
 
                         /* DO VIEW MODE STUFF THAT SHOULD BE EXECUTED ONCE */
 
-                        // enable SpecsItem Add, Edit & Remove buttons
+                        // enable SpecsItem list
                         dgvSpec.Enabled = true;
+                        dgvSpec.RowHeadersDefaultCellStyle.Padding =
+                                new Padding(0);
+
+                        // enable SpecsItem Add, Edit & Remove buttons
                         btnSiAdd.Enabled = true;
                         btnSiEdit.Enabled = true;
                         btnSiRemove.Enabled = true;
@@ -326,9 +364,8 @@ namespace UserInterface.Forms
             drafter.OnSpecsItemSet += Drafter_OnSpecsItemSet;
             drafter.OnSpecsItemCancel += Drafter_OnSpecsItemCancel;
             drafter.OnSpecsItemRemove += Drafter_OnSpecsItemRemove;
-
         }
-        
+
         private void Drafter_OnSpecsValidityChange(object sender, bool specsReady)
         {
             if (SpecsMode != EntryMode.View)
@@ -459,13 +496,13 @@ namespace UserInterface.Forms
             }
         }
 
-        private void Drafter_OnSpecsItemSet(object sender, int e)
+        private void Drafter_OnSpecsItemSet(object sender, SpecsItemSetEventArgs e)
         {
             SpecsItemMode = EntryMode.View;
-            dgvSpec.DataSourceResize(drafter.InputSpecsItems, true);
+            dgvSpec.DataSourceResize(e.SpecsItems, true);
 
             // select added or updated SpecsItem from the list
-            SelectSpecsItem(e);
+            SelectSpecsItem(e.Index);
 
             btnSiAdd.Focus();
         }
@@ -486,6 +523,15 @@ namespace UserInterface.Forms
             {
                 //dgvSpec.DataSourceResize(e.SpecsItems, true);
                 SelectSpecsItem(e.Index);
+
+                DataGridViewCellStyle rowStyle =
+                    dgvSpec.SelectedRows[0].DefaultCellStyle;
+
+                if (rowStyle.BackColor != Color.Empty)
+                    rowStyle.BackColor = Color.Empty;
+
+                if (rowStyle.ForeColor != Color.Empty)
+                    rowStyle.ForeColor = Color.Empty;
             }
             btnSiAdd.Focus();
         }
@@ -634,24 +680,24 @@ namespace UserInterface.Forms
             //ResetSpecsItemUI();
         }
 
-        private void ResetSpecsItemUI()
-        {
-            SpecsItemMode = EntryMode.View;
+        //private void ResetSpecsItemUI()
+        //{
+        //    SpecsItemMode = EntryMode.View;
 
-            UnbindSpecsItemList();
+        //    UnbindSpecsItemList();
 
-            if (drafter.InputSpecsItems.Count > 0)
-            {
-                dgvSpec.DataSourceResize(drafter.InputSpecsItems);
-            }
-            else
-            {
-                // disable SpecsItem Edit and Remove buttons
-                btnSiEdit.Enabled = false;
-                btnSiRemove.Enabled = false;
-            }
-            btnSiAdd.Focus();
-        }
+        //    if (drafter.InputSpecsItems.Count > 0)
+        //    {
+        //        dgvSpec.DataSourceResize(drafter.InputSpecsItems);
+        //    }
+        //    else
+        //    {
+        //        // disable SpecsItem Edit and Remove buttons
+        //        btnSiEdit.Enabled = false;
+        //        btnSiRemove.Enabled = false;
+        //    }
+        //    btnSiAdd.Focus();
+        //}
 
         private void RemoveSpecsItem()
         {
@@ -846,9 +892,9 @@ namespace UserInterface.Forms
             return
                 (int)dgvListEntries.SelectedRows[0].Cells["ValueID"].Value;
         }
-        
+
         #region User Interface
-        
+
         private void BindSpecsList()
         {
             lbxSpecs.DataSource = drafter.SpecsIDs;
@@ -960,6 +1006,7 @@ namespace UserInterface.Forms
 
         private void SelectSpecsItem(int index)
         {
+            dgvSpec.Rows[index - 1].Selected = true;
             dgvSpec.CurrentCell = dgvSpec["Index", index - 1];
         }
 
@@ -1201,7 +1248,7 @@ namespace UserInterface.Forms
         {
             dgvListEntries.DataSourceResize(drafter.DraftEntries);
         }
-        
+
         //private void SaveSelection(ListBox listBox)
         //{
         //    specsSelectionIndex = listBox.SelectedIndex;

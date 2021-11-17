@@ -16,6 +16,13 @@ namespace Drafting
         public bool Existing { get; set; }
     }
 
+    public class SpecsItemSetEventArgs : EventArgs
+    {
+        public int Index { get; set; }
+
+        public List<ISpecsItem> SpecsItems { get; set; }
+    }
+
     public class SpecsItemCancelEventArgs : EventArgs
     {
         public bool NoItem { get; set; }
@@ -51,7 +58,7 @@ namespace Drafting
         public event EventHandler<int> OnSpecsRemove;
         public event EventHandler<string> OnSpecsCancel;
 
-        public event EventHandler<int> OnSpecsItemSet;
+        public event EventHandler<SpecsItemSetEventArgs> OnSpecsItemSet;
         public event EventHandler<int> OnSpecsItemRemove;
         public event EventHandler<SpecsItemCancelEventArgs> OnSpecsItemCancel;
 
@@ -423,7 +430,12 @@ namespace Drafting
                 UpdateSpecsItem();
             }
 
-            OnSpecsItemSet?.Invoke(this, DraftSpecsItem.Index);
+            OnSpecsItemSet?.Invoke(this,
+                new SpecsItemSetEventArgs()
+                {
+                    Index = DraftSpecsItem.Index,
+                    SpecsItems = InputSpecsItems
+                });
 
             IsSpecsHasItem = true;
 
@@ -432,16 +444,17 @@ namespace Drafting
 
         public void CancelSpecsItemChanges()
         {
+            SpecsItemCancelEventArgs e = new SpecsItemCancelEventArgs()
+            {
+                NoItem = InputSpecsItems.Count < 1,
+                Index = /*refIndex ??*/ restoreSpecsItemIdx,
+                SpecsItems = InputSpecsItems
+            };
+
             ClearDraftSpecsItem();
 
             // raise cancel event
-            OnSpecsItemCancel?.Invoke(this,
-                new SpecsItemCancelEventArgs()
-                {
-                    NoItem = InputSpecsItems.Count < 1,
-                    Index = restoreSpecsItemIdx,
-                    SpecsItems = InputSpecsItems
-                });
+            OnSpecsItemCancel?.Invoke(this, e);
         }
 
         private void AddToRepository()
@@ -501,12 +514,14 @@ namespace Drafting
             // save selected Specs ID in case we need to restore it
             restoreSpecsId = SelectedSpecs.ID;
             SelectedSpecs = null;
-            SelectedSpecsItem = null;
+
+            // TEST: will disable cause error ?
+            //SelectedSpecsItem = null;
         }
 
         private void ClearSelectedSpecsItem()
         {
-            // save selected SpecsItem index in case we need to restore it
+            // save selected SpecsItem index to restore it later, if needed
             restoreSpecsItemIdx = SelectedSpecsItem?.Index ?? 0;
             SelectedSpecsItem = null;
         }
