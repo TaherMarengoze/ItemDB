@@ -536,11 +536,14 @@ namespace UserInterface.Forms
             btnSiAdd.Focus();
         }
 
-        private void Drafter_OnSpecsItemRemove(object sender, int count)
+        private void Drafter_OnSpecsItemRemove(object sender, SpecsItemRemoveEventArgs e)
         {
-            if (count > 0)
+            if (e.Count > 0)
             {
-                SaveAndRestoreSelection(dgvSpec, BindSpecsItemList);
+                SaveAndRestoreSelection(dgvSpec, /*BindSpecsItemList*/
+                    delegate {
+                        dgvSpec.DataSourceResize(e.SpecsItems, true);
+                    });
             }
             else
             {
@@ -710,10 +713,10 @@ namespace UserInterface.Forms
             }
         }
 
-        private void BindSpecsItemList()
-        {
-            dgvSpec.DataSourceResize(drafter.InputSpecsItems, true);
-        }
+        //private void BindSpecsItemList()
+        //{
+        //    dgvSpec.DataSourceResize(drafter.InputSpecsItems, true);
+        //}
 
         private void AddNewListEntry()
         {

@@ -23,6 +23,12 @@ namespace Drafting
         public List<ISpecsItem> SpecsItems { get; set; }
     }
 
+    public class SpecsItemRemoveEventArgs : EventArgs
+    {
+        public List<ISpecsItem> SpecsItems { get; set; }
+        public int Count => SpecsItems?.Count ?? 0;
+    }
+
     public class SpecsItemCancelEventArgs : EventArgs
     {
         public bool NoItem { get; set; }
@@ -59,11 +65,11 @@ namespace Drafting
         public event EventHandler<string> OnSpecsCancel;
 
         public event EventHandler<SpecsItemSetEventArgs> OnSpecsItemSet;
-        public event EventHandler<int> OnSpecsItemRemove;
+        public event EventHandler<SpecsItemRemoveEventArgs> OnSpecsItemRemove;
         public event EventHandler<SpecsItemCancelEventArgs> OnSpecsItemCancel;
 
         public event EventHandler<string> OnSpecsItemPatternChange;
-        
+
         public ISpecs SelectedSpecs { get; private set; }
 
         public ISpecsItem SelectedSpecsItem { get; private set; }
@@ -500,7 +506,12 @@ namespace Drafting
                 InputSpecsItems[i].Index = i + 1;
             }
 
-            OnSpecsItemRemove?.Invoke(this, InputSpecsItems.Count);
+            OnSpecsItemRemove?.Invoke(this,
+                new SpecsItemRemoveEventArgs
+                {
+                    SpecsItems = InputSpecsItems,
+                });
+
             NotifyChangeInputSpecsItems();
         }
 
