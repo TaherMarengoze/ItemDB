@@ -1,16 +1,12 @@
-﻿
-using CoreLibrary.Interfaces;
-using CoreLibrary.Models;
+﻿using Interfaces.Models;
 using System;
 using System.Windows.Forms;
-
 
 namespace UserInterface.Forms
 {
     public partial class ListEntryEditor : Form
     {
-        //public ISpecListEntry ListEntry { get; set; }
-        public Interfaces.Models.ISpecListEntry ListEntry2 { get; set; }
+        public ISpecListEntry ListEntry { get; set; }
 
         private bool displayAsValue = true;
         private bool skipEvents = false;
@@ -20,36 +16,13 @@ namespace UserInterface.Forms
             InitializeComponent();
         }
 
-        //public ListEntryEditor(ISpecListEntry listEntry)
-        //{
-        //    InitializeComponent();
-
-        //    skipEvents = true;
-
-        //    ListEntry = listEntry;
-
-        //    if (listEntry.Value != listEntry.Display)
-        //    {
-        //        displayAsValue = false;
-        //        chkSameValue.Checked = false;
-        //        txtDisplay.ReadOnly = false;
-        //        txtValue.SelectAll();
-        //        txtValue.Focus();
-        //    }
-
-        //    txtValue.Text = listEntry.Value;
-        //    txtDisplay.Text = listEntry.Display;
-
-        //    skipEvents = false;
-        //}
-
-        public ListEntryEditor(Interfaces.Models.ISpecListEntry listEntry)
+        public ListEntryEditor(ISpecListEntry listEntry)
         {
             InitializeComponent();
 
             skipEvents = true;
 
-            ListEntry2 = listEntry;
+            ListEntry = listEntry;
 
             if (listEntry.Value != listEntry.Display)
             {
@@ -59,12 +32,13 @@ namespace UserInterface.Forms
                 txtValue.SelectAll();
                 txtValue.Focus();
             }
-
             txtValue.Text = listEntry.Value;
             txtDisplay.Text = listEntry.Display;
 
             skipEvents = false;
         }
+
+#pragma warning disable IDE1006 // Naming Styles
 
         private void txtValue_TextChanged(object sender, EventArgs e)
         {
@@ -75,7 +49,7 @@ namespace UserInterface.Forms
                 SetDisplayTextAsValue();
             }
         }
-        
+
         private void chkSameValue_CheckedChanged(object sender, EventArgs e)
         {
             if (skipEvents) return;
@@ -104,19 +78,11 @@ namespace UserInterface.Forms
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            /*
             if (ListEntry == null)
-                ListEntry = new SpecListEntry();
-            
+                ListEntry = new Modeling.DataModels.SpecListEntry();
+
             ListEntry.Value = txtValue.Text;
             ListEntry.Display = txtDisplay.Text;
-            */
-
-            if (ListEntry2 == null)
-                ListEntry2 = new Modeling.DataModels.SpecListEntry();
-
-            ListEntry2.Value = txtValue.Text;
-            ListEntry2.Display = txtDisplay.Text;
         }
     }
 }

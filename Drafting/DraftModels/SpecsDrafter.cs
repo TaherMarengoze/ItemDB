@@ -59,8 +59,6 @@ namespace Drafting
         public event EventHandler<ValidityStatus> OnSpecsIdValidityChange;
 
         public event EventHandler<SpecsSetEventArgs> OnSpecsSet;
-        //public event EventHandler<string> OnSpecsAdd;
-        //public event EventHandler<string> OnSpecsUpdate;
         public event EventHandler<int> OnSpecsRemove;
         public event EventHandler<string> OnSpecsCancel;
 
@@ -380,12 +378,10 @@ namespace Drafting
             if (isNewSpecs)
             {
                 AddToRepository();
-                //OnSpecsAdd?.Invoke(this, DraftSpecs.ID);
             }
             else
             {
                 UpdateRepository();
-                //OnSpecsUpdate?.Invoke(this, DraftSpecs.ID);
             }
 
             // raise an event: Specs is set
@@ -577,6 +573,21 @@ namespace Drafting
             IsValidSpecData = false;
         }
 
+        public void AddListEntry(ISpecListEntry entry)
+        {
+            // get last entryID
+            int lastId = DraftEntries?.Count ?? 0;
+
+            // generate new entryID
+            int newId = lastId + 1;
+
+            // set ID for the new entry
+            entry.ValueID = newId;
+
+            DraftEntries.Add(entry);
+            IsValidSpecData = IsSpecValid();
+        }
+
         public void CopyEntriesToDraft()
         {
             // Copy list entries of draft spec to draft entries, if any
@@ -632,11 +643,20 @@ namespace Drafting
                 DraftEntries.Find(id => id.ValueID == entryId);
         }
 
-        public void AddEntryToDraftEntries(ISpecListEntry entry)
-        {
-            DraftEntries.Add(entry);
-            IsValidSpecData = IsSpecValid();
-        }
+        //public void AddListEntry(ISpecListEntry entry)
+        //{
+        //    // get last entryID
+        //    int lastId = DraftEntries?.Count ?? 0;
+
+        //    // generate new entryID
+        //    int newId = lastId + 1;
+
+        //    // set ID for the new entry
+        //    entry.ValueID = newId;
+
+        //    DraftEntries.Add(entry);
+        //    IsValidSpecData = IsSpecValid();
+        //}
 
         public void RemoveEntryFromDraftEntries(int entryId)
         {
