@@ -584,19 +584,20 @@ namespace Drafting
             // set ID for the new entry
             entry.ValueID = newId;
 
+            NewOrCloneEntries();
             DraftEntries.Add(entry);
-            IsValidSpecData = IsSpecValid();
+            IsValidSpecData = true;
         }
 
-        public void CopyEntriesToDraft()
+        private void NewOrCloneEntries()
         {
-            // Copy list entries of draft spec to draft entries, if any
+            // copy draft SpecsItem entries to a draft entries list
+            // or create a new empty list, if non exists
             if (DraftEntries == null)
             {
                 DraftEntries =
-                    DraftSpecsItem.ListEntries == null ?
-                    new List<ISpecListEntry>() :
-                    new List<ISpecListEntry>(DraftSpecsItem.ListEntries);
+                    DraftSpecsItem.ListEntries?.ToList() ??
+                    new List<ISpecListEntry>();
             }
         }
 

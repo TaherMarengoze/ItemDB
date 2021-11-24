@@ -582,8 +582,7 @@ namespace UserInterface.Forms
         private void AddNewListEntry()
         {
             ListEntryEditor listEditor = new ListEntryEditor();
-            drafter.CopyEntriesToDraft();
-
+            
             if (listEditor.ShowDialog() == DialogResult.OK)
             {
                 // add new entry to the draft list
