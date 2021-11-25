@@ -6,6 +6,7 @@ using Modeling.DataModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Interfaces.General;
 
 namespace Drafting
 {
@@ -38,6 +39,11 @@ namespace Drafting
         public List<ISpecsItem> SpecsItems { get; set; }
     }
 
+    public class ListEntryEventArgs : EventArgs
+    {
+        public List<ISpecListEntry> Entries { get; set; }
+    }
+
     public partial class SpecsDrafter : Interfaces.General.IDraftable
     {
         public enum SpecType
@@ -54,9 +60,12 @@ namespace Drafting
             Invalid
         }
 
+        // events
         public event EventHandler<bool> OnSpecsValidityChange;
-        public event EventHandler<bool> OnSpecsItemValidityChange;
         public event EventHandler<ValidityStatus> OnSpecsIdValidityChange;
+
+        public event EventHandler<bool> OnSpecsItemValidityChange;
+        public event EventHandler<string> OnSpecsItemPatternChange;
 
         public event EventHandler<SpecsSetEventArgs> OnSpecsSet;
         public event EventHandler<int> OnSpecsRemove;
@@ -66,8 +75,9 @@ namespace Drafting
         public event EventHandler<SpecsItemRemoveEventArgs> OnSpecsItemRemove;
         public event EventHandler<SpecsItemCancelEventArgs> OnSpecsItemCancel;
 
-        public event EventHandler<string> OnSpecsItemPatternChange;
+        public event EventHandler<ListEntryEventArgs> OnListEntrySet;
 
+        // properties
         public ISpecs SelectedSpecs { get; private set; }
 
         public ISpecsItem SelectedSpecsItem { get; private set; }
@@ -247,6 +257,7 @@ namespace Drafting
             }
         }
 
+        // fields
         private string restoreSpecsId;
         private int restoreSpecsItemIdx;
         /// <summary>
@@ -573,7 +584,7 @@ namespace Drafting
             IsValidSpecData = false;
         }
 
-        public void AddListEntry(ISpecListEntry entry)
+        public void AddListEntry(IListEntry entry)
         {
             // get last entryID
             int lastId = DraftEntries?.Count ?? 0;
@@ -581,12 +592,21 @@ namespace Drafting
             // generate new entryID
             int newId = lastId + 1;
 
-            // set ID for the new entry
-            entry.ValueID = newId;
+            // create new SpecsItem list entry
+            ISpecListEntry specEntry = new SpecListEntry
+            {
+                ValueID = newId,
+                Value = entry.Value,
+                Display = entry.Display
+            };
 
             NewOrCloneEntries();
-            DraftEntries.Add(entry);
+            DraftEntries.Add(specEntry);
             IsValidSpecData = true;
+
+            // raise an event for adding an entry
+            OnListEntrySet?.Invoke(this,
+                new ListEntryEventArgs { Entries = DraftEntries }); 
         }
 
         private void NewOrCloneEntries()

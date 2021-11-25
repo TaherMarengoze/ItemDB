@@ -1,12 +1,13 @@
-﻿using Interfaces.Models;
+﻿using Interfaces.General;
 using System;
 using System.Windows.Forms;
 
 namespace UserInterface.Forms
 {
-    public partial class ListEntryEditor : Form
+    public partial class ListEntryEditor<T>: Form
+        where T: IListEntry, new()
     {
-        public ISpecListEntry ListEntry { get; set; }
+        public IListEntry ListEntry { get; set; }
 
         private bool displayAsValue = true;
         private bool skipEvents = false;
@@ -16,7 +17,7 @@ namespace UserInterface.Forms
             InitializeComponent();
         }
 
-        public ListEntryEditor(ISpecListEntry listEntry)
+        public ListEntryEditor(IListEntry listEntry)
         {
             InitializeComponent();
 
@@ -79,7 +80,7 @@ namespace UserInterface.Forms
         private void btnOK_Click(object sender, EventArgs e)
         {
             if (ListEntry == null)
-                ListEntry = new Modeling.DataModels.SpecListEntry();
+                ListEntry = new /*Modeling.DataModels.SpecListEntry*/T();
 
             ListEntry.Value = txtValue.Text;
             ListEntry.Display = txtDisplay.Text;

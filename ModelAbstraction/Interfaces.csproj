@@ -49,6 +49,7 @@
     <Compile Include="Models\IItem.cs" />
     <Compile Include="Models\IItemCategory.cs" />
     <Compile Include="Models\IItemDetails.cs" />
+    <Compile Include="General\IListEntry.cs" />
     <Compile Include="Models\ISizeGroup.cs" />
     <Compile Include="Models\ISpecListEntry.cs" />
     <Compile Include="Models\ISpecs.cs" />

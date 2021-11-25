@@ -271,8 +271,10 @@ namespace UserInterface.Forms
             drafter.OnSpecsItemSet += Drafter_OnSpecsItemSet;
             drafter.OnSpecsItemCancel += Drafter_OnSpecsItemCancel;
             drafter.OnSpecsItemRemove += Drafter_OnSpecsItemRemove;
-        }
 
+            drafter.OnListEntrySet += Drafter_OnListEntrySet;
+        }
+        
         private void Drafter_OnSpecsValidityChange(object sender, bool specsReady)
         {
             if (SpecsMode != EntryMode.View)
@@ -445,6 +447,14 @@ namespace UserInterface.Forms
             }
         }
 
+        private void Drafter_OnListEntrySet(object sender, ListEntryEventArgs e)
+        {
+            // refresh entries list
+            dgvListEntries.DataSourceResize(e.Entries, true);
+
+            EnableListEntryModifyUI();
+        }
+
         #region Processes
 
         private void PostLoading()
@@ -581,33 +591,24 @@ namespace UserInterface.Forms
         
         private void AddNewListEntry()
         {
-            ListEntryEditor listEditor = new ListEntryEditor();
+            var editor =
+                new ListEntryEditor<Modeling.DataModels.SpecListEntry>();
             
-            if (listEditor.ShowDialog() == DialogResult.OK)
+            if (editor.ShowDialog() == DialogResult.OK)
             {
-                // add new entry to the draft list
-                drafter.AddListEntry(listEditor.ListEntry);
-
-                // Enable Edit and Delete buttons
-                EnableListEntryModifyUI();
-                CheckEntriesCount(drafter.DraftEntries.Count);
-
-                // Display the list items
-                UnbindEntriesList();
-                DisplayDraftEntries();
+                drafter.AddListEntry(editor.ListEntry);
             }
         }
         
         private void EditListEntry()
         {
-            // Get Spec ListEntry
             int entryId = GetSelectedListEntryID();
-            Interfaces.Models.ISpecListEntry _editListEntry =
-                drafter.GetSpecListEntry(entryId);
 
-            ListEntryEditor _listEditor = new ListEntryEditor(_editListEntry);
+            var editor =
+                new ListEntryEditor<Modeling.DataModels.SpecListEntry>
+                (drafter.GetSpecListEntry(entryId));
 
-            if (_listEditor.ShowDialog() == DialogResult.OK)
+            if (editor.ShowDialog() == DialogResult.OK)
             {
                 // Refresh the list of Entries
                 UnbindEntriesList();
@@ -823,7 +824,12 @@ namespace UserInterface.Forms
         {
             if (drafter.SelectedSpecsItem.ListEntries != null)
             {
-                dgvListEntries.DataSourceResize(drafter.SelectedSpecsItem.ListEntries.ToList());
+                // Modeling.DataModels.SpecListEntry
+                dgvListEntries.DataSourceResize(
+                    drafter.SelectedSpecsItem.ListEntries
+                    .Cast<Modeling.DataModels.SpecListEntry>()
+                    .ToList());
+
                 rdoListType.Checked = true;
             }
             else
@@ -1014,6 +1020,11 @@ namespace UserInterface.Forms
         private void DisplayDraftEntries()
         {
             dgvListEntries.DataSourceResize(drafter.DraftEntries);
+        }
+
+        private void RefreshEntriesList()
+        {
+            dgvListEntries.DataSourceResize(drafter.DraftEntries, true);
         }
 
         private void SaveAndRestoreSelection(ListBox listBox, Action action)

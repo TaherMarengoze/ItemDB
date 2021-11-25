@@ -1,12 +1,8 @@
 ﻿
 namespace Interfaces.Models
 {
-    public interface ISpecListEntry
+    public interface ISpecListEntry : General.IListEntry
     {
         int ValueID { get; set; }
-
-        string Value { get; set; }
-
-        string Display { get; set; }
     }
 }
