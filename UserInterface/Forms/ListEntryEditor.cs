@@ -39,6 +39,26 @@ namespace UserInterface.Forms
             skipEvents = false;
         }
 
+        public ListEntryEditor(string value, string display)
+        {
+            InitializeComponent();
+
+            skipEvents = true;
+            
+            if (value != display)
+            {
+                displayAsValue = false;
+                chkSameValue.Checked = false;
+                txtDisplay.ReadOnly = false;
+                txtValue.SelectAll();
+                txtValue.Focus();
+            }
+            txtValue.Text = value;
+            txtDisplay.Text = display;
+
+            skipEvents = false;
+        }
+
 #pragma warning disable IDE1006 // Naming Styles
 
         private void txtValue_TextChanged(object sender, EventArgs e)
@@ -80,7 +100,7 @@ namespace UserInterface.Forms
         private void btnOK_Click(object sender, EventArgs e)
         {
             if (ListEntry == null)
-                ListEntry = new /*Modeling.DataModels.SpecListEntry*/T();
+                ListEntry = new T();
 
             ListEntry.Value = txtValue.Text;
             ListEntry.Display = txtDisplay.Text;

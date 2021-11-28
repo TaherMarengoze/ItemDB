@@ -295,22 +295,22 @@ namespace UserInterface.Forms
             btnSiAccept.Enabled = specItemReady;
         }
 
-        private void Drafter_OnSpecsIdValidityChange(object sender, SpecsDrafter.ValidityStatus status)
+        private void Drafter_OnSpecsIdValidityChange(object sender, ValidityStatus status)
         {
             switch (status)
             {
-                case SpecsDrafter.ValidityStatus.Valid:
+                case ValidityStatus.Valid:
                     ResetIdValidityInfo();
                     lblSpecsIdValidator.Text = string.Empty;
                     txtSpecsID.BackColor = SystemColors.Window;
                     break;
 
-                case SpecsDrafter.ValidityStatus.Duplicate:
+                case ValidityStatus.Duplicate:
                     lblSpecsIdValidator.Text = "* Duplicate ID";
                     txtSpecsID.BackColor = Color.HotPink;
                     break;
 
-                case SpecsDrafter.ValidityStatus.Blank:
+                case ValidityStatus.Blank:
                     lblSpecsIdValidator.Text = "* Blank ID";
                     txtSpecsID.BackColor = Color.Pink;
                     break;
@@ -824,12 +824,7 @@ namespace UserInterface.Forms
         {
             if (drafter.SelectedSpecsItem.ListEntries != null)
             {
-                // Modeling.DataModels.SpecListEntry
-                dgvListEntries.DataSourceResize(
-                    drafter.SelectedSpecsItem.ListEntries
-                    .Cast<Modeling.DataModels.SpecListEntry>()
-                    .ToList());
-
+                dgvListEntries.DataSourceResize(drafter.SelectedListEntries);
                 rdoListType.Checked = true;
             }
             else
@@ -841,7 +836,8 @@ namespace UserInterface.Forms
 
         private void ChangeCustomType()
         {
-            if (drafter.SelectedSpecsItem.CustomInputID != null && drafter.SelectedSpecsItem.CustomInputID != "")
+            //if (drafter.SelectedSpecsItem.CustomInputID != null && drafter.SelectedSpecsItem.CustomInputID != "")
+            if (!string.IsNullOrEmpty(drafter.SelectedSpecsItem.CustomInputID))
             {
                 cboCustomTypeSelector.Text = drafter.SelectedSpecsItem.CustomInputID;
                 rdoCustomType.Checked = true;

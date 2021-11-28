@@ -19,6 +19,14 @@
         Edit
     }
 
+    public enum ValidityStatus
+    {
+        Valid,
+        Duplicate,
+        Blank,
+        Invalid
+    }
+
     /// <summary>
     /// A flag indicating the type of context.
     /// </summary>

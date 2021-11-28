@@ -46,20 +46,6 @@ namespace Drafting
 
     public partial class SpecsDrafter : Interfaces.General.IDraftable
     {
-        public enum SpecType
-        {
-            List = 1,
-            Custom = 2
-        }
-
-        public enum ValidityStatus
-        {
-            Valid,
-            Duplicate,
-            Blank,
-            Invalid
-        }
-
         // events
         public event EventHandler<bool> OnSpecsValidityChange;
         public event EventHandler<ValidityStatus> OnSpecsIdValidityChange;
@@ -81,6 +67,9 @@ namespace Drafting
         public ISpecs SelectedSpecs { get; private set; }
 
         public ISpecsItem SelectedSpecsItem { get; private set; }
+
+        public List<SpecListEntry> SelectedListEntries =>
+            SelectedSpecsItem.ListEntries.Cast<SpecListEntry>().ToList();
 
         public ISpecs DraftSpecs { get; private set; }
 
