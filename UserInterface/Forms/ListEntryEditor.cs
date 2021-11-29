@@ -1,4 +1,5 @@
 ﻿using Interfaces.General;
+using Shared.UI;
 using System;
 using System.Windows.Forms;
 
@@ -7,7 +8,7 @@ namespace UserInterface.Forms
     public partial class ListEntryEditor<T>: Form
         where T: IListEntry, new()
     {
-        public IListEntry ListEntry { get; set; }
+        public IListEntry ListEntry { get; private set; }
 
         private bool displayAsValue = true;
         private bool skipEvents = false;
@@ -21,16 +22,16 @@ namespace UserInterface.Forms
         {
             InitializeComponent();
 
-            skipEvents = true;
-
             ListEntry = listEntry;
+
+            skipEvents = true;
 
             if (listEntry.Value != listEntry.Display)
             {
                 displayAsValue = false;
                 chkSameValue.Checked = false;
                 txtDisplay.ReadOnly = false;
-                txtValue.SelectAll();
+                txtValue.FocusSelectAll();
                 txtValue.Focus();
             }
             txtValue.Text = listEntry.Value;
@@ -38,27 +39,7 @@ namespace UserInterface.Forms
 
             skipEvents = false;
         }
-
-        public ListEntryEditor(string value, string display)
-        {
-            InitializeComponent();
-
-            skipEvents = true;
-            
-            if (value != display)
-            {
-                displayAsValue = false;
-                chkSameValue.Checked = false;
-                txtDisplay.ReadOnly = false;
-                txtValue.SelectAll();
-                txtValue.Focus();
-            }
-            txtValue.Text = value;
-            txtDisplay.Text = display;
-
-            skipEvents = false;
-        }
-
+        
 #pragma warning disable IDE1006 // Naming Styles
 
         private void txtValue_TextChanged(object sender, EventArgs e)

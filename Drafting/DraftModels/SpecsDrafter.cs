@@ -652,22 +652,7 @@ namespace Drafting
             return
                 DraftEntries.Find(id => id.ValueID == entryId);
         }
-
-        //public void AddListEntry(ISpecListEntry entry)
-        //{
-        //    // get last entryID
-        //    int lastId = DraftEntries?.Count ?? 0;
-
-        //    // generate new entryID
-        //    int newId = lastId + 1;
-
-        //    // set ID for the new entry
-        //    entry.ValueID = newId;
-
-        //    DraftEntries.Add(entry);
-        //    IsValidSpecData = IsSpecValid();
-        //}
-
+        
         public void RemoveEntryFromDraftEntries(int entryId)
         {
             ISpecListEntry _removeListEntry = GetSpecListEntry(entryId);
