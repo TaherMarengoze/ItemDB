@@ -1,12 +1,12 @@
 ﻿
-using CoreLibrary.Enums;
 using ClientService;
+using CoreLibrary.Enums;
+using Interfaces.General;
 using Interfaces.Models;
 using Modeling.DataModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Interfaces.General;
 
 namespace Drafting
 {
@@ -43,6 +43,7 @@ namespace Drafting
     {
         //public int EntryID { get; set; }
         public List<SpecListEntry> Entries { get; set; }
+        public int Count => Entries?.Count ?? 0;
     }
 
     public partial class SpecsDrafter : IDraftable
@@ -63,6 +64,7 @@ namespace Drafting
         public event EventHandler<SpecsItemCancelEventArgs> OnSpecsItemCancel;
 
         public event EventHandler<ListEntryEventArgs> OnListEntrySet;
+        public event EventHandler<ListEntryEventArgs> OnListEntryRemove;
 
         // properties
         public ISpecs SelectedSpecs { get; private set; }
@@ -598,7 +600,7 @@ namespace Drafting
 
             // raise an event for adding an entry
             OnListEntrySet?.Invoke(this,
-                new ListEntryEventArgs{Entries = DraftEntries}); ;
+                new ListEntryEventArgs { Entries = DraftEntries }); ;
         }
 
         private void NewOrCloneEntries()
@@ -615,9 +617,32 @@ namespace Drafting
 
         public void EditListEntry()
         {
+            IsValidSpecData = true;
+
             // raise an event for editing an entry
             OnListEntrySet?.Invoke(this,
                 new ListEntryEventArgs { Entries = DraftEntries });
+        }
+
+        public void RemoveEntry(int entryId)
+        {
+            SpecListEntry removeEntry = GetSpecListEntry(entryId);
+            DraftEntries.Remove(removeEntry);
+
+            // renumber remaining entries ValueID
+            for (int i = entryId - 1; i < DraftEntries.Count;)
+            {
+                DraftEntries[i].ValueID = ++i;
+            }
+
+            IsValidSpecData = DraftEntries.Count > 0;
+
+            // raise a remove event
+            OnListEntryRemove?.Invoke(this,
+                new ListEntryEventArgs
+                {
+                    Entries = DraftEntries
+                });
         }
 
         public bool IsSpecValid()
@@ -661,21 +686,6 @@ namespace Drafting
         {
             return
                 DraftEntries.Find(id => id.ValueID == entryId);
-        }
-        
-        public void RemoveEntryFromDraftEntries(int entryId)
-        {
-            SpecListEntry _removeListEntry = GetSpecListEntry(entryId);
-
-            // Remove entry from list
-            DraftEntries.Remove(_removeListEntry);
-
-            // Renumber remaining entries ValueID
-            int i = 0;
-            foreach (ISpecListEntry entry in DraftEntries)
-            {
-                entry.ValueID = ++i;
-            }
         }
 
         public void SetSpecCustomId(string id)

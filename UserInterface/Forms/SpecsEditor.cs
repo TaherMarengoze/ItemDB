@@ -272,8 +272,9 @@ namespace UserInterface.Forms
             drafter.OnSpecsItemRemove += Drafter_OnSpecsItemRemove;
 
             drafter.OnListEntrySet += Drafter_OnListEntrySet;
+            drafter.OnListEntryRemove += Drafter_OnListEntryRemove;
         }
-        
+
         private void Drafter_OnSpecsValidityChange(object sender, bool specsReady)
         {
             if (SpecsMode != EntryMode.View)
@@ -452,6 +453,23 @@ namespace UserInterface.Forms
             dgvListEntries.DataSourceResize(e.Entries, true);
         }
 
+        private void Drafter_OnListEntryRemove(object sender, ListEntryEventArgs e)
+        {
+            if (e.Count > 0)
+            {
+                SaveAndRestoreSelection(dgvListEntries, e.Entries);
+            }
+            else
+            {
+                btnListEntryEdit.Enabled = false;
+                btnListEntryRemove.Enabled = false;
+
+                btnListEntryAdd.Focus();
+
+                UnbindEntriesList();
+            }
+        }
+
         #region Processes
 
         private void PostLoading()
@@ -613,23 +631,10 @@ namespace UserInterface.Forms
 
         private void RemoveListEntry()
         {
-            // Get Spec ListEntry
-            int entryId = GetSelectedListEntryID();
-
             if (ShowEntryRemoveConfirmation() == DialogResult.OK)
             {
-                int entriesCount = drafter.DraftEntries.Count;
-
-                SaveEntrySelectionPosition(entriesCount);
-
-                // Remove entry from list
-                drafter.RemoveEntryFromDraftEntries(entryId);
-
-                // Refresh the list of Entries
-                UnbindEntriesList();
-                DisplayDraftEntries();
-                RestoreEntrySelection();
-                CheckEntriesCount(entriesCount);
+                int entryId = GetSelectedListEntryID();
+                drafter.RemoveEntry(entryId);
             }
         }
 
