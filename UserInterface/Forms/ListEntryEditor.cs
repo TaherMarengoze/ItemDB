@@ -5,8 +5,7 @@ using System.Windows.Forms;
 
 namespace UserInterface.Forms
 {
-    public partial class ListEntryEditor<T>: Form
-        where T: IListEntry, new()
+    public partial class ListEntryEditor: Form
     {
         public IListEntry ListEntry { get; private set; }
 
@@ -81,7 +80,7 @@ namespace UserInterface.Forms
         private void btnOK_Click(object sender, EventArgs e)
         {
             if (ListEntry == null)
-                ListEntry = new T();
+                ListEntry = new Modeling.ListEntry();
 
             ListEntry.Value = txtValue.Text;
             ListEntry.Display = txtDisplay.Text;

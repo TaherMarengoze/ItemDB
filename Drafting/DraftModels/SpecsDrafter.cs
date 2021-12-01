@@ -41,10 +41,11 @@ namespace Drafting
 
     public class ListEntryEventArgs : EventArgs
     {
-        public List<ISpecListEntry> Entries { get; set; }
+        //public int EntryID { get; set; }
+        public List<SpecListEntry> Entries { get; set; }
     }
 
-    public partial class SpecsDrafter : Interfaces.General.IDraftable
+    public partial class SpecsDrafter : IDraftable
     {
         // events
         public event EventHandler<bool> OnSpecsValidityChange;
@@ -77,7 +78,7 @@ namespace Drafting
 
         public SpecType DraftSpecsItemType { get; private set; }
 
-        public List<ISpecListEntry> DraftEntries { get; set; }
+        public List<SpecListEntry> DraftEntries { get; private set; }
 
         public string DraftCustomSpecId { get; set; }
 
@@ -326,7 +327,9 @@ namespace Drafting
             if (DraftSpecsItem.ListEntries != null)
             {
                 DraftSpecsItemType = SpecType.List;
-                DraftEntries = new List<ISpecListEntry>(DraftSpecsItem.ListEntries);
+                DraftEntries =
+                    DraftSpecsItem.ListEntries.Cast<SpecListEntry>().ToList();
+
                 _isValidSpecData = true;
             }
 
@@ -582,7 +585,7 @@ namespace Drafting
             int newId = lastId + 1;
 
             // create new SpecsItem list entry
-            ISpecListEntry specEntry = new SpecListEntry
+            SpecListEntry specEntry = new SpecListEntry
             {
                 ValueID = newId,
                 Value = entry.Value,
@@ -595,7 +598,7 @@ namespace Drafting
 
             // raise an event for adding an entry
             OnListEntrySet?.Invoke(this,
-                new ListEntryEventArgs { Entries = DraftEntries }); 
+                new ListEntryEventArgs{Entries = DraftEntries}); ;
         }
 
         private void NewOrCloneEntries()
@@ -605,9 +608,16 @@ namespace Drafting
             if (DraftEntries == null)
             {
                 DraftEntries =
-                    DraftSpecsItem.ListEntries?.ToList() ??
-                    new List<ISpecListEntry>();
+                    DraftSpecsItem.ListEntries?.Cast<SpecListEntry>().ToList() ??
+                    new List<SpecListEntry>();
             }
+        }
+
+        public void EditListEntry()
+        {
+            // raise an event for editing an entry
+            OnListEntrySet?.Invoke(this,
+                new ListEntryEventArgs { Entries = DraftEntries });
         }
 
         public bool IsSpecValid()
@@ -647,7 +657,7 @@ namespace Drafting
                 SpecsManiuplator.GetSpecsItem(SelectedSpecs?.SpecItems ?? InputSpecsItems, idx);
         }
 
-        public ISpecListEntry GetSpecListEntry(int entryId)
+        public SpecListEntry GetSpecListEntry(int entryId)
         {
             return
                 DraftEntries.Find(id => id.ValueID == entryId);
@@ -655,7 +665,7 @@ namespace Drafting
         
         public void RemoveEntryFromDraftEntries(int entryId)
         {
-            ISpecListEntry _removeListEntry = GetSpecListEntry(entryId);
+            SpecListEntry _removeListEntry = GetSpecListEntry(entryId);
 
             // Remove entry from list
             DraftEntries.Remove(_removeListEntry);

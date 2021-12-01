@@ -3,7 +3,6 @@ using Drafting;
 using Shared.UI;
 using System;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace UserInterface.Forms
@@ -451,8 +450,6 @@ namespace UserInterface.Forms
         {
             // refresh entries list
             dgvListEntries.DataSourceResize(e.Entries, true);
-
-            EnableListEntryModifyUI();
         }
 
         #region Processes
@@ -591,12 +588,13 @@ namespace UserInterface.Forms
         
         private void AddNewListEntry()
         {
-            var editor =
-                new ListEntryEditor<Modeling.DataModels.SpecListEntry>();
+            ListEntryEditor editor = new ListEntryEditor();
             
             if (editor.ShowDialog() == DialogResult.OK)
             {
                 drafter.AddListEntry(editor.ListEntry);
+                SelectLastSpecsItemEntry();
+                EnableListEntryModifyUI();
             }
         }
         
@@ -604,15 +602,12 @@ namespace UserInterface.Forms
         {
             int entryId = GetSelectedListEntryID();
 
-            var editor =
-                new ListEntryEditor<Modeling.DataModels.SpecListEntry>
-                (drafter.GetSpecListEntry(entryId));
+            ListEntryEditor editor =
+                new ListEntryEditor(drafter.GetSpecListEntry(entryId));
 
             if (editor.ShowDialog() == DialogResult.OK)
             {
-                // Refresh the list of Entries
-                UnbindEntriesList();
-                DisplayDraftEntries();
+                drafter.EditListEntry();
             }
         }
 
@@ -858,6 +853,13 @@ namespace UserInterface.Forms
         {
             dgvSpec.Rows[index - 1].Selected = true;
             dgvSpec.CurrentCell = dgvSpec["Index", index - 1];
+        }
+
+        private void SelectLastSpecsItemEntry()
+        {
+            int lastRow = dgvListEntries.Rows.Count - 1;
+            dgvListEntries.Rows[lastRow].Selected = true;
+            dgvListEntries.CurrentCell = dgvListEntries[0, lastRow];
         }
 
         private void EnableListEntryModifyUI()

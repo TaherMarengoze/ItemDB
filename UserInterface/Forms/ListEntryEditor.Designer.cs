@@ -1,6 +1,6 @@
 ﻿namespace UserInterface.Forms
 {
-    partial class ListEntryEditor<T>
+    partial class ListEntryEditor
     {
         /// <summary>
         /// Required designer variable.
