@@ -4,48 +4,14 @@ using CoreLibrary.Enums;
 using Interfaces.General;
 using Interfaces.Models;
 using Modeling.DataModels;
+using Modeling.ViewModels;
+using Modeling.ViewModels.Specs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Drafting
 {
-    public class SpecsSetEventArgs : EventArgs
-    {
-        public string SetID { get; set; }
-
-        public bool Existing { get; set; }
-    }
-
-    public class SpecsItemSetEventArgs : EventArgs
-    {
-        public int Index { get; set; }
-
-        public List<ISpecsItem> SpecsItems { get; set; }
-    }
-
-    public class SpecsItemRemoveEventArgs : EventArgs
-    {
-        public List<ISpecsItem> SpecsItems { get; set; }
-        public int Count => SpecsItems?.Count ?? 0;
-    }
-
-    public class SpecsItemCancelEventArgs : EventArgs
-    {
-        public bool NoItem { get; set; }
-
-        public int Index { get; set; }
-
-        public List<ISpecsItem> SpecsItems { get; set; }
-    }
-
-    public class ListEntryEventArgs : EventArgs
-    {
-        //public int EntryID { get; set; }
-        public List<SpecListEntry> Entries { get; set; }
-        public int Count => Entries?.Count ?? 0;
-    }
-
     public partial class SpecsDrafter : IDraftable
     {
         // events
@@ -68,6 +34,8 @@ namespace Drafting
 
         // properties
         public ISpecs SelectedSpecs { get; private set; }
+
+        public List<SpecsItemGenericView> SpecsItemsView { get; private set; }
 
         public ISpecsItem SelectedSpecsItem { get; private set; }
 
@@ -441,7 +409,7 @@ namespace Drafting
                 new SpecsItemSetEventArgs()
                 {
                     Index = DraftSpecsItem.Index,
-                    SpecsItems = InputSpecsItems
+                    SpecsItems = InputSpecsItems.ToGenericView()
                 });
 
             IsSpecsHasItem = true;
@@ -510,7 +478,7 @@ namespace Drafting
             OnSpecsItemRemove?.Invoke(this,
                 new SpecsItemRemoveEventArgs
                 {
-                    SpecsItems = InputSpecsItems,
+                    SpecsItems = InputSpecsItems.ToGenericView(),
                 });
 
             NotifyChangeInputSpecsItems();
@@ -674,12 +642,13 @@ namespace Drafting
         public void SetSelectedSpecs(string specsId)
         {
             SelectedSpecs = SpecsRepository.Read(specsId);
+            SpecsItemsView = SelectedSpecs.SpecItems.ToGenericView();
         }
 
         public void SetSelectedSpecsItem(int idx)
         {
-            SelectedSpecsItem =
-                SpecsManiuplator.GetSpecsItem(SelectedSpecs?.SpecItems ?? InputSpecsItems, idx);
+            SelectedSpecsItem = SpecsManiuplator.GetSpecsItem(
+                SelectedSpecs?.SpecItems ?? InputSpecsItems, idx);
         }
 
         public SpecListEntry GetSpecListEntry(int entryId)

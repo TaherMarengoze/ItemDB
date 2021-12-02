@@ -93,7 +93,7 @@
             this.chkSameValue.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkSameValue.Location = new System.Drawing.Point(117, 60);
             this.chkSameValue.Name = "chkSameValue";
-            this.chkSameValue.Size = new System.Drawing.Size(199, 17);
+            this.chkSameValue.Size = new System.Drawing.Size(200, 17);
             this.chkSameValue.TabIndex = 4;
             this.chkSameValue.Text = "&Set Display Text same as Value Text";
             this.chkSameValue.UseVisualStyleBackColor = true;

@@ -606,6 +606,9 @@ namespace UserInterface.Forms
         
         private void AddNewListEntry()
         {
+            PlainBackground background = new PlainBackground();
+            background.Show();
+
             ListEntryEditor editor = new ListEntryEditor();
             
             if (editor.ShowDialog() == DialogResult.OK)
@@ -614,11 +617,16 @@ namespace UserInterface.Forms
                 SelectLastSpecsItemEntry();
                 EnableListEntryModifyUI();
             }
+
+            background.Close();
         }
         
         private void EditListEntry()
         {
             int entryId = GetSelectedListEntryID();
+
+            PlainBackground background = new PlainBackground();
+            background.Show();
 
             ListEntryEditor editor =
                 new ListEntryEditor(drafter.GetSpecListEntry(entryId));
@@ -627,6 +635,8 @@ namespace UserInterface.Forms
             {
                 drafter.EditListEntry();
             }
+
+            background.Close();
         }
 
         private void RemoveListEntry()
@@ -779,7 +789,7 @@ namespace UserInterface.Forms
                     drafter.SelectedSpecs.Name,
                     drafter.SelectedSpecs.TextPattern);
 
-                dgvSpec.DataSourceResize(drafter.SelectedSpecs.SpecItems);
+                dgvSpec.DataSourceResize(drafter.SpecsItemsView);
             }
         }
 
