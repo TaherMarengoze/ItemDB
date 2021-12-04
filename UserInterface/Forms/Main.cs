@@ -96,7 +96,7 @@ namespace UserInterface.Forms
             Runtime.Test.AutoLoad(testLoadXmlContext);
             Runtime.Test.DoSomething(PostLoading);
             //Runtime.Test.DoSomething(delegate { LauchEditor(new SpecsEditor()); });
-            btnSpecsEditor.PerformClick();
+            btnSizeGroupsEditor.PerformClick();
         }
 
         private void tsmiLoadAll_Click(object sender, EventArgs e)
@@ -110,7 +110,7 @@ namespace UserInterface.Forms
         private void PostLoading()
         {
             UserService.Data.InitializeRepos();
-            ClientService.DataManager.InitLists();
+            ClientService.CacheIO.InitLists();
 
             EnableDisableEditorsLaunchUI(true);
         }

@@ -9,14 +9,14 @@ namespace ClientService
     /// <summary>
     /// Provides static methods for getting lists of entities from the reader and the global cache, and allows updating of this cache.
     /// </summary>
-    public static class DataManager
+    public static class CacheIO
     {
         public static void InitLists()
         {
             //Globals.ModelLists = new ModelListsCache();
 
             // Register events for DataProvider class
-            DataProvider.RegisterModelEvents();
+            DataProvider.RegisterModelListsEvents();
 
             // Update list values
             UpdateAllLists();
@@ -27,7 +27,7 @@ namespace ClientService
             return Globals.ModelLists.Items;
         }
 
-        public static List<ISpecs> GetSpecsList()
+        internal static List<ISpecs> GetSpecsList()
         {
             return Globals.ModelLists.Specs;
         }
@@ -76,12 +76,13 @@ namespace ClientService
 
         private static void UpdateItemList()
         {
-            Globals.ModelLists.Items = Globals.reader.GetItems().ToList();
+            Globals.ModelLists.Items =
+                Globals.reader.GetItems().ToList();
         }
 
         internal static void UpdateSpecsList()
         {
-            // This will run a query against the data source
+            // this will run a query against the data source
             Globals.ModelLists.Specs =
                 Globals.reader.GetSpecs().ToList();
         }

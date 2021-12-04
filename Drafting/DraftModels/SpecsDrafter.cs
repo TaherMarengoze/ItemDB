@@ -56,7 +56,7 @@ namespace Drafting
 
         public int SpecsCount => DataProvider.SpecsCount;
 
-        public List<string> CustomSpecsIDs => DataManager.GetCustomSpecsList();
+        public List<string> CustomSpecsIDs => CacheIO.GetCustomSpecsList();
 
         public List<string> ExistingIDs { get; private set; }
 

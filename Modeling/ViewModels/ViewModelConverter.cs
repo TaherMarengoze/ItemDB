@@ -20,11 +20,11 @@ namespace Modeling.ViewModels
         //        };
         //}
 
-        public static List<Specs.SpecsItemGenericView> ToGenericView(this IEnumerable<ISpecsItem> source)
+        public static List<SpecsItemGenericView> ToGenericView(this IEnumerable<ISpecsItem> source)
         {
             return
                 (from si in source
-                 select new Specs.SpecsItemGenericView
+                 select new SpecsItemGenericView
                  {
                      Index = si.Index,
                      Name = si.Name,

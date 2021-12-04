@@ -41,8 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CacheIO.cs" />
     <Compile Include="ContextProvider.cs" />
-    <Compile Include="DataManager.cs" />
     <Compile Include="DataProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpecsManiuplator.cs" />

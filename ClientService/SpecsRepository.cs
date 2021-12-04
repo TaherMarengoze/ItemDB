@@ -13,7 +13,7 @@ namespace ClientService
             Globals.specsRepo.Create(content);
 
             // Update the list in the Globals class
-            DataManager.UpdateSpecsList();
+            CacheIO.UpdateSpecsList();
 
             /*
              • The above code will run a query against the
@@ -23,6 +23,9 @@ namespace ClientService
              be faster than querying, like in the code below ?
             
             Globals.Lists.Specs.Add(specs);
+
+            note that the above code will not trigger
+            the change event of the model list
 
             */
         }
@@ -40,7 +43,7 @@ namespace ClientService
 
             // Update the list in the Globals class
             //>
-            DataManager.UpdateSpecsList();
+            CacheIO.UpdateSpecsList();
         }
 
         public static void Delete(string entityId)
@@ -52,7 +55,7 @@ namespace ClientService
 
             // Option 1:
             //    Update from data source
-            DataManager.UpdateSpecsList();
+            CacheIO.UpdateSpecsList();
 
             // Option 2:
             //    Find the item by ID and delete it from the global list

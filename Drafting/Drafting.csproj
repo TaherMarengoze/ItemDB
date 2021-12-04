@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DraftModels\CloneExtension.cs" />
+    <Compile Include="DraftModels\SizeGroupDrafter.cs" />
     <Compile Include="DraftModels\SpecsDrafter.cs" />
     <Compile Include="DraftModels\SpecsEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

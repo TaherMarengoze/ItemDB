@@ -53,7 +53,8 @@ namespace UserInterface.Runtime
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Test Error Auto-Load file\n\n{ ex.Message }");
+                    MessageBox.Show(
+                        $"Test Error Auto-Load file\n\n{ ex.Message }\n\nSource: { ex.Source }\nTarget: { ex.TargetSite.ReflectedType.FullName }.{ ex.TargetSite.Name }");
                 }
             }
         }

@@ -55,6 +55,7 @@
     <Compile Include="ListEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataModels\ItemDetails.cs" />
+    <Compile Include="ViewModels\SizeGroup\SizeGroupsGenericView.cs" />
     <Compile Include="ViewModels\Specs\BasicView.cs" />
     <Compile Include="ViewModels\Specs\SpecsItemGenericView.cs" />
     <Compile Include="ViewModels\Specs\SpecsViewObject.cs" />

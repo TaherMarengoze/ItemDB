@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AppCore;
+using Interfaces.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,15 +10,21 @@ namespace ClientService
 {
     public static class DataProvider
     {
-        internal static void RegisterModelEvents()
+        internal static void RegisterModelListsEvents()
         {
-            AppCore.Globals.ModelLists.OnSpecsChanged += Lists_OnSpecsChanged;
+            Globals.ModelLists.OnSpecsChanged += Lists_OnSpecsChanged;
+            Globals.ModelLists.OnSizeGroupsChanged += ModelLists_OnSizeGroupsChanged;
         }
-        
-        private static void Lists_OnSpecsChanged(object sender, System.EventArgs e)
+
+        private static void Lists_OnSpecsChanged(object sender, EventArgs e)
         {
-            AppCore.Globals.DataLists.SpecsIdList =
-                AppCore.Globals.ModelLists.Specs.Select(entity => entity.ID).ToList();
+            Globals.DataLists.SpecsIdList =
+                Globals.ModelLists.Specs.Select(entity => entity.ID).ToList();
+        }
+
+        private static void ModelLists_OnSizeGroupsChanged(object sender, EventArgs e)
+        {
+            //throw new NotImplementedException();
         }
 
         /// <summary>
@@ -25,7 +33,7 @@ namespace ClientService
         /// <returns></returns>
         public static List<string> GetSpecsIds()
         {
-            return AppCore.Globals.DataLists.SpecsIdList;
+            return Globals.DataLists.SpecsIdList;
         }
         public static List<string> FilterSpecsIds(string exactId)
         {
@@ -36,5 +44,13 @@ namespace ClientService
         }
 
         public static int SpecsCount => GetSpecsIds().Count;
+
+        public static class SizeGroup
+        {
+            public static List<ISizeGroup> GetSizeGroups()
+            {
+                return CacheIO.GetSizeGroupList().ToList();
+            }
+        }
     }
 }

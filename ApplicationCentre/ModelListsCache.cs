@@ -7,10 +7,9 @@ namespace AppCore
 {
     public class ModelListsCache
     {
-        private List<ISpecs> _specs;
-
-        public event System.EventHandler OnSpecsChanged;
-
+        public event EventHandler OnSpecsChanged;
+        public event EventHandler OnSizeGroupsChanged;
+        
         public List<IItem> Items { get; set; }
 
         public List<ISpecs> Specs
@@ -19,11 +18,19 @@ namespace AppCore
             set
             {
                 _specs = value;
-                OnSpecsChanged?.Invoke(this, System.EventArgs.Empty);
+                OnSpecsChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
-        public List<ISizeGroup> SizeGroups { get; set; }
+        public List<ISizeGroup> SizeGroups
+        {
+            get => _sizeGroups;
+            set
+            {
+                _sizeGroups = value;
+                OnSizeGroupsChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
 
         public List<IFieldList> SizeLists { get; set; }
 
@@ -34,5 +41,9 @@ namespace AppCore
         public List<string> CustomSizes { get; set; }
 
         public List<string> CustomSpecs { get; set; }
+
+        // fields
+        private List<ISpecs> _specs;
+        private List<ISizeGroup> _sizeGroups;
     }
 }

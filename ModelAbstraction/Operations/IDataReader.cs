@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 namespace Interfaces.Operations
 {
+    /// <summary>
+    /// Contains definitions for entities lists from a data source after deserialization.
+    /// </summary>
     public interface IDataReader
     {
         IEnumerable<IItem> GetItems();
