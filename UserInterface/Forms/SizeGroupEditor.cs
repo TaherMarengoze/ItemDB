@@ -926,7 +926,8 @@ namespace UserInterface.Forms
             if (row != null)
             {
                 string id = (string)row.Cells[0].Value;
-                DisplaySelectedGroupData(id);
+                //DisplaySelectedGroupData(id);
+                uiControl.SetSelection(id);
             }
         }
 

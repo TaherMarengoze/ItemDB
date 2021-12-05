@@ -29,7 +29,7 @@ namespace XmlDataSource.Repository
             dataSource.Root.Add(content);
         }
 
-        public ISpecs Read() => throw new NotImplementedException();
+        public ISpecs Read(string entityId) => throw new NotImplementedException();
 
         public void Update(string refId, ISpecs entity)
         {

@@ -87,7 +87,7 @@ namespace ClientService
                 Globals.reader.GetSpecs().ToList();
         }
 
-        private static void UpdateSizeGroupList()
+        internal static void UpdateSizeGroupList()
         {
             Globals.ModelLists.SizeGroups =
                 Globals.reader.GetSizeGroups().ToList();

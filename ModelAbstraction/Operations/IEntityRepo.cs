@@ -3,11 +3,11 @@ namespace Interfaces.Operations
 {
     public interface IEntityRepo<TEntity>
     {
-        void Create(TEntity entity);
+        void Create(TEntity content);
 
-        TEntity Read();
+        TEntity Read(string entityId);
 
-        void Update(string refId, TEntity entity);
+        void Update(string refId, TEntity content);
 
         void Delete(string entityId);
     }

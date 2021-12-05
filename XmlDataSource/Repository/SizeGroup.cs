@@ -29,7 +29,7 @@ namespace XmlDataSource.Repository
             dataSource.Root.Add(content);
         }
 
-        public ISizeGroup Read() => throw new NotImplementedException();
+        public ISizeGroup Read(string entityId) => throw new NotImplementedException();
 
         public void Update(string refId, ISizeGroup entity)
         {

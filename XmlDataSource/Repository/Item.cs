@@ -35,7 +35,7 @@ namespace XmlDataSource.Repository
             category.Add(content);
         }
         
-        public IItem Read() => throw new NotImplementedException();
+        public IItem Read(string entityId) => throw new NotImplementedException();
 
         public void Update(string refId, IItem entity)
         {

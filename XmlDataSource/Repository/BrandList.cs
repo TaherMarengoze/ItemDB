@@ -18,7 +18,7 @@ namespace XmlDataSource.Repository
             dataSource = source;
         }
 
-        public BrandList( )
+        public BrandList()
         {
             dataSource =
                 ((XmlContext)Globals.context).DataDocs.Brands;
@@ -30,7 +30,7 @@ namespace XmlDataSource.Repository
             dataSource.Root.Add(content);
         }
 
-        public IFieldList Read() => throw new NotImplementedException();
+        public IFieldList Read(string entityId) => throw new NotImplementedException();
 
         public void Update(string refId, IFieldList entity)
         {
