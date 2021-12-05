@@ -17,7 +17,7 @@ namespace CoreLibrary
 
 
         /// <summary>
-        /// Sets a <see cref="DataGridView"/>'s <see cref="DataGridView.DataSource"/> and then auto resize its columns and rows.
+        /// Sets a <see cref="DataGridView"/>'s DataSource property and then auto resizes its columns and rows.
         /// </summary>
         /// <param name="dgv">The <see cref="DataGridView"/> instance.</param>
         /// <param name="dataSource">The <see cref="object"/> of the datasource.</param>
@@ -26,6 +26,23 @@ namespace CoreLibrary
             dgv.DataSource = dataSource;
             dgv.AutoResizeColumns();
             dgv.AutoResizeRows();
+        }
+
+        public static void UnbindNotify(this DataGridView sender, EventHandler handler)
+        {
+            if (sender.DataSource == null)
+            {
+                handler(sender, EventArgs.Empty);
+                return;
+            }
+            sender.DataSource = null;
+        }
+
+        public static DataGridViewRow SelectedFirstRow(this DataGridView dgv)
+        {
+            return
+                dgv.DataSource != null && dgv.SelectedRows.Count > 0 ?
+                dgv.SelectedRows[0] : null;
         }
 
         /// <summary>

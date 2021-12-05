@@ -9,5 +9,9 @@ namespace AppCore
     public class DataListsCache
     {
         public List<string> SpecsIdList { get; set; }
+
+        public List<string> SizeIdList { get; set; }
+
+        public List<string> CustomSizeIdList { get; set; }
     }
 }

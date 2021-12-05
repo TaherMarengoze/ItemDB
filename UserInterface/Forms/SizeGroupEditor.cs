@@ -3,6 +3,7 @@ using CoreLibrary;
 using CoreLibrary.Enums;
 using CoreLibrary.Interfaces;
 using CoreLibrary.Models;
+using Drafting;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -16,24 +17,45 @@ namespace UserInterface.Forms
 {
     public partial class SizeGroupEditor : Form
     {
-        private EntryMode _mode = EntryMode.View;
+        public SizeGroupEditor()
+        {
+            InitializeComponent();
+            uiControl = new SizeGroupUiController();
+        }
+
         private EntryMode Mode
         {
-            get => _mode;
+            get => _sizeGroupMode;
             set
             {
-                _mode = value;
+                _sizeGroupMode = value;
                 if (value == EntryMode.View)
                 {
+                    // enable Save UI
                     tsmiSaveFile.Enabled = true;
+
+                    // enable SizeGroup Add, Edit & Remove buttons
+                    btnNewGroup.Enabled = true;
+                    btnEditGroup.Enabled = true;
+                    btnRemoveGroup.Enabled = true;
                 }
                 else
                 {
+                    // disable Save UI
                     tsmiSaveFile.Enabled = false;
+
+                    // disable SizeGroup Add, Edit & Remove buttons
+                    btnNewGroup.Enabled = false;
+                    btnEditGroup.Enabled = false;
+                    btnRemoveGroup.Enabled = false;
                 }
             }
         }
 
+        private EntryMode _sizeGroupMode = EntryMode.View;
+
+        private SizeGroupUiController uiControl;
+        // the above line will replace the one below when the controller is fully operational
         private SizeGroupDrafter drafter;
 
         /// <summary>
@@ -54,61 +76,47 @@ namespace UserInterface.Forms
         private bool skipEvents = false;
         private int groupSelectionIndex;
 
-        public SizeGroupEditor()
-        {
-            InitializeComponent();
-        }
-
-        private void SaveToSource()
-        {
-            //AppFactory.context.Save(ContextEntity.SizeGroups);
-            Data.Save(ContextEntity.SizeGroups);
-        }        
-        
-        private void EnterViewMode() => Mode = EntryMode.View;
-
-        private void EnterNewMode() => Mode = EntryMode.New;
-
-        private void EnterEditMode() => Mode = EntryMode.Edit;
-
         private void PostLoading()
         {
-            BindSizeSelectors();
-            ListSizeGroups();
-            EnableGroupModifyUI();
+            SetupSizeSelectors();
+            if (uiControl.Count > 0)
+            {
+                BindSizeGroupList();
+            }
+            else
+            {
+                UnbindSizeGroupList();
+            }
         }
 
-        private void BindSizeSelectors()
+        private void SetupSizeSelectors()
         {
-            cboDefaultID.DataSource = Data.GetFieldIds(FieldType.SIZE).ToList();
-            cboCustomSizeID.DataSource = Data.GetCustomSizes();
+            // bind selectors
+            BindDefaultSizeSelector();
+            BindCustomSizeSelector();
+
+            // clear selectors
             cboDefaultID.SelectedIndex = -1;
         }
 
-        /// <summary>
-        /// Binds the size group list to a <see cref="DataGridView"/>.
-        /// </summary>
-        private void ListSizeGroups()
+        private void BindDefaultSizeSelector()
         {
-            //Common.SetDataGridViewDataSource(dgvGroups, Data.GetSizeGroups());
-            dgvGroups.DataSourceResize(Data.GetSizeGroups());
+            cboDefaultID.DataSource = uiControl.SizeIDs;
         }
 
-        private void RefreshSizeGroups()
+        private void BindCustomSizeSelector()
         {
-            object dataSource = dgvGroups.DataSource;
-            dgvGroups.DataSource = null;
-            if (dataSource != null)
-            {
-                dgvGroups.DataSource = dataSource;
-            }
-            ResizeGrid();
+            cboCustomSizeID.DataSource = uiControl.CustomSizeIDs;
         }
 
-        private void ResizeGrid()
+        private void BindSizeGroupList()
         {
-            dgvGroups.AutoResizeColumns();
-            dgvGroups.AutoResizeRows();
+            dgvGroups.DataSourceResize(uiControl.SizeGroups);
+        }
+
+        private void UnbindSizeGroupList()
+        {
+            dgvGroups.UnbindNotify(dgvGroups_DataSourceChanged);
         }
 
         private void DisplaySelectedGroupData(string groupId)
@@ -139,6 +147,50 @@ namespace UserInterface.Forms
             }
         }
 
+        /// <summary>
+        /// Enable the New, Edit and Remove buttons.
+        /// </summary>
+        private void EnableGroupModifyUI()
+        {
+            btnNewGroup.Enabled = true;
+            btnEditGroup.Enabled = true;
+            btnRemoveGroup.Enabled = true;
+        }
+
+        private void SaveToSource()
+        {
+            //AppFactory.context.Save(ContextEntity.SizeGroups);
+            Data.Save(ContextEntity.SizeGroups);
+        }
+
+        private void EnterViewMode() => Mode = EntryMode.View;
+
+        private void EnterNewMode() => Mode = EntryMode.New;
+
+        private void EnterEditMode() => Mode = EntryMode.Edit;
+
+
+
+        /// <summary>
+        /// Binds the size group list to a <see cref="DataGridView"/>.
+        /// </summary>
+        private void ListSizeGroups()
+        {
+            dgvGroups.DataSourceResize(Data.GetSizeGroups());
+        }
+
+        private void RefreshSizeGroups()
+        {
+            object dataSource = dgvGroups.DataSource;
+            dgvGroups.DataSource = null;
+            if (dataSource != null)
+            {
+                dgvGroups.DataSource = dataSource;
+            }
+            dgvGroups.AutoResizeColumns();
+            dgvGroups.AutoResizeRows();
+        }
+        
         private void ChangeGroupID()
         {
             if (skipEvents) return;
@@ -332,14 +384,14 @@ namespace UserInterface.Forms
                     Data.UpdateSizeGroup(drafter.refId, drafter.DraftSizeGroup);
                     break;
             }
-            
+
             EnterViewMode();
 
             // Clear draft object
             drafter = null;
 
             // Reset Size Selector data source
-            BindSizeSelectors();
+            SetupSizeSelectors();
 
             // Update Size Groups List
             dgvGroups.DataSource = null;
@@ -366,7 +418,7 @@ namespace UserInterface.Forms
             EnterViewMode();
 
             // Reset Size Selector data source
-            BindSizeSelectors();
+            SetupSizeSelectors();
 
             // Setup UI
             CancelDraftingSetupUI();
@@ -448,7 +500,7 @@ namespace UserInterface.Forms
             lblValidatorGroupId.Text = string.Empty;
             lblValidatorGroupName.Text = string.Empty;
         }
-        
+
         private string RemoveInvalidCharactersFromID(string inputId)
         {
             return Regex.Replace(inputId, "[^A-Z0-9]+", "", RegexOptions.Compiled);
@@ -586,16 +638,6 @@ namespace UserInterface.Forms
         {
             dgvGroups.ClearSelection();
             dgvGroups.Enabled = false;
-        }
-
-        /// <summary>
-        /// Enable the New, Edit and Remove buttons.
-        /// </summary>
-        private void EnableGroupModifyUI()
-        {
-            btnNewGroup.Enabled = true;
-            btnEditGroup.Enabled = true;
-            btnRemoveGroup.Enabled = true;
         }
 
         /// <summary>
@@ -860,23 +902,32 @@ namespace UserInterface.Forms
         }
 
 #pragma warning disable IDE1006 // Naming Styles
-        private void SizeGroupEditor_Load(object sender, EventArgs e)
+        private void SizeGroupEditor_Load(object sender, EventArgs e) => PostLoading();
+        private void dgvGroups_DataSourceChanged(object sender, EventArgs e)
         {
-            PostLoading();
+            if (Mode == EntryMode.View)
+            {
+                if (dgvGroups.DataSource == null)
+                {
+                    btnEditGroup.Enabled = false;
+                    btnRemoveGroup.Enabled = false;
+                }
+                else
+                {
+                    btnEditGroup.Enabled = true;
+                    btnRemoveGroup.Enabled = true;
+                }
+            }
         }
-
         private void dgvGroups_SelectionChanged(object sender, EventArgs e)
         {
-            if (dgvGroups.DataSource == null || dgvGroups.SelectedRows.Count <= 0)
-                return;
+            DataGridViewRow row = dgvGroups.SelectedFirstRow();
 
-            DataGridViewRow row = dgvGroups.SelectedRows[0];
-
-            if (row == null)
-                return;
-
-            string id = (string)row.Cells[0].Value;
-            DisplaySelectedGroupData(id);
+            if (row != null)
+            {
+                string id = (string)row.Cells[0].Value;
+                DisplaySelectedGroupData(id);
+            }
         }
 
         private void dgvGroups_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -990,4 +1041,6 @@ namespace UserInterface.Forms
 
 #pragma warning restore IDE1006 // Naming Styles
     }
+
+
 }

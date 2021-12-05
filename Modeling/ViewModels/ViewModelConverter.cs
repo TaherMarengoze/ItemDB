@@ -1,4 +1,5 @@
 ﻿using Interfaces.Models;
+using Modeling.ViewModels.SizeGroup;
 using Modeling.ViewModels.Specs;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,19 @@ namespace Modeling.ViewModels
                      Entries = si.ListEntries?.Count() ?? 0,
                      CustomInputID = si.CustomInputID
                  }).ToList();
+        }
+
+        public static List<SizeGroupsGenericView> ToGenericView(this IEnumerable<ISizeGroup> source)
+        {
+            return
+                source.Select(sg => new SizeGroupsGenericView
+                {
+                    ID = sg.ID,
+                    Name = sg.Name,
+                    DefaultListID = sg.DefaultListID,
+                    AltListsCount = sg.AltIdList?.Count ?? 0,
+                    CustomSize = sg.CustomSize
+                }).ToList();
         }
     }
 }

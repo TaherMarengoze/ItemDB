@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lblGroupID = new System.Windows.Forms.Label();
             this.txtGroupID = new System.Windows.Forms.TextBox();
             this.lblGroupName = new System.Windows.Forms.Label();
@@ -49,6 +49,8 @@
             this.tsSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.tsmiExitApp = new System.Windows.Forms.ToolStripMenuItem();
             this.grpGroupData = new System.Windows.Forms.GroupBox();
+            this.grpListEntries = new System.Windows.Forms.GroupBox();
+            this.lbxSizeListEntries = new System.Windows.Forms.ListBox();
             this.lblValidatorDefaultId = new System.Windows.Forms.Label();
             this.grpCustomSize = new System.Windows.Forms.GroupBox();
             this.chkCustomSize = new System.Windows.Forms.CheckBox();
@@ -65,17 +67,15 @@
             this.btnEditGroup = new System.Windows.Forms.Button();
             this.btnNewGroup = new System.Windows.Forms.Button();
             this.grpModiyControlPanel = new System.Windows.Forms.GroupBox();
-            this.lbxSizeListEntries = new System.Windows.Forms.ListBox();
-            this.grpListEntries = new System.Windows.Forms.GroupBox();
             this.grpGroupMetadata.SuspendLayout();
             this.mnuMain.SuspendLayout();
             this.grpGroupData.SuspendLayout();
+            this.grpListEntries.SuspendLayout();
             this.grpCustomSize.SuspendLayout();
             this.grpAltList.SuspendLayout();
             this.grpGroupList.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvGroups)).BeginInit();
             this.grpModiyControlPanel.SuspendLayout();
-            this.grpListEntries.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblGroupID
@@ -285,6 +285,29 @@
             this.grpGroupData.TabStop = false;
             this.grpGroupData.Text = "Group Data";
             // 
+            // grpListEntries
+            // 
+            this.grpListEntries.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpListEntries.Controls.Add(this.lbxSizeListEntries);
+            this.grpListEntries.Location = new System.Drawing.Point(6, 46);
+            this.grpListEntries.Name = "grpListEntries";
+            this.grpListEntries.Size = new System.Drawing.Size(232, 71);
+            this.grpListEntries.TabIndex = 26;
+            this.grpListEntries.TabStop = false;
+            this.grpListEntries.Text = "List Entries";
+            // 
+            // lbxSizeListEntries
+            // 
+            this.lbxSizeListEntries.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbxSizeListEntries.FormattingEnabled = true;
+            this.lbxSizeListEntries.IntegralHeight = false;
+            this.lbxSizeListEntries.Location = new System.Drawing.Point(3, 16);
+            this.lbxSizeListEntries.Name = "lbxSizeListEntries";
+            this.lbxSizeListEntries.Size = new System.Drawing.Size(226, 52);
+            this.lbxSizeListEntries.TabIndex = 0;
+            // 
             // lblValidatorDefaultId
             // 
             this.lblValidatorDefaultId.AutoSize = true;
@@ -402,8 +425,8 @@
             // 
             this.dgvGroups.AllowUserToAddRows = false;
             this.dgvGroups.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.Lavender;
-            this.dgvGroups.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.Lavender;
+            this.dgvGroups.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -421,6 +444,7 @@
             this.dgvGroups.Size = new System.Drawing.Size(398, 254);
             this.dgvGroups.StandardTab = true;
             this.dgvGroups.TabIndex = 1;
+            this.dgvGroups.DataSourceChanged += new System.EventHandler(this.dgvGroups_DataSourceChanged);
             this.dgvGroups.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvGroups_CellDoubleClick);
             this.dgvGroups.SelectionChanged += new System.EventHandler(this.dgvGroups_SelectionChanged);
             // 
@@ -471,7 +495,6 @@
             // 
             // btnNewGroup
             // 
-            this.btnNewGroup.Enabled = false;
             this.btnNewGroup.Location = new System.Drawing.Point(6, 19);
             this.btnNewGroup.Name = "btnNewGroup";
             this.btnNewGroup.Size = new System.Drawing.Size(75, 23);
@@ -494,29 +517,6 @@
             this.grpModiyControlPanel.Size = new System.Drawing.Size(410, 106);
             this.grpModiyControlPanel.TabIndex = 2;
             this.grpModiyControlPanel.TabStop = false;
-            // 
-            // listBox1
-            // 
-            this.lbxSizeListEntries.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbxSizeListEntries.FormattingEnabled = true;
-            this.lbxSizeListEntries.IntegralHeight = false;
-            this.lbxSizeListEntries.Location = new System.Drawing.Point(3, 16);
-            this.lbxSizeListEntries.Name = "listBox1";
-            this.lbxSizeListEntries.Size = new System.Drawing.Size(226, 52);
-            this.lbxSizeListEntries.TabIndex = 0;
-            // 
-            // grpListEntries
-            // 
-            this.grpListEntries.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpListEntries.Controls.Add(this.lbxSizeListEntries);
-            this.grpListEntries.Location = new System.Drawing.Point(6, 46);
-            this.grpListEntries.Name = "grpListEntries";
-            this.grpListEntries.Size = new System.Drawing.Size(232, 71);
-            this.grpListEntries.TabIndex = 26;
-            this.grpListEntries.TabStop = false;
-            this.grpListEntries.Text = "List Entries";
             // 
             // SizeGroupEditor
             // 
@@ -541,6 +541,7 @@
             this.mnuMain.PerformLayout();
             this.grpGroupData.ResumeLayout(false);
             this.grpGroupData.PerformLayout();
+            this.grpListEntries.ResumeLayout(false);
             this.grpCustomSize.ResumeLayout(false);
             this.grpCustomSize.PerformLayout();
             this.grpAltList.ResumeLayout(false);
@@ -548,7 +549,6 @@
             this.grpGroupList.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvGroups)).EndInit();
             this.grpModiyControlPanel.ResumeLayout(false);
-            this.grpListEntries.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
