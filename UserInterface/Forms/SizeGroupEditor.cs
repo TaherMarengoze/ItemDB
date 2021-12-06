@@ -3,7 +3,7 @@ using CoreLibrary;
 using CoreLibrary.Enums;
 using CoreLibrary.Interfaces;
 using CoreLibrary.Models;
-using Drafting;
+using Controllers.SizeGroupUi;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -21,6 +21,65 @@ namespace UserInterface.Forms
         {
             InitializeComponent();
             uiControl = new SizeGroupUiController();
+            SubscribeControllerEvents();
+        }
+
+        private void SubscribeControllerEvents()
+        {
+            uiControl.OnSelectionChange += UiControl_OnSelectionChange;
+            uiControl.OnIdStatusChange += UiControl_OnIdStatusChange;
+        }
+
+        private void UiControl_OnIdStatusChange(object sender, ValidityStatus status)
+        {
+            //throw new NotImplementedException();
+            switch (status)
+            {
+                case ValidityStatus.Valid:
+                    lblValidatorGroupId.Text = string.Empty;
+                    break;
+                case ValidityStatus.Duplicate:
+                    lblValidatorGroupId.Text = "• Duplicate";
+                    break;
+                case ValidityStatus.Blank:
+                    lblValidatorGroupId.Text = "• Blank";
+                    break;
+                case ValidityStatus.Invalid:
+                    lblValidatorGroupId.Text = "• Invalid";
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void UiControl_OnSelectionChange(object sender, SizeGroupSelectionEventArgs e)
+        {
+            //throw new NotImplementedException();
+            if (Mode == EntryMode.View)
+            {
+                txtGroupID.Text = e.ID;
+                txtGroupName.Text = e.Name;
+                cboDefaultID.Text = e.Default;
+
+                if (e.AltListCount > 0)
+                {
+                    lstAltListIDs.DataSource = e.AltList;
+                    lstAltListIDs.SelectedIndex = -1;
+                }
+                else
+                {
+                    lstAltListIDs.DataSource = null;
+                }
+
+                if (e.Custom != null)
+                {
+                    cboCustomSizeID.Text = e.Custom;
+                }
+                else
+                {
+                    cboCustomSizeID.SelectedIndex = -1;
+                }
+            }
         }
 
         private EntryMode Mode
@@ -44,10 +103,39 @@ namespace UserInterface.Forms
                     // disable Save UI
                     tsmiSaveFile.Enabled = false;
 
+                    // Setup User Interface
+
+                    // clear and disable SizeGroup selection
+                    dgvGroups.ClearSelection();
+                    dgvGroups.Enabled = false;
+
                     // disable SizeGroup Add, Edit & Remove buttons
                     btnNewGroup.Enabled = false;
                     btnEditGroup.Enabled = false;
                     btnRemoveGroup.Enabled = false;
+
+                    // show Accept and Cancel buttons
+                    btnAccept.Visible = true;
+                    btnCancel.Visible = true;
+
+                    // enable SizeGroup fields entry
+                    txtGroupID.ReadOnly = false;
+                    txtGroupName.ReadOnly = false;
+
+                    // enable default list selector
+                    cboDefaultID.Enabled = true;
+
+                    chkAltList.Visible = true;
+                    chkAltList.Checked = false;
+
+                    // disable alt list check box if New mode
+                    if (value == EntryMode.New)
+                    {
+                        chkAltList.Enabled = false;
+                    }
+
+                    chkCustomSize.Visible = true;
+                    chkCustomSize.Checked = false;
                 }
             }
         }
@@ -119,31 +207,53 @@ namespace UserInterface.Forms
             dgvGroups.UnbindNotify(dgvGroups_DataSourceChanged);
         }
 
-        private void DisplaySelectedGroupData(string groupId)
+        private void SizeGroupSelected(string id)
         {
-            ISizeGroup sGroup = Data.GetSizeGroup(groupId);
+            uiControl.SetSelection(id);
+        }
 
-            txtGroupID.Text = groupId;
-            txtGroupName.Text = sGroup.Name;
-            cboDefaultID.Text = sGroup.DefaultListID;
+        private void AddNewSizeGroup()
+        {
+            //drafter = new SizeGroupDrafter();
+            uiControl.New();
 
-            if (((SizeGroup)sGroup).AltListsCount > 0)
-            {
-                lstAltListIDs.DataSource = sGroup.AltIdList;
-                lstAltListIDs.SelectedIndex = -1;
-            }
-            else
-            {
-                lstAltListIDs.DataSource = null;
-            }
+            // set entry mode
+            Mode = EntryMode.New;
 
-            if (sGroup.CustomSize != null)
+            // Clear existing data for new input
+            ClearSizeGroupFields();
+            ClearSizeGroupSelectors();
+            //ClearGroupDataUI();
+            txtGroupID.Focus();
+        }
+
+        private void ClearSizeGroupFields()
+        {
+            txtGroupID.Clear();
+            txtGroupName.Clear();
+        }
+
+        private void ClearSizeGroupSelectors()
+        {
+            //if (cboDefaultID.SelectedIndex != -1)
+
+            // clear default list selector
+            cboDefaultID.SelectedIndex = -1;
+
+            // clear alt list
+            lstAltListIDs.DataSource = null;
+
+            // clear custom list selector
+            cboCustomSizeID.SelectedIndex = -1;
+        }
+
+        private void InputSizeGroupID()
+        {
+            //throw new NotImplementedException();
+            
+            if (Mode != EntryMode.View)
             {
-                cboCustomSizeID.Text = sGroup.CustomSize;
-            }
-            else
-            {
-                cboCustomSizeID.SelectedIndex = -1;
+                uiControl.InputID = txtGroupID.Text;
             }
         }
 
@@ -926,8 +1036,7 @@ namespace UserInterface.Forms
             if (row != null)
             {
                 string id = (string)row.Cells[0].Value;
-                //DisplaySelectedGroupData(id);
-                uiControl.SetSelection(id);
+                SizeGroupSelected(id);
             }
         }
 
@@ -941,7 +1050,8 @@ namespace UserInterface.Forms
 
         private void btnNewGroup_Click(object sender, EventArgs e)
         {
-            NewGroup();
+            //NewGroup();
+            AddNewSizeGroup();
         }
 
         private void btnEditGroup_Click(object sender, EventArgs e)
@@ -976,9 +1086,10 @@ namespace UserInterface.Forms
 
         private void txtGroupID_TextChanged(object sender, EventArgs e)
         {
-            ChangeGroupID();
+            //ChangeGroupID();
+            InputSizeGroupID();
         }
-
+        
         private void txtGroupID_KeyPress(object sender, KeyPressEventArgs e)
         {
 

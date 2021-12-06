@@ -145,7 +145,7 @@ namespace UserInterface.Forms
             dgvCategories.Columns[0].DisplayIndex = 2;
 
             // Bind Specs ID selector combobox
-            cboSpecsId.DataSource = ClientService.DataProvider.GetSpecsIds();
+            cboSpecsId.DataSource = ClientService.DataProvider.GetIDs();
             cboSpecsId.SelectedIndex = -1;
             dgvSpecs.DataSource = ClientService.SpecsVMProvider.Brief();
 

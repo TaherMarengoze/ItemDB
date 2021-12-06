@@ -4,7 +4,7 @@ using Modeling.ViewModels.Specs;
 using System;
 using System.Collections.Generic;
 
-namespace Drafting
+namespace Controllers.SpecsUi
 {
     public class SpecsSetEventArgs : EventArgs
     {

@@ -41,10 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DraftModels\CloneExtension.cs" />
-    <Compile Include="DraftModels\SizeGroupUiController.cs" />
-    <Compile Include="DraftModels\SpecsDrafter.cs" />
-    <Compile Include="DraftModels\SpecsEventArgs.cs" />
+    <Compile Include="Controllers\CloneExtension.cs" />
+    <Compile Include="Controllers\SizeGroupUI\SizeGroupEvents.cs" />
+    <Compile Include="Controllers\SizeGroupUI\SizeGroupUiController.cs" />
+    <Compile Include="Controllers\SpecsUI\SpecsDrafter.cs" />
+    <Compile Include="Controllers\SpecsUI\SpecsEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -65,5 +66,6 @@
       <Name>Modeling</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -23,26 +23,28 @@ namespace ClientService
         
         private static void Lists_OnSpecsChanged(object sender, EventArgs e)
         {
-            Globals.DataLists.SpecsIdList =
+            Globals.DataLists.SpecsIDs =
                 Globals.ModelLists.Specs.Select(entity => entity.ID).ToList();
         }
 
         private static void ModelLists_OnSizeGroupsChanged(object sender, EventArgs e)
         {
             //throw new NotImplementedException();
+            Globals.DataLists.SizeGroupIDs =
+                Globals.ModelLists.SizeGroups.Select(entity => entity.ID).ToList();
         }
 
         private static void ModelLists_OnSizeListChanged(object sender, EventArgs e)
         {
             //throw new NotImplementedException();
-            Globals.DataLists.SizeIdList =
+            Globals.DataLists.SizeIDs =
                 Globals.ModelLists.SizeLists.Select(size => size.ID).ToList();
         }
 
         private static void ModelLists_OnCustomSizeListChanged(object sender, EventArgs e)
         {
             //throw new NotImplementedException();
-            Globals.DataLists.CustomSizeIdList =
+            Globals.DataLists.CustomSizeIDs =
                 Globals.ModelLists.CustomSizes;
         }
 
@@ -50,25 +52,47 @@ namespace ClientService
         /// Gets a list of ID for all specs objects.
         /// </summary>
         /// <returns></returns>
-        public static List<string> GetSpecsIds()
+        public static List<string> GetIDs()
         {
-            return Globals.DataLists.SpecsIdList;
+            return Globals.DataLists.SpecsIDs;
         }
         public static List<string> FilterSpecsIds(string exactId)
         {
             return
-                Globals.DataLists.SpecsIdList
+                Globals.DataLists.SpecsIDs
                 .Where(id => id.Contains(exactId))
                 .ToList();
         }
+        public static int SpecsCount => GetIDs().Count;
 
-        public static int SpecsCount => GetSpecsIds().Count;
+        public static class Specs
+        {
+            public static List<string> GetIDs() =>
+                Globals.DataLists.SpecsIDs;
+
+            public static List<string> FilterSpecsIds(string exactId) =>
+                Globals.DataLists.SpecsIDs
+                    .Where(id => id.Contains(exactId))
+                    .ToList();
+
+            public static int SpecsCount => GetIDs().Count;
+        }
 
         public static class SizeGroup
         {
             public static List<ISizeGroup> GetList()
             {
+                // .ToList will return a copy preserving the one in the cache
                 return CacheIO.GetSizeGroupList().ToList();
+            }
+
+            /// <summary>
+            /// Gets a list of ID for SizeGroup objects.
+            /// </summary>
+            /// <returns></returns>
+            public static List<string> GetIDs()
+            {
+                return Globals.DataLists.SizeGroupIDs;
             }
         }
 
@@ -76,7 +100,7 @@ namespace ClientService
         {
             public static List<string> GetIDs()
             {
-                return Globals.DataLists.SizeIdList;
+                return Globals.DataLists.SizeIDs;
             }
         }
 
@@ -84,7 +108,7 @@ namespace ClientService
         {
             public static List<string> GetIDs()
             {
-                return Globals.DataLists.CustomSizeIdList;
+                return Globals.DataLists.CustomSizeIDs;
             }
         }
     }

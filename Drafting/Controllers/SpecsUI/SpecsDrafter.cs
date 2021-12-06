@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Drafting
+namespace Controllers.SpecsUi
 {
     public partial class SpecsDrafter : IDraftable
     {
@@ -52,7 +52,7 @@ namespace Drafting
 
         public string DraftCustomSpecId { get; set; }
 
-        public List<string> SpecsIDs => DataProvider.GetSpecsIds();
+        public List<string> SpecsIDs => DataProvider.GetIDs();
 
         public int SpecsCount => DataProvider.SpecsCount;
 
@@ -61,7 +61,7 @@ namespace Drafting
         public List<string> ExistingIDs { get; private set; }
 
         /// <summary>
-        /// Temporary parameter that represents the input value from the UI that represents the <see cref="Specs.ID"/>.
+        /// Temporary parameter that represents the input value from the UI that represents the <see cref="SpecsUi.ID"/>.
         /// </summary>
         public string InputSpecsId
         {
@@ -78,7 +78,7 @@ namespace Drafting
                     else
                     {
                         bool isInputNotDraft = _inputSpecsId != DraftSpecs.ID;
-                        bool isDuplicateInput = DataProvider.GetSpecsIds().Contains(_inputSpecsId);
+                        bool isDuplicateInput = DataProvider.GetIDs().Contains(_inputSpecsId);
 
                         if (isInputNotDraft && isDuplicateInput)
                         {
@@ -670,7 +670,7 @@ namespace Drafting
         {
             if (inputSpecsId == string.Empty)
             {
-                return DataProvider.GetSpecsIds();
+                return DataProvider.GetIDs();
             }
             else
             {
@@ -681,11 +681,11 @@ namespace Drafting
 
         private string GenerateNewSpecsID()
         {
-            int idCount = DataProvider.GetSpecsIds().Count;
+            int idCount = DataProvider.GetIDs().Count;
 
             string newId = $"S{idCount:0000}";
 
-            if (DataProvider.GetSpecsIds().Contains(newId) == true)
+            if (DataProvider.GetIDs().Contains(newId) == true)
             {
                 int i = idCount;
                 do
@@ -693,7 +693,7 @@ namespace Drafting
                     i++;
                     newId = $"S{i:0000}";
                 }
-                while (DataProvider.GetSpecsIds().Contains(newId) == true && i > idCount + 1000);
+                while (DataProvider.GetIDs().Contains(newId) == true && i > idCount + 1000);
 
                 return newId;
             }

@@ -1,5 +1,6 @@
 ﻿using CoreLibrary.Enums;
-using Drafting;
+using Controllers.SpecsUi;
+//using Controllers.System;
 using Shared.UI;
 using System;
 using System.Drawing;
@@ -257,7 +258,11 @@ namespace UserInterface.Forms
             InitializeComponent();
 
             drafter = new SpecsDrafter();
+            SubscribeDrafterEvents();
+        }
 
+        private void SubscribeDrafterEvents()
+        {
             drafter.OnSpecsValidityChange += Drafter_OnSpecsValidityChange;
             drafter.OnSpecsItemValidityChange += Drafter_OnSpecItemValidityChange;
             drafter.OnSpecsIdValidityChange += Drafter_OnSpecsIdValidityChange;
