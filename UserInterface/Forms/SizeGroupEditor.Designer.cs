@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lblGroupID = new System.Windows.Forms.Label();
             this.txtGroupID = new System.Windows.Forms.TextBox();
             this.lblGroupName = new System.Windows.Forms.Label();
@@ -106,7 +106,7 @@
             this.lblGroupName.AutoSize = true;
             this.lblGroupName.Location = new System.Drawing.Point(9, 48);
             this.lblGroupName.Name = "lblGroupName";
-            this.lblGroupName.Size = new System.Drawing.Size(66, 13);
+            this.lblGroupName.Size = new System.Drawing.Size(67, 13);
             this.lblGroupName.TabIndex = 12;
             this.lblGroupName.Text = "Group Name";
             // 
@@ -162,7 +162,7 @@
             this.lblDefaultListID.AutoSize = true;
             this.lblDefaultListID.Location = new System.Drawing.Point(9, 22);
             this.lblDefaultListID.Name = "lblDefaultListID";
-            this.lblDefaultListID.Size = new System.Drawing.Size(75, 13);
+            this.lblDefaultListID.Size = new System.Drawing.Size(74, 13);
             this.lblDefaultListID.TabIndex = 16;
             this.lblDefaultListID.Text = "Default List ID";
             // 
@@ -404,7 +404,7 @@
             this.chkAltList.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkAltList.Location = new System.Drawing.Point(6, 0);
             this.chkAltList.Name = "chkAltList";
-            this.chkAltList.Size = new System.Drawing.Size(95, 17);
+            this.chkAltList.Size = new System.Drawing.Size(92, 17);
             this.chkAltList.TabIndex = 20;
             this.chkAltList.Text = "Alternate Lists";
             this.chkAltList.UseVisualStyleBackColor = true;
@@ -428,8 +428,8 @@
             // 
             this.dgvGroups.AllowUserToAddRows = false;
             this.dgvGroups.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.Lavender;
-            this.dgvGroups.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.Lavender;
+            this.dgvGroups.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
             this.dgvGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));

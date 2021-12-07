@@ -58,7 +58,7 @@ namespace Controllers.SizeGroupUi
             /*DataProvider.SizeGroup*/dpSizeGroup.GetList().ToGenericView();
 
         public int Count => SizeGroups?.Count ?? 0;
-        public List<string> SizeIDs => /*DataProvider.Size*/dpSizeGroup.GetIDs();
+        public List<string> SizeIDs => /*DataProvider.Size*/dpSize.GetIDs();
 
         public List<string> CustomSizeIDs => /*DataProvider.CustomSize*/dpCustSize.GetIDs();
 
@@ -149,8 +149,8 @@ namespace Controllers.SizeGroupUi
                 else
                 {
                     // check if valid, this check is useless in this case
-                    // since the ui provides predfined selection from a list
-                    // but should the ui changes to a text input (i.e. Console)
+                    // since the UI provides predefined selection from a list
+                    // but should the UI changes to a text input (i.e. Console)
                     // a check must be made to make sure that the id exists
                     bool isValid = true;
                     if (isValid)

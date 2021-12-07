@@ -292,21 +292,11 @@ namespace UserInterface.Forms
 
         private void InputDefaultID()
         {
-
             //throw new NotImplementedException();
 
             if (Mode != EntryMode.View)
             {
                 uiControl.InputDefaultID = GetSelectedDefaultID();
-                //draft_defListGiven = IsGroupDefaultListGiven(cboDefaultID.Text);
-
-                //if (draft_defListGiven)
-                //{
-                //    drafter.groupDefaultListID = cboDefaultID.Text;
-                //    EnableAltListSelection();
-                //}
-
-                //CheckDraftValidity();
             }
         }
 
@@ -1176,14 +1166,13 @@ namespace UserInterface.Forms
 
         private void cboDefaultID_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (skipEvents) return;
+            if (skipEvents)
+                return;
 
-            // Display selected size list entries
-            //lbxSizeListEntries.DataSource = Data.FieldListGetEntries(FieldType.SIZE, cboDefaultID.Text);
-            DisplaySelectedListEntries();
-
-            //ChangeDefaultListID();
             InputDefaultID();
+
+            // display selected size list entries
+            DisplaySelectedListEntries();
         }
         
         private void cboCustomSizeID_SelectedIndexChanged(object sender, EventArgs e)
