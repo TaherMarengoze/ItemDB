@@ -1,7 +1,6 @@
 ﻿
 using CoreLibrary;
 using CoreLibrary.Enums;
-using CoreLibrary.Interfaces;
 using CoreLibrary.Models;
 using Controllers.SizeGroupUi;
 using System;
@@ -11,7 +10,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using UserService;
-
+using UserInterface.Shared;
 
 namespace UserInterface.Forms
 {
@@ -28,28 +27,9 @@ namespace UserInterface.Forms
         {
             uiControl.OnSelectionChange += UiControl_OnSelectionChange;
             uiControl.OnIdStatusChange += UiControl_OnIdStatusChange;
-        }
-
-        private void UiControl_OnIdStatusChange(object sender, ValidityStatus status)
-        {
-            //throw new NotImplementedException();
-            switch (status)
-            {
-                case ValidityStatus.Valid:
-                    lblValidatorGroupId.Text = string.Empty;
-                    break;
-                case ValidityStatus.Duplicate:
-                    lblValidatorGroupId.Text = "• Duplicate";
-                    break;
-                case ValidityStatus.Blank:
-                    lblValidatorGroupId.Text = "• Blank";
-                    break;
-                case ValidityStatus.Invalid:
-                    lblValidatorGroupId.Text = "• Invalid";
-                    break;
-                default:
-                    break;
-            }
+            uiControl.OnNameStatusChange += UiControl_OnNameStatusChange;
+            uiControl.OnDefaultIdStatusChange += UiControl_OnDefaultIdStatusChange;
+            uiControl.OnReadyStateChange += UiControl_OnReadyStateChange;
         }
 
         private void UiControl_OnSelectionChange(object sender, SizeGroupSelectionEventArgs e)
@@ -82,6 +62,46 @@ namespace UserInterface.Forms
             }
         }
 
+        private void UiControl_OnIdStatusChange(object sender, ValidityStatus status)
+        {
+            //throw new NotImplementedException();
+            lblValidatorGroupId.ValidityInfo(status);
+        }
+        
+        private void UiControl_OnNameStatusChange(object sender, ValidityStatus status)
+        {
+            //throw new NotImplementedException();
+            lblValidatorGroupName.ValidityInfo(status);
+        }
+
+        private void UiControl_OnDefaultIdStatusChange(object sender, ValidityStatus status)
+        {
+            //throw new NotImplementedException();
+            lblValidatorDefaultId.ValidityInfo(status);
+            if (status == ValidityStatus.Valid)
+            {
+                EnableAltListSelection();
+            }
+        }
+
+        private void UiControl_OnReadyStateChange(object sender, bool ready)
+        {
+            if (Mode != EntryMode.View)
+            {
+                if (ready)
+                {
+                    tsLblReadyState.ForeColor = Color.Green;
+                    tsLblReadyState.Text = "Ready";
+                }
+                else
+                {
+                    tsLblReadyState.ForeColor = Color.Red;
+                    tsLblReadyState.Text = "Not ready";
+                }
+            }
+        }
+
+
         private EntryMode Mode
         {
             get => _sizeGroupMode;
@@ -92,6 +112,9 @@ namespace UserInterface.Forms
                 {
                     // enable Save UI
                     tsmiSaveFile.Enabled = true;
+
+                    // set status bar text
+                    tsLblReadyState.Text = string.Empty;
 
                     // enable SizeGroup Add, Edit & Remove buttons
                     btnNewGroup.Enabled = true;
@@ -255,6 +278,51 @@ namespace UserInterface.Forms
             {
                 uiControl.InputID = txtGroupID.Text;
             }
+        }
+
+        private void InputSizeGroupName()
+        {
+            //throw new NotImplementedException();
+
+            if (Mode != EntryMode.View)
+            {
+                uiControl.InputName = txtGroupName.Text;
+            }
+        }
+
+        private void InputDefaultID()
+        {
+
+            //throw new NotImplementedException();
+
+            if (Mode != EntryMode.View)
+            {
+                uiControl.InputDefaultID = GetSelectedDefaultID();
+                //draft_defListGiven = IsGroupDefaultListGiven(cboDefaultID.Text);
+
+                //if (draft_defListGiven)
+                //{
+                //    drafter.groupDefaultListID = cboDefaultID.Text;
+                //    EnableAltListSelection();
+                //}
+
+                //CheckDraftValidity();
+            }
+        }
+
+        private string GetSelectedDefaultID()
+        {
+            // use a method in case we changed from
+            // combo box to another control like DataGridView
+            return cboDefaultID.Text;
+        }
+
+        private void DisplaySelectedListEntries()
+        {
+            string id = GetSelectedDefaultID();
+
+            lbxSizeListEntries.DataSource = null;
+            lbxSizeListEntries.DataSource = uiControl.GetListEntries(id);
         }
 
         /// <summary>
@@ -1097,7 +1165,8 @@ namespace UserInterface.Forms
 
         private void txtGroupName_TextChanged(object sender, EventArgs e)
         {
-            ChangeGroupName();
+            //ChangeGroupName();
+            InputSizeGroupName();
         }
 
         private void txtGroupName_Leave(object sender, EventArgs e)
@@ -1110,11 +1179,13 @@ namespace UserInterface.Forms
             if (skipEvents) return;
 
             // Display selected size list entries
-            lbxSizeListEntries.DataSource = Data.FieldListGetEntries(FieldType.SIZE, cboDefaultID.Text);
+            //lbxSizeListEntries.DataSource = Data.FieldListGetEntries(FieldType.SIZE, cboDefaultID.Text);
+            DisplaySelectedListEntries();
 
-            ChangeDefaultListID();
+            //ChangeDefaultListID();
+            InputDefaultID();
         }
-
+        
         private void cboCustomSizeID_SelectedIndexChanged(object sender, EventArgs e)
         {
             ChangeCustomSizeID();

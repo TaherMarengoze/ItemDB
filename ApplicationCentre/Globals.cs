@@ -30,10 +30,8 @@ namespace AppCore
 
         public static bool disableEditors = true;
 
-        public static ModelListsCache ModelLists { get; }
-            = new ModelListsCache();
+        public static ModelListsCache ModelLists { get; } = new ModelListsCache();
 
-        public static DataListsCache DataLists { get; }
-            = new DataListsCache();
+        public static DataListsCache DataLists { get; } = new DataListsCache();
     }
 }

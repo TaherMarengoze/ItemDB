@@ -11,12 +11,15 @@ namespace ClientService
     /// </summary>
     public static class CacheIO
     {
+        private static DataProvider dp;
+
         public static void InitLists()
         {
             //Globals.ModelLists = new ModelListsCache();
 
             // Register events for DataProvider class
-            DataProvider.RegisterModelListsEvents();
+            //DataProvider.RegisterModelListsEvents();
+            dp = new DataProvider();
 
             // Update list values
             UpdateAllLists();
@@ -24,42 +27,48 @@ namespace ClientService
 
         public static List<IItem> GetItemList()
         {
-            return Globals.ModelLists.Items;
+            return Globals.ModelLists.Items.ToList();
         }
 
         internal static List<ISpecs> GetSpecsList()
         {
-            return Globals.ModelLists.Specs;
+            return Globals.ModelLists.Specs.ToList();
         }
 
         public static List<ISizeGroup> GetSizeGroupList()
         {
-            return Globals.ModelLists.SizeGroups;
+            // .ToList will return a copy preserving the one in the cache
+            return Globals.ModelLists.SizeGroups.ToList();
         }
 
         public static List<IFieldList> GetSizeList()
         {
-            return Globals.ModelLists.SizeLists;
+            // .ToList will return a copy preserving the one in the cache
+            return Globals.ModelLists.SizeLists.ToList();
         }
 
         public static List<IFieldList> GetBrandList()
         {
-            return Globals.ModelLists.BrandLists;
+            // .ToList will return a copy preserving the one in the cache
+            return Globals.ModelLists.BrandLists.ToList();
         }
 
         public static List<IFieldList> GetEndList()
         {
-            return Globals.ModelLists.EndLists;
+            // .ToList will return a copy preserving the one in the cache
+            return Globals.ModelLists.EndLists.ToList();
         }
 
         public static List<string> GetCustomSpecsList()
         {
-            return Globals.ModelLists.CustomSpecs;
+            // .ToList will return a copy preserving the one in the cache
+            return Globals.ModelLists.CustomSpecs.ToList();
         }
 
         public static List<string> GetCustomSizeList()
         {
-            return Globals.ModelLists.CustomSizes;
+            // .ToList will return a copy preserving the one in the cache
+            return Globals.ModelLists.CustomSizes.ToList();
         }
 
         private static void UpdateAllLists()
