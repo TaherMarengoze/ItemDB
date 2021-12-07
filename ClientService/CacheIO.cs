@@ -11,27 +11,21 @@ namespace ClientService
     /// </summary>
     public static class CacheIO
     {
-        private static DataProvider dp;
-
         public static void InitLists()
         {
-            //Globals.ModelLists = new ModelListsCache();
-
-            // Register events for DataProvider class
-            //DataProvider.RegisterModelListsEvents();
-            dp = new DataProvider();
-
             // Update list values
             UpdateAllLists();
         }
 
         public static List<IItem> GetItemList()
         {
+            // .ToList will return a copy preserving the one in the cache
             return Globals.ModelLists.Items.ToList();
         }
 
         internal static List<ISpecs> GetSpecsList()
         {
+            // .ToList will return a copy preserving the one in the cache
             return Globals.ModelLists.Specs.ToList();
         }
 
@@ -110,22 +104,26 @@ namespace ClientService
 
         private static void UpdateBrandsList()
         {
-            Globals.ModelLists.BrandLists = Globals.reader.GetBrands().ToList();
+            Globals.ModelLists.BrandLists =
+                Globals.reader.GetBrands().ToList();
         }
 
         private static void UpdateEndsList()
         {
-            Globals.ModelLists.EndLists = Globals.reader.GetEnds().ToList();
+            Globals.ModelLists.EndLists =
+                Globals.reader.GetEnds().ToList();
         }
 
         private static void UpdateCustomSpecsList()
         {
-            Globals.ModelLists.CustomSpecs = Globals.reader.GetCustomSpecs().ToList();
+            Globals.ModelLists.CustomSpecs =
+                Globals.reader.GetCustomSpecs().ToList();
         }
 
         private static void UpdateCustomSizesList()
         {
-            Globals.ModelLists.CustomSizes = Globals.reader.GetCustomSizes().ToList();
+            Globals.ModelLists.CustomSizes =
+                Globals.reader.GetCustomSizes().ToList();
         }
     }
 }

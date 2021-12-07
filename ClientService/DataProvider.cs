@@ -115,40 +115,40 @@ namespace ClientService
     */
     public class DataProvider
     {
-        public DataProvider()
-        {
-            Globals.ModelLists.OnSpecsChanged += Lists_OnSpecsChanged;
-            Globals.ModelLists.OnSizeGroupsChanged += ModelLists_OnSizeGroupsChanged;
-            Globals.ModelLists.OnSizeListChanged += ModelLists_OnSizeListChanged;
-            Globals.ModelLists.OnCustomSizeListChanged += ModelLists_OnCustomSizeListChanged;
-        }
+        //public DataProvider()
+        //{
+        //    Globals.ModelLists.OnSpecsChanged += Lists_OnSpecsChanged;
+        //    Globals.ModelLists.OnSizeGroupsChanged += ModelLists_OnSizeGroupsChanged;
+        //    Globals.ModelLists.OnSizeListChanged += ModelLists_OnSizeListChanged;
+        //    Globals.ModelLists.OnCustomSizeListChanged += ModelLists_OnCustomSizeListChanged;
+        //}
 
-        private void Lists_OnSpecsChanged(object sender, EventArgs e)
-        {
-            Globals.DataLists.SpecsIDs =
-                Globals.ModelLists.Specs.Select(entity => entity.ID).ToList();
-        }
+        //private void Lists_OnSpecsChanged(object sender, EventArgs e)
+        //{
+        //    Globals.DataLists.SpecsIDs =
+        //        Globals.ModelLists.Specs.Select(entity => entity.ID).ToList();
+        //}
 
-        private void ModelLists_OnSizeGroupsChanged(object sender, EventArgs e)
-        {
-            //throw new NotImplementedException();
-            Globals.DataLists.SizeGroupIDs =
-                Globals.ModelLists.SizeGroups.Select(entity => entity.ID).ToList();
-        }
+        //private void ModelLists_OnSizeGroupsChanged(object sender, EventArgs e)
+        //{
+        //    //throw new NotImplementedException();
+        //    Globals.DataLists.SizeGroupIDs =
+        //        Globals.ModelLists.SizeGroups.Select(entity => entity.ID).ToList();
+        //}
 
-        private void ModelLists_OnSizeListChanged(object sender, EventArgs e)
-        {
-            //throw new NotImplementedException();
-            Globals.DataLists.SizeIDs =
-                Globals.ModelLists.SizeLists.Select(size => size.ID).ToList();
-        }
+        //private void ModelLists_OnSizeListChanged(object sender, EventArgs e)
+        //{
+        //    //throw new NotImplementedException();
+        //    Globals.DataLists.SizeIDs =
+        //        Globals.ModelLists.SizeLists.Select(size => size.ID).ToList();
+        //}
 
-        private void ModelLists_OnCustomSizeListChanged(object sender, EventArgs e)
-        {
-            //throw new NotImplementedException();
-            Globals.DataLists.CustomSizeIDs =
-                Globals.ModelLists.CustomSizes;
-        }
+        //private void ModelLists_OnCustomSizeListChanged(object sender, EventArgs e)
+        //{
+        //    //throw new NotImplementedException();
+        //    Globals.DataLists.CustomSizeIDs =
+        //        Globals.ModelLists.CustomSizes;
+        //}
 
         /// <summary>
         /// Gets a list of ID for all specs objects.
