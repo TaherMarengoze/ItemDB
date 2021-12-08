@@ -10,7 +10,7 @@ using System.Xml.Linq;
 namespace XmlDataSource
 {
     /// <summary>
-    /// Reads and deserializes the XML data from an <see cref="DataDocuments"/>.
+    /// Reads and deserializes the XML data from <see cref="DataDocuments"/>.
     /// </summary>
     public class XmlReader : IDataReader
     {

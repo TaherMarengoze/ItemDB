@@ -22,7 +22,7 @@ namespace ClientService
             // .ToList will return a copy preserving the one in the cache
             return Globals.ModelLists.Items.ToList();
         }
-
+        
         internal static List<ISpecs> GetSpecsList()
         {
             // .ToList will return a copy preserving the one in the cache

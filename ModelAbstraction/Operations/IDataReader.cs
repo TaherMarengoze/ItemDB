@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Interfaces.Operations
 {
     /// <summary>
-    /// Contains definitions for entities lists from a data source after deserialization.
+    /// Contain methods definition for getting data from a data source
     /// </summary>
     public interface IDataReader
     {

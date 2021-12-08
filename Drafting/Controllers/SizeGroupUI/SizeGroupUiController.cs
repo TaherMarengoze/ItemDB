@@ -1,12 +1,12 @@
 ﻿
 using ClientService;
+using ClientService.Data;
 using CoreLibrary.Enums;
 using Modeling.DataModels;
 using Modeling.ViewModels;
 using Modeling.ViewModels.SizeGroup;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 
 namespace Controllers.SizeGroupUi
@@ -40,9 +40,9 @@ namespace Controllers.SizeGroupUi
 
     public class SizeGroupUiController
     {
-        DataProvider.SizeGroup dpSizeGroup = new DataProvider.SizeGroup();
-        DataProvider.Size dpSize = new DataProvider.Size();
-        DataProvider.CustomSize dpCustSize = new DataProvider.CustomSize();
+        SizeGroupProvider sgProvider = new SizeGroupProvider();
+        SizeProvider sProvider = new SizeProvider();
+        CustomSizeProvider csProvider = new CustomSizeProvider();
 
         #region Events
         public event EventHandler<SizeGroupSelectionEventArgs> OnSelectionChange;
@@ -55,12 +55,12 @@ namespace Controllers.SizeGroupUi
         #region Properties
 
         public List<SizeGroupsGenericView> SizeGroups =>
-            /*DataProvider.SizeGroup*/dpSizeGroup.GetList().ToGenericView();
+            sgProvider.GetList().ToGenericView();
 
         public int Count => SizeGroups?.Count ?? 0;
-        public List<string> SizeIDs => /*DataProvider.Size*/dpSize.GetIDs();
+        public List<string> SizeIDs => sProvider.GetIDs();
 
-        public List<string> CustomSizeIDs => /*DataProvider.CustomSize*/dpCustSize.GetIDs();
+        public List<string> CustomSizeIDs => csProvider.GetIDs();
 
         public SizeGroup SelectedSizeGroup { get; private set; }
 
@@ -79,7 +79,7 @@ namespace Controllers.SizeGroupUi
                 else
                 {
                     // check for duplicate
-                    bool isDuplicate = /*DataProvider.SizeGroup*/dpSizeGroup.GetIDs().Contains(value);
+                    bool isDuplicate = sgProvider.GetIDs().Contains(value);
 
                     if (isDuplicate)
                     {
@@ -242,7 +242,7 @@ namespace Controllers.SizeGroupUi
 
         public List<string> GetListEntries(string listID)
         {
-            return dpSize.GetEntries(listID);
+            return sProvider.GetEntries(listID);
         }
         // private methods
         #endregion
