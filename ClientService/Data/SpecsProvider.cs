@@ -24,6 +24,6 @@ namespace ClientService.Data
                 .Where(id => id.Contains(exactId))
                 .ToList();
         
-        public int SpecsCount => GetIDs().Count;
+        public int Count => GetIDs().Count;
     }
 }

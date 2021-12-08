@@ -44,7 +44,6 @@
     <Compile Include="CacheIO.cs" />
     <Compile Include="ContextProvider.cs" />
     <Compile Include="Contracts\IProvider.cs" />
-    <Compile Include="DataProvider.cs" />
     <Compile Include="Data\CustomSizeProvider.cs" />
     <Compile Include="Data\SizeGroupProvider.cs" />
     <Compile Include="Data\SizeProvider.cs" />

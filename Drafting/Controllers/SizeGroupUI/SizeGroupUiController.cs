@@ -40,10 +40,6 @@ namespace Controllers.SizeGroupUi
 
     public class SizeGroupUiController
     {
-        SizeGroupProvider sgProvider = new SizeGroupProvider();
-        SizeProvider sProvider = new SizeProvider();
-        CustomSizeProvider csProvider = new CustomSizeProvider();
-
         #region Events
         public event EventHandler<SizeGroupSelectionEventArgs> OnSelectionChange;
         public event EventHandler<ValidityStatus> OnIdStatusChange;
@@ -249,12 +245,16 @@ namespace Controllers.SizeGroupUi
 
         #region Fields
         private readonly SizeGroupRepository repos = new SizeGroupRepository();
+        private SizeGroupProvider sgProvider = new SizeGroupProvider();
+        private SizeProvider sProvider = new SizeProvider();
+        private CustomSizeProvider csProvider = new CustomSizeProvider();
         private string _inputID;
         private string _inputName;
         private string _inputDefaultID;
         private ValidityStatus _statusID;
         private ValidityStatus _statusName;
         private ValidityStatus _statusDefaultID;
+
         #endregion
     }
 }

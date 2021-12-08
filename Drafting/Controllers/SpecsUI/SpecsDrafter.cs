@@ -1,5 +1,6 @@
 ﻿
 using ClientService;
+using ClientService.Data;
 using CoreLibrary.Enums;
 using Interfaces.General;
 using Interfaces.Models;
@@ -52,9 +53,9 @@ namespace Controllers.SpecsUi
 
         public string DraftCustomSpecId { get; set; }
 
-        public List<string> SpecsIDs => DataProvider.GetIDs();
+        public List<string> SpecsIDs => spProvider.GetIDs();
 
-        public int SpecsCount => DataProvider.SpecsCount;
+        public int SpecsCount => spProvider.Count;
 
         public List<string> CustomSpecsIDs => CacheIO.GetCustomSpecsList();
 
@@ -78,7 +79,7 @@ namespace Controllers.SpecsUi
                     else
                     {
                         bool isInputNotDraft = _inputSpecsId != DraftSpecs.ID;
-                        bool isDuplicateInput = DataProvider.GetIDs().Contains(_inputSpecsId);
+                        bool isDuplicateInput = spProvider.GetIDs().Contains(_inputSpecsId);
 
                         if (isInputNotDraft && isDuplicateInput)
                         {
@@ -218,6 +219,7 @@ namespace Controllers.SpecsUi
         }
 
         // fields
+        private SpecsProvider spProvider = new SpecsProvider();
         private string restoreSpecsId;
         private int restoreSpecsItemIdx;
         /// <summary>
@@ -458,7 +460,7 @@ namespace Controllers.SpecsUi
         {
             SpecsRepository.Delete(SelectedSpecs.ID);
 
-            OnSpecsRemove?.Invoke(this, DataProvider.SpecsCount);
+            OnSpecsRemove?.Invoke(this, spProvider.Count);
         }
 
         /// <summary>
@@ -670,22 +672,22 @@ namespace Controllers.SpecsUi
         {
             if (inputSpecsId == string.Empty)
             {
-                return DataProvider.GetIDs();
+                return spProvider.GetIDs();
             }
             else
             {
-                return DataProvider.FilterSpecsIds(inputSpecsId);
+                return spProvider.FilterSpecsIds(inputSpecsId);
             }
 
         }
 
         private string GenerateNewSpecsID()
         {
-            int idCount = DataProvider.GetIDs().Count;
+            int idCount = spProvider.GetIDs().Count;
 
             string newId = $"S{idCount:0000}";
 
-            if (DataProvider.GetIDs().Contains(newId) == true)
+            if (spProvider.GetIDs().Contains(newId) == true)
             {
                 int i = idCount;
                 do
@@ -693,7 +695,7 @@ namespace Controllers.SpecsUi
                     i++;
                     newId = $"S{i:0000}";
                 }
-                while (DataProvider.GetIDs().Contains(newId) == true && i > idCount + 1000);
+                while (spProvider.GetIDs().Contains(newId) == true && i > idCount + 1000);
 
                 return newId;
             }
