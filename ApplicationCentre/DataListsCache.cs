@@ -8,36 +8,36 @@ namespace AppCore
     {
         public DataListsCache()
         {
-            Globals.ModelLists.OnSpecsChanged += ModelLists_OnSpecsChanged;
-            Globals.ModelLists.OnSizeGroupsChanged += ModelLists_OnSizeGroupsChanged;
-            Globals.ModelLists.OnSizeListChanged += ModelLists_OnSizeListChanged;
-            Globals.ModelLists.OnCustomSizeListChanged += ModelLists_OnCustomSizeListChanged;
+            Globals.ModelCache.OnSpecsChanged += ModelLists_OnSpecsChanged;
+            Globals.ModelCache.OnSizeGroupsChanged += ModelLists_OnSizeGroupsChanged;
+            Globals.ModelCache.OnSizeListChanged += ModelLists_OnSizeListChanged;
+            Globals.ModelCache.OnCustomSizeListChanged += ModelLists_OnCustomSizeListChanged;
         }
 
         private void ModelLists_OnSpecsChanged(object sender, EventArgs e)
         {
-            SpecsIDs = Globals.ModelLists.Specs
+            SpecsIDs = Globals.ModelCache.Specs
                 .Select(entity => entity.ID)
                 .ToList();
         }
 
         private void ModelLists_OnSizeGroupsChanged(object sender, EventArgs e)
         {
-            SizeGroupIDs = Globals.ModelLists.SizeGroups
+            SizeGroupIDs = Globals.ModelCache.SizeGroups
                 .Select(entity => entity.ID)
                 .ToList();
         }
 
         private void ModelLists_OnSizeListChanged(object sender, EventArgs e)
         {
-            SizeIDs = Globals.ModelLists.SizeLists
+            SizeIDs = Globals.ModelCache.SizeLists
                 .Select(size => size.ID)
                 .ToList();
         }
 
         private void ModelLists_OnCustomSizeListChanged(object sender, EventArgs e)
         {
-            CustomSizeIDs = Globals.ModelLists.CustomSizes;
+            CustomSizeIDs = Globals.ModelCache.CustomSizes;
         }
 
         public List<string> SpecsIDs { get; set; }

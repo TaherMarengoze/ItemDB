@@ -33,7 +33,7 @@ namespace ClientService
         public static ISpecs Read(string entityId)
         {
             return
-                Globals.ModelLists.Specs.Find(entity => entity.ID == entityId);
+                Globals.ModelCache.Specs.Find(entity => entity.ID == entityId);
         }
 
         public static void Update(string refId, ISpecs content)

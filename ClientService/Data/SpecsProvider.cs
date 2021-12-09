@@ -11,19 +11,13 @@ namespace ClientService.Data
 {
     public class SpecsProvider : IProvider<ISpecs>
     {
-        public List<ISpecs> GetList()
-        {
-            throw new NotImplementedException();
-        }
+        public List<ISpecs> GetList() => throw new NotImplementedException();
 
-        public List<string> GetIDs() =>
-            Globals.DataLists.SpecsIDs;
+        public List<string> GetIDs() => Globals.DataLists.SpecsIDs;
 
-        public List<string> FilterSpecsIds(string exactId) =>
-            Globals.DataLists.SpecsIDs
-                .Where(id => id.Contains(exactId))
-                .ToList();
-        
         public int Count => GetIDs().Count;
+
+        public List<string> FilterSpecsIds(string exactId) => Globals.DataLists.SpecsIDs.Where(id => id.Contains(exactId)).ToList();
+        
     }
 }

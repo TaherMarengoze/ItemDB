@@ -9,18 +9,18 @@ using System.Threading.Tasks;
 
 namespace ClientService
 {
-    public class SizeGroupRepository : IEntityRepo<ISizeGroup>
+    public class SizeGroupCache : IEntityCache<ISizeGroup>
     {
         public void Create(ISizeGroup content)
         {
             Globals.sizeGroupRepo.Create(content);
-            CacheIO.UpdateSizeGroupList();
+            //CacheIO.UpdateSizeGroupList();
         }
 
         public ISizeGroup Read(string entityId)
         {
             return
-                Globals.ModelLists.SizeGroups
+                Globals.ModelCache.SizeGroups
                 .Find(entity => entity.ID == entityId);
         }
 

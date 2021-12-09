@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lblGroupID = new System.Windows.Forms.Label();
             this.txtGroupID = new System.Windows.Forms.TextBox();
             this.lblGroupName = new System.Windows.Forms.Label();
@@ -69,6 +69,8 @@
             this.grpModiyControlPanel = new System.Windows.Forms.GroupBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tsLblReadyState = new System.Windows.Forms.ToolStripStatusLabel();
+            this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiSimNew = new System.Windows.Forms.ToolStripMenuItem();
             this.grpGroupMetadata.SuspendLayout();
             this.mnuMain.SuspendLayout();
             this.grpGroupData.SuspendLayout();
@@ -106,7 +108,7 @@
             this.lblGroupName.AutoSize = true;
             this.lblGroupName.Location = new System.Drawing.Point(9, 48);
             this.lblGroupName.Name = "lblGroupName";
-            this.lblGroupName.Size = new System.Drawing.Size(67, 13);
+            this.lblGroupName.Size = new System.Drawing.Size(66, 13);
             this.lblGroupName.TabIndex = 12;
             this.lblGroupName.Text = "Group Name";
             // 
@@ -162,7 +164,7 @@
             this.lblDefaultListID.AutoSize = true;
             this.lblDefaultListID.Location = new System.Drawing.Point(9, 22);
             this.lblDefaultListID.Name = "lblDefaultListID";
-            this.lblDefaultListID.Size = new System.Drawing.Size(74, 13);
+            this.lblDefaultListID.Size = new System.Drawing.Size(75, 13);
             this.lblDefaultListID.TabIndex = 16;
             this.lblDefaultListID.Text = "Default List ID";
             // 
@@ -217,7 +219,8 @@
             // mnuMain
             // 
             this.mnuMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiFile});
+            this.tsmiFile,
+            this.testToolStripMenuItem});
             this.mnuMain.Location = new System.Drawing.Point(0, 0);
             this.mnuMain.Name = "mnuMain";
             this.mnuMain.Size = new System.Drawing.Size(684, 24);
@@ -404,7 +407,7 @@
             this.chkAltList.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.chkAltList.Location = new System.Drawing.Point(6, 0);
             this.chkAltList.Name = "chkAltList";
-            this.chkAltList.Size = new System.Drawing.Size(92, 17);
+            this.chkAltList.Size = new System.Drawing.Size(95, 17);
             this.chkAltList.TabIndex = 20;
             this.chkAltList.Text = "Alternate Lists";
             this.chkAltList.UseVisualStyleBackColor = true;
@@ -428,8 +431,8 @@
             // 
             this.dgvGroups.AllowUserToAddRows = false;
             this.dgvGroups.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.Lavender;
-            this.dgvGroups.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.Lavender;
+            this.dgvGroups.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -539,6 +542,21 @@
             this.tsLblReadyState.Name = "tsLblReadyState";
             this.tsLblReadyState.Size = new System.Drawing.Size(70, 19);
             // 
+            // testToolStripMenuItem
+            // 
+            this.testToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiSimNew});
+            this.testToolStripMenuItem.Name = "testToolStripMenuItem";
+            this.testToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+            this.testToolStripMenuItem.Text = "Test";
+            // 
+            // tsmiSimNew
+            // 
+            this.tsmiSimNew.Name = "tsmiSimNew";
+            this.tsmiSimNew.Size = new System.Drawing.Size(180, 22);
+            this.tsmiSimNew.Text = "Simulate New";
+            this.tsmiSimNew.Click += new System.EventHandler(this.tsmiSimNew_Click);
+            // 
             // SizeGroupEditor
             // 
             this.AcceptButton = this.btnAccept;
@@ -620,5 +638,7 @@
         private System.Windows.Forms.GroupBox grpListEntries;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel tsLblReadyState;
+        private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tsmiSimNew;
     }
 }

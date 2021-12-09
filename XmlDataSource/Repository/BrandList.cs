@@ -9,7 +9,7 @@ using XmlDataSource.Serialization;
 
 namespace XmlDataSource.Repository
 {
-    public class BrandList : IEntityRepo<IFieldList>
+    public class BrandList : IEntityCache<IFieldList>
     {
         private readonly XDocument dataSource;
 

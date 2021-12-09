@@ -2,7 +2,7 @@
 using CoreLibrary;
 using CoreLibrary.Enums;
 using CoreLibrary.Models;
-using Controllers.SizeGroupUi;
+using Controllers.SizeGroupUI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -1209,6 +1209,12 @@ namespace UserInterface.Forms
         {
             Close();
             Application.Exit();
+        }
+
+        private void tsmiSimNew_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+            uiControl.Simulate_New();
         }
 
 #pragma warning restore IDE1006 // Naming Styles

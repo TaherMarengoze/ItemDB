@@ -11,7 +11,7 @@ namespace ClientService
         public static IEnumerable<ISpecsItem> GetSpecsItems(string specsId)
         {
             return
-                (from specs in Globals.ModelLists.Specs
+                (from specs in Globals.ModelCache.Specs
                  where specs.ID == specsId
                  select specs.SpecItems).FirstOrDefault();
         }

@@ -14,7 +14,7 @@ namespace ClientService
         public static List<BasicView> Brief()
         {
             return
-                (from spec in Globals.ModelLists.Specs
+                (from spec in Globals.ModelCache.Specs
                  select new BasicView()
                  {
                      ID = spec.ID,

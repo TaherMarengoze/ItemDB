@@ -15,6 +15,8 @@ namespace ClientService.Data
 
         public List<string> GetIDs() => Globals.DataLists.SizeIDs;
 
+        public int Count => throw new NotImplementedException();
+
         public List<string> GetEntries(string listID)
         {
             System.Collections.ObjectModel.ObservableCollection<string> entries =

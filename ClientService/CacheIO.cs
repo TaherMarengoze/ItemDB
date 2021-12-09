@@ -1,6 +1,7 @@
 ﻿
 using AppCore;
 using Interfaces.Models;
+using Interfaces.Operations;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,59 +12,40 @@ namespace ClientService
     /// </summary>
     public static class CacheIO
     {
+        static ModelListsCache cache = Globals.ModelCache;
+        static IDataReader reader = Globals.reader;
+
         public static void InitLists()
         {
+            Globals.sizeGroupRepo.OnChange += CacheIO_OnChange_SizeGroup;
             // Update list values
             UpdateAllLists();
         }
 
-        public static List<IItem> GetItemList()
+        private static void CacheIO_OnChange_SizeGroup(object sender, System.EventArgs e)
         {
-            // .ToList will return a copy preserving the one in the cache
-            return Globals.ModelLists.Items.ToList();
-        }
-        
-        internal static List<ISpecs> GetSpecsList()
-        {
-            // .ToList will return a copy preserving the one in the cache
-            return Globals.ModelLists.Specs.ToList();
+            UpdateSizeGroupList();
+            //cache.SizeGroups = reader.GetSizeGroups().ToList();
         }
 
-        public static List<ISizeGroup> GetSizeGroupList()
-        {
-            // .ToList will return a copy preserving the one in the cache
-            return Globals.ModelLists.SizeGroups.ToList();
-        }
+        // using .ToList will return a copy of the list
+        // preserving the one in the cache
 
-        public static List<IFieldList> GetSizeList()
-        {
-            // .ToList will return a copy preserving the one in the cache
-            return Globals.ModelLists.SizeLists.ToList();
-        }
+        public static List<IItem> GetItemList() => cache.Items.ToList();
 
-        public static List<IFieldList> GetBrandList()
-        {
-            // .ToList will return a copy preserving the one in the cache
-            return Globals.ModelLists.BrandLists.ToList();
-        }
+        internal static List<ISpecs> GetSpecsList() => cache.Specs.ToList();
 
-        public static List<IFieldList> GetEndList()
-        {
-            // .ToList will return a copy preserving the one in the cache
-            return Globals.ModelLists.EndLists.ToList();
-        }
+        public static List<ISizeGroup> GetSizeGroupList() => cache.SizeGroups.ToList();
 
-        public static List<string> GetCustomSpecsList()
-        {
-            // .ToList will return a copy preserving the one in the cache
-            return Globals.ModelLists.CustomSpecs.ToList();
-        }
+        public static List<IFieldList> GetSizeList() => cache.SizeLists.ToList();
 
-        public static List<string> GetCustomSizeList()
-        {
-            // .ToList will return a copy preserving the one in the cache
-            return Globals.ModelLists.CustomSizes.ToList();
-        }
+        public static List<IFieldList> GetBrandList() => cache.BrandLists.ToList();
+
+        public static List<IFieldList> GetEndList() => cache.EndLists.ToList();
+
+        public static List<string> GetCustomSpecsList() => cache.CustomSpecs.ToList();
+
+        public static List<string> GetCustomSizeList() => Globals.ModelCache.CustomSizes.ToList();
 
         private static void UpdateAllLists()
         {
@@ -77,53 +59,31 @@ namespace ClientService
             UpdateCustomSizesList();
         }
 
-        private static void UpdateItemList()
-        {
-            Globals.ModelLists.Items =
-                Globals.reader.GetItems().ToList();
-        }
+        private static void UpdateItemList() =>
+            cache.Items = reader.GetItems().ToList();
 
-        internal static void UpdateSpecsList()
-        {
-            // this will run a query against the data source
-            Globals.ModelLists.Specs =
-                Globals.reader.GetSpecs().ToList();
-        }
+        internal static void UpdateSpecsList() =>
+            cache.Specs = reader.GetSpecs().ToList();
 
         internal static void UpdateSizeGroupList()
         {
-            Globals.ModelLists.SizeGroups =
-                Globals.reader.GetSizeGroups().ToList();
+            List<ISizeGroup> list = reader.GetSizeGroups().ToList();
+            cache.SizeGroups = list;
         }
 
-        private static void UpdateSizesList()
-        {
-            Globals.ModelLists.SizeLists =
-                Globals.reader.GetSizes().ToList();
-        }
+        private static void UpdateSizesList() =>
+            cache.SizeLists = reader.GetSizes().ToList();
 
-        private static void UpdateBrandsList()
-        {
-            Globals.ModelLists.BrandLists =
-                Globals.reader.GetBrands().ToList();
-        }
+        private static void UpdateBrandsList() =>
+            cache.BrandLists = reader.GetBrands().ToList();
 
-        private static void UpdateEndsList()
-        {
-            Globals.ModelLists.EndLists =
-                Globals.reader.GetEnds().ToList();
-        }
+        private static void UpdateEndsList() =>
+            cache.EndLists = reader.GetEnds().ToList();
 
-        private static void UpdateCustomSpecsList()
-        {
-            Globals.ModelLists.CustomSpecs =
-                Globals.reader.GetCustomSpecs().ToList();
-        }
+        private static void UpdateCustomSpecsList() =>
+            cache.CustomSpecs = reader.GetCustomSpecs().ToList();
 
-        private static void UpdateCustomSizesList()
-        {
-            Globals.ModelLists.CustomSizes =
-                Globals.reader.GetCustomSizes().ToList();
-        }
+        private static void UpdateCustomSizesList() =>
+            cache.CustomSizes = reader.GetCustomSizes().ToList();
     }
 }

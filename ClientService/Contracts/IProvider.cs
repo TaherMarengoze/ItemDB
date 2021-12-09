@@ -7,5 +7,7 @@ namespace ClientService.Contracts
         List<T> GetList();
 
         List<string> GetIDs();
+
+        int Count { get; }
     }
 }

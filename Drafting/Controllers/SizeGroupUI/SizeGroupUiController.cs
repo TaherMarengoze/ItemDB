@@ -9,35 +9,8 @@ using System;
 using System.Collections.Generic;
 
 
-namespace Controllers.SizeGroupUi
+namespace Controllers.SizeGroupUI
 {
-    public class SizeGroupSelectionEventArgs : EventArgs
-    {
-        public SizeGroupSelectionEventArgs(SizeGroup sg)
-        {
-            ID = sg.ID;
-            Name = sg.Name;
-            Default = sg.DefaultListID;
-            AltList = sg.AltIdList;
-            AltListCount = AltList?.Count ?? 0;
-            Custom = sg.CustomSize;
-        }
-
-        public SizeGroup Selected { get; internal set; }
-
-        public string ID { get; private set; }
-
-        public string Name { get; private set; }
-
-        public string Default { get; private set; }
-
-        public List<string> AltList { get; private set; }
-
-        public int AltListCount { get; private set; }
-
-        public string Custom { get; private set; }
-    }
-
     public class SizeGroupUiController
     {
         #region Events
@@ -212,7 +185,7 @@ namespace Controllers.SizeGroupUi
 
         public void SetSelection(string id)
         {
-            SizeGroup sizeGroup = (SizeGroup)repos.Read(id);
+            SizeGroup sizeGroup = (SizeGroup)cache.Read(id);
 
             // raise an event for selection change
             OnSelectionChange?.Invoke(this,
@@ -244,7 +217,7 @@ namespace Controllers.SizeGroupUi
         #endregion
 
         #region Fields
-        private readonly SizeGroupRepository repos = new SizeGroupRepository();
+        private readonly SizeGroupCache cache = new SizeGroupCache();
         private SizeGroupProvider sgProvider = new SizeGroupProvider();
         private SizeProvider sProvider = new SizeProvider();
         private CustomSizeProvider csProvider = new CustomSizeProvider();
@@ -255,6 +228,22 @@ namespace Controllers.SizeGroupUi
         private ValidityStatus _statusName;
         private ValidityStatus _statusDefaultID;
 
+        #endregion
+
+        #region Simulation
+        public void Simulate_New()
+        {
+            throw new NotImplementedException();
+            //SizeGroup content = new SizeGroup
+            //{
+            //    ID = "GSIM0",
+            //    Name = "Size Group Simulation",
+            //    DefaultListID = "SHLM",
+            //    AltIdList = null,
+            //    CustomSize = null
+            //};
+            //repos.Create(content);
+        }
         #endregion
     }
 }

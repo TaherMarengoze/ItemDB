@@ -19,5 +19,7 @@ namespace ClientService.Data
         {
             return Globals.DataLists.CustomSizeIDs;
         }
+
+        public int Count => throw new NotImplementedException();
     }
 }

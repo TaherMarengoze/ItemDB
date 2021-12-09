@@ -24,5 +24,7 @@ namespace ClientService.Data
         {
             return Globals.DataLists.SizeGroupIDs;
         }
+
+        public int Count => throw new NotImplementedException();
     }
 }

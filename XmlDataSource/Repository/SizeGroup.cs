@@ -12,6 +12,8 @@ namespace XmlDataSource.Repository
     {
         private readonly XDocument dataSource;
 
+        public event EventHandler OnChange;
+
         public SizeGroup(XDocument source)
         {
             dataSource = source;
@@ -27,6 +29,8 @@ namespace XmlDataSource.Repository
         {
             XElement content = Entity.Serialize(entity);
             dataSource.Root.Add(content);
+
+            OnChange?.Invoke(this, EventArgs.Empty);
         }
 
         public ISizeGroup Read(string entityId) => throw new NotImplementedException();

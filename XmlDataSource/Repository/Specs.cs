@@ -8,7 +8,7 @@ using XmlDataSource.Serialization;
 
 namespace XmlDataSource.Repository
 {
-    public class Specs : IEntityRepo<ISpecs>
+    public class Specs : IEntityCache<ISpecs>
     {
         private readonly XDocument dataSource;
 
