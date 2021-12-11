@@ -18,6 +18,8 @@ namespace Controllers.SizeGroupUI
         public event EventHandler<ValidityStatus> OnIdStatusChange;
         public event EventHandler<ValidityStatus> OnNameStatusChange;
         public event EventHandler<ValidityStatus> OnDefaultIdStatusChange;
+        public event EventHandler<ValidityStatus> OnCustomIdStatusChange;
+        public event EventHandler<bool> OnAltListStatusChange;
         public event EventHandler<bool> OnReadyStateChange;
         #endregion
 
@@ -133,7 +135,53 @@ namespace Controllers.SizeGroupUI
                 }
             }
         }
-        
+
+        public List<string> InputAltList
+        {
+            get => _inputAltList;
+            set
+            {
+                _inputAltList = value;
+                if (value?.Count > 0)
+                {
+                    ValidAltList = true;
+                }
+                else
+                {
+                    ValidAltList = false;
+                }
+            }
+        }
+
+        public string InputCustomID
+        {
+            get => _inputCustomID;
+            set
+            {
+                _inputCustomID = value;
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    StatusCustomID = ValidityStatus.Blank;
+                }
+                else
+                {
+                    // check if valid, this check is useless in this case
+                    // since the UI provides predefined selection from a list
+                    // but should the UI changes to a text input (i.e. Console)
+                    // a check must be made to make sure that the id exists
+                    bool isValid = true;
+                    if (isValid)
+                    {
+                        StatusCustomID = ValidityStatus.Valid;
+                    }
+                    else
+                    {
+                        StatusCustomID = ValidityStatus.Invalid;
+                    }
+                }
+            }
+        }
+
         // Inputs Status
         public ValidityStatus StatusID
         {
@@ -145,8 +193,8 @@ namespace Controllers.SizeGroupUI
                 // raise event for status change
                 OnIdStatusChange?.Invoke(this, value);
 
-                // draft object ready check
-                CheckReady();
+                // check all inputs status
+                CheckInputsStatus();
             }
         }
 
@@ -160,8 +208,8 @@ namespace Controllers.SizeGroupUI
                 // raise event for status change
                 OnNameStatusChange?.Invoke(this, value);
 
-                // draft object ready check
-                CheckReady();
+                // check all inputs status
+                CheckInputsStatus();
             }
         }
 
@@ -175,8 +223,37 @@ namespace Controllers.SizeGroupUI
                 // raise event for status change
                 OnDefaultIdStatusChange?.Invoke(this, value);
 
-                // draft object ready check
-                CheckReady();
+                // check all inputs status
+                CheckInputsStatus();
+            }
+        }
+
+        public bool ValidAltList
+        {
+            get => _validAltList; set
+            {
+                _validAltList = value;
+
+                // raise event for status change
+                OnAltListStatusChange?.Invoke(this, value);
+
+                // check all inputs status
+                CheckInputsStatus();
+            }
+        }
+
+        public ValidityStatus StatusCustomID
+        {
+            get => _statusCustomID;
+            private set
+            {
+                _statusCustomID = value;
+
+                // raise event for status change
+                OnCustomIdStatusChange?.Invoke(this, value);
+
+                // check all inputs status
+                CheckInputsStatus();
             }
         }
         #endregion
@@ -192,28 +269,50 @@ namespace Controllers.SizeGroupUI
                 new SizeGroupSelectionEventArgs(sizeGroup));
         }
 
-        public void New()
-        {
-            
-        }
-
-        public void CheckReady()
-        {
-            bool validID = StatusID == ValidityStatus.Valid;
-            bool validName = StatusName == ValidityStatus.Valid;
-            bool validDefaultID = StatusDefaultID == ValidityStatus.Valid;
-
-            bool isReady = validID && validName & validDefaultID;
-
-            // raise event for the ready or unready state
-            OnReadyStateChange(this, isReady);
-        }
-
         public List<string> GetListEntries(string listID)
         {
             return sProvider.GetEntries(listID);
         }
+
+        public void New()
+        {
+
+        }
+
+        public void AddNew()
+        {
+            //throw new NotImplementedException();
+            SizeGroup draft = new SizeGroup
+            {
+                ID = InputID,
+                Name = InputName,
+                DefaultListID = InputDefaultID,
+                AltIdList = InputAltList,
+                CustomSize = InputCustomID
+            };
+
+            cache.Create(draft);
+        }
+        
         // private methods
+        private void CheckInputsStatus()
+        {
+            bool validID = StatusID == ValidityStatus.Valid;
+            bool validName = StatusName == ValidityStatus.Valid;
+            bool validDefaultID = StatusDefaultID == ValidityStatus.Valid;
+            bool validAltList = ValidAltList;
+            bool validCustomID = StatusCustomID == ValidityStatus.Valid;
+
+            bool isReady =
+                validID &&
+                validName &&
+                validDefaultID &&
+                validAltList &&
+                validCustomID;
+
+            // raise event for the ready or unready state
+            OnReadyStateChange?.Invoke(this, isReady);
+        }
         #endregion
 
         #region Fields
@@ -224,9 +323,13 @@ namespace Controllers.SizeGroupUI
         private string _inputID;
         private string _inputName;
         private string _inputDefaultID;
+        private List<string> _inputAltList;
+        private string _inputCustomID;
         private ValidityStatus _statusID;
         private ValidityStatus _statusName;
         private ValidityStatus _statusDefaultID;
+        private ValidityStatus _statusCustomID;
+        private bool _validAltList;
 
         #endregion
 

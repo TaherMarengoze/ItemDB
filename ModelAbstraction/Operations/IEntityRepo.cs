@@ -1,7 +1,7 @@
 ﻿
 namespace Interfaces.Operations
 {
-    public interface IEntityCache<TEntity>
+    public interface ICache<TEntity>
     {
         void Create(TEntity content);
 
@@ -12,7 +12,7 @@ namespace Interfaces.Operations
         void Delete(string entityId);
     }
 
-    public interface IEntityRepo<TEntity> : IEntityNotify
+    public interface IRepo<TEntity> : IEntityNotify
     {
         void Create(TEntity content);
 

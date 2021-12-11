@@ -48,7 +48,7 @@
     <Compile Include="Data\SizeGroupProvider.cs" />
     <Compile Include="Data\SizeProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SizeGroupRepository.cs" />
+    <Compile Include="SizeGroupCache.cs" />
     <Compile Include="SpecsManiuplator.cs" />
     <Compile Include="Data\SpecsProvider.cs" />
     <Compile Include="SpecsRepository.cs" />

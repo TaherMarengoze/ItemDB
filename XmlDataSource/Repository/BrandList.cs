@@ -9,9 +9,11 @@ using XmlDataSource.Serialization;
 
 namespace XmlDataSource.Repository
 {
-    public class BrandList : IEntityCache<IFieldList>
+    public class BrandList : IRepo<IFieldList>
     {
         private readonly XDocument dataSource;
+
+        public event EventHandler OnChange;
 
         public BrandList(XDocument source)
         {

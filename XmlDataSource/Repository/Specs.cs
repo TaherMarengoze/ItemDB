@@ -8,9 +8,11 @@ using XmlDataSource.Serialization;
 
 namespace XmlDataSource.Repository
 {
-    public class Specs : IEntityCache<ISpecs>
+    public class Specs : IRepo<ISpecs>
     {
         private readonly XDocument dataSource;
+
+        public event EventHandler OnChange;
 
         public Specs(XDocument source)
         {

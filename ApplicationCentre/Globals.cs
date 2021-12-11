@@ -10,12 +10,12 @@ namespace AppCore
 
         public static IDataReader reader;
 
-        public static IEntityRepo<IItem> itemsRepo;
-        public static IEntityRepo<ISpecs> specsRepo;
-        public static IEntityRepo<ISizeGroup> sizeGroupRepo;
-        public static IEntityRepo<IFieldList> sizesRepo;
-        public static IEntityRepo<IFieldList> brandsRepo;
-        public static IEntityRepo<IFieldList> endsRepo;
+        public static IRepo<IItem> itemsRepo;
+        public static IRepo<ISpecs> specsRepo;
+        public static IRepo<ISizeGroup> sizeGroupRepo;
+        public static IRepo<IFieldList> sizesRepo;
+        public static IRepo<IFieldList> brandsRepo;
+        public static IRepo<IFieldList> endsRepo;
         
         public static bool disableEditors = true;
 

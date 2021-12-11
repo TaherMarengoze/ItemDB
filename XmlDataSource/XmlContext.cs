@@ -78,11 +78,8 @@ namespace XmlDataSource
             Globals.specsRepo = new Specs();
             Globals.sizeGroupRepo = new SizeGroup();
             Globals.sizesRepo = new SizeList();
-            //Globals.sizeManipulator = new FieldXmlManipulator(Globals.xDataDocs.Sizes.Document, FieldType.SIZE);
             Globals.brandsRepo = new BrandList();
-            //Globals.brandManipulator = new FieldXmlManipulator(Globals.xDataDocs.Brands, FieldType.BRAND);
             Globals.endsRepo = new EndList();
-            //Globals.endsManipulator = new FieldXmlManipulator(Globals.xDataDocs.Ends, FieldType.ENDS);
         }
 
         public void TestLoadXmlContext(string filePath)

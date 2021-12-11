@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ClientService
 {
-    public class SizeGroupCache : IEntityCache<ISizeGroup>
+    public class SizeGroupCache : ICache<ISizeGroup>
     {
         public void Create(ISizeGroup content)
         {

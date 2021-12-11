@@ -8,9 +8,11 @@ using XmlDataSource.Serialization;
 
 namespace XmlDataSource.Repository
 {
-    public class SizeList : IEntityCache<IFieldList>
+    public class SizeList : IRepo<IFieldList>
     {
         private readonly XDocument dataSource;
+
+        public event EventHandler OnChange;
 
         public SizeList(XDocument source)
         {
