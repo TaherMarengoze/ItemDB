@@ -10,10 +10,11 @@ namespace UT_Controllers
     [TestClass]
     public class UnitTest1
     {
-        Controllers.SizeGroupUI.SizeGroupUiController sgc =
-                new Controllers.SizeGroupUI.SizeGroupUiController();
+        Controllers.SizeGroupUI.SizeGroupUiController sgc;
 
         bool actualOutput;
+        object carryOverValue;
+
         private ClientService.SizeGroupCache cache;
         private IDataReader reader;
 
@@ -24,14 +25,21 @@ namespace UT_Controllers
             XmlDataSource.XmlContext context = (XmlDataSource.XmlContext)AppCore.Globals.context;
             //UserInterface.Runtime.Test.LoadCallback testLoadXmlContext = context.TestLoadXmlContext;
             //UserInterface.Runtime.Test.AutoLoad(testLoadXmlContext);
-            context.TestLoadXmlContext(@"C:\Users\taher.marengoze\source\repos\TaherMarengoze\ItemDB\");
+
+            string dynTestPath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
+            string fixedPath1 = @"C:\Users\taher.marengoze\source\repos\TaherMarengoze\ItemDB\";
+            string fixedPath2 = @"D:\Developer\source\repos\ItemDB\";
+
+            context.TestLoadXmlContext(dynTestPath);
 
             reader = AppCore.Globals.reader;
             cache = new ClientService.SizeGroupCache();
 
             ClientService.CacheIO.InitLists();
 
+            sgc = new Controllers.SizeGroupUI.SizeGroupUiController();
             //sgc.OnReadyStateChange += Sgc_OnReadyStateChange;
+            sgc.OnNewEntityAdd += Sgc_OnNewEntityAdd;
         }
 
         //[TestMethod]
@@ -61,12 +69,18 @@ namespace UT_Controllers
             sgc.AddNew();
 
             //Assert.AreEqual(23, reader.GetSizeGroups().Count());
-            Assert.AreEqual("GTEST", cache.Read("GTEST").ID);
+            //Assert.AreEqual("GTEST", cache.Read("GTEST").ID);
+            Assert.AreEqual("GTEST", (string)carryOverValue);
         }
 
         private void Sgc_OnReadyStateChange(object sender, bool e)
         {
             actualOutput = e;
+        }
+
+        public void Sgc_OnNewEntityAdd(object sender, string e)
+        {
+            carryOverValue = e;
         }
     }
 }
