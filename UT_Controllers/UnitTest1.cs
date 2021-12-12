@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Interfaces.Operations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UT_Controllers
@@ -11,22 +14,27 @@ namespace UT_Controllers
                 new Controllers.SizeGroupUI.SizeGroupUiController();
 
         bool actualOutput;
-        private ClientService.SizeGroupCache cache = new ClientService.SizeGroupCache();
+        private ClientService.SizeGroupCache cache;
+        private IDataReader reader;
 
         private void SimulateInit()
         {
             AppCore.Globals.context = new XmlDataSource.XmlContext();
 
             XmlDataSource.XmlContext context = (XmlDataSource.XmlContext)AppCore.Globals.context;
-            UserInterface.Runtime.Test.LoadCallback testLoadXmlContext = context.TestLoadXmlContext;
-            UserInterface.Runtime.Test.AutoLoad(testLoadXmlContext);
+            //UserInterface.Runtime.Test.LoadCallback testLoadXmlContext = context.TestLoadXmlContext;
+            //UserInterface.Runtime.Test.AutoLoad(testLoadXmlContext);
+            context.TestLoadXmlContext(@"C:\Users\taher.marengoze\source\repos\TaherMarengoze\ItemDB\");
+
+            reader = AppCore.Globals.reader;
+            cache = new ClientService.SizeGroupCache();
 
             ClientService.CacheIO.InitLists();
 
-            sgc.OnReadyStateChange += Sgc_OnReadyStateChange;
+            //sgc.OnReadyStateChange += Sgc_OnReadyStateChange;
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void Test_UiController_New()
         {
             SimulateInit();
@@ -34,9 +42,7 @@ namespace UT_Controllers
             sgc.InputID = "GTEST";
             sgc.InputName = "Test Size Group";
             sgc.InputDefaultID = "DTEST";
-            sgc.InputAltList =
-                new System.Collections.Generic.List<string>() { "ATEST" };
-
+            sgc.InputAltList = new List<string>() { "ATEST" };
             sgc.InputCustomID = "CTEST";
 
             Assert.AreEqual(true, actualOutput);
@@ -50,13 +56,11 @@ namespace UT_Controllers
             sgc.InputID = "GTEST";
             sgc.InputName = "Test Size Group";
             sgc.InputDefaultID = "DTEST";
-            sgc.InputAltList =
-                new System.Collections.Generic.List<string>() { "ATEST" };
-
+            sgc.InputAltList = new List<string>() { "ATEST" };
             sgc.InputCustomID = "CTEST";
-
             sgc.AddNew();
 
+            //Assert.AreEqual(23, reader.GetSizeGroups().Count());
             Assert.AreEqual("GTEST", cache.Read("GTEST").ID);
         }
 

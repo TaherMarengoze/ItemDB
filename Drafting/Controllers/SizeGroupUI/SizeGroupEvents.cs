@@ -33,4 +33,11 @@ namespace Controllers.SizeGroupUI
 
         public string Custom { get; private set; }
     }
+
+    public class SizeGroupSetEventArgs : EventArgs
+    {
+        public string ID { get; set; }
+
+        public List<SizeGroup> SizeGroups { get; set; }
+    }
 }

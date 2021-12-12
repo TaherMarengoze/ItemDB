@@ -21,6 +21,7 @@ namespace Controllers.SizeGroupUI
         public event EventHandler<ValidityStatus> OnCustomIdStatusChange;
         public event EventHandler<bool> OnAltListStatusChange;
         public event EventHandler<bool> OnReadyStateChange;
+        public event EventHandler<string> OnNewEntityAdd;
         #endregion
 
         #region Properties
@@ -292,6 +293,10 @@ namespace Controllers.SizeGroupUI
             };
 
             cache.Create(draft);
+
+            //ClearInputs();
+
+            OnNewEntityAdd?.Invoke(this, InputID);
         }
         
         // private methods
@@ -312,6 +317,16 @@ namespace Controllers.SizeGroupUI
 
             // raise event for the ready or unready state
             OnReadyStateChange?.Invoke(this, isReady);
+        }
+
+        private void ClearInputs()
+        {
+            //throw new NotImplementedException();
+            _inputID = null;
+            InputName = null;
+            InputDefaultID = null;
+            InputAltList = null;
+            InputCustomID = null;
         }
         #endregion
 

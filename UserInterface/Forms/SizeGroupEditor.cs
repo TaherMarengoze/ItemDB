@@ -30,8 +30,9 @@ namespace UserInterface.Forms
             uiControl.OnNameStatusChange += UiControl_OnNameStatusChange;
             uiControl.OnDefaultIdStatusChange += UiControl_OnDefaultIdStatusChange;
             uiControl.OnReadyStateChange += UiControl_OnReadyStateChange;
+            uiControl.OnNewEntityAdd += UiControl_OnNewEntityAdd;
         }
-
+        
         private void UiControl_OnSelectionChange(object sender, SizeGroupSelectionEventArgs e)
         {
             //throw new NotImplementedException();
@@ -99,6 +100,11 @@ namespace UserInterface.Forms
                     tsLblReadyState.Text = "Not ready";
                 }
             }
+        }
+
+        private void UiControl_OnNewEntityAdd(object sender, string e)
+        {
+            //throw new NotImplementedException();
         }
 
 

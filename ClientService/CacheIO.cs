@@ -12,8 +12,8 @@ namespace ClientService
     /// </summary>
     public static class CacheIO
     {
-        static ModelListsCache cache = Globals.ModelCache;
-        static IDataReader reader = Globals.reader;
+        private static ModelListsCache cache = Globals.ModelCache;
+        private static IDataReader reader = Globals.reader;
 
         public static void InitLists()
         {

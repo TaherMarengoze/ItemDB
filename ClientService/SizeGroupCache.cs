@@ -11,6 +11,13 @@ namespace ClientService
 {
     public class SizeGroupCache : ICache<ISizeGroup>
     {
+        
+
+        public SizeGroupCache()
+        {
+
+        }
+
         public void Create(ISizeGroup content)
         {
             Globals.sizeGroupRepo.Create(content);
