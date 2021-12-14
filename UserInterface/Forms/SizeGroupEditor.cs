@@ -180,6 +180,13 @@ namespace UserInterface.Forms
                     // disable SizeGroup fields entry
                     txtGroupID.ReadOnly = true;
                     txtGroupName.ReadOnly = true;
+
+                    // disable default list selector
+                    cboDefaultID.Enabled = false;
+
+                    // hide Alt list & Custom size check boxes
+                    chkAltList.Visible = false;
+                    chkCustomSize.Visible = false;
                 }
                 else
                 {
@@ -491,23 +498,23 @@ namespace UserInterface.Forms
             }
         }
 
-        private void NewGroup()
-        {
-            // Create draft objects
-            drafter = new SizeGroupDrafter();
+        //private void NewGroup()
+        //{
+        //    // Create draft objects
+        //    drafter = new SizeGroupDrafter();
 
-            // Set Entry Mode
-            EnterNewMode();
+        //    // Set Entry Mode
+        //    EnterNewMode();
 
-            // Setup User Interface
-            NewEditSetupUI();
+        //    // Setup User Interface
+        //    NewEditSetupUI();
 
-            // Clear existing data for new input
-            ClearGroupMetadataUI();
-            ClearGroupDataUI();
-            txtGroupID.Focus();
-            //cboDefaultID.SelectedIndex = -1;
-        }
+        //    // Clear existing data for new input
+        //    ClearGroupMetadataUI();
+        //    ClearGroupDataUI();
+        //    txtGroupID.Focus();
+        //    //cboDefaultID.SelectedIndex = -1;
+        //}
 
         private void EditGroup()
         {
@@ -995,6 +1002,11 @@ namespace UserInterface.Forms
 
         private void CheckAltListStatus()
         {
+            if (Mode != EntryMode.View)
+            {
+                uiControl.InputAltListRequired = chkAltList.Checked;
+            }
+
             if (Mode == EntryMode.View)
                 return;
 
