@@ -17,7 +17,7 @@ namespace Controllers.SpecsUi
     {
         // events
         public event EventHandler<bool> OnSpecsValidityChange;
-        public event EventHandler<ValidityStatus> OnSpecsIdValidityChange;
+        public event EventHandler<InputStatus> OnSpecsIdValidityChange;
 
         public event EventHandler<bool> OnSpecsItemValidityChange;
         public event EventHandler<string> OnSpecsItemPatternChange;
@@ -74,7 +74,7 @@ namespace Controllers.SpecsUi
                 {
                     if (_inputSpecsId == string.Empty)
                     {
-                        IdStatus = ValidityStatus.Blank;
+                        IdStatus = InputStatus.Blank;
                     }
                     else
                     {
@@ -83,16 +83,16 @@ namespace Controllers.SpecsUi
 
                         if (isInputNotDraft && isDuplicateInput)
                         {
-                            IdStatus = ValidityStatus.Duplicate;
+                            IdStatus = InputStatus.Duplicate;
                         }
                         else
                         {
                             bool isValidChar = true;
                             // Should also check for invalid characters
                             if (isValidChar)
-                                IdStatus = ValidityStatus.Valid;
+                                IdStatus = InputStatus.Valid;
                             else
-                                IdStatus = ValidityStatus.Invalid;
+                                IdStatus = InputStatus.Invalid;
                         }
                     }
                     ExistingIDs = FilterSimilarIDs(_inputSpecsId);
@@ -175,7 +175,7 @@ namespace Controllers.SpecsUi
             }
         }
 
-        public ValidityStatus IdStatus
+        public InputStatus IdStatus
         {
             get => _idStatus;
             private set
@@ -233,7 +233,7 @@ namespace Controllers.SpecsUi
         private List<ISpecsItem> _inputSpecsItems;
         private int _inputSpecIndex;
         private string _inputSpecName;
-        private ValidityStatus _idStatus;
+        private InputStatus _idStatus;
         private bool _isSpecsHasItem;
         private bool _isValidSpecName;
         private string _inputSpecPattern;
@@ -322,7 +322,7 @@ namespace Controllers.SpecsUi
 
         private void CheckSpecsReady()
         {
-            bool isValidDraftSpecs = IdStatus == ValidityStatus.Valid && IsSpecsHasItem;
+            bool isValidDraftSpecs = IdStatus == InputStatus.Valid && IsSpecsHasItem;
 
             // raise event for ready state
             OnSpecsValidityChange?.Invoke(this, isValidDraftSpecs);

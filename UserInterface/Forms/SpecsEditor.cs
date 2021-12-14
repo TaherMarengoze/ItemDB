@@ -300,22 +300,22 @@ namespace UserInterface.Forms
             btnSiAccept.Enabled = specItemReady;
         }
 
-        private void Drafter_OnSpecsIdValidityChange(object sender, ValidityStatus status)
+        private void Drafter_OnSpecsIdValidityChange(object sender, InputStatus status)
         {
             switch (status)
             {
-                case ValidityStatus.Valid:
+                case InputStatus.Valid:
                     ResetIdValidityInfo();
                     lblSpecsIdValidator.Text = string.Empty;
                     txtSpecsID.BackColor = SystemColors.Window;
                     break;
 
-                case ValidityStatus.Duplicate:
+                case InputStatus.Duplicate:
                     lblSpecsIdValidator.Text = "* Duplicate ID";
                     txtSpecsID.BackColor = Color.HotPink;
                     break;
 
-                case ValidityStatus.Blank:
+                case InputStatus.Blank:
                     lblSpecsIdValidator.Text = "* Blank ID";
                     txtSpecsID.BackColor = Color.Pink;
                     break;

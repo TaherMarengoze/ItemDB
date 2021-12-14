@@ -6,20 +6,20 @@ namespace UserInterface.Shared
 {
     public static class ControlsExtension
     {
-        public static void ValidityInfo(this Label control, ValidityStatus status)
+        public static void ValidityInfo(this Label control, InputStatus status)
         {
             switch (status)
             {
-                case ValidityStatus.Valid:
+                case InputStatus.Valid:
                     control.Text = string.Empty;
                     break;
-                case ValidityStatus.Duplicate:
+                case InputStatus.Duplicate:
                     control.Text = "• Duplicate";
                     break;
-                case ValidityStatus.Blank:
+                case InputStatus.Blank:
                     control.Text = "• Blank";
                     break;
-                case ValidityStatus.Invalid:
+                case InputStatus.Invalid:
                     control.Text = "• Invalid";
                     break;
                 default:

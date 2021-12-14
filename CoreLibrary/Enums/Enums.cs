@@ -19,12 +19,13 @@
         Edit
     }
 
-    public enum ValidityStatus
+    public enum InputStatus
     {
         Valid,
         Duplicate,
         Blank,
-        Invalid
+        Invalid,
+        Ignore
     }
 
     /// <summary>

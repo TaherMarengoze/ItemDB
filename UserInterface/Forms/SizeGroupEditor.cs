@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using UserService;
 using UserInterface.Shared;
+using Shared.UI;
 
 namespace UserInterface.Forms
 {
@@ -63,23 +64,23 @@ namespace UserInterface.Forms
             }
         }
 
-        private void UiControl_OnIdStatusChange(object sender, ValidityStatus status)
+        private void UiControl_OnIdStatusChange(object sender, InputStatus status)
         {
             //throw new NotImplementedException();
             lblValidatorGroupId.ValidityInfo(status);
         }
         
-        private void UiControl_OnNameStatusChange(object sender, ValidityStatus status)
+        private void UiControl_OnNameStatusChange(object sender, InputStatus status)
         {
             //throw new NotImplementedException();
             lblValidatorGroupName.ValidityInfo(status);
         }
 
-        private void UiControl_OnDefaultIdStatusChange(object sender, ValidityStatus status)
+        private void UiControl_OnDefaultIdStatusChange(object sender, InputStatus status)
         {
             //throw new NotImplementedException();
             lblValidatorDefaultId.ValidityInfo(status);
-            if (status == ValidityStatus.Valid)
+            if (status == InputStatus.Valid)
             {
                 EnableAltListSelection();
             }
@@ -105,6 +106,12 @@ namespace UserInterface.Forms
         private void UiControl_OnNewEntityAdd(object sender, string e)
         {
             //throw new NotImplementedException();
+            Mode = EntryMode.View;
+
+            // refresh SizeGroup list
+            dgvGroups.DataSourceResize(uiControl.SizeGroups, true);
+
+            // select added item
         }
 
 
@@ -122,17 +129,31 @@ namespace UserInterface.Forms
                     // set status bar text
                     tsLblReadyState.Text = string.Empty;
 
+                    // enable SizeGroup selection
+                    dgvGroups.Enabled = true;
+
                     // enable SizeGroup Add, Edit & Remove buttons
                     btnNewGroup.Enabled = true;
-                    btnEditGroup.Enabled = true;
-                    btnRemoveGroup.Enabled = true;
+                    //btnEditGroup.Enabled = true; => enabled with conditions
+                    //btnRemoveGroup.Enabled = true; => enabled with conditions
+
+                    // disable Accept button
+                    btnAccept.Enabled = false;
+
+                    // show Accept and Cancel buttons
+                    btnAccept.Visible = false;
+                    btnCancel.Visible = false;
+
+                    // disable SizeGroup fields entry
+                    txtGroupID.ReadOnly = true;
+                    txtGroupName.ReadOnly = true;
                 }
                 else
                 {
                     // disable Save UI
                     tsmiSaveFile.Enabled = false;
 
-                    // Setup User Interface
+                    // setup User Interface
 
                     // clear and disable SizeGroup selection
                     dgvGroups.ClearSelection();
@@ -1220,7 +1241,7 @@ namespace UserInterface.Forms
         private void tsmiSimNew_Click(object sender, EventArgs e)
         {
             throw new NotImplementedException();
-            uiControl.Simulate_New();
+            //uiControl.Simulate_New();
         }
 
 #pragma warning restore IDE1006 // Naming Styles
