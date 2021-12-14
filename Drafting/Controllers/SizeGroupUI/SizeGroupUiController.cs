@@ -146,7 +146,7 @@ namespace Controllers.SizeGroupUI
                 if (value == true)
                 {
                     // check if list is valid
-                    if (ValidAltList)
+                    if (_validAltList == true)
                     {
                         StatusAltList = InputStatus.Valid;
                     }
@@ -168,14 +168,8 @@ namespace Controllers.SizeGroupUI
             set
             {
                 _inputAltList = value;
-                if (value?.Count > 0) // not null and contains at least one item
-                {
-                    ValidAltList = true;
-                }
-                else
-                {
-                    ValidAltList = false;
-                }
+                int? notNullOrEmpty = value?.Count;
+                ValidAltList = notNullOrEmpty > 0 ? true : false;
             }
         }
 
@@ -293,12 +287,24 @@ namespace Controllers.SizeGroupUI
 
                 if (value == true)
                 {
-                    InputAltListRequired = true;
-                    //StatusAltList = InputStatus.Valid;
+                    if (_inputAltListRequired == false)
+                    {
+                        _inputAltListRequired = true;
+                    }
+                    StatusAltList = InputStatus.Valid;
+                    
                 }
                 else
                 {
-                    StatusAltList = InputStatus.Invalid;
+                    if (_inputAltListRequired == true)
+                    {
+                        StatusAltList = InputStatus.Invalid;
+                    }
+                    else
+                    {
+                        StatusAltList = InputStatus.Ignore;
+                    }
+                    
                 }
                 
                 // raise event for status change

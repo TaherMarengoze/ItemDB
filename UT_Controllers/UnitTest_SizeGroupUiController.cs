@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CoreLibrary.Enums;
 using Interfaces.Operations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -18,7 +19,7 @@ namespace UT_Controllers
         private ClientService.SizeGroupCache cache;
         private IDataReader reader;
 
-        private void SimulateInit()
+        private void SimulateInitialization()
         {
             // simulate Program.cs -- Program.Main() : main entry point
             string dynTestPath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
@@ -44,58 +45,61 @@ namespace UT_Controllers
             //sgc.OnNewEntityAdd += Sgc_OnNewEntityAdd;
         }
 
-        private void SimulateInputs()
+        private bool SimulateInputsAndGetExpected(int @case = 0)
         {
             sgc.InputID = "GTEST";
             sgc.InputName = "Test Size Group";
             sgc.InputDefaultID = "DTEST";
-            //sgc.InputAltListRequired = true;
-            sgc.InputAltListRequired = false;
-            sgc.InputAltList = false ? new List<string>() { "ATEST" } : null;
 
-            //sgc.InputCustomID = "CTEST";
+            switch (@case)
+            {
+                
+                case 1:
+                    // set the Alt list first
+                    sgc.InputAltList = true ? new List<string>() { "ATEST" } : null;
+
+                    // then set required to false
+                    sgc.InputAltListRequired = false;
+                    return true;
+                //case 2:
+                //    break;
+                //case 3:
+                //    break;
+                //case 4:
+                //    break;
+                //case 5:
+                //    break;
+                //case 6:
+                //    break;
+                default:
+                    break;
+            }
+
+            return true;
         }
-
-        [TestMethod]
-        public void Should_InputValid()
-        {
-            SimulateInit();
-            SimulateInputs();
-            
-            Assert.AreEqual(true, actualOutput);
-        }
-
-        [TestMethod]
-        public void Should_InputAltListRequired()
-        {
-            SimulateInit();
-
-            //sgc.InputAltListRequired = true;
-            sgc.InputAltList = true ? new List<string>() { "ATEST" } : null;
-            //sgc.InputAltListRequired = false;
-
-            Assert.AreEqual(true, sgc.InputAltListRequired);
-        }
-
-        public int MyProperty { get; set; }
 
         //[TestMethod]
-        public void Test_UiController_AddNew()
+        public void Should_InputValid()
         {
-            SimulateInit();
-
-            sgc.InputID = "GTEST";
-            sgc.InputName = "Test Size Group";
-            sgc.InputDefaultID = "DTEST";
-            sgc.InputAltList = new List<string>() { "ATEST" };
-            sgc.InputCustomID = "CTEST";
-            sgc.AddNew();
-
-            //Assert.AreEqual(23, reader.GetSizeGroups().Count());
-            //Assert.AreEqual("GTEST", cache.Read("GTEST").ID);
-            Assert.AreEqual("GTEST", (string)carryOverValue);
-            Assert.AreEqual(23, sgc.Count);
+            SimulateInitialization();
+            
+            Assert.AreEqual(SimulateInputsAndGetExpected(1), actualOutput);
         }
+
+        [TestMethod]
+        public void Should_RequiredStatusAltList()
+        {
+            SimulateInitialization();
+
+            //sgc.InputAltListRequired = true;
+            sgc.InputAltList = false ? new List<string>() { "ATEST" } : null;
+            //sgc.InputAltListRequired = false;
+            sgc.InputAltListRequired = true;
+            sgc.InputAltListRequired = false;
+
+            Assert.AreEqual(InputStatus.Ignore, sgc.StatusAltList);
+        }
+        
 
         private void Sgc_OnReadyStateChange(object sender, bool e)
         {

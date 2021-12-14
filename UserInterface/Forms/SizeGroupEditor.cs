@@ -94,11 +94,15 @@ namespace UserInterface.Forms
                 {
                     tsLblReadyState.ForeColor = Color.Green;
                     tsLblReadyState.Text = "Ready";
+
+                    btnAccept.Enabled = true;
                 }
                 else
                 {
                     tsLblReadyState.ForeColor = Color.Red;
                     tsLblReadyState.Text = "Not ready";
+
+                    btnAccept.Enabled = false;
                 }
             }
         }
@@ -112,6 +116,35 @@ namespace UserInterface.Forms
             dgvGroups.DataSourceResize(uiControl.SizeGroups, true);
 
             // select added item
+            int i = GetRowIndex(dgvGroups, e, "ID");
+            if (i != -1)
+            {
+                dgvGroups.Rows[i].Cells[0].Selected = true;
+            }
+        }
+
+        public static int GetRowIndex(DataGridView dgv, string value, string field = "")
+        {
+            int rowIndex = -1;
+
+            DataGridViewRow row;
+
+            if (field == string.Empty)
+            {
+                row = dgv.Rows
+                .Cast<DataGridViewRow>()
+                .Where(r => r.Cells[0].Value.ToString().Equals(value))
+                .FirstOrDefault();
+            }
+            else
+            {
+                row = dgv.Rows
+                .Cast<DataGridViewRow>()
+                .Where(r => r.Cells[field].Value.ToString().Equals(value))
+                .FirstOrDefault();
+            }
+
+            return row?.Index ?? rowIndex;
         }
 
 
@@ -1146,7 +1179,8 @@ namespace UserInterface.Forms
 
         private void btnAccept_Click(object sender, EventArgs e)
         {
-            SaveDraftGroup();
+            //SaveDraftGroup();
+            uiControl.AddNew();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

@@ -68,6 +68,10 @@
       <Project>{2ec19893-87bd-41aa-a165-bf544d2a1bcb}</Project>
       <Name>ClientService</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj">
+      <Project>{90C23753-2A1C-4F04-A4E7-3B12CE02FA7F}</Project>
+      <Name>CoreLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Drafting\Drafting.csproj">
       <Project>{38dd4b4a-716d-4d0d-ad6c-9affedb3f964}</Project>
       <Name>Drafting</Name>
