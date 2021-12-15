@@ -21,11 +21,22 @@
 
     public enum InputStatus
     {
+        /// <summary>
+        /// Input is given and meets the required criteria.
+        /// </summary>
         Valid,
+        /// <summary>
+        /// Input is given and meets the required criteria but is not unique.
+        /// </summary>
         Duplicate,
+        /// <summary>
+        /// Input is not given.
+        /// </summary>
         Blank,
-        Invalid,
-        Ignore
+        /// <summary>
+        /// Input is given but do not meet the required criteria.
+        /// </summary>
+        Invalid
     }
 
     /// <summary>
