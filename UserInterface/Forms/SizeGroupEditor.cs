@@ -367,6 +367,45 @@ namespace UserInterface.Forms
             }
         }
 
+        private void InputAltListStatus()
+        {
+            if (Mode != EntryMode.View)
+            {
+                uiControl.InputAltListRequired = chkAltList.Checked;
+
+                if (chkAltList.Checked)
+                {
+                    EnableAltListUI();
+                }
+                else
+                {
+                    DisableAltListUI();
+                }
+            }
+        }
+
+        private void InputCustomSizeStatus()
+        {
+            if (Mode != EntryMode.View)
+            {
+                // TODO: set controller input
+                uiControl.InputCustomIdRequired = chkCustomSize.Checked;
+
+                if (chkCustomSize.Checked)
+                {
+                    //drafter.HasCustomSize = true;
+                    EnableCustomSizeUI();
+                }
+                else
+                {
+                    //drafter.HasCustomSize = false;
+                    DisableCustomSizeUI();
+                }
+                uiControl.InputCustomID = cboCustomSizeID.Text;
+                //CheckDraftValidity();
+            }
+        }
+
         private string GetSelectedDefaultID()
         {
             // use a method in case we changed from
@@ -999,48 +1038,7 @@ namespace UserInterface.Forms
             cboCustomSizeID.SelectedIndex = -1;
             lstAltListIDs.DataSource = null;
         }
-
-        private void CheckAltListStatus()
-        {
-            if (Mode != EntryMode.View)
-            {
-                uiControl.InputAltListRequired = chkAltList.Checked;
-            }
-
-            if (Mode == EntryMode.View)
-                return;
-
-            if (chkAltList.Checked)
-            {
-                drafter.HasAltList = true;
-                EnableAltListUI();
-            }
-            else
-            {
-                drafter.HasAltList = false;
-                DisableAltListUI();
-            }
-            CheckDraftValidity();
-        }
-
-        private void SetCustomSizeStatus()
-        {
-            if (Mode == EntryMode.View)
-                return;
-
-            if (chkCustomSize.Checked)
-            {
-                drafter.HasCustomSize = true;
-                EnableCustomSizeUI();
-            }
-            else
-            {
-                drafter.HasCustomSize = false;
-                DisableCustomSizeUI();
-            }
-            CheckDraftValidity();
-        }
-
+        
         private void EnableAltListSelection()
         {
             chkAltList.Enabled = true;
@@ -1207,12 +1205,12 @@ namespace UserInterface.Forms
 
         private void chkAltList_CheckedChanged(object sender, EventArgs e)
         {
-            CheckAltListStatus();
+            InputAltListStatus();
         }
 
         private void chkCustomSize_CheckedChanged(object sender, EventArgs e)
         {
-            SetCustomSizeStatus();
+            InputCustomSizeStatus();
         }
 
         private void txtGroupID_TextChanged(object sender, EventArgs e)
