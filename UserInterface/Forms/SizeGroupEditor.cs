@@ -388,7 +388,6 @@ namespace UserInterface.Forms
         {
             if (Mode != EntryMode.View)
             {
-                // TODO: set controller input
                 uiControl.InputCustomIdRequired = chkCustomSize.Checked;
 
                 if (chkCustomSize.Checked)
@@ -401,6 +400,17 @@ namespace UserInterface.Forms
                     //drafter.HasCustomSize = false;
                     DisableCustomSizeUI();
                 }
+                //uiControl.InputCustomID = cboCustomSizeID.Text;
+                //CheckDraftValidity();
+            }
+        }
+
+        private void InputCustomSizeID()
+        {
+            // only in non view mode
+            if (Mode != EntryMode.View)
+            {
+                //drafter.groupCustomSizeID = cboCustomSizeID.Text;
                 uiControl.InputCustomID = cboCustomSizeID.Text;
                 //CheckDraftValidity();
             }
@@ -523,16 +533,6 @@ namespace UserInterface.Forms
                     EnableAltListSelection();
                 }
 
-                CheckDraftValidity();
-            }
-        }
-
-        private void ChangeCustomSizeID()
-        {
-            // only in non view mode
-            if (Mode != EntryMode.View)
-            {
-                drafter.groupCustomSizeID = cboCustomSizeID.Text;
                 CheckDraftValidity();
             }
         }
@@ -1248,12 +1248,12 @@ namespace UserInterface.Forms
         
         private void cboCustomSizeID_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ChangeCustomSizeID();
+            InputCustomSizeID();
         }
 
         private void cboCustomSizeID_TextChanged(object sender, EventArgs e)
         {
-            ChangeCustomSizeID();
+            InputCustomSizeID();
         }
 
         private void btnModifyAltList_Click(object sender, EventArgs e)
