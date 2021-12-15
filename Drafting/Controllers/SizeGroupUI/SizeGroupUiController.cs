@@ -143,22 +143,7 @@ namespace Controllers.SizeGroupUI
             set
             {
                 _inputAltListRequired = value;
-                if (value == true)
-                {
-                    // check if list is valid
-                    if (_validAltList == true)
-                    {
-                        StatusAltList = InputStatus.Valid;
-                    }
-                    else
-                    {
-                        StatusAltList = InputStatus.Invalid;
-                    }
-                }
-                else
-                {
-                    StatusAltList = InputStatus.Ignore;
-                }
+                CheckInputsStatus();
             }
         }
 
@@ -168,8 +153,18 @@ namespace Controllers.SizeGroupUI
             set
             {
                 _inputAltList = value;
-                int? notNullOrEmpty = value?.Count;
-                ValidAltList = notNullOrEmpty > 0 ? true : false;
+                bool notNullOrEmpty = value?.Count > 0;
+                StatusAltList = notNullOrEmpty ? InputStatus.Valid : InputStatus.Invalid;
+            }
+        }
+
+        public bool InputCustomIdRequired
+        {
+            get => _inputCustomIdRequired;
+            set
+            {
+                _inputCustomIdRequired = value;
+                CheckInputsStatus();
             }
         }
 
@@ -277,43 +272,6 @@ namespace Controllers.SizeGroupUI
                 CheckInputsStatus();
             }
         }
-
-        public bool ValidAltList
-        {
-            get => _validAltList;
-            private set
-            {
-                _validAltList = value;
-
-                if (value == true)
-                {
-                    if (_inputAltListRequired == false)
-                    {
-                        _inputAltListRequired = true;
-                    }
-                    StatusAltList = InputStatus.Valid;
-                    
-                }
-                else
-                {
-                    if (_inputAltListRequired == true)
-                    {
-                        StatusAltList = InputStatus.Invalid;
-                    }
-                    else
-                    {
-                        StatusAltList = InputStatus.Ignore;
-                    }
-                    
-                }
-                
-                // raise event for status change
-                //OnAltListStatusChange?.Invoke(this, value);
-
-                // check all inputs status
-                //CheckInputsStatus();
-            }
-        }
         #endregion
 
         #endregion
@@ -336,7 +294,11 @@ namespace Controllers.SizeGroupUI
 
         public void New()
         {
-
+            _statusID = InputStatus.Blank;
+            _statusName = InputStatus.Blank;
+            _statusDefaultID = InputStatus.Blank;
+            _statusAltList = InputStatus.Blank;
+            _statusCustomID = InputStatus.Blank;
         }
 
         public void AddNew()
@@ -364,8 +326,8 @@ namespace Controllers.SizeGroupUI
             bool validID = StatusID == InputStatus.Valid;
             bool validName = StatusName == InputStatus.Valid;
             bool validDefaultID = StatusDefaultID == InputStatus.Valid;
-            bool validAltList = StatusAltList == InputStatus.Valid || StatusAltList == InputStatus.Ignore;
-            bool validCustomID = StatusCustomID == InputStatus.Valid;
+            bool validAltList = _inputAltListRequired ? StatusAltList == InputStatus.Valid : true;
+            bool validCustomID = _inputCustomIdRequired ? StatusCustomID == InputStatus.Valid : true;
 
             bool isReady =
                 validID &&
@@ -399,6 +361,7 @@ namespace Controllers.SizeGroupUI
         private string _inputDefaultID;
         private bool _inputAltListRequired;
         private List<string> _inputAltList;
+        private bool _inputCustomIdRequired;
         private string _inputCustomID;
         private InputStatus _statusID;
         private InputStatus _statusName;
