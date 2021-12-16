@@ -48,6 +48,8 @@
             this.tsmiClose = new System.Windows.Forms.ToolStripMenuItem();
             this.tsSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.tsmiExitApp = new System.Windows.Forms.ToolStripMenuItem();
+            this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiSimNew = new System.Windows.Forms.ToolStripMenuItem();
             this.grpGroupData = new System.Windows.Forms.GroupBox();
             this.grpListEntries = new System.Windows.Forms.GroupBox();
             this.lbxSizeListEntries = new System.Windows.Forms.ListBox();
@@ -69,8 +71,6 @@
             this.grpModiyControlPanel = new System.Windows.Forms.GroupBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tsLblReadyState = new System.Windows.Forms.ToolStripStatusLabel();
-            this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiSimNew = new System.Windows.Forms.ToolStripMenuItem();
             this.grpGroupMetadata.SuspendLayout();
             this.mnuMain.SuspendLayout();
             this.grpGroupData.SuspendLayout();
@@ -274,6 +274,21 @@
             this.tsmiExitApp.Text = "Exit Application";
             this.tsmiExitApp.Click += new System.EventHandler(this.tsmiExitApp_Click);
             // 
+            // testToolStripMenuItem
+            // 
+            this.testToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiSimNew});
+            this.testToolStripMenuItem.Name = "testToolStripMenuItem";
+            this.testToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+            this.testToolStripMenuItem.Text = "Test";
+            // 
+            // tsmiSimNew
+            // 
+            this.tsmiSimNew.Name = "tsmiSimNew";
+            this.tsmiSimNew.Size = new System.Drawing.Size(147, 22);
+            this.tsmiSimNew.Text = "Simulate New";
+            this.tsmiSimNew.Click += new System.EventHandler(this.tsmiSimNew_Click);
+            // 
             // grpGroupData
             // 
             this.grpGroupData.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -370,7 +385,6 @@
             this.cboCustomSizeID.Name = "cboCustomSizeID";
             this.cboCustomSizeID.Size = new System.Drawing.Size(151, 21);
             this.cboCustomSizeID.TabIndex = 28;
-            this.cboCustomSizeID.SelectedIndexChanged += new System.EventHandler(this.cboCustomSizeID_SelectedIndexChanged);
             this.cboCustomSizeID.TextChanged += new System.EventHandler(this.cboCustomSizeID_TextChanged);
             // 
             // grpAltList
@@ -541,21 +555,6 @@
             this.tsLblReadyState.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
             this.tsLblReadyState.Name = "tsLblReadyState";
             this.tsLblReadyState.Size = new System.Drawing.Size(70, 19);
-            // 
-            // testToolStripMenuItem
-            // 
-            this.testToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiSimNew});
-            this.testToolStripMenuItem.Name = "testToolStripMenuItem";
-            this.testToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
-            this.testToolStripMenuItem.Text = "Test";
-            // 
-            // tsmiSimNew
-            // 
-            this.tsmiSimNew.Name = "tsmiSimNew";
-            this.tsmiSimNew.Size = new System.Drawing.Size(180, 22);
-            this.tsmiSimNew.Text = "Simulate New";
-            this.tsmiSimNew.Click += new System.EventHandler(this.tsmiSimNew_Click);
             // 
             // SizeGroupEditor
             // 

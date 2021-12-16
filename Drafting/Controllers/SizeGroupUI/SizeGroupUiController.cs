@@ -7,7 +7,7 @@ using Modeling.ViewModels;
 using Modeling.ViewModels.SizeGroup;
 using System;
 using System.Collections.Generic;
-
+using System.Linq;
 
 namespace Controllers.SizeGroupUI
 {
@@ -30,11 +30,15 @@ namespace Controllers.SizeGroupUI
             sgProvider.GetList().ToGenericView();
 
         public int Count => SizeGroups?.Count ?? 0;
+
         public List<string> SizeIDs => sProvider.GetIDs();
 
         public List<string> CustomSizeIDs => csProvider.GetIDs();
 
         public SizeGroup SelectedSizeGroup { get; private set; }
+
+        private List<SizeList> SizeLists => sProvider.GetList().As<SizeList>();
+
 
         #region UI Inputs
         public string InputID
@@ -277,6 +281,15 @@ namespace Controllers.SizeGroupUI
         #endregion
 
         #region Methods
+        /* public getter methods */
+        public List<SizeList> GetSizeListsExcluded(string excludId)
+        {
+            return sProvider.GetListExcluded(excludId).As<SizeList>();
+        }
+        public List<string> GetListEntries(string listID)
+        {
+            return sProvider.GetEntries(listID);
+        }
 
         public void SetSelection(string id)
         {
@@ -287,10 +300,7 @@ namespace Controllers.SizeGroupUI
                 new SizeGroupSelectionEventArgs(sizeGroup));
         }
 
-        public List<string> GetListEntries(string listID)
-        {
-            return sProvider.GetEntries(listID);
-        }
+        
 
         public void New()
         {
@@ -368,7 +378,6 @@ namespace Controllers.SizeGroupUI
         private InputStatus _statusDefaultID;
         private InputStatus _statusAltList;
         private InputStatus _statusCustomID;
-        private bool _validAltList;
 
         #endregion
 

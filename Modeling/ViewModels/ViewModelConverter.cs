@@ -47,5 +47,11 @@ namespace Modeling.ViewModels
                     CustomSize = sg.CustomSize
                 }).ToList();
         }
+
+        // to be relocated to the proper project
+        public static List<T> As<T>(this IEnumerable<IFieldList> source) where T : IFieldList
+        {
+            return source.Cast<T>().ToList();
+        }
     }
 }

@@ -410,8 +410,7 @@ namespace UserInterface.Forms
             // only in non view mode
             if (Mode != EntryMode.View)
             {
-                //drafter.groupCustomSizeID = cboCustomSizeID.Text;
-                uiControl.InputCustomID = cboCustomSizeID.Text;
+                uiControl.InputCustomID = GetSelectedCustomID();
                 //CheckDraftValidity();
             }
         }
@@ -421,6 +420,13 @@ namespace UserInterface.Forms
             // use a method in case we changed from
             // combo box to another control like DataGridView
             return cboDefaultID.Text;
+        }
+
+        private string GetSelectedCustomID()
+        {
+            // use a method in case we changed from
+            // combo box to another control like DataGridView
+            return cboCustomSizeID.Text;
         }
 
         private void DisplaySelectedListEntries()
@@ -1083,13 +1089,10 @@ namespace UserInterface.Forms
                 Data.GetSizesExclude(drafter.groupDefaultListID);
 
             if (drafter.groupAltList == null)
-            {
                 listSelector = new AltListSelector(sizeListExcluded);
-            }
             else
-            {
                 listSelector = new AltListSelector(sizeListExcluded, drafter.groupAltList);
-            }
+            
 
             if (listSelector.ShowDialog() == DialogResult.OK)
             {
