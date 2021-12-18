@@ -80,6 +80,10 @@
       <Project>{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}</Project>
       <Name>Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Modeling\Modeling.csproj">
+      <Project>{B195C5BF-431E-4828-86F1-F638F131EA43}</Project>
+      <Name>Modeling</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UserInterface\UserInterface.csproj">
       <Project>{a627c197-795e-4af7-b3aa-127797de04be}</Project>
       <Name>UserInterface</Name>

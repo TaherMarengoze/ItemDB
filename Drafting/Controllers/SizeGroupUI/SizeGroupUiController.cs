@@ -31,13 +31,15 @@ namespace Controllers.SizeGroupUI
 
         public int Count => SizeGroups?.Count ?? 0;
 
-        public List<string> SizeIDs => sProvider.GetIDs();
+        public List<string> SizeIDs => sizeDP.GetIDs();
 
         public List<string> CustomSizeIDs => csProvider.GetIDs();
 
         public SizeGroup SelectedSizeGroup { get; private set; }
 
-        private List<SizeList> SizeLists => sProvider.GetList().As<SizeList>();
+        public List<SizeList> SizeLists => sizeDP.GetList().As<SizeList>();
+
+        public List<SizeList> RemainingSizeLists => sizeDP.GetListExcluded(InputDefaultID).As<SizeList>();
 
 
         #region UI Inputs
@@ -284,11 +286,11 @@ namespace Controllers.SizeGroupUI
         /* public getter methods */
         public List<SizeList> GetSizeListsExcluded(string excludId)
         {
-            return sProvider.GetListExcluded(excludId).As<SizeList>();
+            return sizeDP.GetListExcluded(excludId).As<SizeList>();
         }
         public List<string> GetListEntries(string listID)
         {
-            return sProvider.GetEntries(listID);
+            return sizeDP.GetEntries(listID);
         }
 
         public void SetSelection(string id)
@@ -364,7 +366,7 @@ namespace Controllers.SizeGroupUI
         #region Fields
         private readonly SizeGroupCache cache = new SizeGroupCache();
         private SizeGroupProvider sgProvider = new SizeGroupProvider();
-        private SizeProvider sProvider = new SizeProvider();
+        private SizeProvider sizeDP = new SizeProvider();
         private CustomSizeProvider csProvider = new CustomSizeProvider();
         private string _inputID;
         private string _inputName;

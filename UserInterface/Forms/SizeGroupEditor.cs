@@ -1088,6 +1088,8 @@ namespace UserInterface.Forms
             List<BasicListView> sizeListExcluded =
                 Data.GetSizesExclude(drafter.groupDefaultListID);
 
+            _ = uiControl.RemainingSizeLists;
+
             if (drafter.groupAltList == null)
                 listSelector = new AltListSelector(sizeListExcluded);
             else

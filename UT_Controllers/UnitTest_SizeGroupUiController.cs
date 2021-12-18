@@ -31,8 +31,8 @@ namespace UT_Controllers
             XmlDataSource.XmlContext context = (XmlDataSource.XmlContext)AppCore.Globals.context;
             //UserInterface.Runtime.Test.LoadCallback testLoadXmlContext = context.TestLoadXmlContext;
             //UserInterface.Runtime.Test.AutoLoad(testLoadXmlContext);
-            
-            context.TestLoadXmlContext(fixedPath1);
+
+            context.TestLoadXmlContext(false ? dynTestPath : fixedPath2);
 
             reader = AppCore.Globals.reader;
             cache = new ClientService.SizeGroupCache();
@@ -86,7 +86,7 @@ namespace UT_Controllers
             Assert.AreEqual(SimulateInputsAndGetExpected(1), actualOutput);
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void Should_RequiredStatusAltList()
         {
             SimulateInitialization();
@@ -97,9 +97,18 @@ namespace UT_Controllers
             sgc.InputAltListRequired = true;
             sgc.InputAltListRequired = false;
 
-            Assert.AreEqual(InputStatus.Ignore, sgc.StatusAltList);
+            Assert.AreEqual(InputStatus.Blank, sgc.StatusAltList);
         }
-        
+
+        [TestMethod]
+        public void Test_RemainingSizeLists()
+        {
+            SimulateInitialization();
+
+            //sgc.InputDefaultID = "PIP2";
+
+            Assert.AreEqual(sgc.SizeLists.Count - 1*0, sgc.RemainingSizeLists.Count);
+        }
 
         private void Sgc_OnReadyStateChange(object sender, bool e)
         {

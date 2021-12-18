@@ -71,6 +71,12 @@
     <Compile Include="Common\ControlsExtension.cs" />
     <Compile Include="Controllers\SimpleListController.cs" />
     <Compile Include="Controllers\SizeGroupExt.cs" />
+    <Compile Include="Forms\ListSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ListSelector.Designer.cs">
+      <DependentUpon>ListSelector.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\PlainBackground.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -169,6 +175,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Runtime\Test.cs" />
+    <EmbeddedResource Include="Forms\ListSelector.resx">
+      <DependentUpon>ListSelector.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\AltListSelector.resx">
       <DependentUpon>AltListSelector.cs</DependentUpon>
     </EmbeddedResource>

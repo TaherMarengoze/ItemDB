@@ -52,6 +52,7 @@
     <Compile Include="DataModels\SpecsItem.cs" />
     <Compile Include="DraftModels\CloneExtension.cs" />
     <Compile Include="DraftModels\SpecsDrafter.cs" />
+    <Compile Include="Generic\SelectionList.cs" />
     <Compile Include="ListEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataModels\ItemDetails.cs" />
