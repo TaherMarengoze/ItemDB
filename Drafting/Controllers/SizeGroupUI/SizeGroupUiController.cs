@@ -2,6 +2,7 @@
 using ClientService;
 using ClientService.Data;
 using CoreLibrary.Enums;
+using Interfaces.Models;
 using Modeling.DataModels;
 using Modeling.ViewModels;
 using Modeling.ViewModels.SizeGroup;
@@ -19,7 +20,7 @@ namespace Controllers.SizeGroupUI
         public event EventHandler<InputStatus> OnNameStatusChange;
         public event EventHandler<InputStatus> OnDefaultIdStatusChange;
         public event EventHandler<InputStatus> OnCustomIdStatusChange;
-        public event EventHandler<bool> OnAltListStatusChange;
+        public event EventHandler<InputStatus> OnAltListStatusChange;
         public event EventHandler<bool> OnReadyStateChange;
         public event EventHandler<string> OnNewEntityAdd;
         #endregion
@@ -39,7 +40,10 @@ namespace Controllers.SizeGroupUI
 
         public List<SizeList> SizeLists => sizeDP.GetList().As<SizeList>();
 
-        public List<SizeList> RemainingSizeLists => sizeDP.GetListExcluded(InputDefaultID).As<SizeList>();
+        /// <summary>
+        /// Gets the size lists excluding the default size list.
+        /// </summary>
+        public List<IFieldList> SizeListsDefaultEx => sizeDP.GetListExcluded(InputDefaultID);
 
 
         #region UI Inputs
@@ -258,6 +262,7 @@ namespace Controllers.SizeGroupUI
                 _statusAltList = value;
 
                 // raise event for status change
+                OnAltListStatusChange?.Invoke(this, value);
 
                 // check all inputs status
                 CheckInputsStatus();

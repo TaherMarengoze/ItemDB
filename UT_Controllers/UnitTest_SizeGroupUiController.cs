@@ -5,6 +5,7 @@ using System.Linq;
 using CoreLibrary.Enums;
 using Interfaces.Operations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using UserInterface.Forms;
 
 namespace UT_Controllers
 {
@@ -32,7 +33,7 @@ namespace UT_Controllers
             //UserInterface.Runtime.Test.LoadCallback testLoadXmlContext = context.TestLoadXmlContext;
             //UserInterface.Runtime.Test.AutoLoad(testLoadXmlContext);
 
-            context.TestLoadXmlContext(false ? dynTestPath : fixedPath2);
+            context.TestLoadXmlContext(true ? dynTestPath : fixedPath2);
 
             reader = AppCore.Globals.reader;
             cache = new ClientService.SizeGroupCache();
@@ -100,14 +101,27 @@ namespace UT_Controllers
             Assert.AreEqual(InputStatus.Blank, sgc.StatusAltList);
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void Test_RemainingSizeLists()
         {
             SimulateInitialization();
 
             //sgc.InputDefaultID = "PIP2";
 
-            Assert.AreEqual(sgc.SizeLists.Count - 1*0, sgc.RemainingSizeLists.Count);
+            Assert.AreEqual(sgc.SizeLists.Count - 1*0, sgc.SizeListsDefaultEx.Count);
+        }
+
+        //[DataTestMethod]
+        //[DataRow("SSHO")]
+        public void Should_GetInputAltList(string p1)
+        {
+            SimulateInitialization();
+
+            sgc.InputDefaultID = p1;
+            sgc.InputAltList = new List<string> { "PIP1", "PIP2" };
+
+            ListSelector selector = new ListSelector(sgc.SizeListsDefaultEx, sgc.InputAltList);
+            selector.ShowDialog();
         }
 
         private void Sgc_OnReadyStateChange(object sender, bool e)

@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using UserService;
 using UserInterface.Shared;
 using Shared.UI;
+using Modeling.ViewModels;
 
 namespace UserInterface.Forms
 {
@@ -30,6 +31,7 @@ namespace UserInterface.Forms
             uiControl.OnIdStatusChange += UiControl_OnIdStatusChange;
             uiControl.OnNameStatusChange += UiControl_OnNameStatusChange;
             uiControl.OnDefaultIdStatusChange += UiControl_OnDefaultIdStatusChange;
+            uiControl.OnAltListStatusChange += UiControl_OnAltListStatusChange;
             uiControl.OnReadyStateChange += UiControl_OnReadyStateChange;
             uiControl.OnNewEntityAdd += UiControl_OnNewEntityAdd;
         }
@@ -69,7 +71,7 @@ namespace UserInterface.Forms
             //throw new NotImplementedException();
             lblValidatorGroupId.ValidityInfo(status);
         }
-        
+
         private void UiControl_OnNameStatusChange(object sender, InputStatus status)
         {
             //throw new NotImplementedException();
@@ -83,6 +85,24 @@ namespace UserInterface.Forms
             if (status == InputStatus.Valid)
             {
                 EnableAltListSelection();
+            }
+        }
+
+        private void UiControl_OnAltListStatusChange(object sender, InputStatus status)
+        {
+            //throw new NotImplementedException();
+            if (status == InputStatus.Valid)
+            {
+                lstAltListIDs.DataSource = uiControl.InputAltList;
+
+                // enable the Clear button
+                btnClearAltList.Enabled = true;
+
+                // exclude Alt Size ID List from the default Size ID selector
+                skipEvents = true;
+                cboDefaultID.DataSource = Data.GetSizesIdExclude(drafter.groupAltList);
+                cboDefaultID.Text = drafter.groupDefaultListID;
+                skipEvents = false;
             }
         }
 
@@ -340,7 +360,7 @@ namespace UserInterface.Forms
         private void InputSizeGroupID()
         {
             //throw new NotImplementedException();
-            
+
             if (Mode != EntryMode.View)
             {
                 uiControl.InputID = txtGroupID.Text;
@@ -480,7 +500,7 @@ namespace UserInterface.Forms
             dgvGroups.AutoResizeColumns();
             dgvGroups.AutoResizeRows();
         }
-        
+
         private void ChangeGroupID()
         {
             if (skipEvents) return;
@@ -1044,7 +1064,7 @@ namespace UserInterface.Forms
             cboCustomSizeID.SelectedIndex = -1;
             lstAltListIDs.DataSource = null;
         }
-        
+
         private void EnableAltListSelection()
         {
             chkAltList.Enabled = true;
@@ -1083,18 +1103,31 @@ namespace UserInterface.Forms
 
         private void ShowListSelector()
         {
+            /// implement new ListSelector
+
+            // selector form instance
+            ListSelector selector;
+            selector = new ListSelector(uiControl.SizeListsDefaultEx, uiControl.InputAltList);
+            if (selector.ShowDialog() == DialogResult.OK)
+            {
+                if (Mode != EntryMode.View)
+                {
+                    uiControl.InputAltList = selector.OutputList;
+                }
+            }
+            /// end implementation
+
+            return;
             AltListSelector listSelector;
 
             List<BasicListView> sizeListExcluded =
                 Data.GetSizesExclude(drafter.groupDefaultListID);
 
-            _ = uiControl.RemainingSizeLists;
-
             if (drafter.groupAltList == null)
                 listSelector = new AltListSelector(sizeListExcluded);
             else
                 listSelector = new AltListSelector(sizeListExcluded, drafter.groupAltList);
-            
+
 
             if (listSelector.ShowDialog() == DialogResult.OK)
             {
@@ -1223,7 +1256,7 @@ namespace UserInterface.Forms
             //ChangeGroupID();
             InputSizeGroupID();
         }
-        
+
         private void txtGroupID_KeyPress(object sender, KeyPressEventArgs e)
         {
 
@@ -1250,7 +1283,7 @@ namespace UserInterface.Forms
             // display selected size list entries
             DisplaySelectedListEntries();
         }
-        
+
         private void cboCustomSizeID_SelectedIndexChanged(object sender, EventArgs e)
         {
             InputCustomSizeID();

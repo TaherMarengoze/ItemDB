@@ -13,25 +13,21 @@ namespace UserInterface.Forms
 {
     public partial class ListSelector : Form
     {
+        public List<SelectionList> UT_InputList => inputList;
+
         public List<string> OutputList { get; private set; }
 
         private List<SelectionList> inputList;
         private List<SelectionList> inputListFilter;
         Func<IFieldList, SelectionList> selector;
 
-        public ListSelector(IList<IFieldList> source)
-        {
-            InitializeComponent();
-            SetSelectionList(source);
-        }
-
         public ListSelector(IList<IFieldList> source, IList<string> selected)
         {
             InitializeComponent();
             SetSelectionList(source, selected);
         }
-
-        private void SetSelectionList(IList<IFieldList> source, IList<string> selected = null)
+        
+        private void SetSelectionList(IList<IFieldList> source, IList<string> selected)
         {
             if (selected == null)
             {
