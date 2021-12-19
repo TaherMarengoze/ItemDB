@@ -100,8 +100,8 @@ namespace UserInterface.Forms
 
                 // exclude Alt Size ID List from the default Size ID selector
                 skipEvents = true;
-                cboDefaultID.DataSource = Data.GetSizesIdExclude(drafter.groupAltList);
-                cboDefaultID.Text = drafter.groupDefaultListID;
+                cboDefaultID.DataSource = uiControl.SizeIdListsAltEx;
+                cboDefaultID.Text = uiControl.InputDefaultID;
                 skipEvents = false;
             }
         }

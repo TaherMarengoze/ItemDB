@@ -41,10 +41,20 @@ namespace Controllers.SizeGroupUI
         public List<SizeList> SizeLists => sizeDP.GetList().As<SizeList>();
 
         /// <summary>
-        /// Gets the size lists excluding the default size list.
+        /// Get the size lists excluding the default size list.
         /// </summary>
         public List<IFieldList> SizeListsDefaultEx => sizeDP.GetListExcluded(InputDefaultID);
 
+        /// <summary>
+        /// Get the size ID lists excluding the alt size list IDs.
+        /// </summary>
+        public List<string> SizeIdListsAltEx
+        {
+            get
+            {
+                return (from s in sizeDP.GetList() where !_inputAltList.Contains(s.ID) select s.ID).ToList();
+            }
+        }
 
         #region UI Inputs
         public string InputID
