@@ -33,6 +33,25 @@ namespace Shared.UI
             dgv.AutoResizeRows();
         }
 
+        public static object SelectedObjectID(this DataGridView dgv, string fieldName = "")
+        {
+            if (dgv.Rows.Count <= 0)
+                return null;
+
+            DataGridViewRow firstSelectedRow = dgv.SelectedRows[0];
+            if (firstSelectedRow == null)
+                return null;
+
+            if (fieldName == "")
+            {
+                // assumes that the ID column is the first one
+                return firstSelectedRow.Cells[0].Value;
+            }
+
+            return
+                firstSelectedRow.Cells[fieldName].Value;
+        }
+
         /// <summary>
         /// Select all text contents in a <see cref="TextBox"/> and set the focus on it.
         /// </summary>
