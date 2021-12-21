@@ -16,6 +16,7 @@ namespace Controllers.SizeGroupUI
     {
         #region Events
         public event EventHandler<SizeGroupSelectionEventArgs> OnSelectionChange;
+        public event EventHandler<SizeGroupAltListSetEventArgs> OnInputAltListSet;
         public event EventHandler<InputStatus> OnIdStatusChange;
         public event EventHandler<InputStatus> OnNameStatusChange;
         public event EventHandler<InputStatus> OnDefaultIdStatusChange;
@@ -48,13 +49,11 @@ namespace Controllers.SizeGroupUI
         /// <summary>
         /// Get the size ID lists excluding the alt size list IDs.
         /// </summary>
-        public List<string> SizeIdListsAltEx
-        {
-            get
-            {
-                return (from s in sizeDP.GetList() where !_inputAltList.Contains(s.ID) select s.ID).ToList();
-            }
-        }
+        public List<string> SizeIdListsAltEx =>
+            (from sizeList in sizeDP.GetList()
+             where !_inputAltList.Contains(sizeList.ID)
+             select sizeList.ID)
+            .ToList();
 
         #region UI Inputs
         public string InputID
@@ -105,6 +104,8 @@ namespace Controllers.SizeGroupUI
             set
             {
                 _inputName = value;
+
+                // set input validity status
                 if (string.IsNullOrWhiteSpace(value))
                 {
                     StatusName = InputStatus.Blank;
@@ -134,16 +135,18 @@ namespace Controllers.SizeGroupUI
             set
             {
                 _inputDefaultID = value;
+
+                // set input validity status
                 if (string.IsNullOrWhiteSpace(value))
                 {
                     StatusDefaultID = InputStatus.Blank;
                 }
                 else
                 {
-                    // check if valid, this check is useless in this case
-                    // since the UI provides predefined selection from a list
-                    // but should the UI changes to a text input (i.e. Console)
-                    // a check must be made to make sure that the id exists
+                    /// check if valid, this check is useless in this case
+                    /// since the UI provides predefined selection from a list
+                    /// but should the UI changes to a text input(i.e.Console)
+                    /// a check must be made to make sure that the id exists
                     bool isValid = true;
                     if (isValid)
                     {
@@ -173,11 +176,20 @@ namespace Controllers.SizeGroupUI
             set
             {
                 _inputAltList = value;
+
+                // raise an event for change
+                OnInputAltListSet?.Invoke(this, new SizeGroupAltListSetEventArgs
+                {
+                    SelectedSizeLists = _inputAltList,
+                    AvailableSizeLists = GetAvailableSizesID().ToList()
+                });
+
+                // set input validity status
                 bool notNullOrEmpty = value?.Count > 0;
                 StatusAltList = notNullOrEmpty ? InputStatus.Valid : InputStatus.Invalid;
             }
         }
-
+        
         public bool InputCustomIdRequired
         {
             get => _inputCustomIdRequired;
@@ -194,6 +206,8 @@ namespace Controllers.SizeGroupUI
             set
             {
                 _inputCustomID = value;
+
+                // set input validity status
                 if (string.IsNullOrWhiteSpace(value))
                 {
                     StatusCustomID = InputStatus.Blank;
@@ -317,7 +331,7 @@ namespace Controllers.SizeGroupUI
                 new SizeGroupSelectionEventArgs(sizeGroup));
         }
 
-        
+
 
         public void New()
         {
@@ -328,9 +342,13 @@ namespace Controllers.SizeGroupUI
             _statusCustomID = InputStatus.Blank;
         }
 
+        public void Edit(string groupId)
+        {
+            throw new NotImplementedException();
+        }
+
         public void AddNew()
         {
-            //throw new NotImplementedException();
             SizeGroup draft = new SizeGroup
             {
                 ID = InputID,
@@ -347,13 +365,21 @@ namespace Controllers.SizeGroupUI
             OnNewEntityAdd?.Invoke(this, InputID);
         }
 
+        // private getter methods
+        private IEnumerable<string> GetAvailableSizesID()
+        {
+            return _inputAltList == null ?
+                SizeIDs :
+                SizeIDs.Where(id => _inputAltList.Contains(id) == false);
+        }
+
         // private methods
         private void CheckInputsStatus()
         {
             bool validID = StatusID == InputStatus.Valid;
             bool validName = StatusName == InputStatus.Valid;
             bool validDefaultID = StatusDefaultID == InputStatus.Valid;
-            bool validAltList = _inputAltListRequired ? StatusAltList == InputStatus.Valid : true;
+            bool validAltList = _inputAltListRequired ? _statusAltList == InputStatus.Valid : true;
             bool validCustomID = _inputCustomIdRequired ? StatusCustomID == InputStatus.Valid : true;
 
             bool isReady =

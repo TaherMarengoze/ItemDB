@@ -40,4 +40,11 @@ namespace Controllers.SizeGroupUI
 
         public List<SizeGroup> SizeGroups { get; set; }
     }
+
+    public class SizeGroupAltListSetEventArgs : EventArgs
+    {
+        public List<string> SelectedSizeLists { get; set; }
+
+        public List<string> AvailableSizeLists { get; set; }
+    }
 }
