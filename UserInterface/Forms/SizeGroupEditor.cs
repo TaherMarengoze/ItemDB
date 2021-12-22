@@ -73,10 +73,10 @@ namespace UserInterface.Forms
             lstAltListIDs.DataSource = e.SelectedSizeLists;
 
             // exclude Alt Size ID List from the default Size ID selector
-            skipEvents = true;
+            SKIP_EVENTS = true;
             cboDefaultID.DataSource = e.AvailableSizeLists;
             cboDefaultID.Text = uiControl.InputDefaultID;
-            skipEvents = false;
+            SKIP_EVENTS = false;
         }
 
         private void UiControl_OnIdStatusChange(object sender, InputStatus status)
@@ -116,24 +116,26 @@ namespace UserInterface.Forms
             }
         }
 
-        private void UiControl_OnReadyStateChange(object sender, bool ready)
+        private void UiControl_OnReadyStateChange(object sender, SizeGroupReadyEventArgs e)
         {
             if (Mode != EntryMode.View)
             {
-                if (ready)
+                if (e.Ready)
                 {
                     tsLblReadyState.ForeColor = Color.Green;
-                    tsLblReadyState.Text = "Ready";
+                    //tsLblReadyState.Text = "Ready";
 
                     btnAccept.Enabled = true;
                 }
                 else
                 {
                     tsLblReadyState.ForeColor = Color.Red;
-                    tsLblReadyState.Text = "Not ready";
+                    //tsLblReadyState.Text = "Not ready";
 
                     btnAccept.Enabled = false;
                 }
+
+                tsLblReadyState.Text = e.Info;
             }
         }
 
@@ -225,8 +227,30 @@ namespace UserInterface.Forms
 
                     // setup User Interface
 
+                    switch (value)
+                    {
+                        case EntryMode.Edit:
+
+                            // get selected row
+                            DataGridViewRow row = dgvGroups.SelectedRows[0];
+
+                            // format the row being edited
+                            row.DefaultCellStyle.BackColor = Color.Aquamarine;
+                            row.DefaultCellStyle.ForeColor = Color.DarkGray;
+                            break;
+
+                        default:
+                            break;
+                    }
+
                     // clear and disable SizeGroup selection
                     dgvGroups.ClearSelection();
+
+                    // hide the row header arrow
+                    dgvGroups.RowHeadersDefaultCellStyle.Padding =
+                        new Padding(dgvGroups.RowHeadersWidth);
+
+                    // disable grid
                     dgvGroups.Enabled = false;
 
                     // disable SizeGroup Add, Edit & Remove buttons
@@ -281,7 +305,8 @@ namespace UserInterface.Forms
         /// </summary>
         private bool draft_defListGiven = false;
 
-        private bool skipEvents = false;
+        private bool SKIP_EVENTS = false;
+        private bool ALLOW_INPUT = true;
         private int groupSelectionIndex;
 
         private void PostLoading()
@@ -349,57 +374,18 @@ namespace UserInterface.Forms
         private void EditSizeGroup()
         {
             // get the id of edit object
-            string id = dgvGroups.SelectedObjectID().ToString();
+            string id = (string)dgvGroups.SelectedObjectID();
+
+            uiControl.Edit(id);
 
             // set entry mode
             Mode = EntryMode.Edit;
-            return;
-            // Exit if no group exists
-            if (dgvGroups.SelectedRows.Count <= 0) return;
 
-            // Get selected row
-            DataGridViewRow row = dgvGroups.SelectedRows[0];
-
-            // Format the row being edited
-            row.DefaultCellStyle.BackColor = Color.Aquamarine;
-            row.DefaultCellStyle.ForeColor = Color.DarkGray;
-
-            // Get selected group id from row
-            string groupId = row.Cells[0].Value.ToString();
-
-            drafter = new SizeGroupDrafter(Data.GetSizeGroup(groupId));
-
-            draft_idGiven = true;
-            draft_nameGiven = true;
-
-            // For now all concerns on Default List ID
-            // and no concern on Custom Size ID
-            // so this flag will always be True
-            draft_defListGiven = true;
-
-            if (draft_defListGiven) // or if draft_customIdGiven is True --to be added later--
-            {
-                EnableAltListSelection();
-            }
-
-            EnterEditMode();
-
-            // Setup User Interface
-            NewEditSetupUI();
-
-            // Set CheckBox for Alt List & Custom Size, if any.
-            if (drafter.groupAltList != null)
-            {
-                chkAltList.Checked = true;
-                btnClearAltList.Enabled = true;
-            }
-            else
-            {
-                chkAltList.Checked = false;
-                btnClearAltList.Enabled = false;
-            }
-
-            chkCustomSize.Checked = drafter.groupCustomSizeID != null;
+            // set checkboxes check value
+            ALLOW_INPUT = false;
+            chkAltList.Checked = uiControl.InputAltListRequired;
+            chkCustomSize.Checked = uiControl.InputCustomIdRequired;
+            ALLOW_INPUT = true;
         }
 
         private void ClearSizeGroupFields()
@@ -446,10 +432,10 @@ namespace UserInterface.Forms
             {
                 uiControl.InputAltListRequired = chkAltList.Checked;
 
-                if (chkAltList.Checked)
-                    EnableAltListUI();
-                else
-                    DisableAltListUI();
+                //if (chkAltList.Checked)
+                //    EnableAltListUI();
+                //else
+                //    DisableAltListUI();
             }
         }
 
@@ -458,11 +444,6 @@ namespace UserInterface.Forms
             if (Mode != EntryMode.View)
             {
                 uiControl.InputCustomIdRequired = chkCustomSize.Checked;
-
-                if (chkCustomSize.Checked)
-                    EnableCustomSizeUI();
-                else
-                    DisableCustomSizeUI();
             }
         }
 
@@ -554,7 +535,7 @@ namespace UserInterface.Forms
             dgvGroups.AutoResizeRows();
         }
 
-        private void ChangeGroupID()
+        /*private void ChangeGroupID()
         {
             if (skipEvents) return;
 
@@ -569,14 +550,14 @@ namespace UserInterface.Forms
 
                 draft_idGiven = IsGroupIdGiven(inputId) && IsGroupIdUnique(inputId);
 
-                //if (draft_idGiven)
-                    //drafter.groupID = inputId;
+                if (draft_idGiven)
+                    drafter.groupID = inputId;
 
-                //CheckDraftValidity();
+                CheckDraftValidity();
             }
-        }
+        }*/
 
-        private void ChangeGroupName()
+        /*private void ChangeGroupName()
         {
             if (skipEvents) return;
 
@@ -590,14 +571,14 @@ namespace UserInterface.Forms
 
                 draft_nameGiven = IsGroupNameGiven(inputName);
 
-                //if (draft_nameGiven)
-                    //drafter.groupName = inputName.Trim();
+                if (draft_nameGiven)
+                    drafter.groupName = inputName.Trim();
 
-                //CheckDraftValidity();
+                CheckDraftValidity();
             }
-        }
+        }*/
 
-        private void ChangeDefaultListID()
+        /*private void ChangeDefaultListID()
         {
             // only in non-view mode
             if (Mode != EntryMode.View)
@@ -606,33 +587,33 @@ namespace UserInterface.Forms
 
                 if (draft_defListGiven)
                 {
-                    //drafter.groupDefaultListID = cboDefaultID.Text;
+                    drafter.groupDefaultListID = cboDefaultID.Text;
                     EnableAltListSelection();
                 }
 
-                //CheckDraftValidity();
+                CheckDraftValidity();
             }
-        }
+        }*/
 
-        //private void NewGroup()
-        //{
-        //    // Create draft objects
-        //    drafter = new SizeGroupDrafter();
+        /*private void NewGroup()
+        {
+            // Create draft objects
+            drafter = new SizeGroupDrafter();
 
-        //    // Set Entry Mode
-        //    EnterNewMode();
+            // Set Entry Mode
+            EnterNewMode();
 
-        //    // Setup User Interface
-        //    NewEditSetupUI();
+            // Setup User Interface
+            NewEditSetupUI();
 
-        //    // Clear existing data for new input
-        //    ClearGroupMetadataUI();
-        //    ClearGroupDataUI();
-        //    txtGroupID.Focus();
-        //    //cboDefaultID.SelectedIndex = -1;
-        //}
+            // Clear existing data for new input
+            ClearGroupMetadataUI();
+            ClearGroupDataUI();
+            txtGroupID.Focus();
+            //cboDefaultID.SelectedIndex = -1;
+        }*/
 
-        private void NewEditSetupUI()
+        /*private void NewEditSetupUI()
         {
             DisableSizeGroupSelection();
             DisableGroupModifyUI();
@@ -640,7 +621,7 @@ namespace UserInterface.Forms
             EnableGroupMetadataEntryUI();
             EnableGroupDataUI();
             CheckSizeGroupList();
-        }
+        }*/
 
         private void CancelDraftingSetupUI()
         {
@@ -653,9 +634,9 @@ namespace UserInterface.Forms
             CheckSizeGroupList();
         }
 
-        private void CheckDraftValidity()
+        /*private void CheckDraftValidity()
         {
-            /*bool requiredDataGiven = draft_idGiven && draft_nameGiven && draft_defListGiven;
+            bool requiredDataGiven = draft_idGiven && draft_nameGiven && draft_defListGiven;
             bool draftDataModified = true;
 
             // Detect modification in case of edit
@@ -664,12 +645,11 @@ namespace UserInterface.Forms
                 //draftDataModified = drafter.IsModified();
             }
 
-            btnAccept.Enabled = requiredDataGiven && draftDataModified;*/
-        }
+            btnAccept.Enabled = requiredDataGiven && draftDataModified;
+        }*/
 
-        private void SaveDraftGroup()
+        /*private void SaveDraftGroup()
         {
-            /*
             // Save Draft Object
             //drafter.CommitChanges();
 
@@ -701,8 +681,8 @@ namespace UserInterface.Forms
             EnableGroupModifyUI();
             HideGroupReviewUI();
             DisableGroupMetadataEntryUI();
-            DisableGroupDataUI();*/
-        }
+            DisableGroupDataUI();
+        }*/
 
         private void CancelDrafting()
         {
@@ -810,7 +790,7 @@ namespace UserInterface.Forms
             return Regex.Replace(text, pattern, "", RegexOptions.Compiled);
         }
 
-        private bool IsGroupIdGiven(string inputId)
+        /*private bool IsGroupIdGiven(string inputId)
         {
             bool given = inputId != string.Empty;
 
@@ -820,9 +800,9 @@ namespace UserInterface.Forms
                 lblValidatorGroupId.Text = string.Empty;
 
             return given;
-        }
+        }*/
 
-        private bool IsGroupIdUnique(string inputId)
+        /*private bool IsGroupIdUnique(string inputId)
         {
             bool unique;
             List<string> groupsId = Data.GetSizeGroupsId();
@@ -876,9 +856,9 @@ namespace UserInterface.Forms
                     return false;
             }
 
-        }
+        }*/
 
-        private bool IsGroupNameGiven(string inputName)
+        /*private bool IsGroupNameGiven(string inputName)
         {
             bool given = inputName != string.Empty;
 
@@ -888,9 +868,9 @@ namespace UserInterface.Forms
                 lblValidatorGroupName.Text = string.Empty;
 
             return given;
-        }
+        }*/
 
-        private bool IsGroupDefaultListGiven(string text)
+        /*private bool IsGroupDefaultListGiven(string text)
         {
             bool given = text != string.Empty;
 
@@ -904,7 +884,7 @@ namespace UserInterface.Forms
             }
 
             return given;
-        }
+        }*/
 
         private void EnableGroupContainerUI()
         {
@@ -1079,6 +1059,9 @@ namespace UserInterface.Forms
             lblListsID.Enabled = true;
             lstAltListIDs.Enabled = true;
             btnModifyAltList.Enabled = true;
+
+            if (lstAltListIDs.DataSource != null)
+                btnClearAltList.Enabled = true;
         }
 
         private void DisableAltListUI()
@@ -1086,6 +1069,7 @@ namespace UserInterface.Forms
             lblListsID.Enabled = false;
             lstAltListIDs.Enabled = false;
             btnModifyAltList.Enabled = false;
+            btnClearAltList.Enabled = false;
         }
 
         private void EnableCustomSizeUI()
@@ -1137,46 +1121,40 @@ namespace UserInterface.Forms
             }
         }
 
-        private void btnNewGroup_Click(object sender, EventArgs e)
-        {
-            //NewGroup();
-            AddNewSizeGroup();
-        }
+        private void btnNewGroup_Click(object sender, EventArgs e) => AddNewSizeGroup();
 
-        private void btnEditGroup_Click(object sender, EventArgs e)
-        {
-            EditSizeGroup();
-        }
+        private void btnEditGroup_Click(object sender, EventArgs e) => EditSizeGroup();
 
-        private void btnAccept_Click(object sender, EventArgs e)
-        {
-            //SaveDraftGroup();
-            uiControl.AddNew();
-        }
+        private void btnAccept_Click(object sender, EventArgs e) => uiControl.ConfirmAdd();
 
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            CancelDrafting();
-        }
+        private void btnCancel_Click(object sender, EventArgs e) => CancelDrafting();
 
-        private void btnRemoveGroup_Click(object sender, EventArgs e)
-        {
-            RemoveGroup();
-        }
+        private void btnRemoveGroup_Click(object sender, EventArgs e) => RemoveGroup();
 
         private void chkAltList_CheckedChanged(object sender, EventArgs e)
         {
-            InputAltListRequirement();
+            if (ALLOW_INPUT)
+                InputAltListRequirement();
+
+            if (chkAltList.Checked)
+                EnableAltListUI();
+            else
+                DisableAltListUI();
         }
 
         private void chkCustomSize_CheckedChanged(object sender, EventArgs e)
         {
-            InputCustomSizeRequirement();
+            if (ALLOW_INPUT)
+                InputCustomSizeRequirement();
+
+            if (chkCustomSize.Checked)
+                EnableCustomSizeUI();
+            else
+                DisableCustomSizeUI();
         }
 
         private void txtGroupID_TextChanged(object sender, EventArgs e)
         {
-            //ChangeGroupID();
             InputSizeGroupID();
         }
 
@@ -1185,11 +1163,7 @@ namespace UserInterface.Forms
 
         }
 
-        private void txtGroupName_TextChanged(object sender, EventArgs e)
-        {
-            //ChangeGroupName();
-            InputSizeGroupName();
-        }
+        private void txtGroupName_TextChanged(object sender, EventArgs e) => InputSizeGroupName();
 
         private void txtGroupName_Leave(object sender, EventArgs e)
         {
@@ -1198,7 +1172,7 @@ namespace UserInterface.Forms
 
         private void cboDefaultID_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (skipEvents)
+            if (SKIP_EVENTS)
                 return;
 
             InputDefaultID();
@@ -1207,35 +1181,17 @@ namespace UserInterface.Forms
             DisplaySelectedListEntries();
         }
 
-        private void cboCustomSizeID_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            InputCustomSizeID();
-        }
+        private void cboCustomSizeID_SelectedIndexChanged(object sender, EventArgs e) => InputCustomSizeID();
 
-        private void cboCustomSizeID_TextChanged(object sender, EventArgs e)
-        {
-            InputCustomSizeID();
-        }
+        private void cboCustomSizeID_TextChanged(object sender, EventArgs e) => InputCustomSizeID();
 
-        private void btnModifyAltList_Click(object sender, EventArgs e)
-        {
-            ShowListSelector();
-        }
+        private void btnModifyAltList_Click(object sender, EventArgs e) => ShowListSelector();
 
-        private void btnClearAltList_Click(object sender, EventArgs e)
-        {
-            ClearAltSizeList();
-        }
+        private void btnClearAltList_Click(object sender, EventArgs e) => ClearAltSizeList();
 
-        private void msmiSaveFile_Click(object sender, EventArgs e)
-        {
-            SaveToSource();
-        }
+        private void msmiSaveFile_Click(object sender, EventArgs e) => SaveToSource();
 
-        private void tsmiClose_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
+        private void tsmiClose_Click(object sender, EventArgs e) => Close();
 
         private void tsmiExitApp_Click(object sender, EventArgs e)
         {

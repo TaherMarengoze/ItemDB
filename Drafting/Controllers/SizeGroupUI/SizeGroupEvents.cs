@@ -7,6 +7,13 @@ using System.Threading.Tasks;
 
 namespace Controllers.SizeGroupUI
 {
+    public class SizeGroupReadyEventArgs : EventArgs
+    {
+        public bool Ready { get; set; }
+
+        public string Info { get; set; }
+    }
+
     public class SizeGroupSelectionEventArgs : EventArgs
     {
         public SizeGroupSelectionEventArgs(SizeGroup sg)
