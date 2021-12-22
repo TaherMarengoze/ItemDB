@@ -419,9 +419,9 @@ namespace Controllers.SizeGroupUI
             OnNewEntityAdd?.Invoke(this, InputID);
         }
 
-        public void ConfirmEdit()
+        public void ConfirmEdit(string refId)
         {
-
+            cache.Update(refId, draftSizeGroup);
         }
 
         // private getter methods

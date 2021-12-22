@@ -453,6 +453,23 @@ namespace UserInterface.Forms
                 uiControl.InputCustomID = GetSelectedCustomID();
         }
 
+        private void AcceptChanges()
+        {
+            switch (Mode)
+            {
+                case EntryMode.New:
+                    uiControl.ConfirmAdd();
+                    break;
+                
+                case EntryMode.Edit:
+                    uiControl.ConfirmEdit("");
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
         private string GetSelectedDefaultID()
         {
             // use a method in case we changed from
@@ -1125,7 +1142,7 @@ namespace UserInterface.Forms
 
         private void btnEditGroup_Click(object sender, EventArgs e) => EditSizeGroup();
 
-        private void btnAccept_Click(object sender, EventArgs e) => uiControl.ConfirmAdd();
+        private void btnAccept_Click(object sender, EventArgs e) => AcceptChanges();
 
         private void btnCancel_Click(object sender, EventArgs e) => CancelDrafting();
 
