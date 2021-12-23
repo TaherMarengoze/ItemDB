@@ -42,7 +42,7 @@ namespace UT_Controllers
 
             // simulate new SizeGroupUiController
             sgc = new Controllers.SizeGroupUI.SizeGroupUiController();
-            sgc.OnReadyStateChange += Sgc_OnReadyStateChange;
+            //sgc.OnReadyStateChange += Sgc_OnReadyStateChange;
             //sgc.OnNewEntityAdd += Sgc_OnNewEntityAdd;
         }
 

@@ -11,12 +11,7 @@ namespace ClientService
 {
     public class SizeGroupCache : ICache<ISizeGroup>
     {
-        
-
-        public SizeGroupCache()
-        {
-
-        }
+        public SizeGroupCache() { }
 
         public void Create(ISizeGroup content)
         {
@@ -31,7 +26,10 @@ namespace ClientService
                 .Find(entity => entity.ID == entityId);
         }
 
-        public void Update(string refId, ISizeGroup entity) => throw new NotImplementedException();
+        public void Update(string refId, ISizeGroup entity)
+        {
+            Globals.sizeGroupRepo.Update(refId, entity);
+        }
 
         public void Delete(string entityId) => throw new NotImplementedException();
     }

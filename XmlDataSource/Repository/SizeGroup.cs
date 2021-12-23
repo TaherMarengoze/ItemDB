@@ -40,6 +40,8 @@ namespace XmlDataSource.Repository
             XElement newContent = Entity.Serialize(entity);
             XElement oldContent = GetElement(refId);
             oldContent.ReplaceWith(newContent);
+
+            OnChange?.Invoke(this, EventArgs.Empty);
         }
 
         public void Delete(string entityId)
