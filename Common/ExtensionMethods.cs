@@ -52,6 +52,29 @@ namespace Shared.UI
                 firstSelectedRow.Cells[fieldName].Value;
         }
 
+        public static void RestoreSelection(this DataGridView dgv, object dataSource)
+        {
+            int _selectionIndex = dgv.SelectedRows[0].Index;
+
+            //dgv.DataSourceResize(bindingSource, true);
+            dgv.DataSource = dataSource;
+            dgv.AutoResizeColumns();
+            dgv.AutoResizeRows();
+
+            // Get DGV number of rows
+            int itemsCount = dgv.RowCount;
+
+            if (_selectionIndex > -1 && itemsCount > 0)
+            {
+                // Check if selection index exists in the list
+                if (_selectionIndex >= itemsCount)
+                    _selectionIndex = itemsCount - 1;
+
+                dgv.Rows[_selectionIndex].Selected = true;
+                dgv.FirstDisplayedScrollingRowIndex = _selectionIndex;
+            }
+        }
+
         /// <summary>
         /// Select all text contents in a <see cref="TextBox"/> and set the focus on it.
         /// </summary>

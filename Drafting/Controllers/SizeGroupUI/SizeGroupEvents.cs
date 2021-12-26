@@ -48,6 +48,13 @@ namespace Controllers.SizeGroupUI
         public List<SizeGroup> SizeGroups { get; set; }
     }
 
+    public class SizeGroupCancelEventArgs : EventArgs
+    {
+        public string RestoreID { get; set; }
+
+        public bool EmptyList { get; set; }
+    }
+
     public class SizeGroupAltListSetEventArgs : EventArgs
     {
         public List<string> SelectedSizeLists { get; set; }

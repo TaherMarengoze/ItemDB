@@ -29,7 +29,8 @@ namespace Controllers.SizeGroupUI
         public event EventHandler<InputStatus> OnAltListStatusChange;
         public event EventHandler<SizeGroupReadyEventArgs> OnReadyStateChange;
         public event EventHandler<string> OnEntitySet;
-        public event EventHandler<string> OnDraftCancel;
+        public event EventHandler<SizeGroupCancelEventArgs> OnDraftCancel;
+        public event EventHandler<int> OnEntityRemove;
         #endregion
 
         #region Properties
@@ -76,7 +77,7 @@ namespace Controllers.SizeGroupUI
                 else
                 {
                     // check for duplicate
-                    bool isDuplicate = sizeGroupDP.GetIDs().Contains(value) && value != draftSizeGroup?.ID;
+                    bool isDuplicate = sizeGroupDP.GetIDs().Contains(value) && value != draftObject?.ID;
 
                     if (isDuplicate)
                     {
@@ -336,11 +337,11 @@ namespace Controllers.SizeGroupUI
 
         public void SetSelection(string id)
         {
-            SizeGroup sizeGroup = (SizeGroup)cache.Read(id);
+            selected = (SizeGroup)cache.Read(id);
 
             // raise an event for selection change
             OnSelectionChange?.Invoke(this,
-                new SizeGroupSelectionEventArgs(sizeGroup));
+                new SizeGroupSelectionEventArgs(selected));
         }
 
         public void New()
@@ -358,18 +359,18 @@ namespace Controllers.SizeGroupUI
             //DISABLE_RAISE_EVENT = false;
         }
 
-        public void Edit(string groupId)
+        public void Edit(string objectID)
         {
             // get and store the original object
-            draftSizeGroup = (SizeGroup)cache.Read(groupId);
+            draftObject = (SizeGroup)cache.Read(objectID);
 
             DISABLE_RAISE_EVENT = true;
 
-            InputID = draftSizeGroup.ID;
-            InputName = draftSizeGroup.Name;
-            InputDefaultID = draftSizeGroup.DefaultListID;
-            InputAltList = draftSizeGroup.AltIdList;
-            InputCustomID = draftSizeGroup.CustomSize;
+            InputID = draftObject.ID;
+            InputName = draftObject.Name;
+            InputDefaultID = draftObject.DefaultListID;
+            InputAltList = draftObject.AltIdList;
+            InputCustomID = draftObject.CustomSize;
             InputAltListRequired = _inputAltList != null ? true : false;
             InputCustomIdRequired = _inputCustomID != null ? true : false;
 
@@ -390,15 +391,17 @@ namespace Controllers.SizeGroupUI
                 CustomSize = InputCustomID
             };
 
-            if (draftSizeGroup == null)
+            if (draftObject == null)
             {
                 cache.Create(draft);
             }
             else
             {
-                cache.Update(draftSizeGroup.ID, draft);
-                draftSizeGroup = null;
+                cache.Update(draftObject.ID, draft);
+                draftObject = null;
             }
+
+            selected = null; // unset selection object
 
             OnEntitySet?.Invoke(this, InputID);
 
@@ -407,13 +410,26 @@ namespace Controllers.SizeGroupUI
 
         public void CancelChanges()
         {
-            if (draftSizeGroup == null)
-                draftSizeGroup = null;
+            if (draftObject == null)
+                draftObject = null;
 
             // raise cancel event
-            OnDraftCancel?.Invoke(this, string.Empty);
+            OnDraftCancel?.Invoke(this,
+                new SizeGroupCancelEventArgs
+                {
+                    RestoreID = selected?.ID,
+                    EmptyList = Count <= 0
+                });
 
             ClearInputs();
+        }
+
+        public void Remove(string objectID)
+        {
+            cache.Delete(objectID);
+
+            // raise remove event
+            OnEntityRemove?.Invoke(this, Count);
         }
 
         // private getter methods
@@ -441,12 +457,12 @@ namespace Controllers.SizeGroupUI
         private bool IsDraftChanged()
         {
             // in case of adding new
-            if (draftSizeGroup == null)
+            if (draftObject == null)
                 return true;
 
-            bool idChanged = _inputID != draftSizeGroup.ID;
-            bool nameChanged = _inputName != draftSizeGroup.Name;
-            bool defIdChanged = _inputDefaultID != draftSizeGroup.DefaultListID;
+            bool idChanged = _inputID != draftObject.ID;
+            bool nameChanged = _inputName != draftObject.Name;
+            bool defIdChanged = _inputDefaultID != draftObject.DefaultListID;
 
             bool altChanged = IsAltListChanged();
             bool custIdChanged = IsCustomIdChanged();
@@ -462,7 +478,7 @@ namespace Controllers.SizeGroupUI
             //bool draftAltRequired = false;
 
             // draft has no Alt ID list
-            if (draftSizeGroup.AltIdList == null)
+            if (draftObject.AltIdList == null)
             {
                 if (_inputAltList == null || !_inputAltListRequired)
                     return false;
@@ -476,14 +492,14 @@ namespace Controllers.SizeGroupUI
                 if (_inputAltList == null || !_inputAltListRequired)
                     return true;
 
-                return !_inputAltList.SequenceEqual(draftSizeGroup.AltIdList);
+                return !_inputAltList.SequenceEqual(draftObject.AltIdList);
             }
         }
 
         private bool IsCustomIdChanged()
         {
             // draft has no Custom ID
-            if (string.IsNullOrWhiteSpace(draftSizeGroup.CustomSize))
+            if (string.IsNullOrWhiteSpace(draftObject.CustomSize))
             {
                 if (string.IsNullOrWhiteSpace(_inputCustomID) || !_inputCustomIdRequired)
                     return false;
@@ -495,7 +511,7 @@ namespace Controllers.SizeGroupUI
                 if (string.IsNullOrWhiteSpace(_inputCustomID) || !_inputCustomIdRequired)
                     return true;
 
-                return !_inputCustomID.Equals(draftSizeGroup.CustomSize);
+                return !_inputCustomID.Equals(draftObject.CustomSize);
             }
         }
 
@@ -550,7 +566,8 @@ namespace Controllers.SizeGroupUI
         private InputStatus _statusAltList;
         private InputStatus _statusCustomID;
         private bool isReady;
-        private SizeGroup draftSizeGroup;
+        private SizeGroup selected;
+        private SizeGroup draftObject;
 
         // flags
         private bool DISABLE_RAISE_EVENT;

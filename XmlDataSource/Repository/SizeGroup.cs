@@ -47,6 +47,8 @@ namespace XmlDataSource.Repository
         public void Delete(string entityId)
         {
             GetElement(entityId).Remove();
+
+            OnChange?.Invoke(this, EventArgs.Empty);
         }
 
         private XElement GetElement(string entityId)

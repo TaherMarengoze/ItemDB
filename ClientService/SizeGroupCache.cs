@@ -31,6 +31,10 @@ namespace ClientService
             Globals.sizeGroupRepo.Update(refId, entity);
         }
 
-        public void Delete(string entityId) => throw new NotImplementedException();
+        public void Delete(string entityId)
+        {
+            //throw new NotImplementedException();
+            Globals.sizeGroupRepo.Delete(entityId);
+        }
     }
 }
