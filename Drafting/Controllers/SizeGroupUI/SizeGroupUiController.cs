@@ -430,6 +430,8 @@ namespace Controllers.SizeGroupUI
 
             // raise remove event
             OnEntityRemove?.Invoke(this, Count);
+
+            selected = null;
         }
 
         // private getter methods
