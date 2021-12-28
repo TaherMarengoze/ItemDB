@@ -63,10 +63,10 @@ namespace UserService
         #endregion
 
         #region Context Saving
-        public static void Save()
-        {
-            GlobalsX.context.Save();
-        }
+        //public static void Save()
+        //{
+        //    GlobalsX.context.Save();
+        //}
 
         public static void Save(ContextEntity context)
         {
@@ -74,14 +74,14 @@ namespace UserService
         }
         #endregion
 
-        public static void ValidateItemRawData(IItemRawData data)
-        {
-            // Category ID
-            if (data.CatID.Length > 0 && data.CatID.Length <= 5)
-            {
+        //public static void ValidateItemRawData(IItemRawData data)
+        //{
+        //    // Category ID
+        //    if (data.CatID.Length > 0 && data.CatID.Length <= 5)
+        //    {
 
-            }
-        }
+        //    }
+        //}
 
         public static Item ProcessItemRawData(IItemRawData data)
         {
@@ -259,13 +259,13 @@ namespace UserService
         /// Retrieves the list of <see cref="SizeGroup"/> from the cache.
         /// </summary>
         /// <returns></returns>
-        public static List<SizeGroup> GetSizeGroups()
-        {
-            return
-                appCache.SizeGroups
-                .Cast<SizeGroup>()
-                .ToList();
-        }
+        //public static List<SizeGroup> GetSizeGroups()
+        //{
+        //    return
+        //        appCache.SizeGroups
+        //        .Cast<SizeGroup>()
+        //        .ToList();
+        //}
 
         public static List<string> GetSizeGroupsId()
         {
@@ -300,35 +300,35 @@ namespace UserService
             UpdateSizeGroupsRepos();
         }
 
-        public static void UpdateSizeGroup(string refId, ISizeGroup group)
-        {
-            // Update data source
-            GlobalsX.sizeGroupRepo.Update(refId, group);
-        }
+        //public static void UpdateSizeGroup(string refId, ISizeGroup group)
+        //{
+        //    // Update data source
+        //    GlobalsX.sizeGroupRepo.Update(refId, group);
+        //}
 
         /// <summary>
         /// Deletes a specific <see cref="SizeGroup"/>.
         /// </summary>
         /// <param name="groupId">The ID of the <see cref="SizeGroup"/> object to delete.</param>
-        public static void DeleteSizeGroup(string groupId)
-        {
-            // Delete from local cache
-            appCache.SizeGroups = appCache.SizeGroups.Where(group => group.ID != groupId).ToList();
+        //public static void DeleteSizeGroup(string groupId)
+        //{
+        //    // Delete from local cache
+        //    appCache.SizeGroups = appCache.SizeGroups.Where(group => group.ID != groupId).ToList();
 
-            // Delete from data source
-            GlobalsX.sizeGroupRepo.Delete(groupId);
+        //    // Delete from data source
+        //    GlobalsX.sizeGroupRepo.Delete(groupId);
 
-        }
+        //}
 
-        public static ISizeGroup GetSizeGroup(string groupId)
-        {
-            return
-                appCache.SizeGroups
-                .Find(group => group.ID == groupId);
+        //public static ISizeGroup GetSizeGroup(string groupId)
+        //{
+        //    return
+        //        appCache.SizeGroups
+        //        .Find(group => group.ID == groupId);
 
-            //appCache.SizeGroups.Cast<SizeGroup>().ToList()
-            //    .Find(group => group.ID == groupId);
-        }
+        //    //appCache.SizeGroups.Cast<SizeGroup>().ToList()
+        //    //    .Find(group => group.ID == groupId);
+        //}
         #endregion
 
         #region Fields (Sizes, Brands or Ends)
@@ -427,17 +427,17 @@ namespace UserService
                 .ToList();
         }
 
-        public static List<BasicListView> GetSizesExclude(string excludeId)
-        {
-            return
-                appCache.SizesList
-                .Where(list => list.ID != excludeId)
-                .Cast<BasicListView>()
-                .ToList();
-        }
+        //public static List<BasicListView> GetSizesExclude(string excludeId)
+        //{
+        //    return
+        //        appCache.SizesList
+        //        .Where(list => list.ID != excludeId)
+        //        .Cast<BasicListView>()
+        //        .ToList();
+        //}
 
         private static IEnumerable<string> GetSizesId() => appCache.SizesIdList;
-        public static List<string> GetSizesIdExclude(List<string> excludeIdList) => (from list in appCache.SizesList where !excludeIdList.Contains(list.ID) select list.ID).ToList();
+        //public static List<string> GetSizesIdExclude(List<string> excludeIdList) => (from list in appCache.SizesList where !excludeIdList.Contains(list.ID) select list.ID).ToList();
 
         // Entity
         private static void AddSizeList(IBasicList content)
@@ -512,10 +512,10 @@ namespace UserService
         }
 
         // Others
-        public static List<string> GetTs()
-        {
-            return null;
-        }
+        //public static List<string> GetTs()
+        //{
+        //    return null;
+        //}
         #endregion
 
         #region Brand Lists
@@ -676,11 +676,11 @@ namespace UserService
         #endregion
 
         #region Custom Sizes
-        public static List<string> GetCustomSizes() => appCache.CustomSizes;
+        //public static List<string> GetCustomSizes() => appCache.CustomSizes;
         #endregion
 
         #region Custom Specs
-        public static List<string> GetCustomSpecs() => appCache.CustomSpecs;
+        //public static List<string> GetCustomSpecs() => appCache.CustomSpecs;
         #endregion
 
         public static bool IsDuplicateItemId(string itemId)
