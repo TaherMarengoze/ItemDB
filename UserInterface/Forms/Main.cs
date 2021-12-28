@@ -2,12 +2,12 @@
 //using AppCore;
 //using ClientService;
 //using CoreLibrary;
-using CoreLibrary.Enums;
 //using CoreLibrary.Models;
+//using UserService;
+using CoreLibrary.Enums;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-//using UserService;
 
 
 namespace UserInterface.Forms
@@ -96,7 +96,7 @@ namespace UserInterface.Forms
             Runtime.Test.AutoLoad(testLoadXmlContext);
             Runtime.Test.DoSomething(PostLoading);
             //Runtime.Test.DoSomething(delegate { LauchEditor(new SpecsEditor()); });
-            btnSizeGroupsEditor.PerformClick();
+            //Runtime.Test.DoSomething(delegate { LauchEditor(new SizeGroupEditor()); });
         }
 
         private void tsmiLoadAll_Click(object sender, EventArgs e)

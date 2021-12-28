@@ -44,8 +44,6 @@ namespace Controllers.SizeGroupUI
 
         public List<string> CustomSizeIDs => csProvider.GetIDs();
 
-        public SizeGroup SelectedSizeGroup { get; private set; }
-
         public List<SizeList> SizeLists => sizeDP.GetList().As<SizeList>();
 
         /// <summary>
@@ -325,14 +323,10 @@ namespace Controllers.SizeGroupUI
         #endregion
 
         #region Methods
-        /* public getter methods */
-        public List<SizeList> GetSizeListsExcluded(string excludId)
+
+        public void Save()
         {
-            return sizeDP.GetListExcluded(excludId).As<SizeList>();
-        }
-        public List<string> GetListEntries(string listID)
-        {
-            return sizeDP.GetEntries(listID);
+            ContextProvider.Save(ContextEntity.SizeGroups);
         }
 
         public void SetSelection(string id)
@@ -387,8 +381,8 @@ namespace Controllers.SizeGroupUI
                 ID = InputID,
                 Name = InputName,
                 DefaultListID = InputDefaultID,
-                AltIdList = InputAltList,
-                CustomSize = InputCustomID
+                AltIdList = InputAltListRequired ? InputAltList : null,
+                CustomSize = InputCustomIdRequired ? InputCustomID : null
             };
 
             if (draftObject == null)
@@ -434,7 +428,48 @@ namespace Controllers.SizeGroupUI
             selected = null;
         }
 
-        // private getter methods
+        /* public getter methods */
+        public List<SizeList> GetSizeListsExcluded(string excludId)
+        {
+            return sizeDP.GetListExcluded(excludId).As<SizeList>();
+        }
+        public List<string> GetListEntries(string listID)
+        {
+            return sizeDP.GetEntries(listID);
+        }
+
+        /* private methods */
+        private void CheckReadyStatus()
+        {
+            bool isValid = IsValidInputs();
+            bool isChanged = IsDraftChanged();
+
+            isReady = isValid && isChanged;
+
+            // raise event for the ready or unready state
+            OnReadyStateChange?.Invoke(this, new SizeGroupReadyEventArgs
+            {
+                Ready = isReady,
+                Info = isValid ? isChanged ? "Ready" : "Unchanged" : "Not Ready"
+            });
+        }
+
+        private void ClearInputs()
+        {
+            DISABLE_RAISE_EVENT = true;
+
+            InputID = string.Empty;
+            InputName = string.Empty;
+            InputDefaultID = string.Empty;
+            InputAltList = null;
+            InputCustomID = string.Empty;
+            InputAltListRequired = false;
+            InputCustomIdRequired = false;
+
+            DISABLE_RAISE_EVENT = false;
+        }
+
+        /* private getter methods */
         private IEnumerable<string> GetAvailableSizesID()
         {
             return _inputAltList == null ?
@@ -515,38 +550,6 @@ namespace Controllers.SizeGroupUI
 
                 return !_inputCustomID.Equals(draftObject.CustomSize);
             }
-        }
-
-
-        // private methods
-        private void CheckReadyStatus()
-        {
-            bool isValid = IsValidInputs();
-            bool isChanged = IsDraftChanged();
-
-            isReady = isValid && isChanged;
-
-            // raise event for the ready or unready state
-            OnReadyStateChange?.Invoke(this, new SizeGroupReadyEventArgs
-            {
-                Ready = isReady,
-                Info = isValid ? isChanged ? "Ready" : "Unchanged" : "Not Ready"
-            });
-        }
-
-        private void ClearInputs()
-        {
-            DISABLE_RAISE_EVENT = true;
-
-            InputID = string.Empty;
-            InputName = string.Empty;
-            InputDefaultID = string.Empty;
-            InputAltList = null;
-            InputCustomID = string.Empty;
-            InputAltListRequired = false;
-            InputCustomIdRequired = false;
-
-            DISABLE_RAISE_EVENT = false;
         }
         #endregion
 

@@ -8,7 +8,7 @@ namespace CoreLibrary
 {
     public static class ExtensionMethods
     {
-        public static void DoubleBuffered(this DataGridView dgv, bool setting)
+        public static void DoubleBuffer(this DataGridView dgv, bool setting)
         {
             Type dgvType = dgv.GetType();
             PropertyInfo pi = dgvType.GetProperty("DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic);

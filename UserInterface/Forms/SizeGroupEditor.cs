@@ -1,83 +1,39 @@
 ﻿
 using CoreLibrary;
 using CoreLibrary.Enums;
-using CoreLibrary.Models;
 using Controllers.SizeGroupUI;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using UserService;
 using UserInterface.Shared;
 using Shared.UI;
-using Modeling.ViewModels;
 
 namespace UserInterface.Forms
 {
     public partial class SizeGroupEditor : Form
     {
+        #region Fields
         private SizeGroupUiController uiControl;
-        // flags
-        private bool SKIP_EVENTS = false;
-        private bool ALLOW_INPUT = true;
-
         private EntryMode _mode = EntryMode.View;
 
-        private EntryMode Mode
-        {
-            get => _mode;
-            set
-            {
-                _mode = value;
-                if (value == EntryMode.View)
-                {
-                    EnableSaveUI();
-
-                    // set status bar text
-                    tsLblReadyState.Text = string.Empty;
-
-                    EnableObjectSelection();
-                    btnNewGroup.Enabled = true; // enable add button
-                    //EnableModifyUI();
-                    DisableAcceptUI();
-                    HideReviewUI();
-                    DisableFieldsEntry();
-                    DisableDefaultIdEntryUI();
-                    DisableAltListEntryUI();
-                    DisableCustomIdEntryUI();
-                    ClearValidationInfo();
-                }
-                else
-                {
-                    DisableSaveUI();
-                    EnableContainerUI();
-                    FormatSelectedObjectUI();
-                    FormatObjectList();
-                    ClearSelection();
-                    DisableObjectSelection();
-                    DisableModifyUI();
-                    ShowReviewUI();
-                    EnableFieldsEntry();
-                    EnableDefaultIdEntryUI();
-                    EnableAltListEntryUI();
-                    EnableCustomIdEntryUI();
-                }
-            }
-        }
+        // flags
+        private bool SKIP_EVENTS = false;
+        private bool PREVENT_INPUT = false;
+        #endregion
 
         public SizeGroupEditor()
         {
             InitializeComponent();
+            dgvGroups.DoubleBuffered(true);
             uiControl = new SizeGroupUiController();
             SubscribeControllerEvents();
         }
-
+        
         #region Commands to Controller
         private void SaveToSource()
         {
-            Data.Save(ContextEntity.SizeGroups);
+            uiControl?.Save();
         }
 
         private void PostLoading()
@@ -85,15 +41,12 @@ namespace UserInterface.Forms
             BindDefaultSizeSelector();
 
             if (uiControl.Count > 0)
-            {
                 BindSizeGroupList();
-            }
             else
-            {
                 UnbindSizeGroupList(true);
-            }
 
             BindCustomSizeSelector();
+            UpdateStatusBar();
         }
 
         private void SizeGroupSelected(string id)
@@ -106,7 +59,7 @@ namespace UserInterface.Forms
             uiControl.New();
 
             // set entry mode
-            Mode = EntryMode.New;
+            SetMode(EntryMode.New);
 
             txtGroupID.Focus();
         }
@@ -119,13 +72,13 @@ namespace UserInterface.Forms
             uiControl.Edit(id);
 
             // set entry mode
-            Mode = EntryMode.Edit;
+            SetMode(EntryMode.Edit);
 
             // set check-boxes check value
-            ALLOW_INPUT = false;
-            chkAltList.Checked = uiControl.InputAltListRequired;
-            chkCustomSize.Checked = uiControl.InputCustomIdRequired;
-            ALLOW_INPUT = true;
+            PREVENT_INPUT = true;
+            chkAltList.NotifyCheck(uiControl.InputAltListRequired, chkAltList_CheckedChanged);
+            chkCustomSize.NotifyCheck(uiControl.InputCustomIdRequired, chkCustomSize_CheckedChanged);
+            PREVENT_INPUT = false;
         }
 
         private void AcceptChanges()
@@ -144,6 +97,71 @@ namespace UserInterface.Forms
             string id = (string)dgvGroups.SelectedObjectID();
 
             uiControl.Remove(id);
+        }
+        #endregion
+
+        #region Input to Controller
+        private void InputSizeGroupID()
+        {
+            if (_mode != EntryMode.View)
+                uiControl.InputID = txtGroupID.Text;
+        }
+
+        private void InputSizeGroupName()
+        {
+            if (_mode != EntryMode.View)
+                uiControl.InputName = txtGroupName.Text;
+        }
+
+        private void InputDefaultID()
+        {
+            if (_mode != EntryMode.View)
+                uiControl.InputDefaultID = GetSelectedDefaultID();
+        }
+
+        private void InputAltListRequirement()
+        {
+            if (_mode != EntryMode.View)
+            {
+                uiControl.InputAltListRequired = chkAltList.Checked;
+
+                //if (chkAltList.Checked)
+                //    EnableAltListUI();
+                //else
+                //    DisableAltListUI();
+            }
+        }
+
+        private void InputCustomSizeRequirement()
+        {
+            if (_mode != EntryMode.View)
+            {
+                uiControl.InputCustomIdRequired = chkCustomSize.Checked;
+            }
+        }
+
+        private void InputAltListIDs()
+        {
+            ListSelector selector =
+                new ListSelector(uiControl.SizeListsDefaultEx, uiControl.InputAltList);
+
+            if (selector.ShowDialog() == DialogResult.OK)
+            {
+                if (_mode != EntryMode.View)
+                    uiControl.InputAltList = selector.OutputList;
+            }
+        }
+
+        private void InputCustomSizeID()
+        {
+            if (_mode != EntryMode.View)
+                uiControl.InputCustomID = GetSelectedCustomID();
+        }
+
+        private void ClearAltSizeList()
+        {
+            if (_mode != EntryMode.View)
+                uiControl.InputAltList = null;
         }
         #endregion
 
@@ -186,71 +204,6 @@ namespace UserInterface.Forms
         }
         #endregion
 
-        #region Input to Controller
-        private void InputSizeGroupID()
-        {
-            if (Mode != EntryMode.View)
-                uiControl.InputID = txtGroupID.Text;
-        }
-
-        private void InputSizeGroupName()
-        {
-            if (Mode != EntryMode.View)
-                uiControl.InputName = txtGroupName.Text;
-        }
-
-        private void InputDefaultID()
-        {
-            if (Mode != EntryMode.View)
-                uiControl.InputDefaultID = GetSelectedDefaultID();
-        }
-
-        private void InputAltListRequirement()
-        {
-            if (Mode != EntryMode.View)
-            {
-                uiControl.InputAltListRequired = chkAltList.Checked;
-
-                //if (chkAltList.Checked)
-                //    EnableAltListUI();
-                //else
-                //    DisableAltListUI();
-            }
-        }
-
-        private void InputCustomSizeRequirement()
-        {
-            if (Mode != EntryMode.View)
-            {
-                uiControl.InputCustomIdRequired = chkCustomSize.Checked;
-            }
-        }
-
-        private void InputAltListIDs()
-        {
-            ListSelector selector =
-                new ListSelector(uiControl.SizeListsDefaultEx, uiControl.InputAltList);
-
-            if (selector.ShowDialog() == DialogResult.OK)
-            {
-                if (Mode != EntryMode.View)
-                    uiControl.InputAltList = selector.OutputList;
-            }
-        }
-
-        private void InputCustomSizeID()
-        {
-            if (Mode != EntryMode.View)
-                uiControl.InputCustomID = GetSelectedCustomID();
-        }
-
-        private void ClearAltSizeList()
-        {
-            if (Mode != EntryMode.View)
-                uiControl.InputAltList = null;
-        }
-        #endregion
-
         #region Getters
         public static int GetRowIndex(DataGridView dgv, string value, string field = "")
         {
@@ -288,6 +241,46 @@ namespace UserInterface.Forms
         #endregion
 
         #region UI
+
+        private void SetMode(EntryMode value)
+        {
+            _mode = value;
+            if (value == EntryMode.View)
+            {
+                EnableSaveUI();
+
+                // set status bar text
+                tslReadyState.Text = string.Empty;
+
+                EnableObjectSelection();
+                btnNewGroup.Enabled = true; // enable add button
+                                            //EnableModifyUI();
+                DisableAcceptUI();
+                HideReviewUI();
+                DisableFieldsEntry();
+                DisableDefaultIdEntryUI();
+                DisableAltListEntryUI();
+                DisableCustomIdEntryUI();
+                ClearValidationInfo();
+            }
+            else
+            {
+                DisableSaveUI();
+                EnableContainerUI();
+                FormatSelectedObjectUI();
+                FormatObjectList();
+                ClearSelection();
+                DisableObjectSelection();
+                DisableModifyUI();
+                ShowReviewUI();
+                EnableFieldsEntry();
+                EnableDefaultIdEntryUI();
+                EnableAltListEntryUI();
+                EnableCustomIdEntryUI();
+            }
+            UpdateStatusBar();
+        }
+
         /// <summary>
         /// Formats the object list hosting control.
         /// </summary>
@@ -495,13 +488,8 @@ namespace UserInterface.Forms
             // hide alt list required checkbox
             chkAltList.Visible = false;
 
-            // hide modify buttons
-            btnModifyAltList.Visible = false;
-            btnClearAltList.Visible = false;
-
-            // disable modify buttons
-            btnModifyAltList.Enabled = false;
-            btnClearAltList.Enabled = false;
+            HideAltListModifyUI();
+            DisableAltListModifyUI();
 
             // disable alt list label
             lblListsID.Enabled = false;
@@ -536,7 +524,44 @@ namespace UserInterface.Forms
 
             // enable the list control hosting the alt list IDs
             lstAltListIDs.Enabled = true;
+            ShowAltListModifyUI();
+            EnableAltListModifyUI();
+        }
 
+        /// <summary>
+        /// Disable the controls related to modifing the alternate list.
+        /// </summary>
+        private void DisableAltListSelectionUI()
+        {
+            lblListsID.Enabled = false;
+            lstAltListIDs.Enabled = false;
+            HideAltListModifyUI();
+            DisableAltListModifyUI();
+        }
+
+        /// <summary>
+        /// Show the controls related to modifing the alternate ID list.
+        /// </summary>
+        private void ShowAltListModifyUI()
+        {
+            btnModifyAltList.Visible = true;
+            btnClearAltList.Visible = true;
+        }
+
+        /// <summary>
+        /// Hide the controls related to modifing the alternate ID list.
+        /// </summary>
+        private void HideAltListModifyUI()
+        {
+            btnModifyAltList.Visible = false;
+            btnClearAltList.Visible = false;
+        }
+
+        /// <summary>
+        /// Enable the controls related to modifing the alternate ID list.
+        /// </summary>
+        private void EnableAltListModifyUI()
+        {
             // enable the modify button
             btnModifyAltList.Enabled = true;
 
@@ -547,12 +572,10 @@ namespace UserInterface.Forms
         }
 
         /// <summary>
-        /// Disable the controls related to modifing the alternate list.
+        /// Disable the controls related to modifing the alternate ID list.
         /// </summary>
-        private void DisableAltListSelectionUI()
+        private void DisableAltListModifyUI()
         {
-            lblListsID.Enabled = false;
-            lstAltListIDs.Enabled = false;
             btnModifyAltList.Enabled = false;
             btnClearAltList.Enabled = false;
         }
@@ -629,17 +652,61 @@ namespace UserInterface.Forms
             grpGroupMetadata.Enabled = false;
             grpGroupData.Enabled = false;
         }
+
+        /// <summary>
+        /// Updates information provided in the status bar.
+        /// </summary>
+        private void UpdateStatusBar()
+        {
+            if (_mode == EntryMode.View)
+            {
+                // ready state label
+                tslReadyState.Text = string.Empty;
+            }
+            UpdateStatusLabelMode();
+            UpdateStatusLabelCount();
+        }
+
+        private void UpdateStatusLabelMode()
+        {
+            switch (_mode)
+            {
+                case EntryMode.View:
+                    tslMode.Text = "View";
+                    tslMode.ForeColor = SystemColors.ControlText;
+                    break;
+
+                case EntryMode.New:
+                    tslMode.Text = "Adding";
+                    tslMode.ForeColor = Color.Green;
+                    break;
+
+                case EntryMode.Edit:
+                    tslMode.Text = "Editing";
+                    tslMode.ForeColor = Color.Red;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private void UpdateStatusLabelCount()
+        {
+            int count = dgvGroups.RowCount;
+
+            if (count > 0)
+            {
+                tslCount.Text = $"Count: { count }";
+                tslCount.ForeColor = SystemColors.ControlText;
+            }
+            else
+            {
+                tslCount.Text = "No item";
+                tslCount.ForeColor = Color.Red;
+            }
+        }
         #endregion
-
-        private string RemoveInvalidCharactersFromID(string inputId)
-        {
-            return Regex.Replace(inputId, "[^A-Z0-9]+", "", RegexOptions.Compiled);
-        }
-
-        private string ModifyInputToPattern(string text, string pattern)
-        {
-            return Regex.Replace(text, pattern, "", RegexOptions.Compiled);
-        }
 
         #region Controller Event Responses
         private void SubscribeControllerEvents()
@@ -658,7 +725,7 @@ namespace UserInterface.Forms
 
         private void UiControl_OnSelectionChange(object sender, SizeGroupSelectionEventArgs e)
         {
-            if (Mode == EntryMode.View)
+            if (_mode == EntryMode.View)
             {
                 txtGroupID.Text = e.ID;
                 txtGroupName.Text = e.Name;
@@ -731,33 +798,29 @@ namespace UserInterface.Forms
 
         private void UiControl_OnReadyStateChange(object sender, SizeGroupReadyEventArgs e)
         {
-            if (Mode != EntryMode.View)
+            if (_mode != EntryMode.View)
             {
                 if (e.Ready)
                 {
-                    tsLblReadyState.ForeColor = Color.Green;
+                    tslReadyState.ForeColor = Color.Green;
                     //tsLblReadyState.Text = "Ready";
-
                     btnAccept.Enabled = true;
                 }
                 else
                 {
-                    tsLblReadyState.ForeColor = Color.Red;
+                    tslReadyState.ForeColor = Color.Red;
                     //tsLblReadyState.Text = "Not ready";
-
                     btnAccept.Enabled = false;
                 }
-
-                tsLblReadyState.Text = e.Info;
+                tslReadyState.Text = e.Info;
             }
         }
 
         private void UiControl_OnEntitySet(object sender, string e)
         {
-            Mode = EntryMode.View;
+            SetMode(EntryMode.View);
 
-            // refresh SizeGroup list
-            dgvGroups.DataSourceResize(uiControl.SizeGroups, true);
+            BindSizeGroupList();
 
             // select added item
             int i = GetRowIndex(dgvGroups, e, "ID");
@@ -765,15 +828,16 @@ namespace UserInterface.Forms
             {
                 dgvGroups.Rows[i].Cells[0].Selected = true;
             }
+            //RestoreSelection(e);
         }
 
         private void UiControl_OnDraftCancel(object sender, SizeGroupCancelEventArgs e)
         {
-            Mode = EntryMode.View;
+            SetMode(EntryMode.View);
 
             // reset selectors data-source
             BindDefaultSizeSelector();
-            //BindCustomSizeSelector();
+
             // clear selector
             cboCustomSizeID.SelectedIndex = -1;
 
@@ -783,8 +847,7 @@ namespace UserInterface.Forms
             }
             else
             {
-                //RefreshSizeGroupList();
-                dgvGroups.DataSourceResize(uiControl.SizeGroups);
+                BindSizeGroupList();
                 RestoreSelection(e.RestoreID);
                 dgvGroups.Focus();
             }
@@ -805,11 +868,12 @@ namespace UserInterface.Forms
         }
         #endregion
 
+        #region Form Objects Event Responses
 #pragma warning disable IDE1006 // Naming Styles
         private void SizeGroupEditor_Load(object sender, EventArgs e) => PostLoading();
         private void dgvGroups_DataSourceChanged(object sender, EventArgs e)
         {
-            if (Mode == EntryMode.View)
+            if (_mode == EntryMode.View)
             {
                 if (dgvGroups.DataSource == null)
                 {
@@ -823,6 +887,7 @@ namespace UserInterface.Forms
                     btnRemoveGroup.Enabled = true;
                     EnableContainerUI();
                 }
+                UpdateStatusLabelCount();
             }
         }
         private void dgvGroups_SelectionChanged(object sender, EventArgs e)
@@ -849,7 +914,7 @@ namespace UserInterface.Forms
         private void btnRemoveGroup_Click(object sender, EventArgs e) => RemoveGroup();
         private void chkAltList_CheckedChanged(object sender, EventArgs e)
         {
-            if (ALLOW_INPUT)
+            if (!PREVENT_INPUT)
                 InputAltListRequirement();
 
             if (chkAltList.Checked)
@@ -859,7 +924,7 @@ namespace UserInterface.Forms
         }
         private void chkCustomSize_CheckedChanged(object sender, EventArgs e)
         {
-            if (ALLOW_INPUT)
+            if (!PREVENT_INPUT)
                 InputCustomSizeRequirement();
 
             if (chkCustomSize.Checked)
@@ -905,5 +970,6 @@ namespace UserInterface.Forms
         }
 
 #pragma warning restore IDE1006 // Naming Styles
+        #endregion
     }
 }

@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lblGroupID = new System.Windows.Forms.Label();
             this.txtGroupID = new System.Windows.Forms.TextBox();
             this.lblGroupName = new System.Windows.Forms.Label();
@@ -70,7 +70,10 @@
             this.btnNewGroup = new System.Windows.Forms.Button();
             this.grpModiyControlPanel = new System.Windows.Forms.GroupBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.tsLblReadyState = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tslReadyState = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tslMode = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tsSpacer = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tslCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.grpGroupMetadata.SuspendLayout();
             this.mnuMain.SuspendLayout();
             this.grpGroupData.SuspendLayout();
@@ -214,6 +217,7 @@
             this.btnModifyAltList.TabIndex = 21;
             this.btnModifyAltList.Text = "Modify";
             this.btnModifyAltList.UseVisualStyleBackColor = true;
+            this.btnModifyAltList.Visible = false;
             this.btnModifyAltList.Click += new System.EventHandler(this.btnModifyAltList_Click);
             // 
             // mnuMain
@@ -357,7 +361,7 @@
             // 
             this.chkCustomSize.AutoSize = true;
             this.chkCustomSize.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkCustomSize.Location = new System.Drawing.Point(6, 0);
+            this.chkCustomSize.Location = new System.Drawing.Point(5, -1);
             this.chkCustomSize.Name = "chkCustomSize";
             this.chkCustomSize.Size = new System.Drawing.Size(84, 17);
             this.chkCustomSize.TabIndex = 26;
@@ -413,18 +417,19 @@
             this.btnClearAltList.TabIndex = 24;
             this.btnClearAltList.Text = "Clear";
             this.btnClearAltList.UseVisualStyleBackColor = true;
+            this.btnClearAltList.Visible = false;
             this.btnClearAltList.Click += new System.EventHandler(this.btnClearAltList_Click);
             // 
             // chkAltList
             // 
             this.chkAltList.AutoSize = true;
             this.chkAltList.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkAltList.Location = new System.Drawing.Point(6, 0);
+            this.chkAltList.Location = new System.Drawing.Point(5, -1);
             this.chkAltList.Name = "chkAltList";
             this.chkAltList.Size = new System.Drawing.Size(95, 17);
             this.chkAltList.TabIndex = 20;
             this.chkAltList.Text = "Alternate Lists";
-            this.chkAltList.UseVisualStyleBackColor = true;
+            this.chkAltList.UseVisualStyleBackColor = false;
             this.chkAltList.Visible = false;
             this.chkAltList.CheckedChanged += new System.EventHandler(this.chkAltList_CheckedChanged);
             // 
@@ -445,8 +450,8 @@
             // 
             this.dgvGroups.AllowUserToAddRows = false;
             this.dgvGroups.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.Lavender;
-            this.dgvGroups.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle7.BackColor = System.Drawing.Color.Lavender;
+            this.dgvGroups.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
             this.dgvGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -541,20 +546,46 @@
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsLblReadyState});
+            this.tslReadyState,
+            this.tslMode,
+            this.tsSpacer,
+            this.tslCount});
             this.statusStrip1.Location = new System.Drawing.Point(0, 437);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.statusStrip1.Size = new System.Drawing.Size(684, 24);
+            this.statusStrip1.SizingGrip = false;
+            this.statusStrip1.Stretch = false;
             this.statusStrip1.TabIndex = 16;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // tsLblReadyState
+            // tslReadyState
             // 
-            this.tsLblReadyState.AutoSize = false;
-            this.tsLblReadyState.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
-            this.tsLblReadyState.Name = "tsLblReadyState";
-            this.tsLblReadyState.Size = new System.Drawing.Size(70, 19);
+            this.tslReadyState.AutoSize = false;
+            this.tslReadyState.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
+            this.tslReadyState.Name = "tslReadyState";
+            this.tslReadyState.Size = new System.Drawing.Size(70, 19);
+            // 
+            // tslMode
+            // 
+            this.tslMode.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
+            this.tslMode.Name = "tslMode";
+            this.tslMode.Size = new System.Drawing.Size(36, 19);
+            this.tslMode.Text = "View";
+            // 
+            // tsSpacer
+            // 
+            this.tsSpacer.Name = "tsSpacer";
+            this.tsSpacer.Size = new System.Drawing.Size(516, 19);
+            this.tsSpacer.Spring = true;
+            // 
+            // tslCount
+            // 
+            this.tslCount.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
+            this.tslCount.Name = "tslCount";
+            this.tslCount.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.tslCount.Size = new System.Drawing.Size(47, 19);
+            this.tslCount.Text = "Count:";
             // 
             // SizeGroupEditor
             // 
@@ -636,8 +667,11 @@
         private System.Windows.Forms.ListBox lbxSizeListEntries;
         private System.Windows.Forms.GroupBox grpListEntries;
         private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.ToolStripStatusLabel tsLblReadyState;
+        private System.Windows.Forms.ToolStripStatusLabel tslReadyState;
         private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tsmiSimNew;
+        private System.Windows.Forms.ToolStripStatusLabel tslMode;
+        private System.Windows.Forms.ToolStripStatusLabel tsSpacer;
+        private System.Windows.Forms.ToolStripStatusLabel tslCount;
     }
 }

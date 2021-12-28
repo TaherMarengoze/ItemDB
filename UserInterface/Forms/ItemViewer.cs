@@ -31,7 +31,7 @@ namespace UserInterface.Forms
             helperTip.SetToolTip(picImage, "Right-Click for additional options.\n\nDouble-Click to enlarge image.");
 
             // Double buffering for DGV to prevent slow/flickering scroll
-            dgvItems.DoubleBuffered(true);
+            dgvItems.DoubleBuffer(true);
         }
 
         #region File Management

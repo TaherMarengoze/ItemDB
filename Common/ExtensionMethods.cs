@@ -8,37 +8,37 @@ namespace Shared.UI
 {
     public static class ExtensionMethods
     {
-        public static void DoubleBuffered(this DataGridView dgv, bool setting)
+        public static void DoubleBuffered(this DataGridView source, bool setting)
         {
-            Type dgvType = dgv.GetType();
+            Type dgvType = source.GetType();
             PropertyInfo pi = dgvType.GetProperty("DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic);
-            pi.SetValue(dgv, setting, null);
+            pi.SetValue(source, setting, null);
         }
 
 
         /// <summary>
         /// Sets a <see cref="DataGridView"/>'s <see cref="DataGridView.DataSource"/> and then auto resize its columns and rows.
         /// </summary>
-        /// <param name="dgv">The <see cref="DataGridView"/> instance.</param>
+        /// <param name="source">The <see cref="DataGridView"/> instance.</param>
         /// <param name="dataSource">The <see cref="object"/> of the datasource.</param>
         /// <param name="refresh">Indicates whether to refresh the <see cref="DataGridView"/> before binding or not.</param>
-        public static void DataSourceResize(this DataGridView dgv, object dataSource, bool refresh = false)
+        public static void DataSourceResize(this DataGridView source, object dataSource, bool refresh = false)
         {
             if (refresh)
             {
-                dgv.DataSource = null;
+                source.DataSource = null;
             }
-            dgv.DataSource = dataSource;
-            dgv.AutoResizeColumns();
-            dgv.AutoResizeRows();
+            source.DataSource = dataSource;
+            source.AutoResizeColumns();
+            source.AutoResizeRows();
         }
 
-        public static object SelectedObjectID(this DataGridView dgv, string fieldName = "")
+        public static object SelectedObjectID(this DataGridView source, string fieldName = "")
         {
-            if (dgv.Rows.Count <= 0)
+            if (source.Rows.Count <= 0)
                 return null;
 
-            DataGridViewRow firstSelectedRow = dgv.SelectedRows[0];
+            DataGridViewRow firstSelectedRow = source.SelectedRows[0];
             if (firstSelectedRow == null)
                 return null;
 
@@ -52,17 +52,17 @@ namespace Shared.UI
                 firstSelectedRow.Cells[fieldName].Value;
         }
 
-        public static void RestoreSelection(this DataGridView dgv, object dataSource)
+        public static void RestoreSelection(this DataGridView source, object dataSource)
         {
-            int _selectionIndex = dgv.SelectedRows[0].Index;
+            int _selectionIndex = source.SelectedRows[0].Index;
 
             //dgv.DataSourceResize(bindingSource, true);
-            dgv.DataSource = dataSource;
-            dgv.AutoResizeColumns();
-            dgv.AutoResizeRows();
+            source.DataSource = dataSource;
+            source.AutoResizeColumns();
+            source.AutoResizeRows();
 
             // Get DGV number of rows
-            int itemsCount = dgv.RowCount;
+            int itemsCount = source.RowCount;
 
             if (_selectionIndex > -1 && itemsCount > 0)
             {
@@ -70,8 +70,8 @@ namespace Shared.UI
                 if (_selectionIndex >= itemsCount)
                     _selectionIndex = itemsCount - 1;
 
-                dgv.Rows[_selectionIndex].Selected = true;
-                dgv.FirstDisplayedScrollingRowIndex = _selectionIndex;
+                source.Rows[_selectionIndex].Selected = true;
+                source.FirstDisplayedScrollingRowIndex = _selectionIndex;
             }
         }
 
@@ -85,11 +85,15 @@ namespace Shared.UI
             textBox.Focus();
         }
 
-        public static void AddRange<T>(this ObservableCollection<T> collection, IEnumerable<T> range)
+        public static void NotifyCheck(this CheckBox source, bool status, EventHandler<EventArgs> handler)
         {
-            foreach (T item in range)
+            if (source.Checked == status)
             {
-                collection.Add(item);
+                handler(source, EventArgs.Empty);
+            }
+            else
+            {
+                source.Checked = status;
             }
         }
     }
