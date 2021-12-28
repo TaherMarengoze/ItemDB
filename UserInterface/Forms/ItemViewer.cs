@@ -380,7 +380,7 @@ namespace UserInterface.Forms
         {
             if (lbxImages.SelectedItem != null)
             {
-                string imageFile = Path.Combine(AppFactory.fpp.ImageRepos, lbxImages.Text);
+                string imageFile = Path.Combine(GlobalsX.fpp.ImageRepos, lbxImages.Text);
 
                 if (File.Exists(imageFile))
                 {

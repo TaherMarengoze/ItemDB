@@ -43,28 +43,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Factory\AppFactory.cs" />
+    <Compile Include="Factory\GlobalsX.cs" />
     <Compile Include="FileCopyService.cs" />
     <Compile Include="General\Common.cs" />
     <Compile Include="General\ExtensionMethods.cs" />
+    <Compile Include="Implementations\ItemRepoX.cs" />
     <Compile Include="Interfaces\IBasicField.cs" />
     <Compile Include="Implementations\FieldXmlManipulator.cs" />
     <Compile Include="Implementations\FieldXmlRepository.cs" />
-    <Compile Include="Implementations\ModifyXml.cs" />
     <Compile Include="Implementations\SizeGroupsXmlRepository.cs" />
-    <Compile Include="Implementations\SpecsRepoX.cs" />
     <Compile Include="Implementations\XmlContext.cs" />
     <Compile Include="Implementations\XReader.cs" />
     <Compile Include="Interfaces\IFieldManipulator.cs" />
-    <Compile Include="Interfaces\IModifier.cs" />
+    <Compile Include="Interfaces\IItemRepo.cs" />
     <Compile Include="Interfaces\ISchema.cs" />
     <Compile Include="Interfaces\ISizeGroupRepos.cs" />
     <Compile Include="Interfaces\ISourceContext.cs" />
     <Compile Include="Interfaces\ISourceReader.cs" />
     <Compile Include="Interfaces\ISpec.cs" />
     <Compile Include="Interfaces\ISpecListEntry.cs" />
-    <Compile Include="Interfaces\ISpecs.cs" />
-    <Compile Include="Interfaces\ISpecsRepo.cs" />
     <Compile Include="Interfaces\IView.cs" />
     <Compile Include="Interfaces\ISizeGroup.cs" />
     <Compile Include="Models\ItemIdView.cs" />
@@ -94,7 +91,6 @@
     <Compile Include="Models\SizeGroupDrafter.cs" />
     <Compile Include="Models\Spec.cs" />
     <Compile Include="Models\SpecListEntry.cs" />
-    <Compile Include="Models\Specs.cs" />
     <Compile Include="Models\Validators\FieldListValidator.cs" />
     <Compile Include="Models\XML\FilePathProcessor.cs" />
     <Compile Include="Models\XML\XDataDocuments.cs" />

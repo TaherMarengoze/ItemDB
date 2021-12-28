@@ -53,6 +53,10 @@
       <Project>{6f9a999d-0fdd-467d-8331-05ac21e033b6}</Project>
       <Name>DataCache</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ModelAbstraction\Interfaces.csproj">
+      <Project>{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}</Project>
+      <Name>Interfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

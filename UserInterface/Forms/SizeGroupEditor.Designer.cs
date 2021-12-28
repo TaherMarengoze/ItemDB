@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lblGroupID = new System.Windows.Forms.Label();
             this.txtGroupID = new System.Windows.Forms.TextBox();
             this.lblGroupName = new System.Windows.Forms.Label();
@@ -48,7 +48,11 @@
             this.tsmiClose = new System.Windows.Forms.ToolStripMenuItem();
             this.tsSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.tsmiExitApp = new System.Windows.Forms.ToolStripMenuItem();
+            this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiSimNew = new System.Windows.Forms.ToolStripMenuItem();
             this.grpGroupData = new System.Windows.Forms.GroupBox();
+            this.grpListEntries = new System.Windows.Forms.GroupBox();
+            this.lbxSizeListEntries = new System.Windows.Forms.ListBox();
             this.lblValidatorDefaultId = new System.Windows.Forms.Label();
             this.grpCustomSize = new System.Windows.Forms.GroupBox();
             this.chkCustomSize = new System.Windows.Forms.CheckBox();
@@ -65,17 +69,18 @@
             this.btnEditGroup = new System.Windows.Forms.Button();
             this.btnNewGroup = new System.Windows.Forms.Button();
             this.grpModiyControlPanel = new System.Windows.Forms.GroupBox();
-            this.lbxSizeListEntries = new System.Windows.Forms.ListBox();
-            this.grpListEntries = new System.Windows.Forms.GroupBox();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.tsLblReadyState = new System.Windows.Forms.ToolStripStatusLabel();
             this.grpGroupMetadata.SuspendLayout();
             this.mnuMain.SuspendLayout();
             this.grpGroupData.SuspendLayout();
+            this.grpListEntries.SuspendLayout();
             this.grpCustomSize.SuspendLayout();
             this.grpAltList.SuspendLayout();
             this.grpGroupList.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvGroups)).BeginInit();
             this.grpModiyControlPanel.SuspendLayout();
-            this.grpListEntries.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblGroupID
@@ -196,7 +201,7 @@
             this.lstAltListIDs.IntegralHeight = false;
             this.lstAltListIDs.Location = new System.Drawing.Point(6, 48);
             this.lstAltListIDs.Name = "lstAltListIDs";
-            this.lstAltListIDs.Size = new System.Drawing.Size(220, 104);
+            this.lstAltListIDs.Size = new System.Drawing.Size(220, 110);
             this.lstAltListIDs.TabIndex = 23;
             // 
             // btnModifyAltList
@@ -214,7 +219,8 @@
             // mnuMain
             // 
             this.mnuMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiFile});
+            this.tsmiFile,
+            this.testToolStripMenuItem});
             this.mnuMain.Location = new System.Drawing.Point(0, 0);
             this.mnuMain.Name = "mnuMain";
             this.mnuMain.Size = new System.Drawing.Size(684, 24);
@@ -268,6 +274,21 @@
             this.tsmiExitApp.Text = "Exit Application";
             this.tsmiExitApp.Click += new System.EventHandler(this.tsmiExitApp_Click);
             // 
+            // testToolStripMenuItem
+            // 
+            this.testToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiSimNew});
+            this.testToolStripMenuItem.Name = "testToolStripMenuItem";
+            this.testToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+            this.testToolStripMenuItem.Text = "Test";
+            // 
+            // tsmiSimNew
+            // 
+            this.tsmiSimNew.Name = "tsmiSimNew";
+            this.tsmiSimNew.Size = new System.Drawing.Size(147, 22);
+            this.tsmiSimNew.Text = "Simulate New";
+            this.tsmiSimNew.Click += new System.EventHandler(this.tsmiSimNew_Click);
+            // 
             // grpGroupData
             // 
             this.grpGroupData.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -280,10 +301,33 @@
             this.grpGroupData.Controls.Add(this.cboDefaultID);
             this.grpGroupData.Location = new System.Drawing.Point(428, 104);
             this.grpGroupData.Name = "grpGroupData";
-            this.grpGroupData.Size = new System.Drawing.Size(244, 345);
+            this.grpGroupData.Size = new System.Drawing.Size(244, 332);
             this.grpGroupData.TabIndex = 15;
             this.grpGroupData.TabStop = false;
             this.grpGroupData.Text = "Group Data";
+            // 
+            // grpListEntries
+            // 
+            this.grpListEntries.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpListEntries.Controls.Add(this.lbxSizeListEntries);
+            this.grpListEntries.Location = new System.Drawing.Point(6, 46);
+            this.grpListEntries.Name = "grpListEntries";
+            this.grpListEntries.Size = new System.Drawing.Size(232, 58);
+            this.grpListEntries.TabIndex = 26;
+            this.grpListEntries.TabStop = false;
+            this.grpListEntries.Text = "List Entries";
+            // 
+            // lbxSizeListEntries
+            // 
+            this.lbxSizeListEntries.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbxSizeListEntries.FormattingEnabled = true;
+            this.lbxSizeListEntries.IntegralHeight = false;
+            this.lbxSizeListEntries.Location = new System.Drawing.Point(3, 16);
+            this.lbxSizeListEntries.Name = "lbxSizeListEntries";
+            this.lbxSizeListEntries.Size = new System.Drawing.Size(226, 39);
+            this.lbxSizeListEntries.TabIndex = 0;
             // 
             // lblValidatorDefaultId
             // 
@@ -302,7 +346,7 @@
             this.grpCustomSize.Controls.Add(this.chkCustomSize);
             this.grpCustomSize.Controls.Add(this.lblDataID);
             this.grpCustomSize.Controls.Add(this.cboCustomSizeID);
-            this.grpCustomSize.Location = new System.Drawing.Point(6, 287);
+            this.grpCustomSize.Location = new System.Drawing.Point(6, 280);
             this.grpCustomSize.Name = "grpCustomSize";
             this.grpCustomSize.Size = new System.Drawing.Size(232, 46);
             this.grpCustomSize.TabIndex = 25;
@@ -341,7 +385,6 @@
             this.cboCustomSizeID.Name = "cboCustomSizeID";
             this.cboCustomSizeID.Size = new System.Drawing.Size(151, 21);
             this.cboCustomSizeID.TabIndex = 28;
-            this.cboCustomSizeID.SelectedIndexChanged += new System.EventHandler(this.cboCustomSizeID_SelectedIndexChanged);
             this.cboCustomSizeID.TextChanged += new System.EventHandler(this.cboCustomSizeID_TextChanged);
             // 
             // grpAltList
@@ -353,9 +396,9 @@
             this.grpAltList.Controls.Add(this.lstAltListIDs);
             this.grpAltList.Controls.Add(this.btnModifyAltList);
             this.grpAltList.Controls.Add(this.lblListsID);
-            this.grpAltList.Location = new System.Drawing.Point(6, 123);
+            this.grpAltList.Location = new System.Drawing.Point(6, 110);
             this.grpAltList.Name = "grpAltList";
-            this.grpAltList.Size = new System.Drawing.Size(232, 158);
+            this.grpAltList.Size = new System.Drawing.Size(232, 164);
             this.grpAltList.TabIndex = 19;
             this.grpAltList.TabStop = false;
             this.grpAltList.Text = "Alternate Lists";
@@ -402,8 +445,8 @@
             // 
             this.dgvGroups.AllowUserToAddRows = false;
             this.dgvGroups.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.Lavender;
-            this.dgvGroups.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.Lavender;
+            this.dgvGroups.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvGroups.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -421,6 +464,7 @@
             this.dgvGroups.Size = new System.Drawing.Size(398, 254);
             this.dgvGroups.StandardTab = true;
             this.dgvGroups.TabIndex = 1;
+            this.dgvGroups.DataSourceChanged += new System.EventHandler(this.dgvGroups_DataSourceChanged);
             this.dgvGroups.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvGroups_CellDoubleClick);
             this.dgvGroups.SelectionChanged += new System.EventHandler(this.dgvGroups_SelectionChanged);
             // 
@@ -471,7 +515,6 @@
             // 
             // btnNewGroup
             // 
-            this.btnNewGroup.Enabled = false;
             this.btnNewGroup.Location = new System.Drawing.Point(6, 19);
             this.btnNewGroup.Name = "btnNewGroup";
             this.btnNewGroup.Size = new System.Drawing.Size(75, 23);
@@ -489,34 +532,29 @@
             this.grpModiyControlPanel.Controls.Add(this.btnEditGroup);
             this.grpModiyControlPanel.Controls.Add(this.btnAccept);
             this.grpModiyControlPanel.Controls.Add(this.btnRemoveGroup);
-            this.grpModiyControlPanel.Location = new System.Drawing.Point(12, 343);
+            this.grpModiyControlPanel.Location = new System.Drawing.Point(12, 330);
             this.grpModiyControlPanel.Name = "grpModiyControlPanel";
             this.grpModiyControlPanel.Size = new System.Drawing.Size(410, 106);
             this.grpModiyControlPanel.TabIndex = 2;
             this.grpModiyControlPanel.TabStop = false;
             // 
-            // listBox1
+            // statusStrip1
             // 
-            this.lbxSizeListEntries.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbxSizeListEntries.FormattingEnabled = true;
-            this.lbxSizeListEntries.IntegralHeight = false;
-            this.lbxSizeListEntries.Location = new System.Drawing.Point(3, 16);
-            this.lbxSizeListEntries.Name = "listBox1";
-            this.lbxSizeListEntries.Size = new System.Drawing.Size(226, 52);
-            this.lbxSizeListEntries.TabIndex = 0;
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsLblReadyState});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 437);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.statusStrip1.Size = new System.Drawing.Size(684, 24);
+            this.statusStrip1.TabIndex = 16;
+            this.statusStrip1.Text = "statusStrip1";
             // 
-            // grpListEntries
+            // tsLblReadyState
             // 
-            this.grpListEntries.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpListEntries.Controls.Add(this.lbxSizeListEntries);
-            this.grpListEntries.Location = new System.Drawing.Point(6, 46);
-            this.grpListEntries.Name = "grpListEntries";
-            this.grpListEntries.Size = new System.Drawing.Size(232, 71);
-            this.grpListEntries.TabIndex = 26;
-            this.grpListEntries.TabStop = false;
-            this.grpListEntries.Text = "List Entries";
+            this.tsLblReadyState.AutoSize = false;
+            this.tsLblReadyState.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
+            this.tsLblReadyState.Name = "tsLblReadyState";
+            this.tsLblReadyState.Size = new System.Drawing.Size(70, 19);
             // 
             // SizeGroupEditor
             // 
@@ -524,6 +562,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(684, 461);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.grpModiyControlPanel);
             this.Controls.Add(this.grpGroupList);
             this.Controls.Add(this.grpGroupData);
@@ -541,6 +580,7 @@
             this.mnuMain.PerformLayout();
             this.grpGroupData.ResumeLayout(false);
             this.grpGroupData.PerformLayout();
+            this.grpListEntries.ResumeLayout(false);
             this.grpCustomSize.ResumeLayout(false);
             this.grpCustomSize.PerformLayout();
             this.grpAltList.ResumeLayout(false);
@@ -548,7 +588,8 @@
             this.grpGroupList.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvGroups)).EndInit();
             this.grpModiyControlPanel.ResumeLayout(false);
-            this.grpListEntries.ResumeLayout(false);
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -594,5 +635,9 @@
         private System.Windows.Forms.Button btnClearAltList;
         private System.Windows.Forms.ListBox lbxSizeListEntries;
         private System.Windows.Forms.GroupBox grpListEntries;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel tsLblReadyState;
+        private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tsmiSimNew;
     }
 }

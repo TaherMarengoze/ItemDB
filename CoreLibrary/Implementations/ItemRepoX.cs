@@ -8,7 +8,7 @@ namespace CoreLibrary
     using Interfaces;
 
 
-    public class ModifyXml : IModifier
+    public class ItemRepoX : IItemRepo
     {
         public void CreateItem(IItem item)
         {
@@ -18,7 +18,7 @@ namespace CoreLibrary
 
         public void UpdateItem(string refId, IItem data)
         {
-            XElement xItem = AppFactory.xDataDocs.Items.Descendants("item")
+            XElement xItem = GlobalsX.xDataDocs.Items.Descendants("item")
                     .Where(elem => elem.Attribute("itemID").Value == refId)
                     .SingleOrDefault();
 
@@ -70,7 +70,7 @@ namespace CoreLibrary
         public void DeleteItem(string itemId)
         {
             XElement deleteItem =
-                AppFactory.xDataDocs.Items.Descendants("item")
+                GlobalsX.xDataDocs.Items.Descendants("item")
                 .Where(item => item.Attribute("itemID").Value == itemId).First();
 
             deleteItem.Remove();
@@ -143,7 +143,7 @@ namespace CoreLibrary
         {
             // Get old CatID of edited item
             string oldCatID =
-                GetItemCategoryIdAttribute(AppFactory.xDataDocs.Items, existingId).Value;
+                GetItemCategoryIdAttribute(GlobalsX.xDataDocs.Items, existingId).Value;
 
             // Compare categories IDs
             if (catId != oldCatID)
@@ -158,7 +158,7 @@ namespace CoreLibrary
         private void CategorizeItem(XElement serializedItem, string catId, string catName)
         {
             // Get the item's new category or create it if not found
-            XElement category = GetCategoryAdd(AppFactory.xDataDocs.Items, catId, catName);
+            XElement category = GetCategoryAdd(GlobalsX.xDataDocs.Items, catId, catName);
 
             // Add the item to the category
             category.Add(serializedItem);

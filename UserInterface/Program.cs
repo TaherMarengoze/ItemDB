@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 
-
 namespace UserInterface
 {
     static class Program
@@ -36,12 +35,24 @@ namespace UserInterface
         {
             AlwaysShowAccelerator(false);
 
-            // Initial Application Configuration
-            CoreLibrary.AppFactory.context = new CoreLibrary.XmlContext(); // Set app context to XML, can be changed to database if applicable
+            InitializeAppConfig();
+            
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Forms.Main());
         }
-    }
+
+        static void InitializeAppConfig()
+        {
+            // Set app context to use XML data source
+            // which can be changed to database source if applicable
+            CoreLibrary.GlobalsX.context =
+                new CoreLibrary.XmlContext();
+
+            // Test New libraries implementation
+            AppCore.Globals.context =
+                new XmlDataSource.XmlContext();
+        }
+    }   
 }

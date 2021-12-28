@@ -119,6 +119,7 @@
             this.txtSpecsPattern.ReadOnly = true;
             this.txtSpecsPattern.Size = new System.Drawing.Size(162, 20);
             this.txtSpecsPattern.TabIndex = 9;
+            this.txtSpecsPattern.TextChanged += new System.EventHandler(this.txtSpecsPattern_TextChanged);
             // 
             // lblSpecsPattern
             // 
@@ -262,7 +263,6 @@
             // btnSiAdd
             // 
             this.btnSiAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnSiAdd.Enabled = false;
             this.btnSiAdd.Image = global::UserInterface.Properties.Resources.add_icon_16x;
             this.btnSiAdd.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnSiAdd.Location = new System.Drawing.Point(6, 149);
@@ -585,6 +585,7 @@
             this.lbxSpecs.Size = new System.Drawing.Size(152, 355);
             this.lbxSpecs.TabIndex = 0;
             this.lbxSpecs.SelectedIndexChanged += new System.EventHandler(this.lbxSpecs_SelectedIndexChanged);
+            this.lbxSpecs.DataSourceChanged += new System.EventHandler(this.lbxSpecs_DataSourceChanged);
             this.lbxSpecs.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lbxSpecs_MouseDoubleClick);
             // 
             // btnCancel
@@ -689,7 +690,7 @@
             this.txtSpecsName.ReadOnly = true;
             this.txtSpecsName.Size = new System.Drawing.Size(162, 20);
             this.txtSpecsName.TabIndex = 7;
-            this.txtSpecsName.TextChanged += new System.EventHandler(this.txtSpecsID_TextChanged);
+            this.txtSpecsName.TextChanged += new System.EventHandler(this.txtSpecsName_TextChanged);
             // 
             // lblSpecsName
             // 

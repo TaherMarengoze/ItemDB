@@ -127,8 +127,8 @@ namespace UserInterface.Forms
             checkList.OnComplete += CheckList_OnComplete;
             checkList.OnIncomplete += CheckList_OnIncomplete;
 
-            existingImages = AppFactory.reader.GetImageNames().ToList();
-            imagesReposPath = AppFactory.fpp.ImageRepos;
+            existingImages = GlobalsX.reader.GetImageNames().ToList();
+            imagesReposPath = GlobalsX.fpp.ImageRepos;
             BindControlsToDatasources();
         }
 
@@ -145,9 +145,9 @@ namespace UserInterface.Forms
             dgvCategories.Columns[0].DisplayIndex = 2;
 
             // Bind Specs ID selector combobox
-            cboSpecsId.DataSource = Data.GetSpecsIdList().ToList();
+            cboSpecsId.DataSource = new ClientService.Data.SpecsProvider().GetIDs();
             cboSpecsId.SelectedIndex = -1;
-            dgvSpecs.DataSource = Data.GetSpecsList/*Brief*/();
+            dgvSpecs.DataSource = ClientService.SpecsVMProvider.Brief();
 
             // Bind Size Groups ID selector combobox
             cboSizeGroupId.DataSource = Data.GetSizeGroupsId();
@@ -590,7 +590,8 @@ namespace UserInterface.Forms
             if (dgv.SelectedRows.Count > 0)
             {
                 string specsId = (string)dgv.SelectedRows[0].Cells[1].Value;
-                dgvSpecsItems.DataSource = Data.GetSpecsItems(specsId).ToList();
+                dgvSpecsItems.DataSource = //Data.GetSpecsItems(specsId).ToList();
+                    ClientService.SpecsManiuplator.GetSpecsItems(specsId)?.ToList();
             }
         }
 
@@ -610,7 +611,8 @@ namespace UserInterface.Forms
             {
                 string specsId = (string)dgvSpecs.SelectedRows[0].Cells[1].Value;
                 int specIndex = (int)dgv.SelectedRows[0].Cells[0].Value;
-                dgvSpecListEntries.DataSource = Data.GetSpecListEntries(specsId, specIndex);
+                dgvSpecListEntries.DataSource = //Data.GetSpecListEntries(specsId, specIndex);
+                    ClientService.SpecsManiuplator.GetSpecsItemListEntries(specsId, specIndex)?.ToList();
             }
         }
 

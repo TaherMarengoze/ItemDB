@@ -68,8 +68,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\ControlsExtension.cs" />
     <Compile Include="Controllers\SimpleListController.cs" />
     <Compile Include="Controllers\SizeGroupExt.cs" />
+    <Compile Include="Forms\ListSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ListSelector.Designer.cs">
+      <DependentUpon>ListSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\PlainBackground.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\PlainBackground.Designer.cs">
+      <DependentUpon>PlainBackground.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\SizeGroupAdder.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -162,11 +175,17 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Runtime\Test.cs" />
+    <EmbeddedResource Include="Forms\ListSelector.resx">
+      <DependentUpon>ListSelector.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\AltListSelector.resx">
       <DependentUpon>AltListSelector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FieldEditor.resx">
       <DependentUpon>FieldEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\PlainBackground.resx">
+      <DependentUpon>PlainBackground.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SizeGroupAdder.resx">
       <DependentUpon>SizeGroupAdder.cs</DependentUpon>
@@ -248,13 +267,41 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ApplicationCentre\AppCore.csproj">
+      <Project>{D544AF89-205D-48BB-BF81-FF93D9A43692}</Project>
+      <Name>AppCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ClientService\ClientService.csproj">
+      <Project>{2ec19893-87bd-41aa-a165-bf544d2a1bcb}</Project>
+      <Name>ClientService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Shared.csproj">
+      <Project>{b7c3ba24-b4cc-49d7-b9d5-9371a1ca02dd}</Project>
+      <Name>Shared</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj">
       <Project>{90c23753-2a1c-4f04-a4e7-3b12ce02fa7f}</Project>
       <Name>CoreLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Drafting\Drafting.csproj">
+      <Project>{38dd4b4a-716d-4d0d-ad6c-9affedb3f964}</Project>
+      <Name>Drafting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ModelAbstraction\Interfaces.csproj">
+      <Project>{DF41DBB7-27CE-4385-A0CD-1F298EAC4A06}</Project>
+      <Name>Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Modeling\Modeling.csproj">
+      <Project>{B195C5BF-431E-4828-86F1-F638F131EA43}</Project>
+      <Name>Modeling</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UserService\UserService.csproj">
       <Project>{81fcb3e0-a6c3-4fbb-9e73-90a8c711831c}</Project>
       <Name>UserService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XmlDataSource\XmlDataSource.csproj">
+      <Project>{120dc4d4-fb79-4c36-ab02-a47cee84c7c4}</Project>
+      <Name>XmlDataSource</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

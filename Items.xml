@@ -864,6 +864,39 @@
       </details>
       <uom>Ea</uom>
     </item>
+    <item itemID="BRH01" order="0">
+      <names>
+        <base>Cup Brush</base>
+        <display>Cup Brush</display>
+        <common>
+          <cname>فرشة سلك كوباية</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>BRH01-00.jpg</image>
+        <image>BRH01-01.jpg</image>
+      </images>
+      <details />
+      <uom>Ea</uom>
+    </item>
+    <item itemID="SOP01" order="0">
+      <names>
+        <base>Soapstone Chalk</base>
+        <display>Soapstone Chalk</display>
+        <common>
+          <cname>ارتوازي علام</cname>
+          <cname>Welders Chalk</cname>
+        </common>
+      </names>
+      <description></description>
+      <images>
+        <image>SOP01-00.jpg</image>
+        <image>SOP01-01.jpg</image>
+      </images>
+      <details />
+      <uom>Pack</uom>
+    </item>
   </category>
   <category catID="TOOLS" name="Tools">
     <item itemID="ANGR1" order="0">

@@ -1,19 +1,21 @@
-﻿namespace CoreLibrary
-{
-    using Interfaces;
+﻿
+using CoreLibrary.Interfaces;
 
-    public class AppFactory
+
+namespace CoreLibrary
+{
+    public class GlobalsX
     {
         public static Models.FilePathProcessor fpp;
         public static Models.XDataDocuments xDataDocs;
 
-        public static ISourceReader reader;
-
         public static ISourceContext context;
 
-        public static IModifier itemModifier;
+        public static ISourceReader reader;
 
-        public static ISpecsRepo specsRepo;
+        public static IItemRepo itemsRepo;
+
+        //public static ISpecsRepo specsRepo;
 
         public static ISizeGroupRepos sizeGroupRepo;
 

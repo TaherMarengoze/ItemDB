@@ -23,43 +23,41 @@ namespace UserService
         {
             appCache = new Cache()
             {
-                Items = AppFactory.reader.GetItems(),
-                Categories = AppFactory.reader.GetCategories(),
-                SpecsList = AppFactory.reader.GetSpecs().ToList(),
-                SizeGroups = AppFactory.reader.GetSizeGroups().ToList(),
-                SizesList = AppFactory.reader.GetSizes().ToList(),
-                BrandsList = AppFactory.reader.GetBrands().ToList(),
-                EndsList = AppFactory.reader.GetEnds().ToList(),
-                CustomSpecs = AppFactory.reader.GetCustomSpecs().ToList(),
-                CustomSizes = AppFactory.reader.GetCustomSizes().ToList()
+                Items = GlobalsX.reader.GetItems(),
+                Categories = GlobalsX.reader.GetCategories(),
+                SizeGroups = GlobalsX.reader.GetSizeGroups().ToList(),
+                SizesList = GlobalsX.reader.GetSizes().ToList(),
+                BrandsList = GlobalsX.reader.GetBrands().ToList(),
+                EndsList = GlobalsX.reader.GetEnds().ToList(),
+                CustomSpecs = GlobalsX.reader.GetCustomSpecs().ToList(),
+                CustomSizes = GlobalsX.reader.GetCustomSizes().ToList()
             };
         }
 
         #region Updater code
-        private static void UpdateItemsRepos() => appCache.Items = AppFactory.reader.GetItems();
-        private static void UpdateCategoriesRepos() => appCache.Categories = AppFactory.reader.GetCategories();
-        public static void UpdateSpecsRepos() => appCache.SpecsList = AppFactory.reader.GetSpecs().ToList();
+        private static void UpdateItemsRepos() => appCache.Items = GlobalsX.reader.GetItems();
+        private static void UpdateCategoriesRepos() => appCache.Categories = GlobalsX.reader.GetCategories();
         public static void UpdateSizeGroupsRepos()
         {
-            appCache.SizeGroups = AppFactory.reader
+            appCache.SizeGroups = GlobalsX.reader
                 .GetSizeGroups().ToList();
         }
 
         private static void UpdateSizesRepos()
         {
-            appCache.SizesList = AppFactory.reader
+            appCache.SizesList = GlobalsX.reader
                 .GetSizes().ToList();
         }
 
         private static void UpdateBrandsRepos()
         {
-            appCache.BrandsList = AppFactory.reader
+            appCache.BrandsList = GlobalsX.reader
                 .GetBrands().ToList();
         }
 
         private static void UpdateEndsRepos()
         {
-            appCache.EndsList = AppFactory.reader
+            appCache.EndsList = GlobalsX.reader
                 .GetEnds().ToList();
         }
         #endregion
@@ -67,12 +65,12 @@ namespace UserService
         #region Context Saving
         public static void Save()
         {
-            AppFactory.context.Save();
+            GlobalsX.context.Save();
         }
 
         public static void Save(ContextEntity context)
         {
-            AppFactory.context.Save(context);
+            GlobalsX.context.Save(context);
         }
         #endregion
 
@@ -117,7 +115,7 @@ namespace UserService
         #region Interface Implementation
         public static void AddNewItem(IItemRawData data)
         {
-            AppFactory.itemModifier.CreateItem(ProcessItemRawData(data));
+            GlobalsX.itemsRepo.CreateItem(ProcessItemRawData(data));
 
             // Update Items List and Categories
             UpdateItemsRepos();
@@ -126,7 +124,7 @@ namespace UserService
 
         public static void ModifyItem(string refId, IItemRawData data)
         {
-            AppFactory.itemModifier.UpdateItem(refId, ProcessItemRawData(data));
+            GlobalsX.itemsRepo.UpdateItem(refId, ProcessItemRawData(data));
 
             // Update Items List and Categories
             UpdateItemsRepos();
@@ -135,7 +133,7 @@ namespace UserService
 
         public static List<ItemVO> DeleteItem(string itemId)
         {
-            AppFactory.itemModifier.DeleteItem(itemId);
+            GlobalsX.itemsRepo.DeleteItem(itemId);
 
             // Set the Items property to itself but excluding the item to be
             // deleted; so that ItemsView property is updated automatically
@@ -256,90 +254,6 @@ namespace UserService
         }
         #endregion
 
-        #region Specs Object
-        // Context
-
-        /// <summary>
-        /// Gets a list of <see cref="Specs"/> object.
-        /// </summary>
-        /// <returns></returns>
-        public static List<ISpecs> GetSpecsList() => appCache.SpecsList;
-
-        /// <summary>
-        /// Gets a list of ID of the <see cref="Specs"/> object.
-        /// </summary>
-        /// <returns></returns>
-        public static IEnumerable<string> GetSpecsIdList() => appCache.SpecsIdList;
-
-        // Entity
-        public static void AddSpecs(ISpecs specs)
-        {
-            // Add to data source
-            AppFactory.specsRepo.AddSpecs(specs);
-
-            // Updating will automatically refresh the local cache
-            UpdateSpecsRepos();
-        }
-        public static void UpdateSpecs(string refId, ISpecs content)
-        {
-            // Modify local cache (no need because changes are made on local cache)
-            // Modify data source
-            AppFactory.specsRepo.UpdateSpecs(refId, content);
-        }
-        public static void DeleteSpecs(string specsId)
-        {
-            // Delete from local cache
-            appCache.SpecsList = appCache.SpecsList.Where(specs => specs.ID != specsId).ToList();
-
-            // Delete from data source
-            AppFactory.specsRepo.DeleteSpecs(specsId);
-        }
-        public static ISpecs GetSpecs(string specsId) => appCache.SpecsList.Find(specs => specs.ID == specsId);
-
-        // Entity Operations
-        public static ISpec GetSpecsItem(string specsId, int specIndex)
-        {
-            ISpecs specs =
-                appCache.SpecsList.Find(sp => sp.ID == specsId);
-
-            return
-                specs.SpecItems.Find(spec => spec.Index == specIndex);
-        }
-
-        public static ISpec GetSpecsItem(ISpecs specs, int specIndex)
-        {
-            return
-                specs.SpecItems
-                .FirstOrDefault(si => si.Index == specIndex);
-        }
-
-        // Entity Manipulation
-
-
-
-        public static IEnumerable<ISpec> GetSpecsItems(string specsId)
-        {
-            return
-                (from specs in appCache.SpecsList
-                 where specs.ID == specsId
-                 select specs.SpecItems).FirstOrDefault();
-        }
-
-        public static List<ISpecListEntry> GetSpecListEntries(string specsId, int specIndex)
-        {
-            List<ISpec> specsItems =
-                (from specs in appCache.SpecsList
-                 where specs.ID == specsId
-                 select specs.SpecItems).FirstOrDefault();
-
-            return
-                (from spec in specsItems
-                 where spec.Index == specIndex
-                 select spec.ListEntries).FirstOrDefault();
-        }
-
-        #endregion
-
         #region Size Groups Object
         /// <summary>
         /// Retrieves the list of <see cref="SizeGroup"/> from the cache.
@@ -380,7 +294,7 @@ namespace UserService
 
 
             // Add to data source
-            AppFactory.sizeGroupRepo.Create(group);
+            GlobalsX.sizeGroupRepo.Create(group);
 
             // Update to refresh local cache
             UpdateSizeGroupsRepos();
@@ -389,7 +303,7 @@ namespace UserService
         public static void UpdateSizeGroup(string refId, ISizeGroup group)
         {
             // Update data source
-            AppFactory.sizeGroupRepo.Update(refId, group);
+            GlobalsX.sizeGroupRepo.Update(refId, group);
         }
 
         /// <summary>
@@ -402,7 +316,7 @@ namespace UserService
             appCache.SizeGroups = appCache.SizeGroups.Where(group => group.ID != groupId).ToList();
 
             // Delete from data source
-            AppFactory.sizeGroupRepo.Delete(groupId);
+            GlobalsX.sizeGroupRepo.Delete(groupId);
 
         }
 
@@ -412,8 +326,8 @@ namespace UserService
                 appCache.SizeGroups
                 .Find(group => group.ID == groupId);
 
-            appCache.SizeGroups.Cast<SizeGroup>().ToList()
-                .Find(group => group.ID == groupId);
+            //appCache.SizeGroups.Cast<SizeGroup>().ToList()
+            //    .Find(group => group.ID == groupId);
         }
         #endregion
 
@@ -529,7 +443,7 @@ namespace UserService
         private static void AddSizeList(IBasicList content)
         {
             // Add to data source
-            AppFactory.sizesRepo.AddList(content);
+            GlobalsX.sizesRepo.AddList(content);
 
             // Updating will automatically refresh the local cache
             UpdateSizesRepos();
@@ -538,7 +452,7 @@ namespace UserService
         {
             // Modify local cache (no need because changes are made on local cache)
             // Modify data source
-            AppFactory.sizesRepo.UpdateList(refId, content);
+            GlobalsX.sizesRepo.UpdateList(refId, content);
         }
         private static void DeleteSizeList(string listId)
         {
@@ -546,7 +460,7 @@ namespace UserService
             appCache.SizesList = appCache.SizesList.Where(list => list.ID != listId).ToList();
 
             // Delete from data source
-            AppFactory.sizesRepo.DeleteList(listId);
+            GlobalsX.sizesRepo.DeleteList(listId);
         }
         private static IBasicList GetSizeList(string listId) => appCache.SizesList.Find(list => list.ID == listId);
 
@@ -564,7 +478,7 @@ namespace UserService
             appCache.SizesList.Where(list => list.ID == listId).First().List.Add(entry);
 
             // Add to data source
-            AppFactory.sizeManipulator.AddEntry(listId, entry);
+            GlobalsX.sizeManipulator.AddEntry(listId, entry);
         }
         private static void SizeListEditEntry(string listId, string oldValue, string newValue)
         {
@@ -573,7 +487,7 @@ namespace UserService
             SizeListGetEntries(listId)[index] = newValue;
 
             // Edit data source
-            AppFactory.sizeManipulator.EditEntry(listId, oldValue, newValue);
+            GlobalsX.sizeManipulator.EditEntry(listId, oldValue, newValue);
         }
         private static void SizeListDeleteEntry(string listId, string entry)
         {
@@ -581,7 +495,7 @@ namespace UserService
             GetSizeList(listId).List.Remove(entry);
 
             // Remove from data source
-            AppFactory.sizeManipulator.DeleteEntry(listId, entry);
+            GlobalsX.sizeManipulator.DeleteEntry(listId, entry);
         }
         private static void SizeListMoveEntry(string listId, string entryValue, ShiftDirection direction)
         {
@@ -594,7 +508,7 @@ namespace UserService
             listEntries.Move(n, n + (int)direction);
 
             // Move entry in data source
-            AppFactory.sizeManipulator.MoveEntry(listId, entryValue, direction);
+            GlobalsX.sizeManipulator.MoveEntry(listId, entryValue, direction);
         }
 
         // Others
@@ -617,7 +531,7 @@ namespace UserService
         private static void AddBrandList(IBasicList content)
         {
             // Add to data source
-            AppFactory.brandsRepo.AddList(content);
+            GlobalsX.brandsRepo.AddList(content);
 
             // Updating will automatically refresh the local cache
             UpdateBrandsRepos();
@@ -626,7 +540,7 @@ namespace UserService
         {
             // Modify local cache (no need because changes are made on local cache)
             // Modify data source
-            AppFactory.brandsRepo.UpdateList(refId, content);
+            GlobalsX.brandsRepo.UpdateList(refId, content);
         }
         private static void DeleteBrandList(string listId)
         {
@@ -634,7 +548,7 @@ namespace UserService
             appCache.BrandsList = appCache.BrandsList.Where(list => list.ID != listId).ToList();
 
             // Delete from data source
-            AppFactory.brandsRepo.DeleteList(listId);
+            GlobalsX.brandsRepo.DeleteList(listId);
         }
         private static IBasicList GetBrandList(string listId) => appCache.BrandsList.Find(list => list.ID == listId);
         private static ObservableCollection<string> BrandListGetEntries(string listId)
@@ -650,7 +564,7 @@ namespace UserService
             appCache.BrandsList.Where(list => list.ID == listId).First().List.Add(entry);
 
             // Add to data source
-            AppFactory.brandManipulator.AddEntry(listId, entry);
+            GlobalsX.brandManipulator.AddEntry(listId, entry);
         }
         private static void BrandListEditEntry(string listId, string oldValue, string newValue)
         {
@@ -659,7 +573,7 @@ namespace UserService
             BrandListGetEntries(listId)[index] = newValue;
 
             // Edit data source
-            AppFactory.brandManipulator.EditEntry(listId, oldValue, newValue);
+            GlobalsX.brandManipulator.EditEntry(listId, oldValue, newValue);
         }
         private static void BrandListDeleteEntry(string listId, string entry)
         {
@@ -667,7 +581,7 @@ namespace UserService
             GetBrandList(listId).List.Remove(entry);
 
             // Remove from data source
-            AppFactory.brandManipulator.DeleteEntry(listId, entry);
+            GlobalsX.brandManipulator.DeleteEntry(listId, entry);
         }
         private static void BrandListMoveEntry(string listId, string entryValue, ShiftDirection direction)
         {
@@ -680,7 +594,7 @@ namespace UserService
             listEntries.Move(n, n + (int)direction);
 
             // Move entry in data source
-            AppFactory.brandManipulator.MoveEntry(listId, entryValue, direction);
+            GlobalsX.brandManipulator.MoveEntry(listId, entryValue, direction);
         }
         #endregion
 
@@ -696,14 +610,14 @@ namespace UserService
         private static IEnumerable<string> GetEndsId() => appCache.EndsIdList;
         private static void AddEndsList(IBasicList content)
         {
-            AppFactory.endsRepo.AddList(content);
+            GlobalsX.endsRepo.AddList(content);
             UpdateEndsRepos();
         }
         private static void EditEndsList(string refId, IBasicList content)
         {
             // Modify local cache (no need because changes are made on local cache)
             // Modify data source
-            AppFactory.endsRepo.UpdateList(refId, content);
+            GlobalsX.endsRepo.UpdateList(refId, content);
         }
         private static void DeleteEndsList(string listId)
         {
@@ -711,7 +625,7 @@ namespace UserService
             appCache.EndsList = appCache.EndsList.Where(list => list.ID != listId).ToList();
 
             // Delete from data source
-            AppFactory.endsRepo.DeleteList(listId);
+            GlobalsX.endsRepo.DeleteList(listId);
         }
         private static IBasicList GetEndsList(string listId) => appCache.EndsList.Find(list => list.ID == listId);
         private static ObservableCollection<string> EndsListGetEntries(string listId)
@@ -727,7 +641,7 @@ namespace UserService
             appCache.EndsList.Where(list => list.ID == listId).First().List.Add(entry);
 
             // Add to data source
-            AppFactory.endsManipulator.AddEntry(listId, entry);
+            GlobalsX.endsManipulator.AddEntry(listId, entry);
         }
         private static void EndsListEditEntry(string listId, string oldValue, string newValue)
         {
@@ -736,7 +650,7 @@ namespace UserService
             EndsListGetEntries(listId)[index] = newValue;
 
             // Edit data source
-            AppFactory.endsManipulator.EditEntry(listId, oldValue, newValue);
+            GlobalsX.endsManipulator.EditEntry(listId, oldValue, newValue);
         }
         private static void EndsListDeleteEntry(string listId, string entry)
         {
@@ -744,7 +658,7 @@ namespace UserService
             GetEndsList(listId).List.Remove(entry);
 
             // Remove from data source
-            AppFactory.endsManipulator.DeleteEntry(listId, entry);
+            GlobalsX.endsManipulator.DeleteEntry(listId, entry);
         }
         private static void EndsListMoveEntry(string listId, string entryValue, ShiftDirection direction)
         {
@@ -757,7 +671,7 @@ namespace UserService
             listEntries.Move(n, n + (int)direction);
 
             // Move entry in data source
-            AppFactory.endsManipulator.MoveEntry(listId, entryValue, direction);
+            GlobalsX.endsManipulator.MoveEntry(listId, entryValue, direction);
         }
         #endregion
 

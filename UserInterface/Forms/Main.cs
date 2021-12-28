@@ -1,43 +1,66 @@
 ﻿
-using CoreLibrary;
+//using AppCore;
+//using ClientService;
+//using CoreLibrary;
 using CoreLibrary.Enums;
-using CoreLibrary.Models;
+//using CoreLibrary.Models;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using UserService;
+//using UserService;
 
 
 namespace UserInterface.Forms
 {
     public partial class Main : Form
     {
-        public Main() => InitializeComponent();
+        public Main()
+        {
+            InitializeComponent();
+        }
 
         private void ItemViewer_Click(object sender, EventArgs e)
-            => LauchEditor(new ItemViewer());
+        {
+            LauchEditor(new ItemViewer());
+        }
 
         private void SpecsEditor_Click(object sender, EventArgs e)
-            => LauchEditor(new SpecsEditor());
+        {
+            LauchEditor(new SpecsEditor());
+        }
 
         private void SizeGroupsEditor_Click(object sender, EventArgs e)
-            => LauchEditor(new SizeGroupEditor());
+        {
+            LauchEditor(new SizeGroupEditor());
+        }
 
         private void SizeEditor_Click(object sender, EventArgs e)
-            => LauchEditor(new FieldEditor(FieldType.SIZE));
+        {
+            LauchEditor(new FieldEditor(FieldType.SIZE));
+        }
 
         private void BrandEditor_Click(object sender, EventArgs e)
-            => LauchEditor(new FieldEditor(FieldType.BRAND));
+        {
+            LauchEditor(new FieldEditor(FieldType.BRAND));
+        }
 
         private void EndsEditor_Click(object sender, EventArgs e)
-            => LauchEditor(new FieldEditor(FieldType.ENDS));
+        {
+            LauchEditor(new FieldEditor(FieldType.ENDS));
+        }
 
         private void Exit_Click(object sender, EventArgs e)
-            => Application.Exit();
+        {
+            Application.Exit();
+        }
 
         private void LauchEditor(Form editor)
         {
-            if (AppFactory.fpp != null && AppFactory.xDataDocs != null)
+            //bool check = GlobalsX.fpp != null && GlobalsX.xDataDocs != null;
+            bool check = !AppCore.Globals.disableEditors;
+            //bool check = true;
+
+            if (check)
             {
                 Hide();
                 editor.ShowDialog(this);
@@ -58,40 +81,37 @@ namespace UserInterface.Forms
         private void Main_Load(object sender, EventArgs e)
         {
             EnableDisableEditorsLaunchUI(false);
+            TestActions();
+        }
 
+        private void TestActions()
+        {
             tsmiAutoLoad.Checked = Program.TestAutoLoad;
-            Runtime.Test.AutoLoad(((XmlContext)AppFactory.context).TestLoadXmlFile);
+            Runtime.Test.AutoLoad(((CoreLibrary.XmlContext)CoreLibrary.GlobalsX.context).TestLoadXmlFile);
+            
+            // Requires a reference to the Interfaces.dll remove after test
+            XmlDataSource.XmlContext context = (XmlDataSource.XmlContext)AppCore.Globals.context;
+            Runtime.Test.LoadCallback testLoadXmlContext = context.TestLoadXmlContext;
+
+            Runtime.Test.AutoLoad(testLoadXmlContext);
             Runtime.Test.DoSomething(PostLoading);
-            //Runtime.Test.AutoJump(delegate { new ItemEditor(/*Program.xDataDocs, Program.fpr.ImageRepos*/).ShowDialog(); });
+            //Runtime.Test.DoSomething(delegate { LauchEditor(new SpecsEditor()); });
+            btnSizeGroupsEditor.PerformClick();
         }
 
         private void tsmiLoadAll_Click(object sender, EventArgs e)
         {
-            // TEST
-            AppFactory.context.Load();
-            //Common.BrowseXmlFile(LoadXmlFile);
+            CoreLibrary.GlobalsX.context.Load();
+            //Globals.context.Load();
+            ClientService.ContextProvider.Load();
             PostLoading();
         }
 
-        private void LoadXmlFile(string filePath)
-        {
-            // Load all the required XML file paths.
-            AppFactory.fpp = new FilePathProcessor(filePath);
-
-            // Load all the required XML documents.
-            AppFactory.xDataDocs = new XDataDocuments(AppFactory.fpp);
-
-            // Instantiate the source reader and modifier
-            AppFactory.reader = new XReader(AppFactory.xDataDocs);
-            AppFactory.itemModifier = new ModifyXml();
-            AppFactory.specsRepo = new SpecsRepoX(AppFactory.xDataDocs.Specs);
-
-            PostLoading();
-        }
-        
         private void PostLoading()
         {
-            Data.InitializeRepos();
+            UserService.Data.InitializeRepos();
+            ClientService.CacheIO.InitLists();
+
             EnableDisableEditorsLaunchUI(true);
         }
 

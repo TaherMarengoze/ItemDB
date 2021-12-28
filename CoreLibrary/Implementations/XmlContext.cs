@@ -14,14 +14,14 @@ namespace CoreLibrary
 
         public void Save()
         {
-            XDataDocuments.Save(AppFactory.xDataDocs.Items, AppFactory.fpp.Items);
-            XDataDocuments.Save(AppFactory.xDataDocs.Specs, AppFactory.fpp.Specs);
-            XDataDocuments.Save(AppFactory.xDataDocs.SizeGroups, AppFactory.fpp.SizeGroups);
-            XDataDocuments.Save(AppFactory.xDataDocs.Sizes, AppFactory.fpp.Sizes);
-            XDataDocuments.Save(AppFactory.xDataDocs.Brands, AppFactory.fpp.Brands);
-            XDataDocuments.Save(AppFactory.xDataDocs.Ends, AppFactory.fpp.Ends);
-            XDataDocuments.Save(AppFactory.xDataDocs.CustomSpecs, AppFactory.fpp.CustomSpecs);
-            XDataDocuments.Save(AppFactory.xDataDocs.CustomSizes, AppFactory.fpp.CustomSizes);
+            XDataDocuments.Save(GlobalsX.xDataDocs.Items, GlobalsX.fpp.Items);
+            XDataDocuments.Save(GlobalsX.xDataDocs.Specs, GlobalsX.fpp.Specs);
+            XDataDocuments.Save(GlobalsX.xDataDocs.SizeGroups, GlobalsX.fpp.SizeGroups);
+            XDataDocuments.Save(GlobalsX.xDataDocs.Sizes, GlobalsX.fpp.Sizes);
+            XDataDocuments.Save(GlobalsX.xDataDocs.Brands, GlobalsX.fpp.Brands);
+            XDataDocuments.Save(GlobalsX.xDataDocs.Ends, GlobalsX.fpp.Ends);
+            XDataDocuments.Save(GlobalsX.xDataDocs.CustomSpecs, GlobalsX.fpp.CustomSpecs);
+            XDataDocuments.Save(GlobalsX.xDataDocs.CustomSizes, GlobalsX.fpp.CustomSizes);
         }
 
         public void Save(object options)
@@ -29,52 +29,52 @@ namespace CoreLibrary
             ContextEntity entity = (ContextEntity)options;
 
             if ((entity & ContextEntity.Items) != 0)
-                XDataDocuments.Save(AppFactory.xDataDocs.Items, AppFactory.fpp.Items);
+                XDataDocuments.Save(GlobalsX.xDataDocs.Items, GlobalsX.fpp.Items);
 
             if ((entity & ContextEntity.Specs) != 0)
-                XDataDocuments.Save(AppFactory.xDataDocs.Specs, AppFactory.fpp.Specs);
+                XDataDocuments.Save(GlobalsX.xDataDocs.Specs, GlobalsX.fpp.Specs);
 
             if ((entity & ContextEntity.SizeGroups) != 0)
-                XDataDocuments.Save(AppFactory.xDataDocs.SizeGroups, AppFactory.fpp.SizeGroups);
+                XDataDocuments.Save(GlobalsX.xDataDocs.SizeGroups, GlobalsX.fpp.SizeGroups);
 
             if ((entity & ContextEntity.Sizes) != 0)
-                XDataDocuments.Save(AppFactory.xDataDocs.Sizes, AppFactory.fpp.Sizes);
+                XDataDocuments.Save(GlobalsX.xDataDocs.Sizes, GlobalsX.fpp.Sizes);
 
             if ((entity & ContextEntity.Brands) != 0)
-                XDataDocuments.Save(AppFactory.xDataDocs.Brands, AppFactory.fpp.Brands);
+                XDataDocuments.Save(GlobalsX.xDataDocs.Brands, GlobalsX.fpp.Brands);
 
             if ((entity & ContextEntity.Ends) != 0)
-                XDataDocuments.Save(AppFactory.xDataDocs.Ends, AppFactory.fpp.Ends);
+                XDataDocuments.Save(GlobalsX.xDataDocs.Ends, GlobalsX.fpp.Ends);
 
             if ((entity & ContextEntity.CustomSpecs) != 0)
-                XDataDocuments.Save(AppFactory.xDataDocs.CustomSpecs, AppFactory.fpp.CustomSpecs);
+                XDataDocuments.Save(GlobalsX.xDataDocs.CustomSpecs, GlobalsX.fpp.CustomSpecs);
 
             if ((entity & ContextEntity.CustomSizes) != 0)
-                XDataDocuments.Save(AppFactory.xDataDocs.CustomSizes, AppFactory.fpp.CustomSizes);
+                XDataDocuments.Save(GlobalsX.xDataDocs.CustomSizes, GlobalsX.fpp.CustomSizes);
         }
 
         private void LoadXmlFile(string filePath)
         {
-            AppFactory.fpp = new FilePathProcessor(filePath);
-            AppFactory.xDataDocs = new XDataDocuments(AppFactory.fpp);
+            GlobalsX.fpp = new FilePathProcessor(filePath);
+            GlobalsX.xDataDocs = new XDataDocuments(GlobalsX.fpp);
 
             // Instantiate the source reader and modifier
-            AppFactory.reader = new XReader(AppFactory.xDataDocs);
+            GlobalsX.reader = new XReader(GlobalsX.xDataDocs);
 
-            AppFactory.itemModifier = new ModifyXml();
+            GlobalsX.itemsRepo = new ItemRepoX();
 
-            AppFactory.specsRepo = new SpecsRepoX(AppFactory.xDataDocs.Specs);
+            //GlobalsX.specsRepo = new SpecsRepoX(GlobalsX.xDataDocs.Specs);
 
-            AppFactory.sizeGroupRepo = new SizeGroupsXmlRepository(AppFactory.xDataDocs.SizeGroups);
+            GlobalsX.sizeGroupRepo = new SizeGroupsXmlRepository(GlobalsX.xDataDocs.SizeGroups);
 
-            AppFactory.sizesRepo = new FieldXmlRepository(AppFactory.xDataDocs.Sizes, FieldType.SIZE);
-            AppFactory.sizeManipulator = new FieldXmlManipulator(AppFactory.xDataDocs.Sizes.Document, FieldType.SIZE);
+            GlobalsX.sizesRepo = new FieldXmlRepository(GlobalsX.xDataDocs.Sizes, FieldType.SIZE);
+            GlobalsX.sizeManipulator = new FieldXmlManipulator(GlobalsX.xDataDocs.Sizes.Document, FieldType.SIZE);
 
-            AppFactory.brandsRepo = new FieldXmlRepository(AppFactory.xDataDocs.Brands, FieldType.BRAND);
-            AppFactory.brandManipulator = new FieldXmlManipulator(AppFactory.xDataDocs.Brands, FieldType.BRAND);
+            GlobalsX.brandsRepo = new FieldXmlRepository(GlobalsX.xDataDocs.Brands, FieldType.BRAND);
+            GlobalsX.brandManipulator = new FieldXmlManipulator(GlobalsX.xDataDocs.Brands, FieldType.BRAND);
 
-            AppFactory.endsRepo = new FieldXmlRepository(AppFactory.xDataDocs.Ends, FieldType.ENDS);
-            AppFactory.endsManipulator = new FieldXmlManipulator(AppFactory.xDataDocs.Ends, FieldType.ENDS);
+            GlobalsX.endsRepo = new FieldXmlRepository(GlobalsX.xDataDocs.Ends, FieldType.ENDS);
+            GlobalsX.endsManipulator = new FieldXmlManipulator(GlobalsX.xDataDocs.Ends, FieldType.ENDS);
 
         }
 

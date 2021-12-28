@@ -79,24 +79,24 @@ namespace CoreLibrary
                 };
         }
 
-        public IEnumerable<ISpecs> GetSpecs()
-        {
-            return
-                from specs in dataDocs.Specs.Descendants("specs")
-                select new Specs()
-                {
-                    ID = specs.Attribute("specsID").Value,
-                    Name = specs.Attribute("name").Value,
-                    TextPattern = specs.Attribute("textPattern").Value,
-                    SpecItems = specs.Descendants("specsItem").Select(spec =>
-                    new Spec((XElement)spec.FirstNode)
-                    {
-                        Index = (int)spec.Attribute("index"),
-                        Name = spec.Attribute("name").Value,
-                        ValuePattern = spec.Attribute("valuePattern").Value
-                    }).ToList<ISpec>()
-                };
-        }
+        //public IEnumerable<ISpecs> GetSpecs()
+        //{
+        //    return
+        //        from specs in dataDocs.Specs.Descendants("specs")
+        //        select new Specs()
+        //        {
+        //            ID = specs.Attribute("specsID").Value,
+        //            Name = specs.Attribute("name").Value,
+        //            TextPattern = specs.Attribute("textPattern").Value,
+        //            SpecItems = specs.Descendants("specsItem").Select(spec =>
+        //            new Spec((XElement)spec.FirstNode)
+        //            {
+        //                Index = (int)spec.Attribute("index"),
+        //                Name = spec.Attribute("name").Value,
+        //                ValuePattern = spec.Attribute("valuePattern").Value
+        //            }).ToList<ISpec>()
+        //        };
+        //}
 
         public IEnumerable<ISizeGroup> GetSizeGroups()
         {

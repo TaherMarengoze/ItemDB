@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <specsGroups ver="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Specs.xsd">
   <specs specsID="S000" name="Test" textPattern="{base}{1}">
-    <specsItem index="1" name="Multiple" valuePattern="{val}">
+    <specsItem index="1" name="Letters" valuePattern="{val}">
       <list>
         <entry valId="1">
           <val>A</val>
@@ -11,19 +11,151 @@
           <val>B</val>
           <disp>B</disp>
         </entry>
-      </list>
-    </specsItem>
-    <specsItem index="2" name="Label" valuePattern="{val}">
-      <custom>LBLTXT</custom>
-    </specsItem>
-    <specsItem index="3" name="Label1" valuePattern="{val}">
-      <custom>LBLTXT</custom>
-    </specsItem>
-    <specsItem index="4" name="Single" valuePattern="{val}">
-      <list>
-        <entry valId="1">
+        <entry valId="3">
           <val>C</val>
           <disp>C</disp>
+        </entry>
+        <entry valId="4">
+          <val>D</val>
+          <disp>D</disp>
+        </entry>
+        <entry valId="5">
+          <val>E</val>
+          <disp>E</disp>
+        </entry>
+        <entry valId="6">
+          <val>F</val>
+          <disp>F</disp>
+        </entry>
+        <entry valId="7">
+          <val>G</val>
+          <disp>G</disp>
+        </entry>
+        <entry valId="8">
+          <val>H</val>
+          <disp>H</disp>
+        </entry>
+        <entry valId="9">
+          <val>I</val>
+          <disp>I</disp>
+        </entry>
+        <entry valId="10">
+          <val>J</val>
+          <disp>J</disp>
+        </entry>
+        <entry valId="11">
+          <val>K</val>
+          <disp>K</disp>
+        </entry>
+        <entry valId="12">
+          <val>L</val>
+          <disp>L</disp>
+        </entry>
+        <entry valId="13">
+          <val>M</val>
+          <disp>M</disp>
+        </entry>
+        <entry valId="14">
+          <val>N</val>
+          <disp>N</disp>
+        </entry>
+        <entry valId="15">
+          <val>O</val>
+          <disp>O</disp>
+        </entry>
+        <entry valId="16">
+          <val>P</val>
+          <disp>P</disp>
+        </entry>
+        <entry valId="17">
+          <val>Q</val>
+          <disp>Q</disp>
+        </entry>
+        <entry valId="18">
+          <val>R</val>
+          <disp>R</disp>
+        </entry>
+        <entry valId="19">
+          <val>S</val>
+          <disp>S</disp>
+        </entry>
+        <entry valId="20">
+          <val>T</val>
+          <disp>T</disp>
+        </entry>
+        <entry valId="21">
+          <val>U</val>
+          <disp>U</disp>
+        </entry>
+        <entry valId="22">
+          <val>V</val>
+          <disp>V</disp>
+        </entry>
+        <entry valId="23">
+          <val>W</val>
+          <disp>W</disp>
+        </entry>
+        <entry valId="24">
+          <val>X</val>
+          <disp>X</disp>
+        </entry>
+        <entry valId="25">
+          <val>Y</val>
+          <disp>Y</disp>
+        </entry>
+        <entry valId="26">
+          <val>Z</val>
+          <disp>Z</disp>
+        </entry>
+      </list>
+    </specsItem>
+    <specsItem index="2" name="Any Value" valuePattern="{val}">
+      <custom>LBLTXT</custom>
+    </specsItem>
+    <specsItem index="3" name="Custom Type Value" valuePattern="{val}">
+      <custom>smpleCustSpec</custom>
+    </specsItem>
+    <specsItem index="4" name="Numbers" valuePattern="{val}">
+      <list>
+        <entry valId="1">
+          <val>One</val>
+          <disp>One</disp>
+        </entry>
+        <entry valId="2">
+          <val>Two</val>
+          <disp>Two</disp>
+        </entry>
+        <entry valId="3">
+          <val>Three</val>
+          <disp>Three</disp>
+        </entry>
+        <entry valId="4">
+          <val>Four</val>
+          <disp>Four</disp>
+        </entry>
+        <entry valId="5">
+          <val>Five</val>
+          <disp>Five</disp>
+        </entry>
+        <entry valId="6">
+          <val>Six</val>
+          <disp>Six</disp>
+        </entry>
+        <entry valId="7">
+          <val>Seven</val>
+          <disp>Seven</disp>
+        </entry>
+        <entry valId="8">
+          <val>Eight</val>
+          <disp>Eight</disp>
+        </entry>
+        <entry valId="9">
+          <val>Nine</val>
+          <disp>Nine</disp>
+        </entry>
+        <entry valId="10">
+          <val>Ten</val>
+          <disp>Ten</disp>
         </entry>
       </list>
     </specsItem>

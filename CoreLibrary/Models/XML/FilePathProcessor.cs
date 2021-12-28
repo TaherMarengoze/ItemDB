@@ -2,6 +2,7 @@
 
 namespace CoreLibrary.Models
 {
+    using System;
     using Enums;
     using Factory;
 
