@@ -67,7 +67,8 @@ namespace ClientService
 
         internal static void UpdateSizeGroupList()
         {
-            List<ISizeGroup> list = reader.GetSizeGroups().ToList();
+            IEnumerable<ISizeGroup> query = reader.GetSizeGroups();
+            List<ISizeGroup> list = query.ToList();
             cache.SizeGroups = list;
         }
 

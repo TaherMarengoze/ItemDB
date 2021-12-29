@@ -708,7 +708,7 @@ namespace Controllers.SpecsUi
                 $"Specs_{ specsId }";
         }
 
-        public void SaveToDataSource()
+        public void Save()
         {
             /*
              * The type 'ContextEntity' is defined in an assembly that is not referenced.

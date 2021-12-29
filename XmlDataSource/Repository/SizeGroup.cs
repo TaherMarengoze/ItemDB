@@ -12,6 +12,9 @@ namespace XmlDataSource.Repository
     {
         private readonly XDocument dataSource;
 
+        /// <summary>
+        /// Occurs when <c>this</c> <see cref="SizeGroup"/> repository is changed by any create, update or delete operation.
+        /// </summary>
         public event EventHandler OnChange;
 
         public SizeGroup(XDocument source)

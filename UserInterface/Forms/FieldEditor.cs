@@ -3,6 +3,7 @@ using CoreLibrary;
 using CoreLibrary.Enums;
 using CoreLibrary.Interfaces;
 using CoreLibrary.Models;
+using Shared.UI;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Forms;
@@ -46,6 +47,12 @@ namespace UserInterface.Forms
         }
 
         #region General
+
+        private void SaveToSource()
+        {
+            Data.Save(entity);
+        }
+
         private void PostLoading()
         {
             EnableControls();
@@ -68,21 +75,13 @@ namespace UserInterface.Forms
             }
         }
 
-        private void SaveToSource()
-        {
-            //AppFactory.context.Save(entity);
-            Data.Save(entity);
-        }
-        
+
+
         private void PopulateGrid()
         {
-            dgvListDetails.DataSource = null;
             object newDataSource = Data.GetFieldLists(fieldType);
-            dgvListDetails.DataSource = newDataSource;
-
-            // Auto-Size Columns and Rows
-            dgvListDetails.AutoResizeColumns();
-            dgvListDetails.AutoResizeRows();
+            dgvListDetails.DataSource = null;
+            dgvListDetails.DataSourceResize(newDataSource);
 
             // Set the location of the delete column
             int bindDataCount = dgvListDetails.Columns.Count - 1;
@@ -211,7 +210,7 @@ namespace UserInterface.Forms
             {
                 string fieldId = GetSelectedListId();
                 Data.FieldListAddEntry(fieldType, fieldId, entryValue);
-                
+
                 txtEntryValue.Text = string.Empty;
                 UpdateEntriesList();
                 SelectListItem(entryValue);
@@ -249,7 +248,7 @@ namespace UserInterface.Forms
             {
                 string listId = GetSelectedListId();
                 string selectedEntry = lbxFieldListItems.Text;
-                
+
                 ValueEdit valueEditBox = new ValueEdit(selectedEntry);
 
                 if (valueEditBox.ShowDialog() == DialogResult.OK)
@@ -327,7 +326,7 @@ namespace UserInterface.Forms
 
             //DataService.SizeListMoveEntry(listId, item, ShiftDirection.UP);
             Data.FieldListMoveEntry(fieldType, listId, item, ShiftDirection.UP);
-            
+
             UpdateEntriesList();
             SelectShiftedItem(selecIndex, ShiftDirection.UP);
         }
@@ -384,11 +383,10 @@ namespace UserInterface.Forms
 
         private void dgvListDetails_SelectionChanged(object sender, EventArgs e)
         {
-            if (dgvListDetails.SelectedRows.Count > 0)
-            {
-                string selectedListId = (string)dgvListDetails.SelectedRows[0].Cells["ID"].Value;
+            string selectedListId = (string)dgvListDetails.SelectedObjectID();
+
+            if (!string.IsNullOrWhiteSpace(selectedListId))
                 PopulateEntryList(selectedListId);
-            }
         }
 
         private void dgvListDetails_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -413,6 +411,5 @@ namespace UserInterface.Forms
         }
 #pragma warning restore IDE1006 // Naming Styles
         #endregion
-
     }
 }

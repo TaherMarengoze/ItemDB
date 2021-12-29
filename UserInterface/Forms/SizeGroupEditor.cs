@@ -515,7 +515,7 @@ namespace UserInterface.Forms
         }
 
         /// <summary>
-        /// Enable the controls related to modifing the alternate list.
+        /// Enable the controls related to modifying the alternate list.
         /// </summary>
         private void EnableAltListSelectionUI()
         {
@@ -529,7 +529,7 @@ namespace UserInterface.Forms
         }
 
         /// <summary>
-        /// Disable the controls related to modifing the alternate list.
+        /// Disable the controls related to modifying the alternate list.
         /// </summary>
         private void DisableAltListSelectionUI()
         {
@@ -540,7 +540,7 @@ namespace UserInterface.Forms
         }
 
         /// <summary>
-        /// Show the controls related to modifing the alternate ID list.
+        /// Show the controls related to modifying the alternate ID list.
         /// </summary>
         private void ShowAltListModifyUI()
         {
@@ -549,7 +549,7 @@ namespace UserInterface.Forms
         }
 
         /// <summary>
-        /// Hide the controls related to modifing the alternate ID list.
+        /// Hide the controls related to modifying the alternate ID list.
         /// </summary>
         private void HideAltListModifyUI()
         {
@@ -558,7 +558,7 @@ namespace UserInterface.Forms
         }
 
         /// <summary>
-        /// Enable the controls related to modifing the alternate ID list.
+        /// Enable the controls related to modifying the alternate ID list.
         /// </summary>
         private void EnableAltListModifyUI()
         {
@@ -572,7 +572,7 @@ namespace UserInterface.Forms
         }
 
         /// <summary>
-        /// Disable the controls related to modifing the alternate ID list.
+        /// Disable the controls related to modifying the alternate ID list.
         /// </summary>
         private void DisableAltListModifyUI()
         {

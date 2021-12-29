@@ -11,7 +11,11 @@ namespace XmlDataSource.Repository
     public class SizeList : IRepo<IFieldList>
     {
         private readonly XDocument dataSource;
+        private readonly XmlContext context;
 
+        /// <summary>
+        /// Occurs when <c>this</c> <see cref="SizeList"/> repository is changed by any create, update or delete operation.
+        /// </summary>
         public event EventHandler OnChange;
 
         public SizeList(XDocument source)
@@ -21,14 +25,16 @@ namespace XmlDataSource.Repository
 
         public SizeList()
         {
-            dataSource =
-                ((XmlContext)AppCore.Globals.context).DataDocs.Sizes;
+            context = (XmlContext)AppCore.Globals.context;
+            dataSource = context.DataDocs.Sizes;
         }
 
         public void Create(IFieldList entity)
         {
             XElement content = Entity.SerializeSize(entity);
             dataSource.Root.Add(content);
+
+            OnChange?.Invoke(this, EventArgs.Empty);
         }
 
         public IFieldList Read(string entityId) => throw new NotImplementedException();
@@ -38,11 +44,15 @@ namespace XmlDataSource.Repository
             XElement newContent = Entity.SerializeSize(entity);
             XElement oldContent = GetElement(refId);
             oldContent.ReplaceWith(newContent);
+
+            OnChange?.Invoke(this, EventArgs.Empty);
         }
 
         public void Delete(string entityId)
         {
             GetElement(entityId).Remove();
+
+            OnChange?.Invoke(this, EventArgs.Empty);
         }
 
         private XElement GetElement(string entityId)

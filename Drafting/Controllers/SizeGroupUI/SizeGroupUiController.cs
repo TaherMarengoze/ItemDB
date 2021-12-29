@@ -555,9 +555,9 @@ namespace Controllers.SizeGroupUI
 
         #region Fields[FLDS]
         private readonly SizeGroupCache cache = new SizeGroupCache();
-        private SizeGroupProvider sizeGroupDP = new SizeGroupProvider();
-        private SizeProvider sizeDP = new SizeProvider();
-        private CustomSizeProvider csProvider = new CustomSizeProvider();
+        private readonly SizeGroupProvider sizeGroupDP = new SizeGroupProvider();
+        private readonly SizeProvider sizeDP = new SizeProvider();
+        private readonly CustomSizeProvider csProvider = new CustomSizeProvider();
         private string _inputID;
         private string _inputName;
         private string _inputDefaultID;

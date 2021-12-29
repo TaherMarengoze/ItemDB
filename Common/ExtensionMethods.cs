@@ -33,6 +33,12 @@ namespace Shared.UI
             source.AutoResizeRows();
         }
 
+        /// <summary>
+        /// Gets the selected object ID by the given column name. If no column name is given the first column is used.
+        /// </summary>
+        /// <param name="source">The <see cref="DataGridView"/> object to get the selected object ID from.</param>
+        /// <param name="fieldName">The column name that contains the ID of the selected object. If omitted then the first column is used.</param>
+        /// <returns>Object representing the ID of the selected row.</returns>
         public static object SelectedObjectID(this DataGridView source, string fieldName = "")
         {
             if (source.Rows.Count <= 0)
@@ -44,6 +50,12 @@ namespace Shared.UI
 
             if (fieldName == "")
             {
+                foreach (string colName in new string[] { "ID", "Id", "id" })
+                {
+                    if (source.Columns[colName] != null)
+                        return firstSelectedRow.Cells[colName].Value;
+                }
+                
                 // assumes that the ID column is the first one
                 return firstSelectedRow.Cells[0].Value;
             }
@@ -51,7 +63,7 @@ namespace Shared.UI
             return
                 firstSelectedRow.Cells[fieldName].Value;
         }
-
+        
         public static void RestoreSelection(this DataGridView source, object dataSource)
         {
             int _selectionIndex = source.SelectedRows[0].Index;

@@ -8,6 +8,7 @@ namespace Interfaces.General
 {
     public interface IDraftable
     {
+        void Save();
         void CommitChanges();
     }
 }
