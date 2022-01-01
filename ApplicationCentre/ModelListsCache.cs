@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 namespace AppCore
 {
+    /// <summary>
+    /// Represents the global cache of the entities' list of objects from the data source context.
+    /// </summary>
     public class ModelListsCache
     {
         public event EventHandler OnSpecsChanged;

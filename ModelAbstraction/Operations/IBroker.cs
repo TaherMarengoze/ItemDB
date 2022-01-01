@@ -1,7 +1,6 @@
-﻿
-namespace Interfaces.Operations
+﻿namespace Interfaces.Operations
 {
-    public interface ICache<TEntity>
+    public interface IBroker<TEntity>
     {
         void Create(TEntity content);
 

@@ -54,7 +54,7 @@
     <Compile Include="Models\ISpecListEntry.cs" />
     <Compile Include="Models\ISpecs.cs" />
     <Compile Include="Models\ISpecsItem.cs" />
-    <Compile Include="Operations\ICache.cs" />
+    <Compile Include="Operations\IBroker.cs" />
     <Compile Include="Operations\IDataReader.cs" />
     <Compile Include="Operations\IEntityNotify.cs" />
     <Compile Include="Operations\IRepo.cs" />

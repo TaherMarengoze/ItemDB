@@ -2,6 +2,7 @@
 using Interfaces.Models;
 using Interfaces.Operations;
 using Modeling.DataModels;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -16,9 +17,12 @@ namespace XmlDataSource
     {
         private readonly DataDocuments dataDocs;
 
+        public event Action OnInit; // test
+
         public XmlReader(DataDocuments documents)
         {
             dataDocs = documents;
+            OnInit?.Invoke(); // test
         }
 
         public IEnumerable<IItem> GetItems()

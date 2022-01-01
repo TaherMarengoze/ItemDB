@@ -1,5 +1,4 @@
-﻿
-using Interfaces.Models;
+﻿using Interfaces.Models;
 using Interfaces.Operations;
 
 namespace AppCore
@@ -19,6 +18,9 @@ namespace AppCore
         
         public static bool disableEditors = true;
 
+        /// <summary>
+        /// The global instance of the <see cref="ModelListsCache"/> class.
+        /// </summary>
         public static ModelListsCache ModelCache { get; } = new ModelListsCache();
 
         public static DataListsCache DataLists { get; } = new DataListsCache();

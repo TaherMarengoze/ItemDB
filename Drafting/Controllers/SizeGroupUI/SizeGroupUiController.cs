@@ -1,5 +1,6 @@
 ﻿
 using ClientService;
+using ClientService.Brokers;
 using ClientService.Data;
 using CoreLibrary.Enums;
 using Interfaces.Models;
@@ -554,7 +555,7 @@ namespace Controllers.SizeGroupUI
         #endregion
 
         #region Fields[FLDS]
-        private readonly SizeGroupCache cache = new SizeGroupCache();
+        private readonly SizeGroupBroker cache = new SizeGroupBroker();
         private readonly SizeGroupProvider sizeGroupDP = new SizeGroupProvider();
         private readonly SizeProvider sizeDP = new SizeProvider();
         private readonly CustomSizeProvider csProvider = new CustomSizeProvider();

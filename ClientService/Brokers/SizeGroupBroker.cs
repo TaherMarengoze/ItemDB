@@ -2,9 +2,9 @@
 using Interfaces.Models;
 using Interfaces.Operations;
 
-namespace ClientService
+namespace ClientService.Brokers
 {
-    public class SizeGroupCache : ICache<ISizeGroup>
+    public class SizeGroupBroker : IBroker<ISizeGroup>
     {
         private readonly IRepo<ISizeGroup> repos = Globals.sizeGroupRepo;
 
@@ -20,10 +20,5 @@ namespace ClientService
 
         public void Delete(string entityId)
             => repos.Delete(entityId);
-
-        void Test()
-        {
-            ISizeGroup x = repos.Read("");
-        }
     }
 }

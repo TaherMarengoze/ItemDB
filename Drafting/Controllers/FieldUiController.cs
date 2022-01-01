@@ -1,5 +1,4 @@
-﻿using AppCore;
-using ClientService;
+﻿using ClientService.Brokers;
 using Interfaces.Models;
 using Interfaces.Operations;
 using Modeling.DataModels;
@@ -15,17 +14,9 @@ namespace Controllers.Field
     {
         public FieldUiController()
         {
-            IFieldList draft = new SizeList
-            {
-                ID = "XYZ00",
-                Name = "Test",
-                List = new System.Collections.ObjectModel.ObservableCollection<string> { "entry 1", "entry 2", "entry 3" }
-            };
-
-            repos.Create(draft);
+            
         }
 
-        private readonly SizeListCache cache = new SizeListCache();
-        private readonly IRepo<IFieldList> repos = Globals.sizesRepo;
+        private readonly SizeListBroker broker = new SizeListBroker();
     }
 }

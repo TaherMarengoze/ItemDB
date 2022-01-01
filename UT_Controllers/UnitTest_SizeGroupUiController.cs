@@ -17,7 +17,7 @@ namespace UT_Controllers
         bool actualOutput;
         object carryOverValue;
 
-        private ClientService.SizeGroupCache cache;
+        private ClientService.Brokers.SizeGroupBroker cache;
         private IDataReader reader;
 
         private void SimulateInitialization()
@@ -36,7 +36,7 @@ namespace UT_Controllers
             context.TestLoadXmlContext(true ? dynTestPath : fixedPath2);
 
             reader = AppCore.Globals.reader;
-            cache = new ClientService.SizeGroupCache();
+            cache = new ClientService.Brokers.SizeGroupBroker();
 
             ClientService.CacheIO.InitLists();
 

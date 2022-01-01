@@ -1,5 +1,4 @@
-﻿
-using Interfaces.Models;
+﻿using Interfaces.Models;
 using Interfaces.Operations;
 using System;
 using System.Linq;

@@ -50,10 +50,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ApplicationCentre\AppCore.csproj">
-      <Project>{D544AF89-205D-48BB-BF81-FF93D9A43692}</Project>
-      <Name>AppCore</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ClientService\ClientService.csproj">
       <Project>{2ec19893-87bd-41aa-a165-bf544d2a1bcb}</Project>
       <Name>ClientService</Name>

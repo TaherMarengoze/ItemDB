@@ -42,15 +42,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Brokers\SizeListBroker.cs" />
     <Compile Include="CacheIO.cs" />
-    <Compile Include="Cache\SizeListCache.cs" />
+    <Compile Include="Brokers\SizeGroupBroker.cs" />
     <Compile Include="ContextProvider.cs" />
     <Compile Include="Contracts\IProvider.cs" />
     <Compile Include="Data\CustomSizeProvider.cs" />
     <Compile Include="Data\SizeGroupProvider.cs" />
     <Compile Include="Data\SizeProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Cache\SizeGroupCache.cs" />
     <Compile Include="SpecsManiuplator.cs" />
     <Compile Include="Data\SpecsProvider.cs" />
     <Compile Include="SpecsRepository.cs" />
