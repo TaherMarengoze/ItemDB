@@ -42,11 +42,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\CloneExtension.cs" />
-    <Compile Include="Controllers\FieldUiController.cs" />
-    <Compile Include="Controllers\SizeGroupUI\SizeGroupEvents.cs" />
-    <Compile Include="Controllers\SizeGroupUI\SizeGroupUiController.cs" />
-    <Compile Include="Controllers\SpecsUI\SpecsDrafter.cs" />
-    <Compile Include="Controllers\SpecsUI\SpecsEvent.cs" />
+    <Compile Include="Controllers\EventsExtension.cs" />
+    <Compile Include="Controllers\SizeGroup\SizeGroupEvents.cs" />
+    <Compile Include="Controllers\SizeGroup\SizeGroupUiController.cs" />
+    <Compile Include="Controllers\SizeList\SizeListController.cs" />
+    <Compile Include="Controllers\Specs\SpecsDrafter.cs" />
+    <Compile Include="Controllers\Specs\SpecsEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

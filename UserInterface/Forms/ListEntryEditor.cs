@@ -1,5 +1,5 @@
 ﻿using Interfaces.General;
-using Shared.UI;
+using Client.Controls;
 using System;
 using System.Windows.Forms;
 

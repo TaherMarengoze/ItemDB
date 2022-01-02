@@ -1,7 +1,7 @@
 ﻿using CoreLibrary.Enums;
 using Controllers.SpecsUi;
 //using Controllers.System;
-using Shared.UI;
+using Client.Controls;
 using System;
 using System.Drawing;
 using System.Windows.Forms;

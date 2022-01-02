@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace Shared.UI
+namespace Client.Controls
 {
     public static class ExtensionMethods
     {

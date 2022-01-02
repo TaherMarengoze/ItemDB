@@ -27,7 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Existing", "Existing", "{26
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{8EF0245D-1A2C-4A68-A25B-33DBE30289B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Common\Shared.csproj", "{B7C3BA24-B4CC-49D7-B9D5-9371A1CA02DD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientCommon", "Common\ClientCommon.csproj", "{B7C3BA24-B4CC-49D7-B9D5-9371A1CA02DD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drafting", "Drafting\Drafting.csproj", "{38DD4B4A-716D-4D0D-AD6C-9AFFEDB3F964}"
 EndProject

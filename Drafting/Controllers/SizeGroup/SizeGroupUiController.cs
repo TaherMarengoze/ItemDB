@@ -332,7 +332,7 @@ namespace Controllers.SizeGroupUI
 
         public void SetSelection(string id)
         {
-            selected = (SizeGroup)cache.Read(id);
+            selected = (SizeGroup)broker.Read(id);
 
             // raise an event for selection change
             OnSelectionChange?.Invoke(this,
@@ -357,7 +357,7 @@ namespace Controllers.SizeGroupUI
         public void Edit(string objectID)
         {
             // get and store the original object
-            draftObject = (SizeGroup)cache.Read(objectID);
+            draftObject = (SizeGroup)broker.Read(objectID);
 
             DISABLE_RAISE_EVENT = true;
 
@@ -388,11 +388,11 @@ namespace Controllers.SizeGroupUI
 
             if (draftObject == null)
             {
-                cache.Create(draft);
+                broker.Create(draft);
             }
             else
             {
-                cache.Update(draftObject.ID, draft);
+                broker.Update(draftObject.ID, draft);
                 draftObject = null;
             }
 
@@ -421,7 +421,7 @@ namespace Controllers.SizeGroupUI
 
         public void Remove(string objectID)
         {
-            cache.Delete(objectID);
+            broker.Delete(objectID);
 
             // raise remove event
             OnEntityRemove?.Invoke(this, Count);
@@ -555,7 +555,7 @@ namespace Controllers.SizeGroupUI
         #endregion
 
         #region Fields[FLDS]
-        private readonly SizeGroupBroker cache = new SizeGroupBroker();
+        private readonly SizeGroupBroker broker = new SizeGroupBroker();
         private readonly SizeGroupProvider sizeGroupDP = new SizeGroupProvider();
         private readonly SizeProvider sizeDP = new SizeProvider();
         private readonly CustomSizeProvider csProvider = new CustomSizeProvider();

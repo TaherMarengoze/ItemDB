@@ -275,9 +275,9 @@
       <Project>{2ec19893-87bd-41aa-a165-bf544d2a1bcb}</Project>
       <Name>ClientService</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Common\Shared.csproj">
+    <ProjectReference Include="..\Common\ClientCommon.csproj">
       <Project>{b7c3ba24-b4cc-49d7-b9d5-9371a1ca02dd}</Project>
-      <Name>Shared</Name>
+      <Name>ClientCommon</Name>
     </ProjectReference>
     <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj">
       <Project>{90c23753-2a1c-4f04-a4e7-3b12ce02fa7f}</Project>

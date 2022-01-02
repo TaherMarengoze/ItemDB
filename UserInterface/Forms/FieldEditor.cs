@@ -3,7 +3,7 @@ using CoreLibrary;
 using CoreLibrary.Enums;
 using CoreLibrary.Interfaces;
 using CoreLibrary.Models;
-using Shared.UI;
+using Client.Controls;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Forms;

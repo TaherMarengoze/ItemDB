@@ -12,7 +12,8 @@ namespace ClientService.Brokers
         public void Create(IFieldList content)
             => repos.Create(content);
 
-        public IFieldList Read(string entityId) => throw new NotImplementedException();
+        public IFieldList Read(string entityId)
+            => repos.Read(entityId);
 
         public void Update(string refId, IFieldList content) =>
             repos.Update(refId, content);

@@ -7,7 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using UserInterface.Shared;
-using Shared.UI;
+using Client.Controls;
 
 namespace UserInterface.Forms
 {

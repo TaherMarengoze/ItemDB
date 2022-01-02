@@ -133,5 +133,24 @@ namespace UT_Controllers
         {
             carryOverValue = e;
         }
+
+        [TestMethod]
+        public void MyTestMethod()
+        {
+            string[] inputs = { "A", "B", "C" };
+            string[] drafts = { "A", "B", "C" };
+
+            bool[] changeChecks = {
+                inputs[0] != drafts[0],
+                inputs[1] != drafts[1],
+                inputs[2] != drafts[2]
+            };
+
+            bool isChanged =
+                changeChecks.Any(change => change);
+            //!changeChecks.All(change => !change);
+
+            Assert.AreEqual(true, isChanged);
+        }
     }
 }
