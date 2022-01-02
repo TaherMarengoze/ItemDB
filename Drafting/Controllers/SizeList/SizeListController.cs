@@ -157,7 +157,6 @@ namespace Controllers
 
         private void CheckReadyStatus()
         {
-            //throw new NotImplementedException();
             bool isValid = IsValidInputs();
             bool isChanged = IsDraftChanged();
 
@@ -195,13 +194,12 @@ namespace Controllers
 
         private bool IsDraftChanged()
         {
-            bool[] inputs =
-            {
+            bool[] draftChange = {
                 _inputID != draftObject.ID,
                 _inputName != draftObject.Name
             };
 
-            return inputs.Any(input => input);
+            return draftChange.Any(change => change);
         }
 
         #endregion
