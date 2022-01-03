@@ -4,7 +4,7 @@
     {
         void Save();
 
-        void Select();
+        void Select(string refId);
 
         void New();
 

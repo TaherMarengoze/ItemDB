@@ -17,20 +17,25 @@ namespace Controllers
     {
         public SizeListController()
         {
-            ClearInputs();
+            //ClearInputs();
         }
 
         #region Events
+        public event EventHandler<SizeListSelectionEventArgs> OnSelection;
         public event EventHandler<InputStatus> OnIdStatusChange;
         public event EventHandler<InputStatus> OnNameStatusChange;
         public event EventHandler<InputStatus> OnListStatusChange;
+        public event EventHandler<ReadyEventArgs> OnReadyStateChange;
+        public event EventHandler<object> OnSet;
+        public event EventHandler<CancelEventArgs> OnCancel;
+        public event EventHandler<int> OnRemove;
         #endregion
 
         #region Properties
+
         public string InputID
         {
-            get => _inputID;
-            set
+            get => _inputID; set
             {
                 _inputID = value;
                 if (string.IsNullOrWhiteSpace(value))
@@ -57,8 +62,7 @@ namespace Controllers
 
         public string InputName
         {
-            get => _inputName;
-            set
+            get => _inputName; set
             {
                 _inputName = value;
 
@@ -78,8 +82,7 @@ namespace Controllers
 
         public List<string> InputList
         {
-            get => _inputList;
-            set
+            get => _inputList; set
             {
                 _inputList = value;
 
@@ -90,7 +93,7 @@ namespace Controllers
 
         public InputStatus StatusID
         {
-            get => _statusID; set
+            get => _statusID; private set
             {
                 _statusID = value;
 
@@ -105,7 +108,7 @@ namespace Controllers
 
         public InputStatus StatusName
         {
-            get => _statusName; set
+            get => _statusName; private set
             {
                 _statusName = value;
 
@@ -119,7 +122,7 @@ namespace Controllers
 
         public InputStatus StatusList
         {
-            get => _statusList; set
+            get => _statusList; private set
             {
                 _statusList = value;
 
@@ -131,17 +134,24 @@ namespace Controllers
             }
         }
 
-
         #endregion
 
         #region Methods
-        // public methods
+
+        /* public methods */
+
         public void Save()
         {
             ContextProvider.Save(ContextEntity.Sizes);
         }
 
-        public void Select() => throw new NotImplementedException();
+        public void Select(string refId)
+        {
+            selected = (SizeList)broker.Read(refId);
+
+            // rasise event
+            OnSelection?.Invoke(this, new SizeListSelectionEventArgs { Selected = selected });
+        }
 
         public void New() => throw new NotImplementedException();
 
@@ -153,7 +163,7 @@ namespace Controllers
 
         public void CancelChanges() => throw new NotImplementedException();
 
-        /// private methods
+        /* private methods */
 
         private void CheckReadyStatus()
         {
@@ -161,14 +171,22 @@ namespace Controllers
             bool isChanged = IsDraftChanged();
 
             isReady = isValid && isChanged;
+
+            // raise event
+            OnReadyStateChange?.Invoke(this, new ReadyEventArgs
+            {
+                Ready = isReady,
+                Info = isValid ? (isChanged ? "Ready" : "Unchanged") : "Not Ready"
+            });
         }
 
         private void ClearInputs()
         {
             DISABLE_RAISE_EVENT = true;
 
-            InputID = string.Empty;
-            InputName = string.Empty;
+            InputID =  string.Empty;
+            InputName =  string.Empty;
+            InputList = null;
 
             DISABLE_RAISE_EVENT = false;
         }
@@ -179,7 +197,7 @@ namespace Controllers
         //        handler?.Invoke(this, val);
         //}
 
-        /// private getter methods
+        /* private getter methods */
 
         private bool IsValidInputs()
         {
@@ -223,7 +241,10 @@ namespace Controllers
         private bool isReady;
         private bool DISABLE_RAISE_EVENT;
 
+        // objects
+        private SizeList selected;
         private SizeList draftObject;
+
         #endregion
     }
 }

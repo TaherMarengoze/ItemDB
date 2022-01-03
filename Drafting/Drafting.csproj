@@ -41,14 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CancelEventArgs.cs" />
     <Compile Include="Controllers\CloneExtension.cs" />
     <Compile Include="Controllers\EventsExtension.cs" />
     <Compile Include="Controllers\SizeGroup\SizeGroupEvents.cs" />
     <Compile Include="Controllers\SizeGroup\SizeGroupUiController.cs" />
     <Compile Include="Controllers\SizeList\SizeListController.cs" />
+    <Compile Include="Controllers\SizeList\SizeListSelectionEventArgs.cs" />
     <Compile Include="Controllers\Specs\SpecsDrafter.cs" />
     <Compile Include="Controllers\Specs\SpecsEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReadyEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ClientService\ClientService.csproj">
