@@ -17,7 +17,7 @@ namespace Controllers
     {
         public SizeListController()
         {
-            //ClearInputs();
+            ClearInputs();
         }
 
         #region Events
@@ -213,8 +213,8 @@ namespace Controllers
         private bool IsDraftChanged()
         {
             bool[] draftChange = {
-                _inputID != draftObject.ID,
-                _inputName != draftObject.Name
+                _inputID != draftObject?.ID,
+                _inputName != draftObject?.Name
             };
 
             return draftChange.Any(change => change);
