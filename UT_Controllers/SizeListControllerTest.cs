@@ -20,6 +20,7 @@ namespace UT_Controllers
         private InputStatus onIdStatusChangeArgs;
         private InputStatus onNameStatusChangeArgs;
         private InputStatus onListStatusChangeArgs;
+        private ReadyEventArgs onReadyStateChange;
 
         [TestInitialize]
         public void Initialize()
@@ -37,7 +38,10 @@ namespace UT_Controllers
             ui.OnIdStatusChange += Ui_OnIdStatusChange;
             ui.OnNameStatusChange += Ui_OnNameStatusChange;
             ui.OnListStatusChange += Ui_OnListStatusChange;
+            ui.OnReadyStateChange += Ui_OnReadyStateChange;
         }
+
+        
 
         private void Ui_OnLoad(object sender, List<SizeList> e)
         {
@@ -62,6 +66,11 @@ namespace UT_Controllers
         private void Ui_OnListStatusChange(object sender, InputStatus e)
         {
             onListStatusChangeArgs = e;
+        }
+
+        private void Ui_OnReadyStateChange(object sender, ReadyEventArgs e)
+        {
+            onReadyStateChange = e;
         }
 
         //[TestMethod]
@@ -120,8 +129,7 @@ namespace UT_Controllers
             Assert.AreEqual(expectedResult, onIdStatusChangeArgs);
         }
 
-        [TestMethod]
-        //[DynamicData(nameof(TestInputs_ValidateInputList), DynamicDataSourceType.Method)]
+        //[TestMethod]
         [DataRow(new object[] { InputStatus.Valid, new string[] { "entry_01", "entry_02" } })]
         public void Should_ValidateInputList(object[] inputObjects)
         {
@@ -135,6 +143,18 @@ namespace UT_Controllers
             Assert.AreEqual(expValue, onListStatusChangeArgs);
         }
 
+        //[TestMethod]
+        [DynamicData(nameof(TestInputs_ValidateInputList), DynamicDataSourceType.Method)]
+        public void Should_ValidateInputList_dyn(InputStatus expValue, List<string> inputs)
+        {
+            // Arrange
+
+            // Act
+            ui.InputList = inputs;
+
+            // Assert
+            Assert.AreEqual(expValue, onListStatusChangeArgs);
+        }
         public static IEnumerable<object[]> TestInputs_ValidateInputList()
         {
             return new[]
@@ -144,9 +164,19 @@ namespace UT_Controllers
                 new object[] { InputStatus.Invalid, null }
             };
         }
+
+        [TestMethod]
+        public void Should_Ready()
+        {
+            
+        }
     }
 }
 
 // Arrange
 // Act
 // Assert
+
+//object obj = new object[] { 1, "S" };
+//int oFirst = (int)((object[])obj)[0];
+//string oSecond = (string)((object[])obj)[1];
