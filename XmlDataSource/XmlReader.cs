@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Xml.Linq;
+using XmlDataSource.IO;
 
 namespace XmlDataSource
 {
@@ -124,18 +125,25 @@ namespace XmlDataSource
                 };
         }
 
+        //public IEnumerable<IFieldList> GetSizes()
+        //{
+        //    return
+        //        from list in dataDocs.Sizes.Descendants("sizeList")
+        //        select new SizeList()
+        //        {
+        //            ID = list.Attribute("listID").Value,
+        //            Name = list.Attribute("name").Value,
+        //            List = new ObservableCollection<string>
+        //                (list.Descendants("size")
+        //                .Select(entry => entry.Value).ToList())
+        //        };
+        //}
+
         public IEnumerable<IFieldList> GetSizes()
         {
             return
                 from list in dataDocs.Sizes.Descendants("sizeList")
-                select new SizeList()
-                {
-                    ID = list.Attribute("listID").Value,
-                    Name = list.Attribute("name").Value,
-                    List = new ObservableCollection<string>
-                        (list.Descendants("size")
-                        .Select(entry => entry.Value).ToList())
-                };
+                select Deserialize.SizeXElement(list);
         }
 
         public IEnumerable<IFieldList> GetBrands()

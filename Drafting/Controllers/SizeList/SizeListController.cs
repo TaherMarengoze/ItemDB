@@ -5,6 +5,7 @@ using CoreLibrary.Enums;
 using Interfaces.Models;
 using Interfaces.Operations;
 using Modeling.DataModels;
+using Modeling.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +18,12 @@ namespace Controllers
     {
         public SizeListController()
         {
-            ClearInputs();
+            //ClearInputs();
+            SetStatusInitialValues();
         }
 
         #region Events
+        public event EventHandler<List<SizeList>> OnLoad;
         public event EventHandler<SizeListSelectionEventArgs> OnSelection;
         public event EventHandler<InputStatus> OnIdStatusChange;
         public event EventHandler<InputStatus> OnNameStatusChange;
@@ -32,6 +35,11 @@ namespace Controllers
         #endregion
 
         #region Properties
+
+        public List<SizeList> SizeLists =>
+            sizeDP.GetList().As<SizeList>();
+
+        #region Inputs
 
         public string InputID
         {
@@ -91,6 +99,10 @@ namespace Controllers
             }
         }
 
+        #endregion
+
+        #region Status
+
         public InputStatus StatusID
         {
             get => _statusID; private set
@@ -136,6 +148,8 @@ namespace Controllers
 
         #endregion
 
+        #endregion
+
         #region Methods
 
         /* public methods */
@@ -143,6 +157,11 @@ namespace Controllers
         public void Save()
         {
             ContextProvider.Save(ContextEntity.Sizes);
+        }
+
+        public void Load()
+        {
+            OnLoad?.Invoke(this, sizeDP.GetList().As<SizeList>());
         }
 
         public void Select(string refId)
@@ -153,7 +172,10 @@ namespace Controllers
             OnSelection?.Invoke(this, new SizeListSelectionEventArgs { Selected = selected });
         }
 
-        public void New() => throw new NotImplementedException();
+        public void New()
+        {
+            //throw new NotImplementedException();
+        }
 
         public void Edit(string refId) => throw new NotImplementedException();
 
@@ -189,6 +211,13 @@ namespace Controllers
             InputList = null;
 
             DISABLE_RAISE_EVENT = false;
+        }
+
+        private void SetStatusInitialValues()
+        {
+            _statusID = InputStatus.Blank;
+            _statusName = InputStatus.Blank;
+            _statusList = InputStatus.Invalid;
         }
 
         //private void CheckInvoke<T>(EventHandler<T> handler, T val)
@@ -245,6 +274,11 @@ namespace Controllers
         private SizeList selected;
         private SizeList draftObject;
 
+        #endregion
+
+        #region Unit Test Interface
+        public SizeList _Selected => selected;
+        public SizeList _DraftObject => draftObject;
         #endregion
     }
 }

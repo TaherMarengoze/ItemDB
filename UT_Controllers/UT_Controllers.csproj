@@ -56,7 +56,6 @@
     <Compile Include="Initialization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SizeListControllerTest.cs" />
-    <Compile Include="UnitTest_SizeGroupUiController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -4,7 +4,7 @@ using Interfaces.Operations;
 using System;
 using System.Linq;
 using System.Xml.Linq;
-using XmlDataSource.Serialization;
+using XmlDataSource.IO;
 
 namespace XmlDataSource.Repository
 {
@@ -31,17 +31,22 @@ namespace XmlDataSource.Repository
 
         public void Create(IFieldList entity)
         {
-            XElement content = Entity.SerializeSize(entity);
+            XElement content = Serialize.SizeListEntity(entity);
             dataSource.Root.Add(content);
 
             OnChange?.Invoke(this, EventArgs.Empty);
         }
 
-        public IFieldList Read(string entityId) => throw new NotImplementedException();
+        public IFieldList Read(string entityId)
+        {
+            return
+                Deserialize.SizeXElement(dataSource.Descendants("sizeList")
+                .FirstOrDefault(node => node.Attribute("listID").Value == entityId));
+        }
 
         public void Update(string refId, IFieldList entity)
         {
-            XElement newContent = Entity.SerializeSize(entity);
+            XElement newContent = Serialize.SizeListEntity(entity);
             XElement oldContent = GetElement(refId);
             oldContent.ReplaceWith(newContent);
 
