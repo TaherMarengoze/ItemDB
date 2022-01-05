@@ -8,6 +8,7 @@ using Modeling.DataModels;
 using Modeling.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -51,7 +52,7 @@ namespace Controllers
                 else
                 {
                     // check for duplicate
-                    bool isDuplicate = sizeDP.GetIDs().Contains(value) && value != draftObject?.ID;
+                    bool isDuplicate = sizeDP.GetIDs().Contains(value) && value != editObject?.ID;
 
                     if (isDuplicate)
                         StatusID = InputStatus.Duplicate;
@@ -177,11 +178,45 @@ namespace Controllers
             //throw new NotImplementedException();
         }
 
-        public void Edit(string refId) => throw new NotImplementedException();
+        public void Edit(string objectID)
+        {
+            // get and store the original object
+            editObject = (SizeList)broker.Read(objectID);
 
+            CopyEditObjectDataToInputs();
+        }
+        
         public void Remove(string refId) => throw new NotImplementedException();
 
-        public void CommitChanges() => throw new NotImplementedException();
+        public void CommitChanges()
+        {
+            if (!isReady)
+            {
+                //return;
+                throw new Exception("The draft object is invalid or unchanged.");
+            }
+
+            SizeList draftObject = new SizeList
+            {
+                ID = InputID,
+                Name = InputName,
+                List = new ObservableCollection<string>(InputList)
+            };
+
+            if (editObject == null)
+            {
+                broker.Create(draftObject);
+            }
+            else
+            {
+                broker.Update(editObject.ID, draftObject);
+                editObject = null;
+            }
+
+            selected = null; // unset selection object
+            OnSet?.Invoke(this, InputID);
+            ClearInputs();
+        }
 
         public void CancelChanges() => throw new NotImplementedException();
 
@@ -202,6 +237,20 @@ namespace Controllers
             });
         }
 
+        private void CopyEditObjectDataToInputs()
+        {
+            DISABLE_RAISE_EVENT = true;
+
+            InputID = editObject.ID;
+            InputName = editObject.Name;
+            InputList = editObject.List.ToList();
+
+            DISABLE_RAISE_EVENT = false;
+        }
+
+        /// <summary>
+        /// Clear all inputs without raising the change event of the associated input status.
+        /// </summary>
         private void ClearInputs()
         {
             DISABLE_RAISE_EVENT = true;
@@ -242,11 +291,21 @@ namespace Controllers
         private bool IsDraftChanged()
         {
             bool[] draftChange = {
-                _inputID != draftObject?.ID,
-                _inputName != draftObject?.Name
+                _inputID != editObject?.ID,
+                _inputName != editObject?.Name,
+                IsListChanged()
             };
 
             return draftChange.Any(change => change);
+        }
+
+        private bool IsListChanged()
+        {
+            // compare elements count
+            if (_inputList.Count != editObject.List.Count)
+                return true;
+
+            return !_inputList.SequenceEqual(editObject.List);
         }
 
         #endregion
@@ -272,13 +331,15 @@ namespace Controllers
 
         // objects
         private SizeList selected;
-        private SizeList draftObject;
+        private SizeList editObject;
 
         #endregion
 
         #region Unit Test Interface
         public SizeList _Selected => selected;
-        public SizeList _DraftObject => draftObject;
+        public SizeList _EditObject => editObject;
+        public bool _IsReady => isReady;
+        public bool _IsChanged => IsDraftChanged();
         #endregion
     }
 }
