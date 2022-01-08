@@ -1,4 +1,5 @@
 ﻿using Interfaces.Models;
+using Modeling.ViewModels.Common;
 using Modeling.ViewModels.SizeGroup;
 using Modeling.ViewModels.Specs;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace Modeling.ViewModels
                      CustomInputID = si.CustomInputID
                  }).ToList();
         }
-
+        
         public static List<SizeGroupsGenericView> ToGenericView(this IEnumerable<ISizeGroup> source)
         {
             return
@@ -45,6 +46,17 @@ namespace Modeling.ViewModels
                     DefaultListID = sg.DefaultListID,
                     AltListsCount = sg.AltIdList?.Count ?? 0,
                     CustomSize = sg.CustomSize
+                }).ToList();
+        }
+
+        public static List<FieldListGenericView> ToGenericView(this IEnumerable<IFieldList> source)
+        {
+            return
+                source.Select(list => new FieldListGenericView
+                {
+                    ID = list.ID,
+                    Name = list.Name,
+                    EntriesCount = list.List.Count
                 }).ToList();
         }
 

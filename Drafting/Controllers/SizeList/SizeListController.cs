@@ -24,8 +24,9 @@ namespace Controllers
         }
 
         #region Events
-        public event EventHandler<List<SizeList>> OnLoad;
+        public event EventHandler<LoadEventArgs> OnLoad;
         public event EventHandler<SizeListSelectionEventArgs> OnSelection;
+        public event EventHandler<SelectEventArgs<SizeList>> OnSelect;
         public event EventHandler<InputStatus> OnIdStatusChange;
         public event EventHandler<InputStatus> OnNameStatusChange;
         public event EventHandler<InputStatus> OnListStatusChange;
@@ -39,6 +40,8 @@ namespace Controllers
 
         public List<SizeList> SizeLists =>
             sizeDP.GetList().As<SizeList>();
+
+        private int Count => SizeLists?.Count ?? 0;
 
         #region Inputs
 
@@ -111,7 +114,7 @@ namespace Controllers
                 _statusID = value;
 
                 // raise event for status change
-                //CheckInvoke(OnIdStatusChange, value);
+                //  (OnIdStatusChange, value);
                 OnIdStatusChange.CheckedInvoke(value, !DISABLE_RAISE_EVENT);
 
                 // check all inputs status
@@ -161,16 +164,31 @@ namespace Controllers
         }
 
         public void Load()
+
         {
-            OnLoad?.Invoke(this, sizeDP.GetList().As<SizeList>());
+            OnLoad?.Invoke(this,
+                new LoadEventArgs
+                {
+                    GenericViewList = sizeDP.GetList().ToGenericView()
+                });
         }
 
-        public void Select(string refId)
+        public void Select(string objectId)
         {
-            selected = (SizeList)broker.Read(refId);
+            SizeList selected = (SizeList)broker.Read(objectId);
 
-            // rasise event
-            OnSelection?.Invoke(this, new SizeListSelectionEventArgs { Selected = selected });
+            // raise event
+            //OnSelection?.Invoke(this,
+            //    new SizeListSelectionEventArgs
+            //    {
+            //        Selected = selected
+            //    });
+
+            OnSelect?.Invoke(this,
+                new SelectEventArgs<SizeList>
+                {
+                    Selected = selected
+                });
         }
 
         public void New()
@@ -185,8 +203,16 @@ namespace Controllers
 
             CopyEditObjectDataToInputs();
         }
-        
-        public void Remove(string refId) => throw new NotImplementedException();
+
+        public void Remove(string objectId)
+        {
+            broker.Delete(objectId);
+
+            // raise event
+            OnRemove?.Invoke(this, Count);
+
+            selected = null;
+        }
 
         public void CommitChanges()
         {
@@ -218,7 +244,21 @@ namespace Controllers
             ClearInputs();
         }
 
-        public void CancelChanges() => throw new NotImplementedException();
+        public void CancelChanges()
+        {
+            if (editObject != null)
+                editObject = null;
+
+            // raise event
+            OnCancel?.Invoke(this,
+                new CancelEventArgs
+                {
+                    RestoreID = selected?.ID,
+                    EmptyList = Count < 1
+                });
+
+            ClearInputs();
+        }
 
         /* private methods */
 
@@ -291,8 +331,8 @@ namespace Controllers
         private bool IsDraftChanged()
         {
             bool[] draftChange = {
-                _inputID != editObject?.ID,
-                _inputName != editObject?.Name,
+                _inputID != null ? _inputID != editObject?.ID : false,
+                _inputName != null ? _inputName != editObject?.Name : false,
                 IsListChanged()
             };
 
@@ -301,6 +341,9 @@ namespace Controllers
 
         private bool IsListChanged()
         {
+            if (_inputList == null)
+                return false;
+
             // compare elements count
             if (_inputList.Count != editObject.List.Count)
                 return true;
@@ -335,7 +378,7 @@ namespace Controllers
 
         #endregion
 
-        #region Unit Test Interface
+        #region Unit Test API
         public SizeList _Selected => selected;
         public SizeList _EditObject => editObject;
         public bool _IsReady => isReady;

@@ -36,7 +36,7 @@ namespace UserInterface.Forms
 
         private void SizeEditor_Click(object sender, EventArgs e)
         {
-            LauchEditor(new FieldEditor(FieldType.SIZE));
+            LauchEditor(new FieldEditor_());
         }
 
         private void BrandEditor_Click(object sender, EventArgs e)

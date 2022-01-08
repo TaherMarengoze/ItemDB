@@ -41,7 +41,7 @@ namespace Client.Controls
         /// <returns>Object representing the ID of the selected row.</returns>
         public static object SelectedObjectID(this DataGridView source, string fieldName = "")
         {
-            if (source.Rows.Count <= 0)
+            if (source.Rows.Count <= 0 || source.SelectedRows.Count <= 0)
                 return null;
 
             DataGridViewRow firstSelectedRow = source.SelectedRows[0];

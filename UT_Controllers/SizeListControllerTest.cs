@@ -1,14 +1,13 @@
-﻿using System;
+﻿using AppCore;
+using Controllers;
+using CoreLibrary.Enums;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Modeling.DataModels;
+using Modeling.ViewModels.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using AppCore;
-using Controllers;
-using CoreLibrary.Enums;
-using Interfaces.Models;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Modeling.DataModels;
-using Modeling.ViewModels;
 
 namespace UT_Controllers
 {
@@ -19,21 +18,25 @@ namespace UT_Controllers
         const string DPID = "STEST";
         const string NAME = "Unit Test Size List";
         const string BLNK = "";
+        private static readonly List<string> LIST_ = new List<string> { "Entry 1", "Entry 2", "Entry 3" };
+        private static readonly List<string> LIST1 = new List<string> { "Entry 1", "Entry 2", "Entry 3*" };
 
         SizeListController ui;
-        private List<SizeList> onLoadArgs;
+        private List<FieldListGenericView> onLoadArgs;
         private SizeListSelectionEventArgs onSelectionArgs;
         private InputStatus onIdStatusChangeArgs;
         private InputStatus onNameStatusChangeArgs;
         private InputStatus onListStatusChangeArgs;
         private ReadyEventArgs onReadyStateChangeArgs;
         private string onSetArgs;
+        private CancelEventArgs onCancelEventArgs;
+        private int onRemoveArgs;
 
         [TestInitialize]
         public void Initialize()
         {
             Initialization.Simulate();
-
+            
             ui = new SizeListController();
             EventSubscriber();
         }
@@ -47,11 +50,12 @@ namespace UT_Controllers
             ui.OnListStatusChange += Ui_OnListStatusChange;
             ui.OnReadyStateChange += Ui_OnReadyStateChange;
             ui.OnSet += Ui_OnSet;
+            ui.OnCancel += Ui_OnCancel;
+            ui.OnRemove += Ui_OnRemove;
         }
-
-        private void Ui_OnLoad(object sender, List<SizeList> e)
+        private void Ui_OnLoad(object sender, LoadEventArgs e)
         {
-            onLoadArgs = e;
+            onLoadArgs = (List<FieldListGenericView>)e.GenericViewList;
         }
         private void Ui_OnSelection(object sender, SizeListSelectionEventArgs e)
         {
@@ -76,6 +80,14 @@ namespace UT_Controllers
         private void Ui_OnSet(object sender, object e)
         {
             onSetArgs = (string)e;
+        }
+        private void Ui_OnCancel(object sender, CancelEventArgs e)
+        {
+            onCancelEventArgs = e;
+        }
+        private void Ui_OnRemove(object sender, int e)
+        {
+            onRemoveArgs = e;
         }
 
         //[TestMethod]
@@ -273,7 +285,8 @@ namespace UT_Controllers
                 "STEST", "Test Sizes List", new string[] { "Entry 1", "Entry 2", "Entry 3" }.ToList() }
         };
 
-        [TestMethod][DynamicData(nameof(DynInputs_DraftChanged))]
+        //[TestMethod]
+        [DynamicData(nameof(DynInputs_DraftChanged))]
         public void Should_DraftChanged(object expValue, string editId,
             string inputId, string inputName, List<string> inputList)
         {
@@ -290,9 +303,59 @@ namespace UT_Controllers
         }
         public static IEnumerable<object[]> DynInputs_DraftChanged => new[]
         {
-            new object[] { true, "STEST",
-                "STEST", "Test Size List", new List<string> { "Entry 1", "Entry 2", "Entry 3*" } }
+            new object[] { false, "STEST", "STEST", "Test Size List", LIST_ },
+            new object[] { false, "STEST", null, null, null },
+            new object[] { false, "STEST", "STEST", null, null },
+            new object[] { false, "STEST", null, "Test Size List", null },
+            new object[] { false, "STEST", null, null, LIST_ },
+
+            new object[] { true, "STEST", "XTEST", "Test Size List", LIST_ },
+            new object[] { true, "STEST", "STEST", "Test Sizes List", LIST_ },
+            new object[] { true, "STEST", "STEST", "Test Size List", LIST1 },
+            new object[] { true, "STEST", "XTEST", null, null },
+            new object[] { true, "STEST", null, "Test Sizes List", null },
+            new object[] { true, "STEST", null, null, LIST1 },
+            new object[] { true, "STEST", "XTEST", "Test Sizes List", LIST1 },
         };
+
+        //[TestMethod]
+        [DynamicData(nameof(DynInputs_CancelChanges))]
+        public void Should_CancelChanges(object[] expValues, string input)
+        {
+            // Arrange
+            ui.Select(input);
+
+            // Act
+            ui.CancelChanges();
+
+            // Assert
+            Assert.AreEqual(expValues[0], onCancelEventArgs.RestoreID);
+            Assert.AreEqual(expValues[1], onCancelEventArgs.EmptyList);
+        }
+        public static IEnumerable<object[]> DynInputs_CancelChanges => new[]
+        {
+            new object[] { new object[] { null, false }, null },
+            new object[] { new object[] { "STEST", false }, "STEST" },
+        };
+
+        //[TestMethod, DynamicData("DynInputs_Remove")]
+        public void Should_Remove(int expValue, string input)
+        {
+            // Arrange
+            // Act
+            ui.Remove(input);
+            ui.Select(input);
+
+            // Assert
+            Assert.AreEqual(expValue, onRemoveArgs);
+            Assert.AreEqual(null, onSelectionArgs.Selected);
+        }
+        public static IEnumerable<object[]> DynInputs_Remove => new[]
+        {
+            new object[] { 25, "STEST" },
+        };
+        
+
 
         // Generic Method
         public static string GetTestDisplayName(MethodInfo mInfo, object[] data)
@@ -302,10 +365,28 @@ namespace UT_Controllers
     }
 }
 
+//[TestMethod, DynamicData(nameof(DynInputs_))]
+//public void Should_(int expValue, string input)
+//{
+//    // Arrange
+
+//    // Act
+
+//    // Assert
+//    Assert.AreEqual(expValue, null);
+//}
+//public static IEnumerable<object[]> DynInputs_ => new[]
+//{
+//            new object[] { },
+//};
+
+/*
 // Arrange
 // Act
 // Assert
 
+
 //object obj = new object[] { 1, "S" };
 //int oFirst = (int)((object[])obj)[0];
 //string oSecond = (string)((object[])obj)[1];
+*/
