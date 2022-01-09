@@ -69,7 +69,11 @@ namespace UserInterface.Forms
         #endregion
 
         #region UI
-
+        private void ShowListEditor()
+        {
+            FieldListEditor_ editor = new FieldListEditor_(new List<string> { "AAA", "ABB", "BBB", "CCC", "ABC" });
+            editor.ShowDialog();
+        }
         #endregion
 
         #region Controller Event Responses
@@ -259,7 +263,7 @@ namespace UserInterface.Forms
                 PopulateGrid();
             }
         }
-
+        
         private void DeleteExistingList(string listId)
         {
             if (Common.ShowEntryRemoveConfirmation(false) == DialogResult.OK)
@@ -303,8 +307,6 @@ namespace UserInterface.Forms
 #pragma warning disable IDE1006 // Naming Styles
         private void Form_Load(object sender, EventArgs e)
         {
-            //FieldSwitch();
-            //PostLoading();
             uiControl.Load();
         }
 
@@ -370,7 +372,8 @@ namespace UserInterface.Forms
 
         private void btnAddNewList_Click(object sender, EventArgs e)
         {
-            AddNewList();
+            ShowListEditor();
+            //AddNewList();
         }
 
         private void tsmiSave_Click(object sender, EventArgs e)
@@ -489,11 +492,6 @@ namespace UserInterface.Forms
 
         private void dgvListDetails_SelectionChanged(object sender, EventArgs e)
         {
-            //string selectedListId = (string)dgvListDetails.SelectedObjectID();
-
-            //if (!string.IsNullOrWhiteSpace(selectedListId))
-            //    PopulateEntryList(selectedListId);
-
             ObjectSelected();
         }
 
