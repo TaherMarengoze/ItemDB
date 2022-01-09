@@ -41,6 +41,9 @@ namespace Controllers
         public List<SizeList> SizeLists =>
             sizeDP.GetList().As<SizeList>();
 
+        public List<string> SizeListIDs =>
+            sizeDP.GetIDs();
+
         private int Count => SizeLists?.Count ?? 0;
 
         #region Inputs

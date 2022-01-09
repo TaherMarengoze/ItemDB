@@ -71,8 +71,13 @@ namespace UserInterface.Forms
         #region UI
         private void ShowListEditor()
         {
-            FieldListEditor_ editor = new FieldListEditor_(new List<string> { "AAA", "ABB", "BBB", "CCC", "ABC" });
-            editor.ShowDialog();
+            FieldListEditor_ editor =
+                new FieldListEditor_(uiControl.SizeListIDs);
+
+            if (editor.ShowDialog() == DialogResult.OK)
+            {
+                
+            }
         }
         #endregion
 
