@@ -12,6 +12,7 @@ using Controllers;
 using Modeling.DataModels;
 using System.Collections.Generic;
 using System.Linq;
+using UserInterface.Shared;
 
 namespace UserInterface.Forms
 {
@@ -45,11 +46,20 @@ namespace UserInterface.Forms
             uiControl.Select(id);
         }
 
-        private void AddNewObject() => throw new NotImplementedException();
+        private void AddNewObject()
+        {
+            uiControl.New();
+        }
 
-        private void EditObject() => throw new NotImplementedException();
+        private void EditObject(string id)
+        {
+            uiControl.Edit(id);
+        }
 
-        private void AcceptChanges() => throw new NotImplementedException();
+        private void AcceptChanges()
+        {
+            uiControl.CommitChanges();
+        }
 
         private void CancelChanges() => throw new NotImplementedException();
 
@@ -61,24 +71,27 @@ namespace UserInterface.Forms
         #endregion
 
         #region Binding
+        private void BindObjectList(object source)
+        {
+            dgvListDetails.DataSourceResize(source);
+            PositionDataGridViewButtons();
+        }
 
+        private void PositionDataGridViewButtons()
+        {
+            // Set the location of the delete column
+            int bindDataCount = dgvListDetails.Columns.Count - 1;
+            dgvListDetails.Columns["colEdit"].DisplayIndex = bindDataCount;
+            dgvListDetails.Columns["colDelete"].DisplayIndex = bindDataCount;
+        }
         #endregion
 
         #region Getters
-
+        
         #endregion
 
         #region UI
-        private void ShowListEditor()
-        {
-            FieldListEditor_ editor =
-                new FieldListEditor_(uiControl.SizeListIDs);
-
-            if (editor.ShowDialog() == DialogResult.OK)
-            {
-                
-            }
-        }
+        
         #endregion
 
         #region Controller Event Responses
@@ -91,6 +104,7 @@ namespace UserInterface.Forms
             uiControl.OnNameStatusChange += UiControl_OnNameStatusChange;
             uiControl.OnListStatusChange += UiControl_OnListStatusChange;
             uiControl.OnReadyStateChange += UiControl_OnReadyStateChange;
+            uiControl.OnPreDrafting += UiControl_OnPreDrafting;
             uiControl.OnSet += UiControl_OnSet;
             uiControl.OnCancel += UiControl_OnCancel;
             uiControl.OnRemove += UiControl_OnRemove;
@@ -98,12 +112,7 @@ namespace UserInterface.Forms
         
         private void UiControl_OnLoad(object sender, LoadEventArgs e)
         {
-            dgvListDetails.DataSourceResize(e.GenericViewList);
-
-            // set position of edit and delete columns
-            int bindDataCount = dgvListDetails.Columns.Count - 1;
-            dgvListDetails.Columns["colEdit"].DisplayIndex = bindDataCount;
-            dgvListDetails.Columns["colDelete"].DisplayIndex = bindDataCount;
+            BindObjectList(e.GenericViewList);
         }
 
         //private void UiControl_OnSelection(object sender, SizeListSelectionEventArgs e)
@@ -116,15 +125,44 @@ namespace UserInterface.Forms
             lbxFieldListItems.DataSource = e.Selected?.List;
         }
 
-        private void UiControl_OnIdStatusChange(object sender, InputStatus e) => throw new NotImplementedException();
+        private void UiControl_OnIdStatusChange(object sender, InputStatus e) => Console.WriteLine(e.ToString());
 
-        private void UiControl_OnNameStatusChange(object sender, InputStatus e) => throw new NotImplementedException();
+        private void UiControl_OnNameStatusChange(object sender, InputStatus e) => Console.WriteLine(e.ToString());
 
-        private void UiControl_OnListStatusChange(object sender, InputStatus e) => throw new NotImplementedException();
+        private void UiControl_OnListStatusChange(object sender, InputStatus e) => Console.WriteLine(e.ToString());
 
-        private void UiControl_OnReadyStateChange(object sender, ReadyEventArgs e) => throw new NotImplementedException();
+        private void UiControl_OnReadyStateChange(object sender, ReadyEventArgs e)
+        {
+            if (e.Ready)
+                AcceptChanges();
+        }
 
-        private void UiControl_OnSet(object sender, object e) => throw new NotImplementedException();
+        private void UiControl_OnPreDrafting(object sender, PreDraftingEventArgs e)
+        {
+            bool isNewObject = e.DraftObject == null;
+
+            ListEditor_ editor = isNewObject ?
+                new ListEditor_(e.PreList) :
+                new ListEditor_(e.PreList, e.DraftObject);
+
+            if (editor.ShowDialog() == DialogResult.OK)
+            {
+                uiControl.InputID = editor.OutputList.ID;
+                uiControl.InputName = editor.OutputList.Name;
+
+                if (isNewObject)
+                    uiControl.InputList = editor.OutputList.List.ToList();
+            }
+        }
+
+        private void UiControl_OnSet(object sender, SetEventArgs e)
+        {
+            BindObjectList(e.NewList);
+            //BindObjectList(e.GetType().GetProperty("NewList").GetValue(e));
+
+            // select added object
+            dgvListDetails.SelectValueRow(e.SetID, "ID");
+        }
 
         private void UiControl_OnCancel(object sender, CancelEventArgs e) => throw new NotImplementedException();
 
@@ -196,11 +234,7 @@ namespace UserInterface.Forms
             object newDataSource = Data.GetFieldLists(fieldType);
             dgvListDetails.DataSource = null;
             dgvListDetails.DataSourceResize(newDataSource);
-
-            // Set the location of the delete column
-            int bindDataCount = dgvListDetails.Columns.Count - 1;
-            dgvListDetails.Columns["colEdit"].DisplayIndex = bindDataCount;
-            dgvListDetails.Columns["colDelete"].DisplayIndex = bindDataCount;
+            PositionDataGridViewButtons();
         }
 
         private void UpdateEntriesList()
@@ -257,17 +291,17 @@ namespace UserInterface.Forms
 
         #region File-Specific
 
-        private void AddNewList()
-        {
-            FieldListEditor listEditor =
-                new FieldListEditor(Data.GetFieldIds(fieldType));
+        //private void AddNewList()
+        //{
+        //    FieldListEditor listEditor =
+        //        new FieldListEditor(Data.GetFieldIds(fieldType));
 
-            if (listEditor.ShowDialog() == DialogResult.OK)
-            {
-                Data.AddFieldList(fieldType, listEditor.FieldList);
-                PopulateGrid();
-            }
-        }
+        //    if (listEditor.ShowDialog() == DialogResult.OK)
+        //    {
+        //        Data.AddFieldList(fieldType, listEditor.FieldList);
+        //        PopulateGrid();
+        //    }
+        //}
         
         private void DeleteExistingList(string listId)
         {
@@ -280,20 +314,20 @@ namespace UserInterface.Forms
             }
         }
 
-        private void EditExistingList(string listId, string listName)
-        {
-            IBasicList editList = Data.GetFieldList(fieldType, listId);
+        //private void EditExistingList(string listId)
+        //{
+        //    IBasicList editList = Data.GetFieldList(fieldType, listId);
 
-            FieldListEditor listEditor =
-                new FieldListEditor(Data.GetFieldIds(fieldType), editList);
+        //    FieldListEditor listEditor =
+        //        new FieldListEditor(Data.GetFieldIds(fieldType), editList);
 
-            if (listEditor.ShowDialog() == DialogResult.OK)
-            {
-                Data.EditFieldList(fieldType, listId, listEditor.FieldList);
+        //    if (listEditor.ShowDialog() == DialogResult.OK)
+        //    {
+        //        Data.EditFieldList(fieldType, listId, listEditor.FieldList);
 
-                PopulateGrid();
-            }
-        }
+        //        PopulateGrid();
+        //    }
+        //}
 
         private void CheckAvailableEntries()
         {
@@ -377,8 +411,7 @@ namespace UserInterface.Forms
 
         private void btnAddNewList_Click(object sender, EventArgs e)
         {
-            ShowListEditor();
-            //AddNewList();
+            AddNewObject();
         }
 
         private void tsmiSave_Click(object sender, EventArgs e)
@@ -506,10 +539,14 @@ namespace UserInterface.Forms
                 return;
 
             string id = (string)dgvListDetails.SelectedObjectID();
+
+            Console.WriteLine(id);
             
             if (e.ColumnIndex == 0) //Edit Button Column
+            {
                 // do edit stuff
-                return;
+                EditObject(id);
+            }
 
             if (e.ColumnIndex == 1) //Delete Button Column
                 // do delete stuff
@@ -529,7 +566,7 @@ namespace UserInterface.Forms
                 if (e.ColumnIndex == 0) //Edit Button Column
                 {
                     //selectedListId = (string)dgvListDetails["ID", e.RowIndex].Value;
-                    EditExistingList(selectedItem.ID, selectedItem.Name);
+                    //EditExistingList(selectedItem.ID, selectedItem.Name);
                 }
 
                 if (e.ColumnIndex == 1) //Delete Button Column
