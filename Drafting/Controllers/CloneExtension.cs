@@ -2,6 +2,7 @@
 using Interfaces.Models;
 using Modeling.DataModels;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Controllers
@@ -30,6 +31,17 @@ namespace Controllers
                     ValuePattern = specsItem.ValuePattern,
                     ListEntries = specsItem.ListEntries.Clone(),
                     CustomInputID = specsItem.CustomInputID
+                };
+        }
+
+        public static T Clone<T>(this T source) where T: IFieldList, new()
+        {
+            return
+                new T
+                {
+                    ID = source.ID,
+                    Name = source.Name,
+                    List = new ObservableCollection<string>(source.List)
                 };
         }
 
@@ -67,6 +79,15 @@ namespace Controllers
 
             return clonedEntries.ToList();
         }
+
+        //private static ObservableCollection<string> Clone(this IEnumerable<string> source)
+        //{
+        //    if (source == null)
+        //        return null;
+
+        //    return
+        //        new ObservableCollection<string>(source);
+        //}
 
         public static IEnumerable<T> Add<T>(this IEnumerable<T> e, T value)
         {
