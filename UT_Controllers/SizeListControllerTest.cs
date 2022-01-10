@@ -11,7 +11,7 @@ using System.Reflection;
 
 namespace UT_Controllers
 {
-    [TestClass]
+    //[TestClass]
     public class SizeListControllerTest
     {
         const string UQID = "UTSZ0";
