@@ -31,7 +31,8 @@ namespace Controllers
         public event EventHandler<InputStatus> OnNameStatusChange;
         public event EventHandler<InputStatus> OnListStatusChange;
         public event EventHandler<ReadyEventArgs> OnReadyStateChange;
-        public event EventHandler<object> OnSet;
+        public event EventHandler<PreDraftingEventArgs> OnPreDrafting;
+        public event EventHandler<SetEventArgs> OnSet;
         public event EventHandler<CancelEventArgs> OnCancel;
         public event EventHandler<int> OnRemove;
         #endregion
@@ -196,7 +197,12 @@ namespace Controllers
 
         public void New()
         {
-            //throw new NotImplementedException();
+            // raise event
+            OnPreDrafting?.Invoke(this,
+                new PreDraftingEventArgs
+                {
+                    PreList = sizeDP.GetIDs()
+                });
         }
 
         public void Edit(string objectID)
@@ -205,6 +211,14 @@ namespace Controllers
             editObject = (SizeList)broker.Read(objectID);
 
             CopyEditObjectDataToInputs();
+
+            // raise event
+            OnPreDrafting?.Invoke(this,
+                new PreDraftingEventArgs
+                {
+                    DraftObject = editObject.Clone(),
+                    PreList = sizeDP.GetIDs(),
+                });
         }
 
         public void Remove(string objectId)
@@ -243,7 +257,12 @@ namespace Controllers
             }
 
             selected = null; // unset selection object
-            OnSet?.Invoke(this, InputID);
+            OnSet?.Invoke(this,
+                new SetEventArgs
+                {
+                    SetID = InputID,
+                    NewList = sizeDP.GetList().ToGenericView(),
+                });
             ClearInputs();
         }
 
@@ -344,7 +363,7 @@ namespace Controllers
 
         private bool IsListChanged()
         {
-            if (_inputList == null)
+            if (_inputList == null || editObject == null)
                 return false;
 
             // compare elements count
