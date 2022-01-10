@@ -12,7 +12,7 @@ using UserInterface.Shared;
 
 namespace UserInterface.Forms
 {
-    public partial class FieldListEditor_ : Form
+    public partial class ListEditor_ : Form
     {
         #region Logic Code
         public IFieldList OutputList { get; private set; }
@@ -22,12 +22,16 @@ namespace UserInterface.Forms
             inputID = value;
 
             bool isDuplicate = existingLists.Contains(value);
+            bool isInputAsDraft = value == OutputList?.ID;
             bool notBlank = string.IsNullOrWhiteSpace(value);
             bool isValidChar = true;
 
             if (isDuplicate)
             {
-                SetStatusID(InputStatus.Duplicate);
+                if (isInputAsDraft)
+                    SetStatusID(InputStatus.Valid);
+                else
+                    SetStatusID(InputStatus.Duplicate);
             }
             else
             {
@@ -64,7 +68,7 @@ namespace UserInterface.Forms
             bool notBlank = string.IsNullOrWhiteSpace(value);
             bool isValidChar = true;
 
-            SetStatusEntry0(notBlank ? InputStatus.Blank :
+            SetStatusFirstEntry(notBlank ? InputStatus.Blank :
                 isValidChar ? InputStatus.Valid : InputStatus.Invalid);
         }
         
@@ -88,11 +92,11 @@ namespace UserInterface.Forms
             CheckReadyStatus();
         }
         
-        private void SetStatusEntry0(InputStatus value)
+        private void SetStatusFirstEntry(InputStatus value)
         {
-            statusEntry0 = value;
+            statusFirstEntry = value;
 
-            ChangedStatusEntry0(value);
+            ChangedStatusFirstEntry(value);
 
             // check all inputs status
             CheckReadyStatus();
@@ -130,7 +134,7 @@ namespace UserInterface.Forms
             OutputList = new SizeList
             {
                 ID = inputID,
-                Name = inputID,
+                Name = inputName,
                 List = new ObservableCollection<string> { inputFirstEntry }
             };
         }
@@ -146,7 +150,7 @@ namespace UserInterface.Forms
             InputStatus[] inputStatus = {
                 statusID,
                 statusName,
-                statusEntry0
+                statusFirstEntry
             };
 
             return inputStatus.All(status => status == InputStatus.Valid);
@@ -171,7 +175,7 @@ namespace UserInterface.Forms
         private string inputFirstEntry;
         private InputStatus statusID;
         private InputStatus statusName;
-        private InputStatus statusEntry0;
+        private InputStatus statusFirstEntry;
         private bool isReady;
         #endregion
 
@@ -179,7 +183,7 @@ namespace UserInterface.Forms
 
         private Mode mode;
         
-        public FieldListEditor_(IEnumerable<string> currentLists)
+        public ListEditor_(IEnumerable<string> currentLists)
         {
             InitializeComponent();
             existingLists = currentLists.ToList();
@@ -187,7 +191,7 @@ namespace UserInterface.Forms
             SetEditorMode(Mode.New);
         }
 
-        public FieldListEditor_(IEnumerable<string> currentLists, IFieldList editList)
+        public ListEditor_(IEnumerable<string> currentLists, IFieldList editList)
         {
             InitializeComponent();
             existingLists = currentLists.ToList();
@@ -208,8 +212,7 @@ namespace UserInterface.Forms
                     // change title
                     Text = Text + $": Editing {OutputList.ID}";
                     btnAdd.Text = "Accept Changes";
-                    txtListID.Text = OutputList.ID;
-                    txtListName.Text = OutputList.Name;
+                    
                     lblInitialEntry.Visible = false;
                     txtInitialEntry.Visible = false;
                     break;
@@ -250,7 +253,7 @@ namespace UserInterface.Forms
 
         private void ChangedStatusName(InputStatus status) => Console.WriteLine(status.ToString());
 
-        private void ChangedStatusEntry0(InputStatus status) => Console.WriteLine(status.ToString());
+        private void ChangedStatusFirstEntry(InputStatus status) => Console.WriteLine(status.ToString());
 
         private void ChangedSimilarLists(List<string> similarLists)
         {

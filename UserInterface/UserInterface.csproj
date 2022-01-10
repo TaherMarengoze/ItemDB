@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\ControlsExtension.cs" />
+    <Compile Include="Common\DataGridViewExtention.cs" />
     <Compile Include="Controllers\SimpleListController.cs" />
     <Compile Include="Controllers\SizeGroupExt.cs" />
     <Compile Include="Forms\FieldEditor_.cs">
@@ -77,11 +78,11 @@
     <Compile Include="Forms\FieldEditor_.Designer.cs">
       <DependentUpon>FieldEditor_.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FieldListEditor_.cs">
+    <Compile Include="Forms\ListEditor_.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FieldListEditor_.Designer.cs">
-      <DependentUpon>FieldListEditor_.cs</DependentUpon>
+    <Compile Include="Forms\ListEditor_.Designer.cs">
+      <DependentUpon>ListEditor_.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ListSelector.cs">
       <SubType>Form</SubType>
@@ -190,8 +191,8 @@
     <EmbeddedResource Include="Forms\FieldEditor_.resx">
       <DependentUpon>FieldEditor_.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FieldListEditor_.resx">
-      <DependentUpon>FieldListEditor_.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ListEditor_.resx">
+      <DependentUpon>ListEditor_.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ListSelector.resx">
       <DependentUpon>ListSelector.cs</DependentUpon>
