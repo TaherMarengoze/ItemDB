@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventArgs\PreDraftingEventArgs.cs" />
+    <Compile Include="EventArgs\SetEventArgs.cs" />
     <Compile Include="EventArgs\CancelEventArgs.cs" />
     <Compile Include="Controllers\CloneExtension.cs" />
     <Compile Include="Controllers\EventsExtension.cs" />
