@@ -179,7 +179,7 @@ namespace Controllers
 
         public void Select(string objectId)
         {
-            SizeList selected = (SizeList)broker.Read(objectId);
+            /*SizeList*/ selected = (SizeList)broker.Read(objectId);
 
             // raise event
             //OnSelection?.Invoke(this,

@@ -1,4 +1,5 @@
-﻿using AppCore;
+﻿/*
+using AppCore;
 using Controllers;
 using CoreLibrary.Enums;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -364,7 +365,7 @@ namespace UT_Controllers
         }
     }
 }
-
+*/
 //[TestMethod, DynamicData(nameof(DynInputs_))]
 //public void Should_(int expValue, string input)
 //{

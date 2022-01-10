@@ -61,7 +61,10 @@ namespace UserInterface.Forms
             uiControl.CommitChanges();
         }
 
-        private void CancelChanges() => throw new NotImplementedException();
+        private void CancelChanges()
+        {
+            uiControl.CancelChanges();
+        }
 
         private void RemoveObject() => throw new NotImplementedException();
         #endregion
@@ -153,6 +156,10 @@ namespace UserInterface.Forms
                 if (isNewObject)
                     uiControl.InputList = editor.OutputList.List.ToList();
             }
+            else
+            {
+                CancelChanges();
+            }
         }
 
         private void UiControl_OnSet(object sender, SetEventArgs e)
@@ -164,7 +171,10 @@ namespace UserInterface.Forms
             dgvListDetails.SelectValueRow(e.SetID, "ID");
         }
 
-        private void UiControl_OnCancel(object sender, CancelEventArgs e) => throw new NotImplementedException();
+        private void UiControl_OnCancel(object sender, CancelEventArgs e)
+        {
+            Console.WriteLine(e.RestoreID ?? "No item");
+        }
 
         private void UiControl_OnRemove(object sender, int e) => throw new NotImplementedException();
         #endregion
