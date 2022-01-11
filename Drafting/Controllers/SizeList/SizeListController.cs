@@ -34,7 +34,7 @@ namespace Controllers
         public event EventHandler<PreDraftingEventArgs> OnPreDrafting;
         public event EventHandler<SetEventArgs> OnSet;
         public event EventHandler<CancelEventArgs> OnCancel;
-        public event EventHandler<int> OnRemove;
+        public event EventHandler<RemoveEventArgs> OnRemove;
         #endregion
 
         #region Properties
@@ -45,7 +45,7 @@ namespace Controllers
         public List<string> SizeListIDs =>
             sizeDP.GetIDs();
 
-        private int Count => SizeLists?.Count ?? 0;
+        private int Count => sizeDP.Count /*SizeLists?.Count ?? 0*/;
 
         #region Inputs
 
@@ -96,7 +96,7 @@ namespace Controllers
             }
         }
 
-        public List<string> InputList
+        public ObservableCollection<string> InputList
         {
             get => _inputList; set
             {
@@ -173,7 +173,8 @@ namespace Controllers
             OnLoad?.Invoke(this,
                 new LoadEventArgs
                 {
-                    GenericViewList = sizeDP.GetList().ToGenericView()
+                    GenericViewList = sizeDP.GetList().ToGenericView(),
+                    Count = Count
                 });
         }
 
@@ -226,7 +227,13 @@ namespace Controllers
             broker.Delete(objectId);
 
             // raise event
-            OnRemove?.Invoke(this, Count);
+            OnRemove?.Invoke(this,
+                new RemoveEventArgs
+                {
+                    RemoveID = objectId,
+                    NewList = sizeDP.GetList().ToGenericView(),
+                    Count = Count
+                });
 
             selected = null;
         }
@@ -305,7 +312,7 @@ namespace Controllers
 
             InputID = editObject.ID;
             InputName = editObject.Name;
-            InputList = editObject.List.ToList();
+            InputList = new ObservableCollection<string>(editObject.List);
 
             DISABLE_RAISE_EVENT = false;
         }
@@ -383,7 +390,7 @@ namespace Controllers
         // inputs
         private string _inputID;
         private string _inputName;
-        private List<string> _inputList;
+        private ObservableCollection<string> _inputList;
 
         // inputs status
         private InputStatus _statusID;
