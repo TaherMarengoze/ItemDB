@@ -8,7 +8,7 @@ namespace Client.Controls
 {
     public static class ExtensionMethods
     {
-        public static void DoubleBuffered(this DataGridView source, bool setting)
+        public static void DoubleBuffered(this Control source, bool setting)
         {
             Type dgvType = source.GetType();
             PropertyInfo pi = dgvType.GetProperty("DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic);
