@@ -13,6 +13,7 @@ using Modeling.DataModels;
 using System.Collections.Generic;
 using System.Linq;
 using UserInterface.Shared;
+using System.Reflection;
 
 namespace UserInterface.Forms
 {
@@ -20,16 +21,44 @@ namespace UserInterface.Forms
     {
         #region New Code
 
-        #region Fields
-        SizeListController uiControl;
+        #region Constants
+        enum ActionColumn
+        {
+            EDIT = 0,
+            DELETE = 1,
+            LIST = 2
+        }
         #endregion
 
-        #region Constructor
+        #region Fields
+        SizeListController uiControl;
+        private bool editMode;
+        bool DataGridView_MODIFY_COLUMN_HIDDEN;
+        string[] actionColumns = new string[3];
+
+        #endregion
+
+        #region Constructors and Initialization
         public FieldEditor_()
         {
             InitializeComponent();
+            ConfigureComponent();
+            InitializeFields();
             uiControl = new SizeListController();
             SubscribeControllerEvents();
+        }
+
+        private void ConfigureComponent()
+        {
+            dgvListDetails.DoubleBuffered(true);
+            lbxFieldListItems.DoubleBuffered(true);
+        }
+
+        private void InitializeFields()
+        {
+            actionColumns[(int)ActionColumn.EDIT] = colEdit.Name;
+            actionColumns[(int)ActionColumn.DELETE] = colDelete.Name;
+            actionColumns[(int)ActionColumn.LIST] = colListModify.Name;
         }
         #endregion
 
@@ -66,7 +95,15 @@ namespace UserInterface.Forms
             uiControl.CancelChanges();
         }
 
-        private void RemoveObject() => throw new NotImplementedException();
+        private void RemoveObject(string id)
+        {
+            uiControl.Remove(id);
+        }
+
+        private void EditListEntry(string id)
+        {
+            SetEditMode(true);
+        }
         #endregion
 
         #region Input to Controller
@@ -80,21 +117,107 @@ namespace UserInterface.Forms
             PositionDataGridViewButtons();
         }
 
-        private void PositionDataGridViewButtons()
+        private void UndindObjectList()
         {
-            // Set the location of the delete column
-            int bindDataCount = dgvListDetails.Columns.Count - 1;
-            dgvListDetails.Columns["colEdit"].DisplayIndex = bindDataCount;
-            dgvListDetails.Columns["colDelete"].DisplayIndex = bindDataCount;
+            dgvListDetails.DataSource = null;
+            HideModifyActionsColumns();
         }
+
         #endregion
 
         #region Getters
-        
+
         #endregion
 
         #region UI
-        
+
+        public void SetEditMode(bool value)
+        {
+            editMode = value;
+
+            if (value == true)
+            {
+                // do edit mode stuff
+
+                // disable object selection
+                dgvListDetails.Enabled = false;
+
+                // modify entries list
+                lbxFieldListItems.Dock = DockStyle.Left;
+
+                // show list modify controls
+                grpListData.Visible = true;
+                //btnAddEntry.Visible = true;
+                btnEdit.Visible = true;
+                btnDeleteEntry.Visible = true;
+                btnUp.Visible = true;
+                btnDown.Visible = true;
+
+                // show review controls
+                btnAccept.Visible = true;
+                btnCancel.Visible = true;
+
+                // enable list entry add controls
+                grpListData.Enabled = true;
+
+                // disable main modify controls
+                btnAddNewList.Enabled = false;
+            }
+            else
+            {
+                // enable object selection
+                dgvListDetails.Enabled = true;
+
+                // modify entries list
+                lbxFieldListItems.Dock = DockStyle.Fill;
+
+                // hide list modify controls
+                grpListData.Visible = false;
+                //btnAddEntry.Visible = false;
+                btnEdit.Visible = false;
+                btnDeleteEntry.Visible = false;
+                btnUp.Visible = false;
+                btnDown.Visible = false;
+
+                // hide review controls
+                btnAccept.Visible = false;
+                btnCancel.Visible = false;
+
+                // disable list entry add controls
+                grpListData.Enabled = false;
+
+                // enable main modify controls
+                btnAddNewList.Enabled = true;
+            }
+        }
+
+        private void ShowModifyActionsColumns()
+        {
+            foreach (string column in actionColumns)
+                dgvListDetails.Columns[column].Visible = true;
+
+            DataGridView_MODIFY_COLUMN_HIDDEN = false;
+        }
+
+        private void HideModifyActionsColumns()
+        {
+            foreach (string column in actionColumns)
+                dgvListDetails.Columns[column].Visible = false;
+
+            DataGridView_MODIFY_COLUMN_HIDDEN = true;
+        }
+
+        private void PositionDataGridViewButtons()
+        {
+            if (DataGridView_MODIFY_COLUMN_HIDDEN)
+                ShowModifyActionsColumns();
+
+            // Set the location of the delete column
+            int bindDataCount = dgvListDetails.Columns.Count - 1;
+
+            foreach (string column in actionColumns)
+                dgvListDetails.Columns[column].DisplayIndex = bindDataCount;
+        }
         #endregion
 
         #region Controller Event Responses
@@ -112,10 +235,13 @@ namespace UserInterface.Forms
             uiControl.OnCancel += UiControl_OnCancel;
             uiControl.OnRemove += UiControl_OnRemove;
         }
-        
+
         private void UiControl_OnLoad(object sender, LoadEventArgs e)
         {
-            BindObjectList(e.GenericViewList);
+            if (e.Count > 0)
+                BindObjectList(e.GenericViewList);
+            else
+                UndindObjectList();
         }
 
         //private void UiControl_OnSelection(object sender, SizeListSelectionEventArgs e)
@@ -128,11 +254,20 @@ namespace UserInterface.Forms
             lbxFieldListItems.DataSource = e.Selected?.List;
         }
 
-        private void UiControl_OnIdStatusChange(object sender, InputStatus e) => Console.WriteLine(e.ToString());
+        private void UiControl_OnIdStatusChange(object sender, InputStatus e)
+        {
+            Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffffff")} [{MethodBase.GetCurrentMethod().Name}] > ID Status: {e.ToString()}");
+        }
 
-        private void UiControl_OnNameStatusChange(object sender, InputStatus e) => Console.WriteLine(e.ToString());
+        private void UiControl_OnNameStatusChange(object sender, InputStatus e)
+        {
+            Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffffff")} [{MethodBase.GetCurrentMethod().Name}] > Name Status: {e.ToString()}");
+        }
 
-        private void UiControl_OnListStatusChange(object sender, InputStatus e) => Console.WriteLine(e.ToString());
+        private void UiControl_OnListStatusChange(object sender, InputStatus e)
+        {
+            Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffffff")} [{MethodBase.GetCurrentMethod().Name}] > List Status: {e.ToString()}");
+        }
 
         private void UiControl_OnReadyStateChange(object sender, ReadyEventArgs e)
         {
@@ -154,7 +289,7 @@ namespace UserInterface.Forms
                 uiControl.InputName = editor.OutputList.Name;
 
                 if (isNewObject)
-                    uiControl.InputList = editor.OutputList.List.ToList();
+                    uiControl.InputList = editor.OutputList.List; // clone or not ?
             }
             else
             {
@@ -168,24 +303,40 @@ namespace UserInterface.Forms
             //BindObjectList(e.GetType().GetProperty("NewList").GetValue(e));
 
             // select added object
-            dgvListDetails.SelectValueRow(e.SetID, "ID");
+            dgvListDetails.SelectRow(e.SetID, "ID");
         }
 
         private void UiControl_OnCancel(object sender, CancelEventArgs e)
         {
-            Console.WriteLine(e.RestoreID ?? "No item");
+            Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffffff")} [{MethodBase.GetCurrentMethod().Name}] > {e.RestoreID ?? "No item"}");
         }
 
-        private void UiControl_OnRemove(object sender, int e) => throw new NotImplementedException();
+        private void UiControl_OnRemove(object sender, RemoveEventArgs e)
+        {
+            if (e.Count > 0)
+            {
+                dgvListDetails.SaveAndRestoreSelection(delegate
+                {
+                    BindObjectList(e.NewList);
+                });
+            }
+            else
+            {
+                UndindObjectList();
+            }
+
+            Console.WriteLine("{0} [{1}] > {2}",
+                DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffffff"),
+                MethodBase.GetCurrentMethod().Name,
+                $"Removed Object ID: {e.RemoveID}");
+        }
         #endregion
-        
+
         #endregion
 
         #region Old Code
         private FieldType fieldType;
-        private ContextEntity entity;
 
-        private ISchema schema;
         private ObservableCollection<string> listEntries;
         #endregion
 
@@ -193,37 +344,9 @@ namespace UserInterface.Forms
         {
             InitializeComponent();
             fieldType = field;
-            schema = new FieldSchema(field);
-
-            switch (field)
-            {
-                case FieldType.SIZE:
-                    entity = ContextEntity.Sizes;
-                    Text = "Size List Editor";
-                    break;
-                case FieldType.BRAND:
-                    entity = ContextEntity.Brands;
-                    Text = "Brand List Editor";
-                    break;
-                case FieldType.ENDS:
-                    entity = ContextEntity.Ends;
-                    Text = "Ends List Editor";
-                    break;
-                default:
-                    break;
-            }
         }
 
         #region General
-        private void PostLoading()
-        {
-            EnableControls();
-            //cboFieldLists.ValueMember = "ID";
-            //PopulateListSelector();
-            PopulateGrid();
-            DisableEntryAdd();
-        }
-
         private void AskSaveBeforeClose()
         {
             if (MessageBox.Show(
@@ -237,27 +360,11 @@ namespace UserInterface.Forms
             }
         }
 
-
-
-        private void PopulateGrid()
-        {
-            object newDataSource = Data.GetFieldLists(fieldType);
-            dgvListDetails.DataSource = null;
-            dgvListDetails.DataSourceResize(newDataSource);
-            PositionDataGridViewButtons();
-        }
-
         private void UpdateEntriesList()
         {
             string listId = GetSelectedListId();
             listEntries = Data.FieldListGetEntries(fieldType, listId);
             lbxFieldListItems.DataSource = null;
-            lbxFieldListItems.DataSource = listEntries;
-        }
-
-        private void PopulateEntryList(string listId)
-        {
-            listEntries = Data.FieldListGetEntries(fieldType, listId);
             lbxFieldListItems.DataSource = listEntries;
         }
 
@@ -300,44 +407,6 @@ namespace UserInterface.Forms
         #endregion
 
         #region File-Specific
-
-        //private void AddNewList()
-        //{
-        //    FieldListEditor listEditor =
-        //        new FieldListEditor(Data.GetFieldIds(fieldType));
-
-        //    if (listEditor.ShowDialog() == DialogResult.OK)
-        //    {
-        //        Data.AddFieldList(fieldType, listEditor.FieldList);
-        //        PopulateGrid();
-        //    }
-        //}
-        
-        private void DeleteExistingList(string listId)
-        {
-            if (Common.ShowEntryRemoveConfirmation(false) == DialogResult.OK)
-            {
-                Data.DeleteFieldList(fieldType, listId);
-
-                PopulateGrid();
-                SelectFirstListItem();
-            }
-        }
-
-        //private void EditExistingList(string listId)
-        //{
-        //    IBasicList editList = Data.GetFieldList(fieldType, listId);
-
-        //    FieldListEditor listEditor =
-        //        new FieldListEditor(Data.GetFieldIds(fieldType), editList);
-
-        //    if (listEditor.ShowDialog() == DialogResult.OK)
-        //    {
-        //        Data.EditFieldList(fieldType, listId, listEditor.FieldList);
-
-        //        PopulateGrid();
-        //    }
-        //}
 
         private void CheckAvailableEntries()
         {
@@ -550,42 +619,23 @@ namespace UserInterface.Forms
 
             string id = (string)dgvListDetails.SelectedObjectID();
 
-            Console.WriteLine(id);
-            
-            if (e.ColumnIndex == 0) //Edit Button Column
-            {
-                // do edit stuff
+            if (e.ColumnIndex == (int)ActionColumn.EDIT)
                 EditObject(id);
-            }
 
-            if (e.ColumnIndex == 1) //Delete Button Column
-                // do delete stuff
-                return;
+            if (e.ColumnIndex == (int)ActionColumn.DELETE)
+                RemoveObject(id);
 
-            //CellContentClick_Action(e);
+            if (e.ColumnIndex == (int)ActionColumn.LIST)
+                EditListEntry(id);
         }
 
-        private void CellContentClick_Action(DataGridViewCellEventArgs e)
+        private void btnCancel_Click(object sender, EventArgs e)
         {
-            if (e.RowIndex > -1)
-            {
-                string selectedListId = (string)dgvListDetails["ID", e.RowIndex].Value;
-
-                BasicListView selectedItem = (BasicListView)dgvListDetails.Rows[e.RowIndex].DataBoundItem;
-
-                if (e.ColumnIndex == 0) //Edit Button Column
-                {
-                    //selectedListId = (string)dgvListDetails["ID", e.RowIndex].Value;
-                    //EditExistingList(selectedItem.ID, selectedItem.Name);
-                }
-
-                if (e.ColumnIndex == 1) //Delete Button Column
-                {
-                    DeleteExistingList(selectedListId);
-                }
-            }
+            SetEditMode(false);
         }
 #pragma warning restore IDE1006 // Naming Styles
         #endregion
+
+        
     }
 }

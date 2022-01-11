@@ -97,6 +97,7 @@ namespace UserInterface.Forms
             Runtime.Test.DoSomething(PostLoading);
             //Runtime.Test.DoSomething(delegate { LauchEditor(new SpecsEditor()); });
             //Runtime.Test.DoSomething(delegate { LauchEditor(new SizeGroupEditor()); });
+            Runtime.Test.DoSomething(delegate { LauchEditor(new FieldEditor_()); });
         }
 
         private void tsmiLoadAll_Click(object sender, EventArgs e)
