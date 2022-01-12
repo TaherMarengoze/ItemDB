@@ -9,6 +9,7 @@ using Modeling.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace Controllers
         public SizeListController()
         {
             //ClearInputs();
+            _inputList = new ObservableCollection<string>();
+            _inputList.CollectionChanged += _inputList_CollectionChanged;
             SetStatusInitialValues();
         }
 
@@ -37,7 +40,7 @@ namespace Controllers
         public event EventHandler<RemoveEventArgs> OnRemove;
         #endregion
 
-        #region Properties
+        // Properties
 
         public List<SizeList> SizeLists =>
             sizeDP.GetList().As<SizeList>();
@@ -96,16 +99,16 @@ namespace Controllers
             }
         }
 
-        public ObservableCollection<string> InputList
+        private void SetInputList(ObservableCollection<string> value)
         {
-            get => _inputList; set
-            {
-                _inputList = value;
+            _inputList.CollectionChanged -= _inputList_CollectionChanged;
+            _inputList = value;
+            _inputList.CollectionChanged += _inputList_CollectionChanged;
 
-                bool notNullOrEmpty = value?.Count > 0;
-                StatusList = notNullOrEmpty ? InputStatus.Valid : InputStatus.Invalid;
-            }
+            CheckListValidity(value);
         }
+
+        public string InputEntry { get; set; }
 
         #endregion
 
@@ -119,7 +122,7 @@ namespace Controllers
 
                 // raise event for status change
                 //  (OnIdStatusChange, value);
-                OnIdStatusChange.CheckedInvoke(value, !DISABLE_RAISE_EVENT);
+                OnIdStatusChange.CheckedInvoke(value, !DISABLE_STATUS_RAISE_EVENT);
 
                 // check all inputs status
                 CheckReadyStatus();
@@ -133,7 +136,7 @@ namespace Controllers
                 _statusName = value;
 
                 // raise event for status change
-                OnNameStatusChange.CheckedInvoke(value, !DISABLE_RAISE_EVENT);
+                OnNameStatusChange.CheckedInvoke(value, !DISABLE_STATUS_RAISE_EVENT);
 
                 // check all inputs status
                 CheckReadyStatus();
@@ -147,14 +150,12 @@ namespace Controllers
                 _statusList = value;
 
                 // raise event for status change
-                OnListStatusChange.CheckedInvoke(value, !DISABLE_RAISE_EVENT);
+                OnListStatusChange.CheckedInvoke(value, !DISABLE_STATUS_RAISE_EVENT);
 
                 // check all inputs status
                 CheckReadyStatus();
             }
         }
-
-        #endregion
 
         #endregion
 
@@ -248,9 +249,9 @@ namespace Controllers
 
             SizeList draftObject = new SizeList
             {
-                ID = InputID,
-                Name = InputName,
-                List = new ObservableCollection<string>(InputList)
+                ID = _inputID,
+                Name = _inputName,
+                List = new ObservableCollection<string>(_inputList)
             };
 
             if (editObject == null)
@@ -289,6 +290,58 @@ namespace Controllers
             ClearInputs();
         }
 
+        // list modification actions
+        public void AddEntry(string entry)
+        {
+            _inputList.Add(entry);
+        }
+
+        public void EditEntry(string oldValue, string newValue)
+        {
+            int i = _inputList.IndexOf(oldValue);
+            _inputList[i] = newValue;
+        }
+
+        public void RemoveEntry(string entry)
+        {
+            _inputList.Remove(entry);
+        }
+
+        public void MoveEntry(string entry, ShiftDirection direction)
+        {
+            
+        }
+
+        private void _inputList_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            CheckListValidity((ObservableCollection<string>)sender);
+            
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    Console.WriteLine("> Collection Changed [{0}: {1}]", e.Action.ToString(), e.NewItems[0]);
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    Console.WriteLine("> Collection Changed [{0}: {1}]", e.Action.ToString(), e.OldItems[0]);
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    Console.WriteLine("> Collection Changed [{0}: {1} > {2}]", e.Action.ToString(), e.OldItems[0], e.NewItems[0]);
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    break;
+                default:
+                    break;
+            }
+
+            Console.WriteLine("> Collection New Items:");
+            foreach (string item in _inputList)
+            {
+                Console.WriteLine("> {0}", item);
+            }
+        }
+
         /* private methods */
 
         private void CheckReadyStatus()
@@ -308,13 +361,13 @@ namespace Controllers
 
         private void CopyEditObjectDataToInputs()
         {
-            DISABLE_RAISE_EVENT = true;
+            DISABLE_STATUS_RAISE_EVENT = true;
 
             InputID = editObject.ID;
             InputName = editObject.Name;
-            InputList = new ObservableCollection<string>(editObject.List);
+            SetInputList(new ObservableCollection<string>(editObject.List));
 
-            DISABLE_RAISE_EVENT = false;
+            DISABLE_STATUS_RAISE_EVENT = false;
         }
 
         /// <summary>
@@ -322,13 +375,14 @@ namespace Controllers
         /// </summary>
         private void ClearInputs()
         {
-            DISABLE_RAISE_EVENT = true;
+            DISABLE_STATUS_RAISE_EVENT = true;
 
             InputID =  string.Empty;
             InputName =  string.Empty;
-            InputList = null;
+            //InputList = null;
+            _inputList.Clear();
 
-            DISABLE_RAISE_EVENT = false;
+            DISABLE_STATUS_RAISE_EVENT = false;
         }
 
         private void SetStatusInitialValues()
@@ -338,11 +392,11 @@ namespace Controllers
             _statusList = InputStatus.Invalid;
         }
 
-        //private void CheckInvoke<T>(EventHandler<T> handler, T val)
-        //{
-        //    if (!DISABLE_RAISE_EVENT)
-        //        handler?.Invoke(this, val);
-        //}
+        private void CheckListValidity(ObservableCollection<string> sender)
+        {
+            bool notNullOrEmpty = sender.Count > 0;
+            StatusList = notNullOrEmpty ? InputStatus.Valid : InputStatus.Invalid;
+        }
 
         /* private getter methods */
 
@@ -399,14 +453,14 @@ namespace Controllers
 
         // flags
         private bool isReady;
-        private bool DISABLE_RAISE_EVENT;
+        private bool DISABLE_STATUS_RAISE_EVENT;
 
         // objects
         private SizeList selected;
         private SizeList editObject;
 
         #endregion
-
+        
         #region Unit Test API
         public SizeList _Selected => selected;
         public SizeList _EditObject => editObject;

@@ -88,14 +88,5 @@ namespace Controllers
         //    return
         //        new ObservableCollection<string>(source);
         //}
-
-        public static IEnumerable<T> Add<T>(this IEnumerable<T> e, T value)
-        {
-            foreach (T cur in e)
-            {
-                yield return cur;
-            }
-            yield return value;
-        }
     }
 }

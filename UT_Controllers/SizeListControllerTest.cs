@@ -1,4 +1,4 @@
-﻿/*
+﻿
 using AppCore;
 using Controllers;
 using CoreLibrary.Enums;
@@ -7,12 +7,13 @@ using Modeling.DataModels;
 using Modeling.ViewModels.Common;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 
 namespace UT_Controllers
 {
-    //[TestClass]
+    [TestClass]
     public class SizeListControllerTest
     {
         const string UQID = "UTSZ0";
@@ -31,7 +32,7 @@ namespace UT_Controllers
         private ReadyEventArgs onReadyStateChangeArgs;
         private string onSetArgs;
         private CancelEventArgs onCancelEventArgs;
-        private int onRemoveArgs;
+        private RemoveEventArgs onRemoveArgs;
 
         [TestInitialize]
         public void Initialize()
@@ -86,17 +87,18 @@ namespace UT_Controllers
         {
             onCancelEventArgs = e;
         }
-        private void Ui_OnRemove(object sender, int e)
+        private void Ui_OnRemove(object sender, RemoveEventArgs e)
         {
             onRemoveArgs = e;
         }
 
+        #region Deactived Tests
         //[TestMethod]
         public void Should_Initialize()
         {
             Assert.AreEqual(null, ui.InputID);
             Assert.AreEqual(null, ui.InputName);
-            Assert.AreEqual(null, ui.InputList);
+            //Assert.AreEqual(null, ui.InputList);
             Assert.AreEqual(InputStatus.Blank, ui.StatusID);
             Assert.AreEqual(InputStatus.Blank, ui.StatusName);
             Assert.AreEqual(InputStatus.Invalid, ui.StatusList);
@@ -155,7 +157,7 @@ namespace UT_Controllers
             object expValue = inputObjects[0];
 
             // Act
-            ui.InputList = ((string[])inputObjects[1]).ToList();
+            //ui.InputList = new ObservableCollection<string>((string[])inputObjects[1]);
 
             // Assert
             Assert.AreEqual(expValue, onListStatusChangeArgs);
@@ -163,12 +165,12 @@ namespace UT_Controllers
 
         //[TestMethod]
         [DynamicData(nameof(TestInputs_ValidateInputList), DynamicDataSourceType.Method)]
-        public void Should_ValidateInputList_dyn(InputStatus expValue, List<string> inputs)
+        public void Should_ValidateInputList_dyn(InputStatus expValue, ObservableCollection<string> inputs)
         {
             // Arrange
 
             // Act
-            ui.InputList = inputs;
+            //ui.InputList = inputs;
 
             // Assert
             Assert.AreEqual(expValue, onListStatusChangeArgs);
@@ -193,7 +195,7 @@ namespace UT_Controllers
             // Act
             ui.InputID = (string)inputs[0];
             ui.InputName = (string)inputs[1];
-            ui.InputList = (List<string>)inputs[2];
+            //ui.InputList = (ObservableCollection<string>)inputs[2];
 
             // Assert
             Assert.AreEqual(expValue, onReadyStateChangeArgs.Ready);
@@ -226,7 +228,7 @@ namespace UT_Controllers
             // Arrange
             ui.InputID = id;
             ui.InputName = name;
-            ui.InputList = new List<string> { "entry_01", "entry_02" };
+            //ui.InputList = new ObservableCollection<string> { "entry_01", "entry_02" };
             int countBefore = ui.SizeLists.Count;
 
             // Act
@@ -237,7 +239,7 @@ namespace UT_Controllers
             Assert.AreEqual(null, ui._Selected);
             Assert.AreEqual("", ui.InputID);
             Assert.AreEqual("", ui.InputName);
-            Assert.AreEqual(null, ui.InputList);
+            //Assert.AreEqual(null, ui.InputList);
             Assert.AreEqual(InputStatus.Blank, ui.StatusID);
             Assert.AreEqual(InputStatus.Blank, ui.StatusName);
             Assert.AreEqual(InputStatus.Invalid, ui.StatusList);
@@ -259,17 +261,17 @@ namespace UT_Controllers
             CollectionAssert.AreEqual(expectedList, ui._EditObject.List);
             Assert.AreEqual(ui.InputID, ui._EditObject.ID);
             Assert.AreEqual(ui.InputName, ui._EditObject.Name);
-            CollectionAssert.AreEqual(ui.InputList, ui._EditObject.List);
+            //CollectionAssert.AreEqual(ui.InputList, ui._EditObject.List);
         }
 
         //[TestMethod, DynamicData(nameof(DynInputs_EditCommitChanges))]
-        public void Should_EditCommitChanges(string editId, string inputId, string inputName, List<string> inputList)
+        public void Should_EditCommitChanges(string editId, string inputId, string inputName, ObservableCollection<string> inputList)
         {
             // Arrange
             ui.Edit(editId);
             ui.InputID = inputId;
             ui.InputName = inputName;
-            ui.InputList = inputList;
+            //ui.InputList = inputList;
 
             // Act
             ui.CommitChanges();
@@ -289,7 +291,7 @@ namespace UT_Controllers
         //[TestMethod]
         [DynamicData(nameof(DynInputs_DraftChanged))]
         public void Should_DraftChanged(object expValue, string editId,
-            string inputId, string inputName, List<string> inputList)
+            string inputId, string inputName, ObservableCollection<string> inputList)
         {
             // Arrange
             ui.Edit(editId);
@@ -297,7 +299,7 @@ namespace UT_Controllers
             // Act
             ui.InputID = inputId;
             ui.InputName = inputName;
-            ui.InputList = inputList;
+            //ui.InputList = inputList;
 
             // Assert
             Assert.AreEqual(expValue, ui._IsChanged);
@@ -355,8 +357,23 @@ namespace UT_Controllers
         {
             new object[] { 25, "STEST" },
         };
-        
+        #endregion
 
+        [TestMethod]
+        public void MyTestMethod()
+        {
+            // Arrange
+
+            // Act
+            ui.Edit("STEST");
+            //ui.AddEntry("Test Entry");
+            //ui.EditEntry("Test Entry", "Test Entry 1");
+            //ui.RemoveEntry("Test Entry 1");
+            ui.AddEntry("Test Entry 2");
+
+            // Assert
+            Assert.AreEqual(InputStatus.Valid, ui.StatusList);
+        }
 
         // Generic Method
         public static string GetTestDisplayName(MethodInfo mInfo, object[] data)
@@ -365,7 +382,7 @@ namespace UT_Controllers
         }
     }
 }
-*/
+
 //[TestMethod, DynamicData(nameof(DynInputs_))]
 //public void Should_(int expValue, string input)
 //{

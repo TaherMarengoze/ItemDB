@@ -289,7 +289,10 @@ namespace UserInterface.Forms
                 uiControl.InputName = editor.OutputList.Name;
 
                 if (isNewObject)
-                    uiControl.InputList = editor.OutputList.List; // clone or not ?
+                {
+                    //uiControl.InputList = editor.OutputList.List; // clone or not ?
+                    uiControl.AddEntry(editor.OutputList.List[0]);
+                }
             }
             else
             {
