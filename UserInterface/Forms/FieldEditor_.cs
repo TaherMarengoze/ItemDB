@@ -291,7 +291,7 @@ namespace UserInterface.Forms
                 if (isNewObject)
                 {
                     //uiControl.InputList = editor.OutputList.List; // clone or not ?
-                    uiControl.AddEntry(editor.OutputList.List[0]);
+                    //uiControl.AddEntry(editor.OutputList.List[0]);
                 }
             }
             else

@@ -369,7 +369,7 @@ namespace UT_Controllers
             //ui.AddEntry("Test Entry");
             //ui.EditEntry("Test Entry", "Test Entry 1");
             //ui.RemoveEntry("Test Entry 1");
-            ui.AddEntry("Test Entry 2");
+            //ui.AddEntry("Test Entry 2");
 
             // Assert
             Assert.AreEqual(InputStatus.Valid, ui.StatusList);

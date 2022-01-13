@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Controllers
 {
-    public class SizeListController : IController
+    public partial class SizeListController : IController
     {
         public SizeListController()
         {
@@ -107,9 +107,6 @@ namespace Controllers
 
             CheckListValidity(value);
         }
-
-        public string InputEntry { get; set; }
-
         #endregion
 
         #region Status
@@ -156,7 +153,6 @@ namespace Controllers
                 CheckReadyStatus();
             }
         }
-
         #endregion
 
         #region Methods
@@ -181,7 +177,9 @@ namespace Controllers
 
         public void Select(string objectId)
         {
-            /*SizeList*/ selected = (SizeList)broker.Read(objectId);
+            /*SizeList*/
+            selected = (SizeList)broker.Read(objectId);
+            selectedEntries = selected.List.ToList();
 
             // raise event
             //OnSelection?.Invoke(this,
@@ -226,6 +224,12 @@ namespace Controllers
         public void Remove(string objectId)
         {
             broker.Delete(objectId);
+            /* SUGGEST:
+             * instead of using a parameter,
+             * we could use the selected object field.
+             * This allow us to check whether the ID
+             * exists and throws an exception if not.
+             */
 
             // raise event
             OnRemove?.Invoke(this,
@@ -265,12 +269,15 @@ namespace Controllers
             }
 
             selected = null; // unset selection object
+
+            // raise event
             OnSet?.Invoke(this,
                 new SetEventArgs
                 {
                     SetID = InputID,
                     NewList = sizeDP.GetList().ToGenericView(),
                 });
+
             ClearInputs();
         }
 
@@ -290,42 +297,26 @@ namespace Controllers
             ClearInputs();
         }
 
-        // list modification actions
-        public void AddEntry(string entry)
-        {
-            _inputList.Add(entry);
-        }
-
-        public void EditEntry(string oldValue, string newValue)
-        {
-            int i = _inputList.IndexOf(oldValue);
-            _inputList[i] = newValue;
-        }
-
-        public void RemoveEntry(string entry)
-        {
-            _inputList.Remove(entry);
-        }
-
-        public void MoveEntry(string entry, ShiftDirection direction)
-        {
-            
-        }
-
         private void _inputList_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             CheckListValidity((ObservableCollection<string>)sender);
-            
+
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    Console.WriteLine("> Collection Changed [{0}: {1}]", e.Action.ToString(), e.NewItems[0]);
+                    Console.WriteLine("> Collection Changed [{0}: {1}]",
+                        e.Action.ToString(), e.NewItems[0]);
+
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    Console.WriteLine("> Collection Changed [{0}: {1}]", e.Action.ToString(), e.OldItems[0]);
+                    Console.WriteLine("> Collection Changed [{0}: {1}]",
+                        e.Action.ToString(), e.OldItems[0]);
+
                     break;
                 case NotifyCollectionChangedAction.Replace:
-                    Console.WriteLine("> Collection Changed [{0}: {1} > {2}]", e.Action.ToString(), e.OldItems[0], e.NewItems[0]);
+                    Console.WriteLine("> Collection Changed [{0}: {1} > {2}]",
+                        e.Action.ToString(), e.OldItems[0], e.NewItems[0]);
+
                     break;
                 case NotifyCollectionChangedAction.Move:
                     break;
@@ -377,8 +368,8 @@ namespace Controllers
         {
             DISABLE_STATUS_RAISE_EVENT = true;
 
-            InputID =  string.Empty;
-            InputName =  string.Empty;
+            InputID = string.Empty;
+            InputName = string.Empty;
             //InputList = null;
             _inputList.Clear();
 
@@ -460,7 +451,7 @@ namespace Controllers
         private SizeList editObject;
 
         #endregion
-        
+
         #region Unit Test API
         public SizeList _Selected => selected;
         public SizeList _EditObject => editObject;
