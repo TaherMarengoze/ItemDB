@@ -1,48 +1,40 @@
-﻿using ClientService;
-using ClientService.Brokers;
-using ClientService.Data;
-using CoreLibrary.Enums;
-using Interfaces.Models;
-using Interfaces.Operations;
-using Modeling.DataModels;
-using Modeling.ViewModels;
+﻿using CoreLibrary.Enums;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace Controllers
 {
     public partial class SizeListController
     {
         #region Events
+        public event EventHandler<SelectEventArgs<string>> OnEntrySelect;
         public event EventHandler<InputStatus> OnEntryStatusChange;
-        public event EventHandler<SetEventArgs> OnEntrySet;
+        public event EventHandler<ReadyEventArgs> OnEntryReadyStateChange;
+        public event EventHandler<EntrySetEventArgs> OnEntrySet;
         #endregion
 
         #region Inputs
         public string InputEntry
         {
-            get => _inputEntry; set
+            get => inputEntry; set
             {
-                _inputEntry = value;
+                inputEntry = value;
 
                 if (string.IsNullOrWhiteSpace(value))
                     StatusEntry = InputStatus.Blank;
                 else
                 {
-                    // check for duplicate
                     bool isDuplicate = IsInputEntryDuplicate(value);
                     bool isNotAsEdit = IsNotInputEntryAsEdit(value);
 
                     if (isDuplicate)
                     {
-                        StatusEntry = InputStatus.Duplicate;
-
                         if (isNotAsEdit)
+                            StatusEntry = InputStatus.Duplicate;
+                        else
                             StatusEntry = InputStatus.Valid;
                     }
                     else
@@ -63,14 +55,15 @@ namespace Controllers
         #region Status
         public InputStatus StatusEntry
         {
-            get => _statusEntry; private set
+            get => statusEntry; private set
             {
-                _statusEntry = value;
+                statusEntry = value;
 
                 // raise event for status change
                 OnEntryStatusChange.CheckedInvoke(value, !DISABLE_STATUS_RAISE_EVENT);
 
                 // check all inputs status
+                CheckReadyStatus_Entry();
             }
         }
         #endregion
@@ -79,36 +72,32 @@ namespace Controllers
         public void SelectEntry(string entry)
         {
             selectedEntry = selected?.List.FirstOrDefault(e => e == entry);
+
+            // raise event
+            OnEntrySelect?.Invoke(this, new SelectEventArgs<string>
+            {
+                Selected = entry
+            });
         }
 
-        // list modification actions
+        public void New_Entry()
+        {
+            // raise event
+        }
+
+        public void Edit_Entry()
+        {
+            // get and store the edit entry
+            editEntry = selectedEntry;
+
+            CopyEditObjectDataToInputs_Entry();
+
+            // raise event
+        }
+
         public void AddEntry()
         {
-            // if not ready then
-            // throw new Exception("The entry is invalid.")
-
-            _inputList.Add(_inputEntry);
-
-            // raise event: set (add) => use the ObservableCollection event
-        }
-
-        public void EditEntry()
-        {
-            // if not ready then
-            // throw new Exception("The entry is invalid or unchanged.");
-
-            int i = _inputList.IndexOf(editEntry);
-            _inputList[i] = _inputEntry;
-
-            // clear old entry value
-            editEntry = null;
-
-            // raise event: set (Edit) => use the ObservableCollection event
-        }
-
-        public void RemoveEntry()
-        {
-            _inputList.Remove(selectedEntry);
+            _inputList.Add(inputEntry);
         }
 
         public void MoveEntry(string entry, ShiftDirection direction)
@@ -116,29 +105,118 @@ namespace Controllers
 
         }
 
+        public void RemoveEntry()
+        {
+            if (selectedEntry == null)
+                throw new Exception("No entry selected.");
+
+            _inputList.Remove(selectedEntry);
+        }
+
+        public void CommitChanges_Entry()
+        {
+            if (isReady_Entry)
+                throw new Exception("The entry is invalid or unchanged.");
+
+            CreateOrUpdate_Entry();
+
+            // raise event
+            OnEntrySet?.Invoke(this, new EntrySetEventArgs
+            {
+                NewItem = inputEntry,
+                OldItem = editEntry
+            });
+
+            // clear selection
+            selectedEntry = null;
+            editEntry = null;
+            ClearInputs_Entry();
+        }
+
         // private methods
+        private void CheckReadyStatus_Entry()
+        {
+            bool isValid = IsValidInputs_Entry();
+            bool isChanged = IsDraftChanged_Entry();
+
+            isReady_Entry = isValid && isChanged;
+
+            // raise event
+            OnEntryReadyStateChange?.Invoke(this, new ReadyEventArgs
+            {
+                Ready = isReady,
+                //Info = isValid ? (isChanged ? "Ready" : "Unchanged") : "Not Ready"
+            });
+        }
+
+        private void CopyEditObjectDataToInputs_Entry()
+        {
+            DISABLE_STATUS_RAISE_EVENT = true;
+
+            SetInputList(new ObservableCollection<string>(selectedEntries));
+
+            DISABLE_STATUS_RAISE_EVENT = false;
+        }
+
+        private void ClearInputs_Entry()
+        {
+            DISABLE_STATUS_RAISE_EVENT = true;
+
+            InputEntry = string.Empty;
+
+            DISABLE_STATUS_RAISE_EVENT = false;
+        }
 
         // private functions (getter method)
         private bool IsInputEntryDuplicate(string value)
-        {
-            //throw new NotImplementedException();
-            return selectedEntries.Contains(value);
-        }
+            => selectedEntries.Contains(value);
 
         private bool IsNotInputEntryAsEdit(string value)
+            => value != editEntry;
+
+        private bool IsValidInputs_Entry()
         {
-            return value != editEntry;
+            InputStatus[] inputStatus = {
+                statusEntry,
+            };
+
+            return inputStatus.All(status => status == InputStatus.Valid);
+        }
+
+        private bool IsDraftChanged_Entry()
+        {
+            bool[] draftChange = {
+                inputEntry != null ? inputEntry != editEntry : false,
+            };
+
+            return draftChange.Any(change => change);
+        }
+
+        private void CreateOrUpdate_Entry()
+        {
+            string draftEntry = inputEntry;
+
+            if (editEntry == null)
+            {
+                _inputList.Add(draftEntry);
+            }
+            else
+            {
+                int i = _inputList.IndexOf(editEntry);
+                _inputList[i] = draftEntry;
+            }
         }
         #endregion
 
         #region Fields
         // inputs
-        private string _inputEntry;
+        private string inputEntry;
 
         // inputs status
-        private InputStatus _statusEntry;
+        private InputStatus statusEntry;
 
         // flags
+        private bool isReady_Entry;
 
         // objects
         private List<string> selectedEntries;

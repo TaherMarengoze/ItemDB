@@ -62,10 +62,16 @@ namespace Controllers
                 else
                 {
                     // check for duplicate
-                    bool isDuplicate = sizeDP.GetIDs().Contains(value) && value != editObject?.ID;
+                    bool isDuplicate = sizeDP.GetIDs().Contains(value);
+                    bool isNotAsEdit = value != editObject?.ID;
 
                     if (isDuplicate)
-                        StatusID = InputStatus.Duplicate;
+                    {
+                        if (isNotAsEdit)
+                            StatusID = InputStatus.Duplicate;
+                        else
+                            StatusID = InputStatus.Valid;
+                    }
                     else
                     {
                         bool isValidChar = true; // valid characters check
@@ -177,32 +183,25 @@ namespace Controllers
 
         public void Select(string objectId)
         {
-            /*SizeList*/
+            _ = objectId ?? throw new ArgumentNullException(nameof(objectId));
+
             selected = (SizeList)broker.Read(objectId);
             selectedEntries = selected.List.ToList();
 
             // raise event
-            //OnSelection?.Invoke(this,
-            //    new SizeListSelectionEventArgs
-            //    {
-            //        Selected = selected
-            //    });
-
-            OnSelect?.Invoke(this,
-                new SelectEventArgs<SizeList>
-                {
-                    Selected = selected
-                });
+            OnSelect?.Invoke(this, new SelectEventArgs<SizeList>
+            {
+                Selected = selected
+            });
         }
 
         public void New()
         {
             // raise event
-            OnPreDrafting?.Invoke(this,
-                new PreDraftingEventArgs
-                {
-                    PreList = sizeDP.GetIDs()
-                });
+            OnPreDrafting?.Invoke(this, new PreDraftingEventArgs
+            {
+                PreList = sizeDP.GetIDs()
+            });
         }
 
         public void Edit(string objectID)
@@ -213,12 +212,11 @@ namespace Controllers
             CopyEditObjectDataToInputs();
 
             // raise event
-            OnPreDrafting?.Invoke(this,
-                new PreDraftingEventArgs
-                {
-                    DraftObject = editObject.Clone(),
-                    PreList = sizeDP.GetIDs(),
-                });
+            OnPreDrafting?.Invoke(this, new PreDraftingEventArgs
+            {
+                DraftObject = editObject.Clone(),
+                PreList = sizeDP.GetIDs(),
+            });
         }
 
         public void Remove(string objectId)
@@ -246,38 +244,20 @@ namespace Controllers
         public void CommitChanges()
         {
             if (!isReady)
-            {
-                //return;
                 throw new Exception("The draft object is invalid or unchanged.");
-            }
 
-            SizeList draftObject = new SizeList
-            {
-                ID = _inputID,
-                Name = _inputName,
-                List = new ObservableCollection<string>(_inputList)
-            };
-
-            if (editObject == null)
-            {
-                broker.Create(draftObject);
-            }
-            else
-            {
-                broker.Update(editObject.ID, draftObject);
-                editObject = null;
-            }
-
-            selected = null; // unset selection object
+            CreateOrUpdate();
 
             // raise event
-            OnSet?.Invoke(this,
-                new SetEventArgs
-                {
-                    SetID = InputID,
-                    NewList = sizeDP.GetList().ToGenericView(),
-                });
+            OnSet?.Invoke(this, new SetEventArgs
+            {
+                SetID = InputID,
+                NewList = sizeDP.GetList().ToGenericView(),
+            });
 
+            // clear selection
+            selected = null;
+            editObject = null;
             ClearInputs();
         }
 
@@ -370,7 +350,6 @@ namespace Controllers
 
             InputID = string.Empty;
             InputName = string.Empty;
-            //InputList = null;
             _inputList.Clear();
 
             DISABLE_STATUS_RAISE_EVENT = false;
@@ -425,6 +404,29 @@ namespace Controllers
             return !_inputList.SequenceEqual(editObject.List);
         }
 
+        private void CreateOrUpdate()
+        {
+            SizeList draftObject = CreateDraftObject();
+
+            if (editObject == null)
+            {
+                broker.Create(draftObject);
+            }
+            else
+            {
+                broker.Update(editObject.ID, draftObject);
+            }
+        }
+
+        private SizeList CreateDraftObject()
+        {
+            return new SizeList
+            {
+                ID = _inputID,
+                Name = _inputName,
+                List = new ObservableCollection<string>(_inputList)
+            };
+        }
         #endregion
 
         #region Fields

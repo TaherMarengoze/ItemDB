@@ -28,6 +28,8 @@ namespace UserInterface.Forms
             DELETE = 1,
             LIST = 2
         }
+
+        private const string DT_FORMAT = "yyyy-MM-dd HH:mm:ss.fffffff";
         #endregion
 
         #region Fields
@@ -72,7 +74,8 @@ namespace UserInterface.Forms
         {
             string id = (string)dgvListDetails.SelectedObjectID();
 
-            uiControl.Select(id);
+            if (id != null)
+                uiControl.Select(id);
         }
 
         private void AddNewObject()
@@ -100,8 +103,11 @@ namespace UserInterface.Forms
             uiControl.Remove(id);
         }
 
-        private void EditListEntry(string id)
+        private void EditListEntry(string listId)
         {
+            uiControl.Edit_Entry();
+
+            // set entry mode
             SetEditMode(true);
         }
         #endregion
@@ -126,7 +132,14 @@ namespace UserInterface.Forms
         #endregion
 
         #region Getters
+        private string GetSelectedEntry()
+        {
+            if (lbxFieldListItems.SelectedIndex == -1)
+                return null;
 
+            return
+                (string)lbxFieldListItems.SelectedItem;
+        }
         #endregion
 
         #region UI
@@ -234,6 +247,7 @@ namespace UserInterface.Forms
             uiControl.OnSet += UiControl_OnSet;
             uiControl.OnCancel += UiControl_OnCancel;
             uiControl.OnRemove += UiControl_OnRemove;
+            uiControl.OnEntryStatusChange += UiControl_OnEntryStatusChange;
         }
 
         private void UiControl_OnLoad(object sender, LoadEventArgs e)
@@ -256,17 +270,17 @@ namespace UserInterface.Forms
 
         private void UiControl_OnIdStatusChange(object sender, InputStatus e)
         {
-            Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffffff")} [{MethodBase.GetCurrentMethod().Name}] > ID Status: {e.ToString()}");
+            Console.WriteLine($"{DateTime.Now.ToString(DT_FORMAT)} [{MethodBase.GetCurrentMethod().Name}] > ID Status: {e.ToString()}");
         }
 
         private void UiControl_OnNameStatusChange(object sender, InputStatus e)
         {
-            Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffffff")} [{MethodBase.GetCurrentMethod().Name}] > Name Status: {e.ToString()}");
+            Console.WriteLine($"{DateTime.Now.ToString(DT_FORMAT)} [{MethodBase.GetCurrentMethod().Name}] > Name Status: {e.ToString()}");
         }
 
         private void UiControl_OnListStatusChange(object sender, InputStatus e)
         {
-            Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffffff")} [{MethodBase.GetCurrentMethod().Name}] > List Status: {e.ToString()}");
+            Console.WriteLine($"{DateTime.Now.ToString(DT_FORMAT)} [{MethodBase.GetCurrentMethod().Name}] > List Status: {e.ToString()}");
         }
 
         private void UiControl_OnReadyStateChange(object sender, ReadyEventArgs e)
@@ -311,7 +325,7 @@ namespace UserInterface.Forms
 
         private void UiControl_OnCancel(object sender, CancelEventArgs e)
         {
-            Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffffff")} [{MethodBase.GetCurrentMethod().Name}] > {e.RestoreID ?? "No item"}");
+            Console.WriteLine($"{DateTime.Now.ToString(DT_FORMAT)} [{MethodBase.GetCurrentMethod().Name}] > {e.RestoreID ?? "No item"}");
         }
 
         private void UiControl_OnRemove(object sender, RemoveEventArgs e)
@@ -329,9 +343,32 @@ namespace UserInterface.Forms
             }
 
             Console.WriteLine("{0} [{1}] > {2}",
-                DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffffff"),
+                DateTime.Now.ToString(DT_FORMAT),
                 MethodBase.GetCurrentMethod().Name,
                 $"Removed Object ID: {e.RemoveID}");
+        }
+
+        private void UiControl_OnEntryStatusChange(object sender, InputStatus e)
+        {
+            //throw new NotImplementedException();
+            switch (e)
+            {
+                case InputStatus.Valid:
+                    btnAddEntry.Enabled = true;
+                    break;
+                //case InputStatus.Duplicate:
+                //    btnAddEntry.Enabled = false;
+                //    break;
+                //case InputStatus.Blank:
+                //    btnAddEntry.Enabled = false;
+                //    break;
+                //case InputStatus.Invalid:
+                //    btnAddEntry.Enabled = false;
+                //    break;
+                default:
+                    btnAddEntry.Enabled = false;
+                    break;
+            }
         }
         #endregion
 
@@ -433,19 +470,23 @@ namespace UserInterface.Forms
 
         private void btnAddEntry_Click(object sender, EventArgs e)
         {
-            string entryValue = txtEntryValue.Text;
+            // new code
+            
 
-            if (entryValue != string.Empty)
-            {
-                string fieldId = GetSelectedListId();
-                Data.FieldListAddEntry(fieldType, fieldId, entryValue);
+            // old code
+            //string entryValue = txtEntryValue.Text;
 
-                txtEntryValue.Text = string.Empty;
-                UpdateEntriesList();
-                SelectListItem(entryValue);
-                CheckAvailableEntries();
-                txtEntryValue.Focus();
-            }
+            //if (entryValue != string.Empty)
+            //{
+            //    string fieldId = GetSelectedListId();
+            //    Data.FieldListAddEntry(fieldType, fieldId, entryValue);
+
+            //    txtEntryValue.Text = string.Empty;
+            //    UpdateEntriesList();
+            //    SelectListItem(entryValue);
+            //    CheckAvailableEntries();
+            //    txtEntryValue.Focus();
+            //}
         }
 
         private void btnDeleteEntry_Click(object sender, EventArgs e)
@@ -524,15 +565,14 @@ namespace UserInterface.Forms
 
         private void txtEntryValue_TextChanged(object sender, EventArgs e)
         {
-            if (txtEntryValue.Text.Length > 0)
-            {
-                CheckDuplicateEntries();
-            }
-            else
-            {
-                DisableEntryAdd();
-            }
+            // new code
+            uiControl.InputEntry = ((TextBox)sender).Text;
 
+            // old code
+            //if (txtEntryValue.Text.Length > 0)
+            //    CheckDuplicateEntries();
+            //else
+            //    DisableEntryAdd();
         }
 
         private void FieldEditor_KeyDown(object sender, KeyEventArgs e)
@@ -553,7 +593,6 @@ namespace UserInterface.Forms
             string item = (string)lbxFieldListItems.SelectedValue;
             int selecIndex = lbxFieldListItems.SelectedIndex;
 
-            //DataService.SizeListMoveEntry(listId, item, ShiftDirection.UP);
             Data.FieldListMoveEntry(fieldType, listId, item, ShiftDirection.UP);
 
             UpdateEntriesList();
@@ -566,7 +605,6 @@ namespace UserInterface.Forms
             string item = (string)lbxFieldListItems.SelectedValue;
             int selecIndex = lbxFieldListItems.SelectedIndex;
 
-            //DataService.SizeListMoveEntry(listId, item, ShiftDirection.DOWN);
             Data.FieldListMoveEntry(fieldType, listId, item, ShiftDirection.DOWN);
 
             UpdateEntriesList();
@@ -588,26 +626,30 @@ namespace UserInterface.Forms
 
         private void lbxFieldListItems_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int selectedIndex = lbxFieldListItems.SelectedIndex;
-            int entriesCount = lbxFieldListItems.Items.Count - 1;
+            // new code
+            uiControl.SelectEntry(GetSelectedEntry());
 
-            if (selectedIndex == 0)
-            {
-                btnUp.Enabled = false;
-            }
-            else
-            {
-                btnUp.Enabled = true;
-            }
+            // old code
+            //int selectedIndex = lbxFieldListItems.SelectedIndex;
+            //int entriesCount = lbxFieldListItems.Items.Count - 1;
 
-            if (selectedIndex == entriesCount)
-            {
-                btnDown.Enabled = false;
-            }
-            else
-            {
-                btnDown.Enabled = true;
-            }
+            //if (selectedIndex == 0)
+            //{
+            //    btnUp.Enabled = false;
+            //}
+            //else
+            //{
+            //    btnUp.Enabled = true;
+            //}
+
+            //if (selectedIndex == entriesCount)
+            //{
+            //    btnDown.Enabled = false;
+            //}
+            //else
+            //{
+            //    btnDown.Enabled = true;
+            //}
         }
 
         private void dgvListDetails_SelectionChanged(object sender, EventArgs e)
