@@ -1,9 +1,9 @@
-﻿using CoreLibrary.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Web.Mvc;
+
+using CoreLibrary.Enums;
 
 namespace Controllers
 {
@@ -69,6 +69,28 @@ namespace Controllers
         #endregion
 
         #region Methods
+        public void Save_Entry()
+        {
+            if (!isReady)
+                throw new Exception("The draft object is invalid or unchanged.");
+
+            CreateOrUpdate();
+
+            // raise event
+            OnSet?.Invoke(this, new SetEventArgs
+            {
+                SetID = InputID,
+                NewList = sizeDP.GetList().ToGenericView(),
+            });
+
+            // clear selection
+            selected = null;
+            editObject = null;
+            ClearInputs();
+        }
+
+        public void Load_Entry() => throw new NotImplementedException();
+
         public void SelectEntry(string entry)
         {
             selectedEntry = selected?.List.FirstOrDefault(e => e == entry);
@@ -93,16 +115,6 @@ namespace Controllers
             CopyEditObjectDataToInputs_Entry();
 
             // raise event
-        }
-
-        public void AddEntry()
-        {
-            _inputList.Add(inputEntry);
-        }
-
-        public void MoveEntry(string entry, ShiftDirection direction)
-        {
-
         }
 
         public void RemoveEntry()

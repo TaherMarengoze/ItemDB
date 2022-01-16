@@ -1,4 +1,11 @@
-﻿using ClientService;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using ClientService;
 using ClientService.Brokers;
 using ClientService.Data;
 using CoreLibrary.Enums;
@@ -6,13 +13,6 @@ using Interfaces.Models;
 using Interfaces.Operations;
 using Modeling.DataModels;
 using Modeling.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Controllers
 {
@@ -171,7 +171,6 @@ namespace Controllers
         }
 
         public void Load()
-
         {
             OnLoad?.Invoke(this,
                 new LoadEventArgs
@@ -206,9 +205,7 @@ namespace Controllers
 
         public void Edit(string objectID)
         {
-            // get and store the original object
-            editObject = (SizeList)broker.Read(objectID);
-
+            editObject = GetEditObjecy();
             CopyEditObjectDataToInputs();
 
             // raise event
@@ -223,10 +220,8 @@ namespace Controllers
         {
             broker.Delete(objectId);
             /* SUGGEST:
-             * instead of using a parameter,
-             * we could use the selected object field.
-             * This allow us to check whether the ID
-             * exists and throws an exception if not.
+             * Instead of using a parameter, we could use the selected object field.
+             * This allow us to check whether the ID exists and throws an exception if not.
              */
 
             // raise event
@@ -369,7 +364,10 @@ namespace Controllers
         }
 
         /* private getter methods */
-
+        private SizeList GetEditObjecy()
+        {
+            return (SizeList)broker.Read(/*objectID*/selected.ID);
+        }
         private bool IsValidInputs()
         {
             InputStatus[] inputStatus = {
