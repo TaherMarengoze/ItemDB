@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-
 using CoreLibrary.Enums;
 using Modeling.DataModels;
 
@@ -24,7 +23,8 @@ namespace Controllers
             {
                 if (!ALLOW_INPUT)
                 {
-                    Console.WriteLine("Input is not allowed.");
+                    System.Diagnostics.Debug.Print("Input is not allowed.");
+                    //Console.WriteLine("Input is not allowed.");
                     return;
                 }
 
@@ -56,7 +56,6 @@ namespace Controllers
                 }
             }
         }
-
         #endregion
 
         #region Status
@@ -67,7 +66,8 @@ namespace Controllers
                 statusEntry = value;
 
                 // raise event for status change
-                OnEntryStatusChange.CheckedInvoke(value, !DISABLE_STATUS_RAISE_EVENT);
+                OnEntryStatusChange.CheckedInvoke(value,
+                    !DISABLE_STATUS_RAISE_EVENT);
 
                 // check all inputs status
                 CheckReadyStatus_Entry();
@@ -91,11 +91,29 @@ namespace Controllers
             if (selected == null)
                 throw new Exception("No object selected");
 
-            //SizeList draftObject = GetEditObject();
-            //draftObject.List = new ObservableCollection<string>(_inputList);
             selected.List = new ObservableCollection<string>(_inputList);
             broker.Update(selected.ID, selected);
 
+            // clear inputs
+            DISABLE_STATUS_RAISE_EVENT = true;
+            _inputList.Clear();
+            DISABLE_STATUS_RAISE_EVENT = false;
+
+            ReportPartial();
+        }
+
+        public void Revert_Entries()
+        {
+            // clear inputs
+            DISABLE_STATUS_RAISE_EVENT = true;
+            _inputList.Clear();
+            DISABLE_STATUS_RAISE_EVENT = false;
+
+            ReportPartial();
+        }
+
+        private void ReportPartial()
+        {
             Console.WriteLine("> Selected Item List Entries:\n - {0}",
                 string.Join("\n - ", broker.Read(selected.ID).List));
         }

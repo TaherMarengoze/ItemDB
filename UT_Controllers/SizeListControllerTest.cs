@@ -95,7 +95,7 @@ namespace UT_Controllers
         }
         #endregion
 
-        #region Deactived Tests
+        #region Deactivated Tests
         //[TestMethod]
         public void Should_Initialize()
         {
@@ -376,9 +376,8 @@ namespace UT_Controllers
             // Assert
             Assert.AreEqual(InputStatus.Valid, ui.StatusList);
         }
-        #endregion
 
-        [TestMethod]
+        //[TestMethod]
         public void Should_PartialModify()
         {
             // Arrange
@@ -393,6 +392,24 @@ namespace UT_Controllers
             
             
             // Assert
+        }
+        #endregion
+
+        [TestMethod]
+        public void Should_Revert()
+        {
+            // Arrange
+            ui.Select("STEST");
+            ui.PartialModify_Entries();
+            ui.New_Entry();
+            ui.InputEntry = "Entry 4 (New)";
+
+            // Act
+            ui.CommitChanges_Entry();
+            ui.Revert_Entries();
+
+            // Assert
+
         }
 
         // Generic Method

@@ -282,29 +282,35 @@ namespace Controllers
                     Console.WriteLine("> Collection Changed [{0}: {1}]",
                         e.Action.ToString(), e.NewItems[0]);
 
+                    Console.WriteLine("> Collection New Items:\n - {0}",
+                        string.Join("\n - ", _inputList));
+
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     Console.WriteLine("> Collection Changed [{0}: {1}]",
                         e.Action.ToString(), e.OldItems[0]);
+
+                    Console.WriteLine("> Collection New Items:\n - {0}",
+                        string.Join("\n - ", _inputList));
 
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     Console.WriteLine("> Collection Changed [{0}: {1} > {2}]",
                         e.Action.ToString(), e.OldItems[0], e.NewItems[0]);
 
+                    Console.WriteLine("> Collection New Items:\n - {0}",
+                        string.Join("\n - ", _inputList));
+
                     break;
                 case NotifyCollectionChangedAction.Move:
                     break;
                 case NotifyCollectionChangedAction.Reset:
+                    Console.WriteLine("> Collection Changed [{0}]",
+                        e.Action.ToString());
+
                     break;
                 default:
                     break;
-            }
-
-            Console.WriteLine("> Collection New Items:");
-            foreach (string item in _inputList)
-            {
-                Console.WriteLine("> {0}", item);
             }
         }
 
