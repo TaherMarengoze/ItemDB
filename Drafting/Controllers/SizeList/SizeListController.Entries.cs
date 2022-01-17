@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 
 using CoreLibrary.Enums;
+using Modeling.DataModels;
 
 namespace Controllers
 {
@@ -21,6 +22,12 @@ namespace Controllers
         {
             get => inputEntry; set
             {
+                if (!ALLOW_INPUT)
+                {
+                    Console.WriteLine("Input is not allowed.");
+                    return;
+                }
+
                 inputEntry = value;
 
                 if (string.IsNullOrWhiteSpace(value))
@@ -69,27 +76,29 @@ namespace Controllers
         #endregion
 
         #region Methods
-        public void Save_Entry()
+        public void PartialModify_Entries()
         {
-            if (!isReady)
-                throw new Exception("The draft object is invalid or unchanged.");
+            //SetParentData_Entries();
+            DISABLE_STATUS_RAISE_EVENT = true;
 
-            CreateOrUpdate();
+            SetInputList(new ObservableCollection<string>(selectedEntries));
 
-            // raise event
-            OnSet?.Invoke(this, new SetEventArgs
-            {
-                SetID = InputID,
-                NewList = sizeDP.GetList().ToGenericView(),
-            });
-
-            // clear selection
-            selected = null;
-            editObject = null;
-            ClearInputs();
+            DISABLE_STATUS_RAISE_EVENT = false;
         }
 
-        public void Load_Entry() => throw new NotImplementedException();
+        public void PartialCommit_Entries()
+        {
+            if (selected == null)
+                throw new Exception("No object selected");
+
+            //SizeList draftObject = GetEditObject();
+            //draftObject.List = new ObservableCollection<string>(_inputList);
+            selected.List = new ObservableCollection<string>(_inputList);
+            broker.Update(selected.ID, selected);
+
+            Console.WriteLine("> Selected Item List Entries:\n - {0}",
+                string.Join("\n - ", broker.Read(selected.ID).List));
+        }
 
         public void SelectEntry(string entry)
         {
@@ -104,15 +113,21 @@ namespace Controllers
 
         public void New_Entry()
         {
+            ALLOW_INPUT = true;
+
             // raise event
         }
 
         public void Edit_Entry()
         {
+            ALLOW_INPUT = true;
+
             // get and store the edit entry
             editEntry = selectedEntry;
 
-            CopyEditObjectDataToInputs_Entry();
+            //CopyEditObjectDataToInputs_Entry();
+            // fill inputs with edit object data
+            inputEntry = editEntry;
 
             // raise event
         }
@@ -127,7 +142,7 @@ namespace Controllers
 
         public void CommitChanges_Entry()
         {
-            if (isReady_Entry)
+            if (!isReady_Entry)
                 throw new Exception("The entry is invalid or unchanged.");
 
             CreateOrUpdate_Entry();
@@ -143,9 +158,19 @@ namespace Controllers
             selectedEntry = null;
             editEntry = null;
             ClearInputs_Entry();
+            ALLOW_INPUT = false;
         }
 
-        // private methods
+        /* private methods */
+        private void SetParentData_Entries()
+        {
+            DISABLE_STATUS_RAISE_EVENT = true;
+
+            SetInputList(new ObservableCollection<string>(selectedEntries));
+
+            DISABLE_STATUS_RAISE_EVENT = false;
+        }
+
         private void CheckReadyStatus_Entry()
         {
             bool isValid = IsValidInputs_Entry();
@@ -161,15 +186,6 @@ namespace Controllers
             });
         }
 
-        private void CopyEditObjectDataToInputs_Entry()
-        {
-            DISABLE_STATUS_RAISE_EVENT = true;
-
-            SetInputList(new ObservableCollection<string>(selectedEntries));
-
-            DISABLE_STATUS_RAISE_EVENT = false;
-        }
-
         private void ClearInputs_Entry()
         {
             DISABLE_STATUS_RAISE_EVENT = true;
@@ -179,7 +195,7 @@ namespace Controllers
             DISABLE_STATUS_RAISE_EVENT = false;
         }
 
-        // private functions (getter method)
+        /* private functions (getter method) */
         private bool IsInputEntryDuplicate(string value)
             => selectedEntries.Contains(value);
 
@@ -228,6 +244,7 @@ namespace Controllers
         private InputStatus statusEntry;
 
         // flags
+        private bool ALLOW_INPUT;
         private bool isReady_Entry;
 
         // objects

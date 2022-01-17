@@ -105,7 +105,7 @@ namespace UserInterface.Forms
 
         private void EditListEntry(string listId)
         {
-            uiControl.Edit_Entry();
+            //uiControl.Edit_Entry();
 
             // set entry mode
             SetEditMode(true);
@@ -471,7 +471,7 @@ namespace UserInterface.Forms
         private void btnAddEntry_Click(object sender, EventArgs e)
         {
             // new code
-            
+            uiControl.CommitChanges_Entry();
 
             // old code
             //string entryValue = txtEntryValue.Text;
@@ -678,9 +678,13 @@ namespace UserInterface.Forms
         {
             SetEditMode(false);
         }
+
+        private void btnAccept_Click(object sender, EventArgs e)
+        {
+            uiControl.PartialCommit_Entries();
+        }
+
 #pragma warning restore IDE1006 // Naming Styles
         #endregion
-
-        
     }
 }

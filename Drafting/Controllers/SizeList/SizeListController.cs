@@ -205,7 +205,7 @@ namespace Controllers
 
         public void Edit(string objectID)
         {
-            editObject = GetEditObjecy();
+            editObject = GetEditObject();
             CopyEditObjectDataToInputs();
 
             // raise event
@@ -364,7 +364,7 @@ namespace Controllers
         }
 
         /* private getter methods */
-        private SizeList GetEditObjecy()
+        private SizeList GetEditObject()
         {
             return (SizeList)broker.Read(/*objectID*/selected.ID);
         }

@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.grpListData = new System.Windows.Forms.GroupBox();
             this.btnAddEntry = new System.Windows.Forms.Button();
             this.txtEntryValue = new System.Windows.Forms.TextBox();
@@ -275,9 +275,9 @@
             // 
             // colDelete
             // 
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.Red;
-            this.colDelete.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.Red;
+            this.colDelete.DefaultCellStyle = dataGridViewCellStyle1;
             this.colDelete.HeaderText = "Delete";
             this.colDelete.Name = "colDelete";
             this.colDelete.ReadOnly = true;
@@ -303,6 +303,7 @@
             this.btnAccept.Text = "Accept";
             this.btnAccept.UseVisualStyleBackColor = true;
             this.btnAccept.Visible = false;
+            this.btnAccept.Click += new System.EventHandler(this.btnAccept_Click);
             // 
             // btnCancel
             // 

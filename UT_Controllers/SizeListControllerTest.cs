@@ -1,5 +1,4 @@
-﻿
-using AppCore;
+﻿using AppCore;
 using Controllers;
 using CoreLibrary.Enums;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -24,6 +23,7 @@ namespace UT_Controllers
         private static readonly List<string> LIST1 = new List<string> { "Entry 1", "Entry 2", "Entry 3*" };
 
         SizeListController ui;
+        #region EventArgs Fields
         private List<FieldListGenericView> onLoadArgs;
         private SizeListSelectionEventArgs onSelectionArgs;
         private InputStatus onIdStatusChangeArgs;
@@ -33,6 +33,7 @@ namespace UT_Controllers
         private string onSetArgs;
         private CancelEventArgs onCancelEventArgs;
         private RemoveEventArgs onRemoveArgs;
+        #endregion
 
         [TestInitialize]
         public void Initialize()
@@ -43,6 +44,7 @@ namespace UT_Controllers
             EventSubscriber();
         }
 
+        #region Controller Events
         private void EventSubscriber()
         {
             ui.OnLoad += Ui_OnLoad;
@@ -91,6 +93,7 @@ namespace UT_Controllers
         {
             onRemoveArgs = e;
         }
+        #endregion
 
         #region Deactived Tests
         //[TestMethod]
@@ -357,9 +360,8 @@ namespace UT_Controllers
         {
             new object[] { 25, "STEST" },
         };
-        #endregion
 
-        [TestMethod]
+        //[TestMethod]
         public void MyTestMethod()
         {
             // Arrange
@@ -373,6 +375,24 @@ namespace UT_Controllers
 
             // Assert
             Assert.AreEqual(InputStatus.Valid, ui.StatusList);
+        }
+        #endregion
+
+        [TestMethod]
+        public void Should_PartialModify()
+        {
+            // Arrange
+            ui.Select("STEST");
+            ui.PartialModify_Entries();
+            ui.New_Entry();
+            ui.InputEntry = "Entry 5";
+
+            // Act
+            ui.CommitChanges_Entry();
+            ui.PartialCommit_Entries();
+            
+            
+            // Assert
         }
 
         // Generic Method
