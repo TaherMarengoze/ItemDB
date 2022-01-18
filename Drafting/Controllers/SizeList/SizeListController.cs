@@ -40,10 +40,8 @@ namespace Controllers
         public event EventHandler<RemoveEventArgs> OnRemove;
         #endregion
 
-        // Properties
-
-        public List<SizeList> SizeLists =>
-            sizeDP.GetList().As<SizeList>();
+        /* Properties */
+        public List<SizeList> SizeLists => sizeDP.GetList().As<SizeList>();
 
         public List<string> SizeListIDs =>
             sizeDP.GetIDs();

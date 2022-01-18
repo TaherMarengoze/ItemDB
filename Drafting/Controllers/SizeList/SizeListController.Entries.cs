@@ -94,36 +94,25 @@ namespace Controllers
             selected.List = new ObservableCollection<string>(_inputList);
             broker.Update(selected.ID, selected);
 
-            // clear inputs
-            DISABLE_STATUS_RAISE_EVENT = true;
-            _inputList.Clear();
-            DISABLE_STATUS_RAISE_EVENT = false;
-
-            ReportPartial();
-        }
-
-        public void Revert_Entries()
-        {
-            // clear inputs
-            //DISABLE_STATUS_RAISE_EVENT = true;
-            //_inputList.Clear();
-            //DISABLE_STATUS_RAISE_EVENT = false;
-
             FlaggedSwitchAction(delegate { _inputList.Clear(); },
                 out DISABLE_STATUS_RAISE_EVENT);
 
             ReportPartial();
         }
 
-        private void FlaggedSwitchAction(Action doThis , out bool flag )
+        public void Revert_Entries()
+        {
+            FlaggedSwitchAction(delegate { _inputList.Clear(); },
+                out DISABLE_STATUS_RAISE_EVENT);
+
+            ReportPartial();
+        }
+
+        private void FlaggedSwitchAction(Action action , out bool flag )
         {
             flag = true;
-
-            doThis.Invoke();
-
+            action.Invoke();
             flag = false;
-
-            System.Diagnostics.Debug.Print(nameof(FlaggedSwitchAction));
         }
 
         private void ReportPartial()
