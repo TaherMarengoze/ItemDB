@@ -14,8 +14,11 @@ namespace Controllers
         public event EventHandler<InputStatus> OnEntryStatusChange;
         public event EventHandler<ReadyEventArgs> OnEntryReadyStateChange;
         public event EventHandler<EntrySetEventArgs> OnEntrySet;
+        public event EventHandler<CancelEventArgs> OnEntryCancel;
+        public event EventHandler<RemoveEventArgs> OnEntryRemove;
         #endregion
 
+        /* properties */
         #region Inputs
         public string InputEntry
         {
@@ -128,7 +131,8 @@ namespace Controllers
             // raise event
             OnEntrySelect?.Invoke(this, new SelectEventArgs<string>
             {
-                Selected = entry
+                Selected = selectedEntry,
+                RequestInfo = entry
             });
         }
 
@@ -180,6 +184,22 @@ namespace Controllers
             editEntry = null;
             ClearInputs_Entry();
             ALLOW_INPUT = false;
+        }
+
+        public void CancelChanges_Entry()
+        {
+            if (editEntry != null)
+                editEntry = null;
+
+            CancelEventArgs e = new CancelEventArgs
+            {
+                RestoreID = selectedEntry,
+                EmptyList = (selectedEntries?.Count ?? 0) <= 0
+            };
+            // raise event
+            OnEntryCancel?.Invoke(this, e);
+
+            ClearInputs_Entry();
         }
 
         /* private methods */

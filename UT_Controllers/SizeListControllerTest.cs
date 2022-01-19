@@ -33,6 +33,8 @@ namespace UT_Controllers
         private string onSetArgs;
         private CancelEventArgs onCancelEventArgs;
         private RemoveEventArgs onRemoveArgs;
+
+        //private CancelEventArgs onCancelEntryEventArgs;
         #endregion
 
         [TestInitialize]
@@ -56,7 +58,11 @@ namespace UT_Controllers
             ui.OnSet += Ui_OnSet;
             ui.OnCancel += Ui_OnCancel;
             ui.OnRemove += Ui_OnRemove;
+
+            ui.OnEntrySelect += Ui_OnEntrySelect;
+            ui.OnEntryCancel += Ui_OnEntryCancel;
         }
+        
         private void Ui_OnLoad(object sender, LoadEventArgs e)
         {
             onLoadArgs = (List<FieldListGenericView>)e.GenericViewList;
@@ -92,6 +98,29 @@ namespace UT_Controllers
         private void Ui_OnRemove(object sender, RemoveEventArgs e)
         {
             onRemoveArgs = e;
+        }
+
+        private void Ui_OnEntrySelect(object sender, SelectEventArgs<string> e)
+        {
+            if (e.Selected == null)
+            {
+                Console.WriteLine("> Entry not found [{0}]",
+                    e.RequestInfo);
+            }
+            else
+            {
+                Console.WriteLine("> Entry selected [{0}]",
+                    e.Selected);
+            }
+        }
+
+        private void Ui_OnEntryCancel(object sender, CancelEventArgs e)
+        {
+            Console.WriteLine("> Restore object: {0}",
+                e.RestoreID);
+
+            Console.WriteLine("> {0} List",
+                e.EmptyList ? "Empty" : "Non-empty");
         }
         #endregion
 
@@ -393,9 +422,8 @@ namespace UT_Controllers
             
             // Assert
         }
-        #endregion
 
-        [TestMethod]
+        //[TestMethod]
         public void Should_Revert()
         {
             // Arrange
@@ -410,6 +438,23 @@ namespace UT_Controllers
 
             // Assert
 
+        }
+        #endregion
+
+
+        [TestMethod]
+        public void Should_CancelChanges_Entry()
+        {
+            // Arrange
+            ui.Select("STEST");
+            ui.SelectEntry("entry 1");
+            ui.PartialModify_Entries();
+            ui.New_Entry();
+            ui.InputEntry = "Entry 4 (New)";
+            ui.CancelChanges_Entry();
+
+            // Act
+            // Assert
         }
 
         // Generic Method
