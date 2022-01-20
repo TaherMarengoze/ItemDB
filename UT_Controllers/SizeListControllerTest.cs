@@ -50,7 +50,8 @@ namespace UT_Controllers
         private void EventSubscriber()
         {
             ui.OnLoad += Ui_OnLoad;
-            ui.OnSelection += Ui_OnSelection;
+            ui.OnSelect += Ui_OnSelect;
+            //ui.OnSelection += Ui_OnSelection;
             ui.OnIdStatusChange += Ui_OnIdStatusChange;
             ui.OnNameStatusChange += Ui_OnNameStatusChange;
             ui.OnListStatusChange += Ui_OnListStatusChange;
@@ -61,11 +62,17 @@ namespace UT_Controllers
 
             ui.OnEntrySelect += Ui_OnEntrySelect;
             ui.OnEntryCancel += Ui_OnEntryCancel;
+            ui.OnEntryRemove += Ui_OnEntryRemove;
         }
         
         private void Ui_OnLoad(object sender, LoadEventArgs e)
         {
             onLoadArgs = (List<FieldListGenericView>)e.GenericViewList;
+        }
+        private void Ui_OnSelect(object sender, SelectEventArgs<SizeList> e)
+        {
+            Console.WriteLine("> Object selected [{0}, ID: {1}]",
+                e.Selected.ToString(), e.RequestInfo);
         }
         private void Ui_OnSelection(object sender, SizeListSelectionEventArgs e)
         {
@@ -99,7 +106,6 @@ namespace UT_Controllers
         {
             onRemoveArgs = e;
         }
-
         private void Ui_OnEntrySelect(object sender, SelectEventArgs<string> e)
         {
             if (e.Selected == null)
@@ -113,7 +119,6 @@ namespace UT_Controllers
                     e.Selected);
             }
         }
-
         private void Ui_OnEntryCancel(object sender, CancelEventArgs e)
         {
             Console.WriteLine("> Restore object: {0}",
@@ -121,6 +126,14 @@ namespace UT_Controllers
 
             Console.WriteLine("> {0} List",
                 e.EmptyList ? "Empty" : "Non-empty");
+        }
+        private void Ui_OnEntryRemove(object sender, RemoveEventArgs e)
+        {
+            Console.WriteLine("> Entry deleted [{0}]",
+                e.RemoveID);
+
+            Console.WriteLine("> New list entries:\n - {0}",
+                string.Join("\n - ", (List<string>)e.NewList));
         }
         #endregion
 
@@ -457,6 +470,21 @@ namespace UT_Controllers
             // Assert
         }
 
+        [TestMethod]
+        public void Should_RemoveEntry()
+        {
+            // Arrange
+            ui.Select("STEST");
+            ui.SelectEntry("Entry 1");
+            ui.PartialModify_Entries();
+            ui.RemoveEntry();
+
+            // Act
+
+            // Assert
+
+        }
+
         // Generic Method
         public static string GetTestDisplayName(MethodInfo mInfo, object[] data)
         {
@@ -482,7 +510,9 @@ namespace UT_Controllers
 
 /*
 // Arrange
+
 // Act
+
 // Assert
 
 

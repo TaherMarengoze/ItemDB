@@ -182,13 +182,14 @@ namespace Controllers
         {
             _ = objectId ?? throw new ArgumentNullException(nameof(objectId));
 
-            selected = (SizeList)broker.Read(objectId);
-            selectedEntries = selected.List.ToList();
+            selectedObject = (SizeList)broker.Read(objectId);
+            selectedEntries = selectedObject.List.ToList();
 
             // raise event
             OnSelect?.Invoke(this, new SelectEventArgs<SizeList>
             {
-                Selected = selected
+                Selected = selectedObject,
+                RequestInfo = objectId
             });
         }
 
@@ -231,7 +232,7 @@ namespace Controllers
                     Count = Count
                 });
 
-            selected = null;
+            selectedObject = null;
         }
 
         public void CommitChanges()
@@ -249,7 +250,7 @@ namespace Controllers
             });
 
             // clear selection
-            selected = null;
+            selectedObject = null;
             editObject = null;
             ClearInputs();
         }
@@ -263,7 +264,7 @@ namespace Controllers
             OnCancel?.Invoke(this,
                 new CancelEventArgs
                 {
-                    RestoreID = selected?.ID,
+                    RestoreID = selectedObject?.ID,
                     EmptyList = Count < 1
                 });
 
@@ -274,42 +275,42 @@ namespace Controllers
         {
             CheckListValidity((ObservableCollection<string>)sender);
 
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    Console.WriteLine("> Collection Changed [{0}: {1}]",
-                        e.Action.ToString(), e.NewItems[0]);
+            //switch (e.Action)
+            //{
+            //    case NotifyCollectionChangedAction.Add:
+            //        Console.WriteLine("> Collection Changed [{0}: {1}]",
+            //            e.Action.ToString(), e.NewItems[0]);
 
-                    Console.WriteLine("> Collection New Items:\n - {0}",
-                        string.Join("\n - ", _inputList));
+            //        Console.WriteLine("> Collection New Items:\n - {0}",
+            //            string.Join("\n - ", _inputList));
 
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    Console.WriteLine("> Collection Changed [{0}: {1}]",
-                        e.Action.ToString(), e.OldItems[0]);
+            //        break;
+            //    case NotifyCollectionChangedAction.Remove:
+            //        Console.WriteLine("> Collection Changed [{0}: {1}]",
+            //            e.Action.ToString(), e.OldItems[0]);
 
-                    Console.WriteLine("> Collection New Items:\n - {0}",
-                        string.Join("\n - ", _inputList));
+            //        Console.WriteLine("> Collection New Items:\n - {0}",
+            //            string.Join("\n - ", _inputList));
 
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    Console.WriteLine("> Collection Changed [{0}: {1} > {2}]",
-                        e.Action.ToString(), e.OldItems[0], e.NewItems[0]);
+            //        break;
+            //    case NotifyCollectionChangedAction.Replace:
+            //        Console.WriteLine("> Collection Changed [{0}: {1} > {2}]",
+            //            e.Action.ToString(), e.OldItems[0], e.NewItems[0]);
 
-                    Console.WriteLine("> Collection New Items:\n - {0}",
-                        string.Join("\n - ", _inputList));
+            //        Console.WriteLine("> Collection New Items:\n - {0}",
+            //            string.Join("\n - ", _inputList));
 
-                    break;
-                case NotifyCollectionChangedAction.Move:
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    Console.WriteLine("> Collection Changed [{0}]",
-                        e.Action.ToString());
+            //        break;
+            //    case NotifyCollectionChangedAction.Move:
+            //        break;
+            //    case NotifyCollectionChangedAction.Reset:
+            //        Console.WriteLine("> Collection Changed [{0}]",
+            //            e.Action.ToString());
 
-                    break;
-                default:
-                    break;
-            }
+            //        break;
+            //    default:
+            //        break;
+            //}
         }
 
         /* private methods */
@@ -370,7 +371,7 @@ namespace Controllers
         /* private getter methods */
         private SizeList GetEditObject()
         {
-            return (SizeList)broker.Read(/*objectID*/selected.ID);
+            return (SizeList)broker.Read(/*objectID*/selectedObject.ID);
         }
         private bool IsValidInputs()
         {
@@ -451,13 +452,13 @@ namespace Controllers
         private bool DISABLE_STATUS_RAISE_EVENT;
 
         // objects
-        private SizeList selected;
+        private SizeList selectedObject;
         private SizeList editObject;
 
         #endregion
 
         #region Unit Test API
-        public SizeList _Selected => selected;
+        public SizeList _Selected => selectedObject;
         public SizeList _EditObject => editObject;
         public bool _IsReady => isReady;
         public bool _IsChanged => IsDraftChanged();

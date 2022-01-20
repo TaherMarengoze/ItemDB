@@ -91,16 +91,16 @@ namespace Controllers
 
         public void PartialCommit_Entries()
         {
-            if (selected == null)
+            if (selectedObject == null)
                 throw new Exception("No object selected");
 
-            selected.List = new ObservableCollection<string>(_inputList);
-            broker.Update(selected.ID, selected);
+            selectedObject.List = new ObservableCollection<string>(_inputList);
+            broker.Update(selectedObject.ID, selectedObject);
 
             FlaggedSwitchAction(delegate { _inputList.Clear(); },
                 out DISABLE_STATUS_RAISE_EVENT);
 
-            ReportPartial();
+            //ReportPartial();
         }
 
         public void Revert_Entries()
@@ -108,7 +108,7 @@ namespace Controllers
             FlaggedSwitchAction(delegate { _inputList.Clear(); },
                 out DISABLE_STATUS_RAISE_EVENT);
 
-            ReportPartial();
+            //ReportPartial();
         }
 
         private void FlaggedSwitchAction(Action action , out bool flag )
@@ -121,12 +121,12 @@ namespace Controllers
         private void ReportPartial()
         {
             Console.WriteLine("> Selected Item List Entries:\n - {0}",
-                string.Join("\n - ", broker.Read(selected.ID).List));
+                string.Join("\n - ", broker.Read(selectedObject.ID).List));
         }
 
         public void SelectEntry(string entry)
         {
-            selectedEntry = selected?.List.FirstOrDefault(e => e == entry);
+            selectedEntry = selectedObject.List.First(e => e == entry);
 
             // raise event
             OnEntrySelect?.Invoke(this, new SelectEventArgs<string>
@@ -159,10 +159,18 @@ namespace Controllers
 
         public void RemoveEntry()
         {
-            if (selectedEntry == null)
-                throw new Exception("No entry selected.");
+            if (selectedEntry == null || _inputList.Count < 1)
+                throw new InvalidOperationException(); //"No entry selected."
 
             _inputList.Remove(selectedEntry);
+
+            RemoveEventArgs e = new RemoveEventArgs
+            {
+                RemoveID = selectedEntry,
+                NewList = _inputList.ToList(),
+            };
+            // raise event
+            OnEntryRemove?.Invoke(this, e);
         }
 
         public void CommitChanges_Entry()
