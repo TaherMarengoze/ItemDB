@@ -1,9 +1,8 @@
-﻿using System;
+﻿using CoreLibrary.Enums;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using CoreLibrary.Enums;
-using Modeling.DataModels;
 
 namespace Controllers
 {
@@ -79,6 +78,8 @@ namespace Controllers
         #endregion
 
         #region Methods
+
+        #region To be moved to (SizeListController.cs)
         public void PartialModify_Entries()
         {
             //SetParentData_Entries();
@@ -88,7 +89,6 @@ namespace Controllers
 
             DISABLE_STATUS_RAISE_EVENT = false;
         }
-
         public void PartialCommit_Entries()
         {
             if (selectedObject == null)
@@ -97,36 +97,30 @@ namespace Controllers
             selectedObject.List = new ObservableCollection<string>(_inputList);
             broker.Update(selectedObject.ID, selectedObject);
 
-            FlaggedSwitchAction(delegate { _inputList.Clear(); },
+            FlaggedInvoke(delegate { _inputList.Clear(); },
                 out DISABLE_STATUS_RAISE_EVENT);
-
-            //ReportPartial();
         }
-
         public void Revert_Entries()
         {
-            FlaggedSwitchAction(delegate { _inputList.Clear(); },
-                out DISABLE_STATUS_RAISE_EVENT);
-
-            //ReportPartial();
+            FlaggedInvoke(delegate
+            {
+                _inputList.Clear();
+            }, out DISABLE_STATUS_RAISE_EVENT);
         }
+        #endregion
 
-        private void FlaggedSwitchAction(Action action , out bool flag )
+        private void FlaggedInvoke(Action action, out bool flag,
+            bool initValue = true)
         {
-            flag = true;
+            flag = initValue;
             action.Invoke();
-            flag = false;
+            flag = !initValue;
         }
-
-        private void ReportPartial()
-        {
-            Console.WriteLine("> Selected Item List Entries:\n - {0}",
-                string.Join("\n - ", broker.Read(selectedObject.ID).List));
-        }
-
+        
         public void SelectEntry(string entry)
         {
-            selectedEntry = selectedObject.List.First(e => e == entry);
+            selectedEntry = selectedEntries/*Object.List*/
+                .First(e => e == entry);
 
             // raise event
             OnEntrySelect?.Invoke(this, new SelectEventArgs<string>
