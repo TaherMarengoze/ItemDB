@@ -120,14 +120,16 @@ namespace Controllers
         public void SelectEntry(string entry)
         {
             selectedEntry = selectedEntries/*Object.List*/
-                .First(e => e == entry);
+                .First(listEntry => listEntry == entry);
 
-            // raise event
-            OnEntrySelect?.Invoke(this, new SelectEventArgs<string>
+            SelectEventArgs<string> args = new SelectEventArgs<string>
             {
                 Selected = selectedEntry,
                 RequestInfo = entry
-            });
+            };
+
+            // raise event
+            OnEntrySelect?.Invoke(this, args);
         }
 
         public void New_Entry()
@@ -139,6 +141,9 @@ namespace Controllers
 
         public void Edit_Entry()
         {
+            if (selectedEntry == null)
+                throw new InvalidOperationException();
+            
             ALLOW_INPUT = true;
 
             // get and store the edit entry

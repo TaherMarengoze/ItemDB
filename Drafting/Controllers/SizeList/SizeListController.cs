@@ -185,21 +185,25 @@ namespace Controllers
             selectedObject = (SizeList)broker.Read(objectId);
             selectedEntries = selectedObject.List.ToList();
 
-            // raise event
-            OnSelect?.Invoke(this, new SelectEventArgs<SizeList>
+            SelectEventArgs<SizeList> args = new SelectEventArgs<SizeList>
             {
                 Selected = selectedObject,
                 RequestInfo = objectId
-            });
+            };
+
+            // raise event
+            OnSelect?.Invoke(this, args);
         }
 
         public void New()
         {
-            // raise event
-            OnPreDrafting?.Invoke(this, new PreDraftingEventArgs
+            PreDraftingEventArgs args = new PreDraftingEventArgs
             {
                 PreList = sizeDP.GetIDs()
-            });
+            };
+
+            // raise event
+            OnPreDrafting?.Invoke(this, args);
         }
 
         public void Edit(string objectID)
