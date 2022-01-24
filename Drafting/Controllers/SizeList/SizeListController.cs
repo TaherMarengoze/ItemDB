@@ -180,7 +180,8 @@ namespace Controllers
 
         public void Select(string objectId)
         {
-            _ = objectId ?? throw new ArgumentNullException(nameof(objectId));
+            if (objectId == null)
+                throw new ArgumentNullException(nameof(objectId));
 
             selectedObject = (SizeList)broker.Read(objectId);
             selectedEntries = selectedObject.List.ToList();
@@ -197,6 +198,11 @@ namespace Controllers
 
         public void New()
         {
+            if (STATE_MODIFY)
+                throw new Exception("Modify state is already set.");
+
+            STATE_MODIFY = true;
+
             PreDraftingEventArgs args = new PreDraftingEventArgs
             {
                 PreList = sizeDP.GetIDs()
@@ -208,6 +214,11 @@ namespace Controllers
 
         public void Edit(string objectID)
         {
+            if (STATE_MODIFY)
+                throw new Exception("Modify state is already set.");
+
+            STATE_MODIFY = true;
+
             editObject = GetEditObject();
             CopyEditObjectDataToInputs();
 
@@ -257,6 +268,9 @@ namespace Controllers
             selectedObject = null;
             editObject = null;
             ClearInputs();
+
+            // set flags
+            STATE_MODIFY = false;
         }
 
         public void CancelChanges()
@@ -273,6 +287,9 @@ namespace Controllers
                 });
 
             ClearInputs();
+
+            // set flags
+            STATE_MODIFY = false;
         }
 
         private void _inputList_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -454,6 +471,7 @@ namespace Controllers
         // flags
         private bool isReady;
         private bool DISABLE_STATUS_RAISE_EVENT;
+        private bool STATE_MODIFY;
 
         // objects
         private SizeList selectedObject;

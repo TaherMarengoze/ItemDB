@@ -9,6 +9,7 @@ namespace Controllers
     public partial class SizeListController
     {
         #region Events
+        public event EventHandler<LoadEventArgs> OnLoadEntries;
         public event EventHandler<SelectEventArgs<string>> OnEntrySelect;
         public event EventHandler<InputStatus> OnEntryStatusChange;
         public event EventHandler<ReadyEventArgs> OnEntryReadyStateChange;
@@ -107,6 +108,28 @@ namespace Controllers
                 _inputList.Clear();
             }, out DISABLE_STATUS_RAISE_EVENT);
         }
+
+        public void Load_Entries()
+        {
+            if (!STATE_MODIFY)
+                throw new InvalidOperationException();
+
+            _inputListDraft = new ObservableCollection<string>(_inputList);
+
+            LoadEventArgs args = new LoadEventArgs
+            {
+                GenericViewList = _inputListDraft,
+                Count = _inputListDraft.Count
+            };
+
+            // raise event
+            OnLoadEntries?.Invoke(this, args);
+        }
+        public void Save_Entries()
+        {
+            SetInputList(new ObservableCollection<string>(_inputListDraft));
+            _inputListDraft = null;
+        }
         #endregion
 
         private void FlaggedInvoke(Action action, out bool flag,
@@ -179,12 +202,14 @@ namespace Controllers
 
             CreateOrUpdate_Entry();
 
-            // raise event
-            OnEntrySet?.Invoke(this, new EntrySetEventArgs
+            EntrySetEventArgs args = new EntrySetEventArgs
             {
                 NewItem = inputEntry,
                 OldItem = editEntry
-            });
+            };
+
+            // raise event
+            OnEntrySet?.Invoke(this, args);
 
             // clear selection
             selectedEntry = null;
@@ -274,17 +299,24 @@ namespace Controllers
 
             if (editEntry == null)
             {
-                _inputList.Add(draftEntry);
+                //_inputList.Add(draftEntry);
+                _inputListDraft.Add(draftEntry);
             }
             else
             {
-                int i = _inputList.IndexOf(editEntry);
-                _inputList[i] = draftEntry;
+                //int i = _inputList.IndexOf(editEntry);
+                //_inputList[i] = draftEntry;
+
+                int i = _inputListDraft.IndexOf(editEntry);
+                _inputListDraft[i] = draftEntry;
             }
         }
         #endregion
 
         #region Fields
+        // parent inputs
+        private ObservableCollection<string> _inputListDraft;
+
         // inputs
         private string inputEntry;
 

@@ -60,7 +60,9 @@ namespace UT_Controllers
             ui.OnCancel += Ui_OnCancel;
             ui.OnRemove += Ui_OnRemove;
 
+            ui.OnLoadEntries += Ui_OnLoadEntries;
             ui.OnEntrySelect += Ui_OnEntrySelect;
+            ui.OnEntrySet += Ui_OnEntrySet;
             ui.OnEntryCancel += Ui_OnEntryCancel;
             ui.OnEntryRemove += Ui_OnEntryRemove;
         }
@@ -106,6 +108,12 @@ namespace UT_Controllers
         {
             onRemoveArgs = e;
         }
+        private void Ui_OnLoadEntries(object sender, LoadEventArgs e)
+        {
+            Console.WriteLine("> Entries loaded [{1}]:\n - {0}",
+                string.Join("\n - ", (ObservableCollection<String>)e.GenericViewList),
+                e.Count);
+        }
         private void Ui_OnEntrySelect(object sender, SelectEventArgs<string> e)
         {
             if (e.Selected == null)
@@ -118,6 +126,11 @@ namespace UT_Controllers
                 Console.WriteLine("> Entry selected [{0}]",
                     e.Selected);
             }
+        }
+        private void Ui_OnEntrySet(object sender, EntrySetEventArgs e)
+        {
+            Console.WriteLine("> Entry Set [{0}]",
+                e.NewItem);
         }
         private void Ui_OnEntryCancel(object sender, CancelEventArgs e)
         {
@@ -483,6 +496,18 @@ namespace UT_Controllers
 
             // Assert
 
+        }
+
+        [TestMethod]
+        public void Should_LoadEntries()
+        {
+            ui.Select("STEST");
+            //ui.New();
+            ui.Edit("");
+            ui.Load_Entries();
+            ui.New_Entry();
+            ui.InputEntry = "Entry 4";
+            ui.CommitChanges_Entry();
         }
 
         // Generic Method
