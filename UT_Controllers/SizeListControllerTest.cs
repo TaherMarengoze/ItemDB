@@ -477,7 +477,6 @@ namespace UT_Controllers
             ui.Select("STEST");
             ui.Edit();
             ui.Load_Entries();
-            ui.Load_Entries();
             ui.New_Entry();
             ui.InputEntry = "Entry 4";
             ui.CommitChanges_Entry();
@@ -489,7 +488,13 @@ namespace UT_Controllers
         public void Should_SaveEntries()
         {
             // Arrange
-            ui.Save_Entries();
+            ui.Select("STEST");
+            ui.Edit();
+            ui.Load_Entries();
+            //ui.Load_Entries();
+            //ui.Save_Entries();
+            //ui.Save_Entries();
+            ui.Cancel_Entries();
 
             // Act
 

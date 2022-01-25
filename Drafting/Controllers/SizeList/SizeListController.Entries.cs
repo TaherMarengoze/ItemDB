@@ -115,7 +115,7 @@ namespace Controllers
                 throw new InvalidOperationException();
 
             if (STATE_LOADED_Entries)
-                throw new Exception("Already loaded.");
+                throw new Exception("Operation already called.");
             
             _inputListDraft = new ObservableCollection<string>(_inputList);
 
@@ -134,9 +134,19 @@ namespace Controllers
         public void Save_Entries()
         {
             if (!STATE_LOADED_Entries)
-                throw new Exception("Already loaded.");
+                throw new InvalidOperationException();
 
             SetInputList(new ObservableCollection<string>(_inputListDraft));
+            _inputListDraft = null;
+
+            // set flags
+            STATE_LOADED_Entries = false;
+        }
+        public void Cancel_Entries()
+        {
+            if (!STATE_LOADED_Entries)
+                throw new InvalidOperationException();
+
             _inputListDraft = null;
 
             // set flags
