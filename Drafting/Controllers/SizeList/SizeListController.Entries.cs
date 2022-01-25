@@ -114,6 +114,9 @@ namespace Controllers
             if (!STATE_MODIFY)
                 throw new InvalidOperationException();
 
+            if (STATE_LOADED_Entries)
+                throw new Exception("Already loaded.");
+            
             _inputListDraft = new ObservableCollection<string>(_inputList);
 
             LoadEventArgs args = new LoadEventArgs
@@ -124,11 +127,20 @@ namespace Controllers
 
             // raise event
             OnLoadEntries?.Invoke(this, args);
+
+            // set flags
+            STATE_LOADED_Entries = true;
         }
         public void Save_Entries()
         {
+            if (!STATE_LOADED_Entries)
+                throw new Exception("Already loaded.");
+
             SetInputList(new ObservableCollection<string>(_inputListDraft));
             _inputListDraft = null;
+
+            // set flags
+            STATE_LOADED_Entries = false;
         }
         #endregion
 
@@ -205,7 +217,8 @@ namespace Controllers
             EntrySetEventArgs args = new EntrySetEventArgs
             {
                 NewItem = inputEntry,
-                OldItem = editEntry
+                OldItem = editEntry,
+                SetList = _inputListDraft.ToList(),
             };
 
             // raise event
@@ -215,6 +228,8 @@ namespace Controllers
             selectedEntry = null;
             editEntry = null;
             ClearInputs_Entry();
+
+            // set flags
             ALLOW_INPUT = false;
         }
 
@@ -326,6 +341,7 @@ namespace Controllers
         // flags
         private bool ALLOW_INPUT;
         private bool isReady_Entry;
+        private bool STATE_LOADED_Entries;
 
         // objects
         private List<string> selectedEntries;

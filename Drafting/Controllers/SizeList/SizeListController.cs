@@ -108,7 +108,7 @@ namespace Controllers
             _inputList.CollectionChanged -= _inputList_CollectionChanged;
             _inputList = value;
             _inputList.CollectionChanged += _inputList_CollectionChanged;
-
+            
             CheckListValidity(value);
         }
         #endregion
@@ -212,7 +212,7 @@ namespace Controllers
             OnPreDrafting?.Invoke(this, args);
         }
 
-        public void Edit(string objectID)
+        public void Edit(string objectID = "")
         {
             if (STATE_MODIFY)
                 throw new Exception("Modify state is already set.");
@@ -296,42 +296,43 @@ namespace Controllers
         {
             CheckListValidity((ObservableCollection<string>)sender);
 
-            //switch (e.Action)
-            //{
-            //    case NotifyCollectionChangedAction.Add:
-            //        Console.WriteLine("> Collection Changed [{0}: {1}]",
-            //            e.Action.ToString(), e.NewItems[0]);
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    Console.WriteLine("> Collection Changed [{0}: {1}]",
+                        e.Action.ToString(), e.NewItems[0]);
 
-            //        Console.WriteLine("> Collection New Items:\n - {0}",
-            //            string.Join("\n - ", _inputList));
+                    Console.WriteLine("> Collection New Items:\n - {0}",
+                        string.Join("\n - ", _inputList));
 
-            //        break;
-            //    case NotifyCollectionChangedAction.Remove:
-            //        Console.WriteLine("> Collection Changed [{0}: {1}]",
-            //            e.Action.ToString(), e.OldItems[0]);
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    Console.WriteLine("> Collection Changed [{0}: {1}]",
+                        e.Action.ToString(), e.OldItems[0]);
 
-            //        Console.WriteLine("> Collection New Items:\n - {0}",
-            //            string.Join("\n - ", _inputList));
+                    Console.WriteLine("> Collection New Items:\n - {0}",
+                        string.Join("\n - ", _inputList));
 
-            //        break;
-            //    case NotifyCollectionChangedAction.Replace:
-            //        Console.WriteLine("> Collection Changed [{0}: {1} > {2}]",
-            //            e.Action.ToString(), e.OldItems[0], e.NewItems[0]);
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    Console.WriteLine("> Collection Changed [{0}: {1} > {2}]",
+                        e.Action.ToString(), e.OldItems[0], e.NewItems[0]);
 
-            //        Console.WriteLine("> Collection New Items:\n - {0}",
-            //            string.Join("\n - ", _inputList));
+                    Console.WriteLine("> Collection New Items:\n - {0}",
+                        string.Join("\n - ", _inputList));
 
-            //        break;
-            //    case NotifyCollectionChangedAction.Move:
-            //        break;
-            //    case NotifyCollectionChangedAction.Reset:
-            //        Console.WriteLine("> Collection Changed [{0}]",
-            //            e.Action.ToString());
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    Console.WriteLine("> Collection Changed [{0}]",
+                        e.Action.ToString());
 
-            //        break;
-            //    default:
-            //        break;
-            //}
+                    break;
+                default:
+                    Console.WriteLine("> Collection Changed");
+                    break;
+            }
         }
 
         /* private methods */

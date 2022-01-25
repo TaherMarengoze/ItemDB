@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 
 namespace Controllers
 {
@@ -7,5 +8,7 @@ namespace Controllers
         public string OldItem { get; set; }
 
         public string NewItem { get; set; }
+        
+        public IList SetList { get; set; }
     }
 }

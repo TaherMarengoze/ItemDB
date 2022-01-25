@@ -90,7 +90,8 @@ namespace UT_Controllers
         }
         private void Ui_OnListStatusChange(object sender, InputStatus e)
         {
-            onListStatusChangeArgs = e;
+            //onListStatusChangeArgs = e;
+            Console.WriteLine("> List Status: {0}", e.ToString());
         }
         private void Ui_OnReadyStateChange(object sender, ReadyEventArgs e)
         {
@@ -131,6 +132,9 @@ namespace UT_Controllers
         {
             Console.WriteLine("> Entry Set [{0}]",
                 e.NewItem);
+
+            Console.WriteLine("> New List Entries [{0}]:\n - {1}",
+                e.SetList.Count, string.Join("\n - ", (List<string>)e.SetList));
         }
         private void Ui_OnEntryCancel(object sender, CancelEventArgs e)
         {
@@ -467,47 +471,30 @@ namespace UT_Controllers
         }
         #endregion
 
-
         [TestMethod]
-        public void Should_CancelChanges_Entry()
-        {
-            // Arrange
-            ui.Select("STEST");
-            ui.SelectEntry("entry 1");
-            ui.PartialModify_Entries();
-            ui.New_Entry();
-            ui.InputEntry = "Entry 4 (New)";
-            ui.CancelChanges_Entry();
-
-            // Act
-            // Assert
-        }
-
-        [TestMethod]
-        public void Should_RemoveEntry()
-        {
-            // Arrange
-            ui.Select("STEST");
-            ui.SelectEntry("Entry 1");
-            ui.PartialModify_Entries();
-            ui.RemoveEntry();
-
-            // Act
-
-            // Assert
-
-        }
-
-        [TestMethod]
-        public void Should_LoadEntries()
+        public void Should_EditAndAddNewEntries()
         {
             ui.Select("STEST");
-            //ui.New();
-            ui.Edit("");
+            ui.Edit();
+            ui.Load_Entries();
             ui.Load_Entries();
             ui.New_Entry();
             ui.InputEntry = "Entry 4";
             ui.CommitChanges_Entry();
+            ui.Save_Entries();
+        }
+
+
+        [TestMethod]
+        public void Should_SaveEntries()
+        {
+            // Arrange
+            ui.Save_Entries();
+
+            // Act
+
+            // Assert
+
         }
 
         // Generic Method
