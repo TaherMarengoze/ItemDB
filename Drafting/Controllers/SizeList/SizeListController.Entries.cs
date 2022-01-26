@@ -26,8 +26,8 @@ namespace Controllers
             {
                 if (!ALLOW_INPUT)
                 {
-                    System.Diagnostics.Debug.Print("Input is not allowed.");
-                    //Console.WriteLine("Input is not allowed.");
+                    //throw new Exception("Input is not allowed in the current state.");
+                    System.Diagnostics.Debug.Print("Input is not allowed in the current state.");
                     return;
                 }
 
@@ -117,12 +117,12 @@ namespace Controllers
             if (STATE_LOADED_Entries)
                 throw new Exception("Operation already called.");
             
-            _inputListDraft = new ObservableCollection<string>(_inputList);
+            inputListDraft = new ObservableCollection<string>(_inputList);
 
             LoadEventArgs args = new LoadEventArgs
             {
-                GenericViewList = _inputListDraft,
-                Count = _inputListDraft.Count
+                GenericViewList = inputListDraft,
+                Count = inputListDraft.Count
             };
 
             // raise event
@@ -136,8 +136,8 @@ namespace Controllers
             if (!STATE_LOADED_Entries)
                 throw new InvalidOperationException();
 
-            SetInputList(new ObservableCollection<string>(_inputListDraft));
-            _inputListDraft = null;
+            SetInputList(new ObservableCollection<string>(inputListDraft));
+            inputListDraft = null;
 
             // set flags
             STATE_LOADED_Entries = false;
@@ -147,7 +147,7 @@ namespace Controllers
             if (!STATE_LOADED_Entries)
                 throw new InvalidOperationException();
 
-            _inputListDraft = null;
+            inputListDraft = null;
 
             // set flags
             STATE_LOADED_Entries = false;
@@ -165,7 +165,7 @@ namespace Controllers
         public void SelectEntry(string entry)
         {
             selectedEntry = selectedEntries/*Object.List*/
-                .First(listEntry => listEntry == entry);
+                .First(lstEntry => lstEntry == entry);
 
             SelectEventArgs<string> args = new SelectEventArgs<string>
             {
@@ -228,7 +228,7 @@ namespace Controllers
             {
                 NewItem = inputEntry,
                 OldItem = editEntry,
-                SetList = _inputListDraft.ToList(),
+                SetList = inputListDraft.ToList(),
             };
 
             // raise event
@@ -325,22 +325,22 @@ namespace Controllers
             if (editEntry == null)
             {
                 //_inputList.Add(draftEntry);
-                _inputListDraft.Add(draftEntry);
+                inputListDraft.Add(draftEntry);
             }
             else
             {
                 //int i = _inputList.IndexOf(editEntry);
                 //_inputList[i] = draftEntry;
 
-                int i = _inputListDraft.IndexOf(editEntry);
-                _inputListDraft[i] = draftEntry;
+                int i = inputListDraft.IndexOf(editEntry);
+                inputListDraft[i] = draftEntry;
             }
         }
         #endregion
 
         #region Fields
         // parent inputs
-        private ObservableCollection<string> _inputListDraft;
+        private ObservableCollection<string> inputListDraft;
 
         // inputs
         private string inputEntry;

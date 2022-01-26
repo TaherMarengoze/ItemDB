@@ -19,6 +19,7 @@ namespace UT_Controllers
         const string DPID = "STEST";
         const string NAME = "Unit Test Size List";
         const string BLNK = "";
+        private const string SEPARATOR_LINE = "-----";
         private static readonly List<string> LIST_ = new List<string> { "Entry 1", "Entry 2", "Entry 3" };
         private static readonly List<string> LIST1 = new List<string> { "Entry 1", "Entry 2", "Entry 3*" };
 
@@ -41,7 +42,7 @@ namespace UT_Controllers
         public void Initialize()
         {
             Initialization.Simulate();
-            
+
             ui = new SizeListController();
             EventSubscriber();
         }
@@ -62,19 +63,38 @@ namespace UT_Controllers
 
             ui.OnLoadEntries += Ui_OnLoadEntries;
             ui.OnEntrySelect += Ui_OnEntrySelect;
+            ui.OnEntryStatusChange += Ui_OnEntryStatusChange;
             ui.OnEntrySet += Ui_OnEntrySet;
             ui.OnEntryCancel += Ui_OnEntryCancel;
             ui.OnEntryRemove += Ui_OnEntryRemove;
         }
-        
+
+        private void Ui_OnEntryStatusChange(object sender, InputStatus e)
+        {
+            Console.WriteLine("> Entry Status: {0}", e.ToString());
+            Console.WriteLine(SEPARATOR_LINE);
+        }
+
         private void Ui_OnLoad(object sender, LoadEventArgs e)
         {
             onLoadArgs = (List<FieldListGenericView>)e.GenericViewList;
         }
         private void Ui_OnSelect(object sender, SelectEventArgs<SizeList> e)
         {
-            Console.WriteLine("> Object selected [{0}, ID: {1}]",
-                e.Selected.ToString(), e.RequestInfo);
+            //Console.WriteLine("> Object selected [{0}]\n" +
+            //                  "  Details\n" +
+            //                  "  # ID: {1}\n" +
+            //                  "  # Name: {2}\n" +
+            //                  "  # List [{3} entries]:\n   - {4}"
+            //                  , e.Selected.ToString()
+            //                  , e.Selected.ID, e.Selected.Name, e.Selected.List.Count
+            //                  , String.Join("\n   - ", e.Selected.List));
+            Console.WriteLine("> Object selected [{0}]", e.Selected.ToString());
+            Console.WriteLine("  #ID = {0}", e.Selected.ID);
+            Console.WriteLine("  #Name = {0}", e.Selected.Name);
+            Console.WriteLine("  #List [{0} item(s)]", e.Selected.List.Count);
+            Console.WriteLine("  - {0}", String.Join("\n  - ", e.Selected.List));
+            Console.WriteLine(SEPARATOR_LINE);
         }
         private void Ui_OnSelection(object sender, SizeListSelectionEventArgs e)
         {
@@ -92,14 +112,25 @@ namespace UT_Controllers
         {
             //onListStatusChangeArgs = e;
             Console.WriteLine("> List Status: {0}", e.ToString());
+            Console.WriteLine(SEPARATOR_LINE);
         }
         private void Ui_OnReadyStateChange(object sender, ReadyEventArgs e)
         {
-            onReadyStateChangeArgs = e;
+            //onReadyStateChangeArgs = e;
+            Console.WriteLine("> Draft object state: {0}",
+                e.Info);
+            Console.WriteLine(SEPARATOR_LINE);
         }
-        private void Ui_OnSet(object sender, object e)
+        private void Ui_OnSet(object sender, SetEventArgs e)
         {
-            onSetArgs = (string)e;
+            Console.WriteLine("> Object set ({1}) [ID = {0}]",
+                e.NewID, e.OldID == null ? "Add" : "Edit");
+            //var lst = e.NewList.Cast<FieldListGenericView>().Select(el => el.ID);
+            //Console.WriteLine("  New List [{0} item(s)]", e.NewList.Count);
+            //Console.WriteLine("  - {0}", string.Join("\n  - ", lst.ToList()));
+            Console.WriteLine(SEPARATOR_LINE);
+
+            ui.Select(e.NewID);
         }
         private void Ui_OnCancel(object sender, CancelEventArgs e)
         {
@@ -114,6 +145,7 @@ namespace UT_Controllers
             Console.WriteLine("> Entries loaded [{1}]:\n - {0}",
                 string.Join("\n - ", (ObservableCollection<String>)e.GenericViewList),
                 e.Count);
+            Console.WriteLine(SEPARATOR_LINE);
         }
         private void Ui_OnEntrySelect(object sender, SelectEventArgs<string> e)
         {
@@ -127,14 +159,16 @@ namespace UT_Controllers
                 Console.WriteLine("> Entry selected [{0}]",
                     e.Selected);
             }
+            Console.WriteLine(SEPARATOR_LINE);
         }
         private void Ui_OnEntrySet(object sender, EntrySetEventArgs e)
         {
             Console.WriteLine("> Entry Set [{0}]",
                 e.NewItem);
 
-            Console.WriteLine("> New List Entries [{0}]:\n - {1}",
+            Console.WriteLine("  New List Entries [{0}]:\n - {1}",
                 e.SetList.Count, string.Join("\n - ", (List<string>)e.SetList));
+            Console.WriteLine(SEPARATOR_LINE);
         }
         private void Ui_OnEntryCancel(object sender, CancelEventArgs e)
         {
@@ -448,8 +482,8 @@ namespace UT_Controllers
             // Act
             ui.CommitChanges_Entry();
             ui.PartialCommit_Entries();
-            
-            
+
+
             // Assert
         }
 
@@ -472,7 +506,7 @@ namespace UT_Controllers
         #endregion
 
         [TestMethod]
-        public void Should_EditAndAddNewEntries()
+        public void Should_EditAndAddNewEntry()
         {
             ui.Select("STEST");
             ui.Edit();
@@ -481,25 +515,31 @@ namespace UT_Controllers
             ui.InputEntry = "Entry 4";
             ui.CommitChanges_Entry();
             ui.Save_Entries();
+            ui.CommitChanges();
         }
 
-
         [TestMethod]
-        public void Should_SaveEntries()
+        public void Should_EditAndEditExistingEntry()
         {
-            // Arrange
             ui.Select("STEST");
             ui.Edit();
             ui.Load_Entries();
-            //ui.Load_Entries();
-            //ui.Save_Entries();
-            //ui.Save_Entries();
-            ui.Cancel_Entries();
+            ui.SelectEntry("Entry 3");
+            ui.Edit_Entry();
+            ui.InputEntry = "Entry 3 (edit)";
+            ui.CommitChanges_Entry();
+            ui.Save_Entries();
+            ui.CommitChanges();
+        }
+        //[TestMethod]
+        public void Should_SaveEntries()
+        {
+            ui.Select("STEST");
+            ui.Edit();
 
-            // Act
+            ui.Load_Entries();
 
-            // Assert
-
+            ui.InputEntry = "Entry 4 (New)";
         }
 
         // Generic Method

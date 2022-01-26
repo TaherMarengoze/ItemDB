@@ -260,7 +260,8 @@ namespace Controllers
             // raise event
             OnSet?.Invoke(this, new SetEventArgs
             {
-                SetID = InputID,
+                OldID = selectedObject?.ID,
+                NewID = InputID,
                 NewList = sizeDP.GetList().ToGenericView(),
             });
 
@@ -296,43 +297,43 @@ namespace Controllers
         {
             CheckListValidity((ObservableCollection<string>)sender);
 
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    Console.WriteLine("> Collection Changed [{0}: {1}]",
-                        e.Action.ToString(), e.NewItems[0]);
+            //switch (e.Action)
+            //{
+            //    case NotifyCollectionChangedAction.Add:
+            //        Console.WriteLine("> Collection Changed [{0}: {1}]",
+            //            e.Action.ToString(), e.NewItems[0]);
 
-                    Console.WriteLine("> Collection New Items:\n - {0}",
-                        string.Join("\n - ", _inputList));
+            //        Console.WriteLine("> Collection New Items:\n - {0}",
+            //            string.Join("\n - ", _inputList));
 
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    Console.WriteLine("> Collection Changed [{0}: {1}]",
-                        e.Action.ToString(), e.OldItems[0]);
+            //        break;
+            //    case NotifyCollectionChangedAction.Remove:
+            //        Console.WriteLine("> Collection Changed [{0}: {1}]",
+            //            e.Action.ToString(), e.OldItems[0]);
 
-                    Console.WriteLine("> Collection New Items:\n - {0}",
-                        string.Join("\n - ", _inputList));
+            //        Console.WriteLine("> Collection New Items:\n - {0}",
+            //            string.Join("\n - ", _inputList));
 
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    Console.WriteLine("> Collection Changed [{0}: {1} > {2}]",
-                        e.Action.ToString(), e.OldItems[0], e.NewItems[0]);
+            //        break;
+            //    case NotifyCollectionChangedAction.Replace:
+            //        Console.WriteLine("> Collection Changed [{0}: {1} > {2}]",
+            //            e.Action.ToString(), e.OldItems[0], e.NewItems[0]);
 
-                    Console.WriteLine("> Collection New Items:\n - {0}",
-                        string.Join("\n - ", _inputList));
+            //        Console.WriteLine("> Collection New Items:\n - {0}",
+            //            string.Join("\n - ", _inputList));
 
-                    break;
-                case NotifyCollectionChangedAction.Move:
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    Console.WriteLine("> Collection Changed [{0}]",
-                        e.Action.ToString());
+            //        break;
+            //    case NotifyCollectionChangedAction.Move:
+            //        break;
+            //    case NotifyCollectionChangedAction.Reset:
+            //        Console.WriteLine("> Collection Changed [{0}]",
+            //            e.Action.ToString());
 
-                    break;
-                default:
-                    Console.WriteLine("> Collection Changed");
-                    break;
-            }
+            //        break;
+            //    default:
+            //        Console.WriteLine("> Collection Changed");
+            //        break;
+            //}
         }
 
         /* private methods */
@@ -343,13 +344,16 @@ namespace Controllers
             bool isChanged = IsDraftChanged();
 
             isReady = isValid && isChanged;
-
-            // raise event
-            OnReadyStateChange?.Invoke(this, new ReadyEventArgs
+            
+            ReadyEventArgs args = new ReadyEventArgs
             {
                 Ready = isReady,
                 Info = isValid ? (isChanged ? "Ready" : "Unchanged") : "Not Ready"
-            });
+            };
+
+            // raise #event
+            //OnReadyStateChange?.Invoke(this, args);
+            OnReadyStateChange?.CheckedInvoke(args, !DISABLE_STATUS_RAISE_EVENT);
         }
 
         private void CopyEditObjectDataToInputs()

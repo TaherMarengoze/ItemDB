@@ -1,9 +1,13 @@
-﻿namespace Controllers
+﻿using System.Collections;
+
+namespace Controllers
 {
     public class SetEventArgs
     {
-        public string SetID { get; set; }
+        public string OldID { get; set; }
 
-        public object NewList { get; set; }
+        public string NewID { get; set; }
+
+        public IList NewList { get; set; }
     }
 }

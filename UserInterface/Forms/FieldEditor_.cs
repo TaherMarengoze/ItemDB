@@ -320,7 +320,7 @@ namespace UserInterface.Forms
             //BindObjectList(e.GetType().GetProperty("NewList").GetValue(e));
 
             // select added object
-            dgvListDetails.SelectRow(e.SetID, "ID");
+            dgvListDetails.SelectRow(e.NewID, "ID");
         }
 
         private void UiControl_OnCancel(object sender, CancelEventArgs e)
