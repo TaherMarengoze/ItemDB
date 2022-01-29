@@ -21,8 +21,8 @@ namespace Controllers
         public SizeListController()
         {
             //ClearInputs();
-            _inputList = new ObservableCollection<string>();
-            _inputList.CollectionChanged += _inputList_CollectionChanged;
+            //_inputList = new ObservableCollection<string>();
+            //_inputList.CollectionChanged += _inputList_CollectionChanged;
             SetStatusInitialValues();
         }
 
@@ -103,11 +103,11 @@ namespace Controllers
             }
         }
 
-        private void SetInputList(ObservableCollection<string> value)
+        private void SetInputList(List<string> value)
         {
-            _inputList.CollectionChanged -= _inputList_CollectionChanged;
+            //_inputList.CollectionChanged -= _inputList_CollectionChanged;
             _inputList = value;
-            _inputList.CollectionChanged += _inputList_CollectionChanged;
+            //_inputList.CollectionChanged += _inputList_CollectionChanged;
             
             CheckListValidity(value);
         }
@@ -170,12 +170,14 @@ namespace Controllers
 
         public void Load()
         {
-            OnLoad?.Invoke(this,
-                new LoadEventArgs
-                {
-                    GenericViewList = sizeDP.GetList().ToGenericView(),
-                    Count = Count
-                });
+            LoadEventArgs args = new LoadEventArgs
+            {
+                GenericViewList = sizeDP.GetList().ToGenericView(),
+                Count = Count
+            };
+
+            // raise #event
+            OnLoad?.Invoke(this, args);
         }
 
         public void Select(string objectId)
@@ -192,7 +194,7 @@ namespace Controllers
                 RequestInfo = objectId
             };
 
-            // raise event
+            // raise #event
             OnSelect?.Invoke(this, args);
         }
 
@@ -208,7 +210,7 @@ namespace Controllers
                 PreList = sizeDP.GetIDs()
             };
 
-            // raise event
+            // raise #event
             OnPreDrafting?.Invoke(this, args);
         }
 
@@ -222,7 +224,7 @@ namespace Controllers
             editObject = GetEditObject();
             CopyEditObjectDataToInputs();
 
-            // raise event
+            // raise #event
             OnPreDrafting?.Invoke(this, new PreDraftingEventArgs
             {
                 DraftObject = editObject.Clone(),
@@ -238,14 +240,15 @@ namespace Controllers
              * This allow us to check whether the ID exists and throws an exception if not.
              */
 
-            // raise event
-            OnRemove?.Invoke(this,
-                new RemoveEventArgs
-                {
-                    RemoveID = objectId,
-                    NewList = sizeDP.GetList().ToGenericView(),
-                    Count = Count
-                });
+            RemoveEventArgs args = new RemoveEventArgs
+            {
+                RemoveID = objectId,
+                NewList = sizeDP.GetList().ToGenericView(),
+                Count = Count
+            };
+
+            // raise #event
+            OnRemove?.Invoke(this, args);
 
             selectedObject = null;
         }
@@ -257,13 +260,15 @@ namespace Controllers
 
             CreateOrUpdate();
 
-            // raise event
-            OnSet?.Invoke(this, new SetEventArgs
+            SetEventArgs args = new SetEventArgs
             {
                 OldID = selectedObject?.ID,
                 NewID = InputID,
                 NewList = sizeDP.GetList().ToGenericView(),
-            });
+            };
+
+            // raise #event
+            OnSet?.Invoke(this, args);
 
             // clear selection
             selectedObject = null;
@@ -279,63 +284,21 @@ namespace Controllers
             if (editObject != null)
                 editObject = null;
 
-            // raise event
-            OnCancel?.Invoke(this,
-                new CancelEventArgs
-                {
-                    RestoreID = selectedObject?.ID,
-                    EmptyList = Count < 1
-                });
+            CancelEventArgs args = new CancelEventArgs
+            {
+                RestoreID = selectedObject?.ID,
+                EmptyList = Count < 1
+            };
+
+            // raise #event
+            OnCancel?.Invoke(this, args);
 
             ClearInputs();
 
             // set flags
             STATE_MODIFY = false;
         }
-
-        private void _inputList_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            CheckListValidity((ObservableCollection<string>)sender);
-
-            //switch (e.Action)
-            //{
-            //    case NotifyCollectionChangedAction.Add:
-            //        Console.WriteLine("> Collection Changed [{0}: {1}]",
-            //            e.Action.ToString(), e.NewItems[0]);
-
-            //        Console.WriteLine("> Collection New Items:\n - {0}",
-            //            string.Join("\n - ", _inputList));
-
-            //        break;
-            //    case NotifyCollectionChangedAction.Remove:
-            //        Console.WriteLine("> Collection Changed [{0}: {1}]",
-            //            e.Action.ToString(), e.OldItems[0]);
-
-            //        Console.WriteLine("> Collection New Items:\n - {0}",
-            //            string.Join("\n - ", _inputList));
-
-            //        break;
-            //    case NotifyCollectionChangedAction.Replace:
-            //        Console.WriteLine("> Collection Changed [{0}: {1} > {2}]",
-            //            e.Action.ToString(), e.OldItems[0], e.NewItems[0]);
-
-            //        Console.WriteLine("> Collection New Items:\n - {0}",
-            //            string.Join("\n - ", _inputList));
-
-            //        break;
-            //    case NotifyCollectionChangedAction.Move:
-            //        break;
-            //    case NotifyCollectionChangedAction.Reset:
-            //        Console.WriteLine("> Collection Changed [{0}]",
-            //            e.Action.ToString());
-
-            //        break;
-            //    default:
-            //        Console.WriteLine("> Collection Changed");
-            //        break;
-            //}
-        }
-
+        
         /* private methods */
 
         private void CheckReadyStatus()
@@ -362,13 +325,14 @@ namespace Controllers
 
             InputID = editObject.ID;
             InputName = editObject.Name;
-            SetInputList(new ObservableCollection<string>(editObject.List));
+            SetInputList(editObject.List.ToList());
 
             DISABLE_STATUS_RAISE_EVENT = false;
         }
 
         /// <summary>
-        /// Clear all inputs without raising the change event of the associated input status.
+        /// Clear all inputs without raising the change event of the associated
+        /// input status.
         /// </summary>
         private void ClearInputs()
         {
@@ -388,10 +352,11 @@ namespace Controllers
             _statusList = InputStatus.Invalid;
         }
 
-        private void CheckListValidity(ObservableCollection<string> sender)
+        private void CheckListValidity(List<string> sender)
         {
             bool notNullOrEmpty = sender.Count > 0;
-            StatusList = notNullOrEmpty ? InputStatus.Valid : InputStatus.Invalid;
+            StatusList =
+                notNullOrEmpty ? InputStatus.Valid : InputStatus.Invalid;
         }
 
         /* private getter methods */
@@ -466,7 +431,7 @@ namespace Controllers
         // inputs
         private string _inputID;
         private string _inputName;
-        private ObservableCollection<string> _inputList;
+        private List<string> _inputList;
 
         // inputs status
         private InputStatus _statusID;

@@ -52,6 +52,7 @@ namespace UT_Controllers
         {
             ui.OnLoad += Ui_OnLoad;
             ui.OnSelect += Ui_OnSelect;
+            ui.OnPreDrafting += Ui_OnPreDrafting;
             //ui.OnSelection += Ui_OnSelection;
             ui.OnIdStatusChange += Ui_OnIdStatusChange;
             ui.OnNameStatusChange += Ui_OnNameStatusChange;
@@ -81,19 +82,31 @@ namespace UT_Controllers
         }
         private void Ui_OnSelect(object sender, SelectEventArgs<SizeList> e)
         {
-            //Console.WriteLine("> Object selected [{0}]\n" +
-            //                  "  Details\n" +
-            //                  "  # ID: {1}\n" +
-            //                  "  # Name: {2}\n" +
-            //                  "  # List [{3} entries]:\n   - {4}"
-            //                  , e.Selected.ToString()
-            //                  , e.Selected.ID, e.Selected.Name, e.Selected.List.Count
-            //                  , String.Join("\n   - ", e.Selected.List));
-            Console.WriteLine("> Object selected [{0}]", e.Selected.ToString());
-            Console.WriteLine("  #ID = {0}", e.Selected.ID);
-            Console.WriteLine("  #Name = {0}", e.Selected.Name);
-            Console.WriteLine("  #List [{0} item(s)]", e.Selected.List.Count);
-            Console.WriteLine("  - {0}", String.Join("\n  - ", e.Selected.List));
+            Console.WriteLine("> Object selected");
+            Console.WriteLine(" #ID = {0}", e.Selected.ID);
+            Console.WriteLine(" #Name = {0}", e.Selected.Name);
+            Console.WriteLine(" #List [{0} item(s)]", e.Selected.List.Count);
+            Console.WriteLine(" - {0}", string.Join("\n - ", e.Selected.List));
+            Console.WriteLine(SEPARATOR_LINE);
+        }
+        private void Ui_OnPreDrafting(object sender, PreDraftingEventArgs e)
+        {
+            bool isNew = e.DraftObject == null;
+            string mode = isNew ? "Adding New" : "Edit Existing";
+
+            Console.WriteLine("> {0}", mode);
+            if (!isNew)
+            {
+                Console.WriteLine("Edit object [ID = {0}, Name = {1}]",
+                    e.DraftObject.ID, e.DraftObject.Name);
+
+                Console.WriteLine("List =");
+                Console.WriteLine(" • {0}",
+                    string.Join("\n • ", e.DraftObject.List));
+
+                Console.WriteLine($"[{e.DraftObject.List.Count} item(s)]");
+            }
+
             Console.WriteLine(SEPARATOR_LINE);
         }
         private void Ui_OnSelection(object sender, SizeListSelectionEventArgs e)
@@ -180,11 +193,12 @@ namespace UT_Controllers
         }
         private void Ui_OnEntryRemove(object sender, RemoveEventArgs e)
         {
-            Console.WriteLine("> Entry deleted [{0}]",
-                e.RemoveID);
+            Console.WriteLine("> Entry deleted [{0}]", e.RemoveID);
+            Console.WriteLine("  New List [{0} item(s)]", e.Count);
+            Console.WriteLine("  - {0}",
+                string.Join("\n  - ", (List<string>)e.NewList));
 
-            Console.WriteLine("> New list entries:\n - {0}",
-                string.Join("\n - ", (List<string>)e.NewList));
+            Console.WriteLine(SEPARATOR_LINE);
         }
         #endregion
 
@@ -526,8 +540,20 @@ namespace UT_Controllers
             ui.Load_Entries();
             ui.SelectEntry("Entry 3");
             ui.Edit_Entry();
-            ui.InputEntry = "Entry 3 (edit)";
+            ui.InputEntry = "Entry 3 (edited)";
             ui.CommitChanges_Entry();
+            ui.Save_Entries();
+            ui.CommitChanges();
+        }
+
+        [TestMethod]
+        public void Should_EditAndDeleteEntry()
+        {
+            ui.Select("STEST");
+            ui.SelectEntry("Entry 3");
+            ui.Edit();
+            ui.Load_Entries();
+            ui.RemoveEntry();
             ui.Save_Entries();
             ui.CommitChanges();
         }

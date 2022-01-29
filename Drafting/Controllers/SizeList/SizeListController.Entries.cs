@@ -24,7 +24,7 @@ namespace Controllers
         {
             get => inputEntry; set
             {
-                if (!ALLOW_INPUT)
+                if (!ALLOW_INPUT_Entries)
                 {
                     //throw new Exception("Input is not allowed in the current state.");
                     System.Diagnostics.Debug.Print("Input is not allowed in the current state.");
@@ -86,7 +86,8 @@ namespace Controllers
             //SetParentData_Entries();
             DISABLE_STATUS_RAISE_EVENT = true;
 
-            SetInputList(new ObservableCollection<string>(selectedEntries));
+            SetInputList(
+                /*new ObservableCollection<string>*/(selectedEntries.ToList()));
 
             DISABLE_STATUS_RAISE_EVENT = false;
         }
@@ -136,7 +137,8 @@ namespace Controllers
             if (!STATE_LOADED_Entries)
                 throw new InvalidOperationException();
 
-            SetInputList(new ObservableCollection<string>(inputListDraft));
+            SetInputList(
+                /*new ObservableCollection<string>*/(inputListDraft.ToList()));
             inputListDraft = null;
 
             // set flags
@@ -173,13 +175,13 @@ namespace Controllers
                 RequestInfo = entry
             };
 
-            // raise event
+            // raise #event
             OnEntrySelect?.Invoke(this, args);
         }
 
         public void New_Entry()
         {
-            ALLOW_INPUT = true;
+            ALLOW_INPUT_Entries = true;
 
             // raise event
         }
@@ -189,7 +191,7 @@ namespace Controllers
             if (selectedEntry == null)
                 throw new InvalidOperationException();
             
-            ALLOW_INPUT = true;
+            ALLOW_INPUT_Entries = true;
 
             // get and store the edit entry
             editEntry = selectedEntry;
@@ -203,17 +205,22 @@ namespace Controllers
 
         public void RemoveEntry()
         {
-            if (selectedEntry == null || _inputList.Count < 1)
+            if (selectedEntry == null /*|| _inputList.Count < 1*/)
                 throw new InvalidOperationException(); //"No entry selected."
 
-            _inputList.Remove(selectedEntry);
+            //if (inputListDraft == null)
+            //    throw new InvalidOperationException();
+
+            //_inputList.Remove(selectedEntry);
+            inputListDraft.Remove(selectedEntry);
 
             RemoveEventArgs e = new RemoveEventArgs
             {
                 RemoveID = selectedEntry,
-                NewList = _inputList.ToList(),
+                NewList = /*_inputList*/inputListDraft.ToList(),
+                Count = inputListDraft.Count
             };
-            // raise event
+            // raise #event
             OnEntryRemove?.Invoke(this, e);
         }
 
@@ -231,7 +238,7 @@ namespace Controllers
                 SetList = inputListDraft.ToList(),
             };
 
-            // raise event
+            // raise #event
             OnEntrySet?.Invoke(this, args);
 
             // clear selection
@@ -240,7 +247,7 @@ namespace Controllers
             ClearInputs_Entry();
 
             // set flags
-            ALLOW_INPUT = false;
+            ALLOW_INPUT_Entries = false;
         }
 
         public void CancelChanges_Entry()
@@ -248,15 +255,19 @@ namespace Controllers
             if (editEntry != null)
                 editEntry = null;
 
-            CancelEventArgs e = new CancelEventArgs
+            CancelEventArgs args = new CancelEventArgs
             {
                 RestoreID = selectedEntry,
                 EmptyList = (selectedEntries?.Count ?? 0) <= 0
             };
-            // raise event
-            OnEntryCancel?.Invoke(this, e);
+
+            // raise #event
+            OnEntryCancel?.Invoke(this, args);
 
             ClearInputs_Entry();
+
+            // set flags
+            ALLOW_INPUT_Entries = false;
         }
 
         /* private methods */
@@ -264,7 +275,8 @@ namespace Controllers
         {
             DISABLE_STATUS_RAISE_EVENT = true;
 
-            SetInputList(new ObservableCollection<string>(selectedEntries));
+            SetInputList(
+                /*new ObservableCollection<string>*/(selectedEntries.ToList()));
 
             DISABLE_STATUS_RAISE_EVENT = false;
         }
@@ -349,7 +361,7 @@ namespace Controllers
         private InputStatus statusEntry;
 
         // flags
-        private bool ALLOW_INPUT;
+        private bool ALLOW_INPUT_Entries;
         private bool isReady_Entry;
         private bool STATE_LOADED_Entries;
 
