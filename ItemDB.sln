@@ -35,6 +35,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UT_Controllers", "UT_Controllers\UT_Controllers.csproj", "{D58485C2-8F8F-4695-B18C-2D15315B7C58}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonLibraries", "CommonLibraries\CommonLibraries.csproj", "{24E18F34-2223-4521-B2F1-0DDB9048BF06}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -89,6 +91,10 @@ Global
 		{D58485C2-8F8F-4695-B18C-2D15315B7C58}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D58485C2-8F8F-4695-B18C-2D15315B7C58}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D58485C2-8F8F-4695-B18C-2D15315B7C58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24E18F34-2223-4521-B2F1-0DDB9048BF06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24E18F34-2223-4521-B2F1-0DDB9048BF06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24E18F34-2223-4521-B2F1-0DDB9048BF06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24E18F34-2223-4521-B2F1-0DDB9048BF06}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,6 +112,7 @@ Global
 		{B7C3BA24-B4CC-49D7-B9D5-9371A1CA02DD} = {47242FF6-BD28-4828-9B30-79959F8966FA}
 		{38DD4B4A-716D-4D0D-AD6C-9AFFEDB3F964} = {47242FF6-BD28-4828-9B30-79959F8966FA}
 		{D58485C2-8F8F-4695-B18C-2D15315B7C58} = {E01D98B2-1E6D-46CB-AF92-5CF9EF326DE0}
+		{24E18F34-2223-4521-B2F1-0DDB9048BF06} = {47242FF6-BD28-4828-9B30-79959F8966FA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E9F8D276-37EB-44B5-87CB-F0F160F7C0C2}
