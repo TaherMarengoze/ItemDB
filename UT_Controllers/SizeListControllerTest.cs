@@ -7,6 +7,7 @@ using Modeling.ViewModels.Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -19,9 +20,12 @@ namespace UT_Controllers
         const string DPID = "STEST";
         const string NAME = "Unit Test Size List";
         const string BLNK = "";
-        private const string SEPARATOR_LINE = "-----";
+        private const string LINE_START = "----- START OF MESSAGE -----";
+        private const string SEPARATOR_LINE = "----- END OF MESSAGE -----\n";
         private static readonly List<string> LIST_ = new List<string> { "Entry 1", "Entry 2", "Entry 3" };
         private static readonly List<string> LIST1 = new List<string> { "Entry 1", "Entry 2", "Entry 3*" };
+
+        private bool SKIP_LOG;
 
         SizeListController ui;
         #region EventArgs Fields
@@ -34,6 +38,7 @@ namespace UT_Controllers
         private string onSetArgs;
         private CancelEventArgs onCancelEventArgs;
         private RemoveEventArgs onRemoveArgs;
+        
 
         //private CancelEventArgs onCancelEntryEventArgs;
         #endregion
@@ -45,6 +50,7 @@ namespace UT_Controllers
 
             ui = new SizeListController();
             EventSubscriber();
+            SKIP_LOG = false;
         }
 
         #region Controller Events
@@ -63,6 +69,8 @@ namespace UT_Controllers
             ui.OnRemove += Ui_OnRemove;
 
             ui.OnLoadEntries += Ui_OnLoadEntries;
+            ui.OnSaveEntries += Ui_OnSaveEntries;
+            ui.OnCancelEntries += Ui_OnCancelEntries;
             ui.OnEntrySelect += Ui_OnEntrySelect;
             ui.OnEntryStatusChange += Ui_OnEntryStatusChange;
             ui.OnEntrySet += Ui_OnEntrySet;
@@ -70,10 +78,22 @@ namespace UT_Controllers
             ui.OnEntryRemove += Ui_OnEntryRemove;
         }
 
+        private void Log(Action loggingActions)
+        {
+            if (SKIP_LOG)
+                return;
+            
+            Console.WriteLine(LINE_START);
+            loggingActions.Invoke();
+            Console.WriteLine(SEPARATOR_LINE);
+        }
+        
         private void Ui_OnEntryStatusChange(object sender, InputStatus e)
         {
-            Console.WriteLine("> Entry Status: {0}", e.ToString());
-            Console.WriteLine(SEPARATOR_LINE);
+            Log(delegate
+            {
+                Console.WriteLine("Entry Status: {0}", e.ToString());
+            });
         }
 
         private void Ui_OnLoad(object sender, LoadEventArgs e)
@@ -82,32 +102,33 @@ namespace UT_Controllers
         }
         private void Ui_OnSelect(object sender, SelectEventArgs<SizeList> e)
         {
-            Console.WriteLine("> Object selected");
-            Console.WriteLine(" #ID = {0}", e.Selected.ID);
-            Console.WriteLine(" #Name = {0}", e.Selected.Name);
-            Console.WriteLine(" #List [{0} item(s)]", e.Selected.List.Count);
-            Console.WriteLine(" - {0}", string.Join("\n - ", e.Selected.List));
-            Console.WriteLine(SEPARATOR_LINE);
+            Log(delegate
+            {
+                Console.WriteLine("Object selected [ID = {0}, Name = {1}]",
+                e.Selected.ID, e.Selected.Name);
+                Console.WriteLine("List =");
+                Console.WriteLine(" • {0}", string.Join("\n • ", e.Selected.List));
+                Console.WriteLine("[{0} item(s)]", e.Selected.List.Count);
+            });
         }
         private void Ui_OnPreDrafting(object sender, PreDraftingEventArgs e)
         {
             bool isNew = e.DraftObject == null;
             string mode = isNew ? "Adding New" : "Edit Existing";
 
-            Console.WriteLine("> {0}", mode);
-            if (!isNew)
+            Log(delegate
             {
-                Console.WriteLine("Edit object [ID = {0}, Name = {1}]",
-                    e.DraftObject.ID, e.DraftObject.Name);
+                Console.WriteLine("{0}", mode);
+                if (!isNew)
+                {
+                    Console.WriteLine("Edit object [ID = {0}, Name = {1}]",
+                        e.DraftObject.ID, e.DraftObject.Name);
 
-                Console.WriteLine("List =");
-                Console.WriteLine(" • {0}",
-                    string.Join("\n • ", e.DraftObject.List));
-
-                Console.WriteLine($"[{e.DraftObject.List.Count} item(s)]");
-            }
-
-            Console.WriteLine(SEPARATOR_LINE);
+                    Console.WriteLine("List =");
+                    Console.WriteLine(" • {0}", string.Join("\n • ", e.DraftObject.List));
+                    Console.WriteLine($"[{e.DraftObject.List.Count} item(s)]");
+                }
+            });
         }
         private void Ui_OnSelection(object sender, SizeListSelectionEventArgs e)
         {
@@ -123,25 +144,26 @@ namespace UT_Controllers
         }
         private void Ui_OnListStatusChange(object sender, InputStatus e)
         {
-            //onListStatusChangeArgs = e;
-            Console.WriteLine("> List Status: {0}", e.ToString());
+            Console.WriteLine(LINE_START);
+            Console.WriteLine("List Status: {0}", e.ToString());
             Console.WriteLine(SEPARATOR_LINE);
         }
         private void Ui_OnReadyStateChange(object sender, ReadyEventArgs e)
         {
-            //onReadyStateChangeArgs = e;
-            Console.WriteLine("> Draft object state: {0}",
-                e.Info);
+            Console.WriteLine(LINE_START);
+            Console.WriteLine("Draft object state: {0}", e.Info);
             Console.WriteLine(SEPARATOR_LINE);
         }
         private void Ui_OnSet(object sender, SetEventArgs e)
         {
-            Console.WriteLine("> Object set ({1}) [ID = {0}]",
+            Log(delegate
+            {
+                Console.WriteLine("Object set ({1}) [ID = {0}]",
                 e.NewID, e.OldID == null ? "Add" : "Edit");
-            //var lst = e.NewList.Cast<FieldListGenericView>().Select(el => el.ID);
-            //Console.WriteLine("  New List [{0} item(s)]", e.NewList.Count);
-            //Console.WriteLine("  - {0}", string.Join("\n  - ", lst.ToList()));
-            Console.WriteLine(SEPARATOR_LINE);
+                //var lst = e.NewList.Cast<FieldListGenericView>().Select(el => el.ID);
+                //Console.WriteLine("  New List [{0} item(s)]", e.NewList.Count);
+                //Console.WriteLine("  - {0}", string.Join("\n  - ", lst.ToList()));
+            });
 
             ui.Select(e.NewID);
         }
@@ -155,50 +177,69 @@ namespace UT_Controllers
         }
         private void Ui_OnLoadEntries(object sender, LoadEventArgs e)
         {
-            Console.WriteLine("> Entries loaded [{1}]:\n - {0}",
-                string.Join("\n - ", (ObservableCollection<String>)e.GenericViewList),
-                e.Count);
-            Console.WriteLine(SEPARATOR_LINE);
+            Log(delegate
+            {
+                Console.WriteLine("Entries loaded for modification");
+                Console.WriteLine("Entries:");
+                Console.WriteLine(" • {0}", string.Join("\n • ",
+                    (ObservableCollection<String>)e.GenericViewList));
+                Console.WriteLine("[{0} item(s)]", e.Count);
+            });
+        }
+        private void Ui_OnSaveEntries(object sender, EventArgs e)
+        {
+            Log(delegate
+            {
+                Console.WriteLine("Entries saved");
+            });
+        }
+        private void Ui_OnCancelEntries(object sender, EventArgs e)
+        {
+            Log(delegate
+            {
+                Console.WriteLine("Entries modification cancelled");
+            });
         }
         private void Ui_OnEntrySelect(object sender, SelectEventArgs<string> e)
         {
-            if (e.Selected == null)
+            Log(delegate
             {
-                Console.WriteLine("> Entry not found [{0}]",
-                    e.RequestInfo);
-            }
-            else
-            {
-                Console.WriteLine("> Entry selected [{0}]",
-                    e.Selected);
-            }
-            Console.WriteLine(SEPARATOR_LINE);
+                if (e.Selected == null)
+                {
+                    Console.WriteLine("Entry not found [{0}]", e.RequestInfo);
+                }
+                else
+                {
+                    Console.WriteLine("Entry selected [{0}]", e.Selected);
+                }
+            });
         }
         private void Ui_OnEntrySet(object sender, EntrySetEventArgs e)
         {
-            Console.WriteLine("> Entry Set [{0}]",
-                e.NewItem);
+            Log(delegate
+            {
+                Console.WriteLine("Entry Set [{0}]", e.NewItem);
 
-            Console.WriteLine("  New List Entries [{0}]:\n - {1}",
-                e.SetList.Count, string.Join("\n - ", (List<string>)e.SetList));
-            Console.WriteLine(SEPARATOR_LINE);
+                Console.WriteLine("  New List Entries [{0}]:\n - {1}",
+                    e.SetList.Count, string.Join("\n - ", (List<string>)e.SetList));
+            });
         }
         private void Ui_OnEntryCancel(object sender, CancelEventArgs e)
         {
-            Console.WriteLine("> Restore object: {0}",
-                e.RestoreID);
-
-            Console.WriteLine("> {0} List",
-                e.EmptyList ? "Empty" : "Non-empty");
+            Log(delegate
+            {
+                Console.WriteLine("Restore object: {0}", e.RestoreID);
+                Console.WriteLine("{0} List", e.EmptyList ? "Empty" : "Non-empty");
+            });
         }
         private void Ui_OnEntryRemove(object sender, RemoveEventArgs e)
         {
-            Console.WriteLine("> Entry deleted [{0}]", e.RemoveID);
-            Console.WriteLine("  New List [{0} item(s)]", e.Count);
-            Console.WriteLine("  - {0}",
-                string.Join("\n  - ", (List<string>)e.NewList));
-
-            Console.WriteLine(SEPARATOR_LINE);
+            Log(delegate
+            {
+                Console.WriteLine("Entry deleted [{0}]", e.RemoveID);
+                Console.WriteLine(" New List [{0} item(s)]", e.Count);
+                Console.WriteLine(" • {0}", string.Join("\n • ", (List<string>)e.NewList));
+            });
         }
         #endregion
 
@@ -520,20 +561,26 @@ namespace UT_Controllers
         #endregion
 
         [TestMethod]
-        public void Should_EditAndAddNewEntry()
+        public void Should_Edit_AddNewEntry()
         {
             ui.Select("STEST");
             ui.Edit();
             ui.Load_Entries();
+
             ui.New_Entry();
             ui.InputEntry = "Entry 4";
             ui.CommitChanges_Entry();
+
+            ui.New_Entry();
+            ui.InputEntry = "Entry 5";
+            ui.CommitChanges_Entry();
+
             ui.Save_Entries();
             ui.CommitChanges();
         }
 
         [TestMethod]
-        public void Should_EditAndEditExistingEntry()
+        public void Should_Edit_EditExistingEntry()
         {
             ui.Select("STEST");
             ui.Edit();
@@ -547,7 +594,7 @@ namespace UT_Controllers
         }
 
         [TestMethod]
-        public void Should_EditAndDeleteEntry()
+        public void Should_Edit_DeleteEntry()
         {
             ui.Select("STEST");
             ui.SelectEntry("Entry 3");
@@ -557,21 +604,38 @@ namespace UT_Controllers
             ui.Save_Entries();
             ui.CommitChanges();
         }
-        //[TestMethod]
-        public void Should_SaveEntries()
+
+        [TestMethod]
+        public void Should_EditObject_EntriesLoadAndSave()
         {
             ui.Select("STEST");
+            ui.SelectEntry("Entry 3");
             ui.Edit();
-
             ui.Load_Entries();
+            ui.Save_Entries();
+        }
 
-            ui.InputEntry = "Entry 4 (New)";
+        [TestMethod]
+        public void Should_EditObject_EntriesLoadAndCancel()
+        {
+            ui.Select("STEST");
+            ui.SelectEntry("Entry 3");
+            ui.Edit();
+            ui.Load_Entries();
+            ui.Cancel_Entries();
         }
 
         // Generic Method
         public static string GetTestDisplayName(MethodInfo mInfo, object[] data)
         {
             return $"[{ data[2].ToString() }] - Expected: { data[0] }";
+        }
+
+        private void AddNewEntry(string entry)
+        {
+            ui.New_Entry();
+            ui.InputEntry = entry;
+            ui.CommitChanges_Entry();
         }
     }
 }

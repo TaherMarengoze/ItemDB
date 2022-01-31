@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Collections.Custom;
 
 namespace Controllers
 {
@@ -10,6 +11,8 @@ namespace Controllers
     {
         #region Events
         public event EventHandler<LoadEventArgs> OnLoadEntries;
+        public event EventHandler OnSaveEntries;
+        public event EventHandler OnCancelEntries;
         public event EventHandler<SelectEventArgs<string>> OnEntrySelect;
         public event EventHandler<InputStatus> OnEntryStatusChange;
         public event EventHandler<ReadyEventArgs> OnEntryReadyStateChange;
@@ -86,8 +89,7 @@ namespace Controllers
             //SetParentData_Entries();
             DISABLE_STATUS_RAISE_EVENT = true;
 
-            SetInputList(
-                /*new ObservableCollection<string>*/(selectedEntries.ToList()));
+            SetInputList(selectedEntries.ToList());
 
             DISABLE_STATUS_RAISE_EVENT = false;
         }
@@ -96,7 +98,7 @@ namespace Controllers
             if (selectedObject == null)
                 throw new Exception("No object selected");
 
-            selectedObject.List = new ObservableCollection<string>(_inputList);
+            selectedObject.List = _inputList.ToObservableCollection();
             broker.Update(selectedObject.ID, selectedObject);
 
             FlaggedInvoke(delegate { _inputList.Clear(); },
@@ -118,7 +120,7 @@ namespace Controllers
             if (STATE_LOADED_Entries)
                 throw new Exception("Operation already called.");
             
-            inputListDraft = new ObservableCollection<string>(_inputList);
+            inputListDraft = _inputList.ToObservableCollection();
 
             LoadEventArgs args = new LoadEventArgs
             {
@@ -126,7 +128,7 @@ namespace Controllers
                 Count = inputListDraft.Count
             };
 
-            // raise event
+            // raise #event
             OnLoadEntries?.Invoke(this, args);
 
             // set flags
@@ -137,9 +139,11 @@ namespace Controllers
             if (!STATE_LOADED_Entries)
                 throw new InvalidOperationException();
 
-            SetInputList(
-                /*new ObservableCollection<string>*/(inputListDraft.ToList()));
+            SetInputList(inputListDraft.ToList());
             inputListDraft = null;
+
+            // raise #event
+            OnSaveEntries?.Invoke(this, EventArgs.Empty);
 
             // set flags
             STATE_LOADED_Entries = false;
@@ -150,6 +154,9 @@ namespace Controllers
                 throw new InvalidOperationException();
 
             inputListDraft = null;
+
+            // raise #event
+            OnCancelEntries?.Invoke(this, EventArgs.Empty);
 
             // set flags
             STATE_LOADED_Entries = false;
@@ -166,7 +173,7 @@ namespace Controllers
         
         public void SelectEntry(string entry)
         {
-            selectedEntry = selectedEntries/*Object.List*/
+            selectedEntry = selectedEntries
                 .First(lstEntry => lstEntry == entry);
 
             SelectEventArgs<string> args = new SelectEventArgs<string>
@@ -183,7 +190,10 @@ namespace Controllers
         {
             ALLOW_INPUT_Entries = true;
 
-            // raise event
+            // raise #event
+
+            // set flags
+            ALLOW_INPUT_Entries = true;
         }
 
         public void Edit_Entry()
@@ -191,8 +201,6 @@ namespace Controllers
             if (selectedEntry == null)
                 throw new InvalidOperationException();
             
-            ALLOW_INPUT_Entries = true;
-
             // get and store the edit entry
             editEntry = selectedEntry;
 
@@ -200,7 +208,10 @@ namespace Controllers
             // fill inputs with edit object data
             inputEntry = editEntry;
 
-            // raise event
+            // raise #event
+
+            // set flags
+            ALLOW_INPUT_Entries = true;
         }
 
         public void RemoveEntry()
@@ -211,15 +222,15 @@ namespace Controllers
             //if (inputListDraft == null)
             //    throw new InvalidOperationException();
 
-            //_inputList.Remove(selectedEntry);
             inputListDraft.Remove(selectedEntry);
 
             RemoveEventArgs e = new RemoveEventArgs
             {
                 RemoveID = selectedEntry,
-                NewList = /*_inputList*/inputListDraft.ToList(),
+                NewList = inputListDraft.ToList(),
                 Count = inputListDraft.Count
             };
+
             // raise #event
             OnEntryRemove?.Invoke(this, e);
         }
@@ -271,15 +282,6 @@ namespace Controllers
         }
 
         /* private methods */
-        private void SetParentData_Entries()
-        {
-            DISABLE_STATUS_RAISE_EVENT = true;
-
-            SetInputList(
-                /*new ObservableCollection<string>*/(selectedEntries.ToList()));
-
-            DISABLE_STATUS_RAISE_EVENT = false;
-        }
 
         private void CheckReadyStatus_Entry()
         {
@@ -288,12 +290,14 @@ namespace Controllers
 
             isReady_Entry = isValid && isChanged;
 
-            // raise event
-            OnEntryReadyStateChange?.Invoke(this, new ReadyEventArgs
+            ReadyEventArgs args = new ReadyEventArgs
             {
                 Ready = isReady,
                 //Info = isValid ? (isChanged ? "Ready" : "Unchanged") : "Not Ready"
-            });
+            };
+
+            // raise #event
+            OnEntryReadyStateChange?.Invoke(this, args);
         }
 
         private void ClearInputs_Entry()
@@ -306,6 +310,8 @@ namespace Controllers
         }
 
         /* private functions (getter method) */
+        // BUG: needs correction 'selectedEntries' is not updated when adding an entry, so
+        // adding the exact same entry will always return no-duplicate state.
         private bool IsInputEntryDuplicate(string value)
             => selectedEntries.Contains(value);
 
@@ -336,14 +342,10 @@ namespace Controllers
 
             if (editEntry == null)
             {
-                //_inputList.Add(draftEntry);
                 inputListDraft.Add(draftEntry);
             }
             else
             {
-                //int i = _inputList.IndexOf(editEntry);
-                //_inputList[i] = draftEntry;
-
                 int i = inputListDraft.IndexOf(editEntry);
                 inputListDraft[i] = draftEntry;
             }
