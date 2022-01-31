@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,14 +9,20 @@ namespace Controllers
 {
     public class LoadEventArgs : EventArgs
     {
-        public object GenericViewList { get; set; }
+        public LoadEventArgs(IList listObject)
+        {
+            GenericViewList = listObject;
+            Count = listObject.Count;
+        }
 
-        public int Count { get; set; }
+        public object GenericViewList { get; }
+
+        public int Count { get; }
     }
 
     public class LoadEventArgs<TView> : EventArgs
     {
-        public IEnumerable<TView> GenericViewList { get; set; }
+        public List<TView> GenericViewList { get; set; }
 
         public int ItemCount => GenericViewList.Count();
     }

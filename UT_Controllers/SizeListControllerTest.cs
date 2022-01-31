@@ -98,7 +98,17 @@ namespace UT_Controllers
 
         private void Ui_OnLoad(object sender, LoadEventArgs e)
         {
-            onLoadArgs = (List<FieldListGenericView>)e.GenericViewList;
+            var viewList = (List<FieldListGenericView>)e.GenericViewList;
+            Log(delegate
+            {
+                Console.WriteLine("{0} object(s) loaded\n", e.Count);
+                foreach (FieldListGenericView item in viewList)
+                {
+                    Console.WriteLine("{0}{3}[ {2:00} item(s) ]\t{1}"
+                        , item.ID, item.Name, item.EntriesCount,
+                        item.ID.Length <= 5 ? "\t\t" : "\t");
+                }
+            });
         }
         private void Ui_OnSelect(object sender, SelectEventArgs<SizeList> e)
         {
@@ -257,25 +267,7 @@ namespace UT_Controllers
             Assert.AreEqual(null, ui._EditObject);
 
         }
-
-        //[TestMethod]
-        public void Should_Load()
-        {
-            ui.Load();
-
-            List<SizeList> expectedList =
-                Globals.reader.GetSizes().Cast<SizeList>().ToList();
-
-            CollectionAssert.AreEqual(
-                expectedList.Select(list => list.ID).ToList(),
-                onLoadArgs.Select(list => list.ID).ToList());
-
-            CollectionAssert.AreEqual(
-                expectedList.Select(list => list.Name).ToList(),
-                onLoadArgs.Select(list => list.Name).ToList());
-
-        }
-
+        
         //[TestMethod]
         public void Should_Select()
         {
@@ -561,6 +553,12 @@ namespace UT_Controllers
         #endregion
 
         [TestMethod]
+        public void Should_Load()
+        {
+            ui.Load();
+        }
+
+        [TestMethod]
         public void Should_Edit_AddNewEntry()
         {
             ui.Select("STEST");
@@ -629,13 +627,6 @@ namespace UT_Controllers
         public static string GetTestDisplayName(MethodInfo mInfo, object[] data)
         {
             return $"[{ data[2].ToString() }] - Expected: { data[0] }";
-        }
-
-        private void AddNewEntry(string entry)
-        {
-            ui.New_Entry();
-            ui.InputEntry = entry;
-            ui.CommitChanges_Entry();
         }
     }
 }

@@ -122,11 +122,7 @@ namespace Controllers
             
             inputListDraft = _inputList.ToObservableCollection();
 
-            LoadEventArgs args = new LoadEventArgs
-            {
-                GenericViewList = inputListDraft,
-                Count = inputListDraft.Count
-            };
+            LoadEventArgs args = new LoadEventArgs(inputListDraft);
 
             // raise #event
             OnLoadEntries?.Invoke(this, args);
@@ -281,7 +277,7 @@ namespace Controllers
             ALLOW_INPUT_Entries = false;
         }
 
-        /* private methods */
+        // private methods
 
         private void CheckReadyStatus_Entry()
         {
@@ -309,11 +305,10 @@ namespace Controllers
             DISABLE_STATUS_RAISE_EVENT = false;
         }
 
-        /* private functions (getter method) */
-        // BUG: needs correction 'selectedEntries' is not updated when adding an entry, so
-        // adding the exact same entry will always return no-duplicate state.
+        // private functions (getter method)
+
         private bool IsInputEntryDuplicate(string value)
-            => selectedEntries.Contains(value);
+            => inputListDraft.Contains(value);
 
         private bool IsNotInputEntryAsEdit(string value)
             => value != editEntry;

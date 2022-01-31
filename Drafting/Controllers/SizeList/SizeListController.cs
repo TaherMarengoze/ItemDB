@@ -40,7 +40,7 @@ namespace Controllers
         public event EventHandler<RemoveEventArgs> OnRemove;
         #endregion
 
-        /* Properties */
+        // Properties
         public List<SizeList> SizeLists => sizeDP.GetList().As<SizeList>();
 
         public List<string> SizeListIDs =>
@@ -161,7 +161,7 @@ namespace Controllers
 
         #region Methods
 
-        /* public methods */
+        // public methods
 
         public void Save()
         {
@@ -170,14 +170,17 @@ namespace Controllers
 
         public void Load()
         {
-            LoadEventArgs args = new LoadEventArgs
-            {
-                GenericViewList = sizeDP.GetList().ToGenericView(),
-                Count = Count
-            };
+            //if (STATE_LOADED)
+            //    throw new Exception("Operation already called.");
 
+            LoadEventArgs args =
+                new LoadEventArgs(sizeDP.GetList().ToGenericView());
+            
             // raise #event
             OnLoad?.Invoke(this, args);
+
+            // set flags
+            STATE_LOADED = true;
         }
 
         public void Select(string objectId)
@@ -440,6 +443,7 @@ namespace Controllers
 
         // flags
         private bool isReady;
+        private bool STATE_LOADED;
         private bool DISABLE_STATUS_RAISE_EVENT;
         private bool STATE_MODIFY;
 
