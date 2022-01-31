@@ -33,7 +33,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web.Mvc, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -67,6 +66,10 @@
     <ProjectReference Include="..\ClientService\ClientService.csproj">
       <Project>{2ec19893-87bd-41aa-a165-bf544d2a1bcb}</Project>
       <Name>ClientService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CommonLibraries\CommonLibraries.csproj">
+      <Project>{24e18f34-2223-4521-b2f1-0ddb9048bf06}</Project>
+      <Name>CommonLibraries</Name>
     </ProjectReference>
     <ProjectReference Include="..\CoreLibrary\CoreLibrary.csproj">
       <Project>{90C23753-2A1C-4F04-A4E7-3B12CE02FA7F}</Project>
