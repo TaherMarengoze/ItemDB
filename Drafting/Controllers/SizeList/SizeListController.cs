@@ -362,11 +362,12 @@ namespace Controllers
                 notNullOrEmpty ? InputStatus.Valid : InputStatus.Invalid;
         }
 
-        /* private getter methods */
+        // private getter methods
         private SizeList GetEditObject()
         {
-            return (SizeList)broker.Read(/*objectID*/selectedObject.ID);
+            return (SizeList)broker.Read(selectedObject.ID);
         }
+
         private bool IsValidInputs()
         {
             InputStatus[] inputStatus = {
