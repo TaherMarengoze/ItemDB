@@ -170,9 +170,6 @@ namespace UT_Controllers
             {
                 Console.WriteLine("Object set ({1}) [ID = {0}]",
                 e.NewID, e.OldID == null ? "Add" : "Edit");
-                //var lst = e.NewList.Cast<FieldListGenericView>().Select(el => el.ID);
-                //Console.WriteLine("  New List [{0} item(s)]", e.NewList.Count);
-                //Console.WriteLine("  - {0}", string.Join("\n  - ", lst.ToList()));
             });
 
             ui.Select(e.NewID);
@@ -207,7 +204,7 @@ namespace UT_Controllers
         {
             Log(delegate
             {
-                Console.WriteLine("Entries modification cancelled");
+                Console.WriteLine("Entries modification canceled");
             });
         }
         private void Ui_OnEntrySelect(object sender, SelectEventArgs<string> e)
@@ -268,19 +265,6 @@ namespace UT_Controllers
 
         }
         
-        //[TestMethod]
-        public void Should_Select()
-        {
-            string exp_selectedID = "STEST";
-            List<string> exp_selectedList =
-                new List<string> { "Entry 1", "Entry 2", "Entry 3" };
-
-            ui.Select(exp_selectedID);
-
-            Assert.AreEqual(exp_selectedID, onSelectionArgs.Selected.ID);
-            CollectionAssert.AreEqual(exp_selectedList, onSelectionArgs.Selected.List);
-        }
-
         //[DataTestMethod]
         [DataRow(InputStatus.Blank, "", DisplayName = "1: Blank ID")]
         [DataRow(InputStatus.Duplicate, "STEST", DisplayName = "2: Duplicate ID")]
@@ -556,6 +540,13 @@ namespace UT_Controllers
         public void Should_Load()
         {
             ui.Load();
+        }
+
+        [TestMethod]
+        public void Should_Select()
+        {
+            ui.Load();
+            ui.Select("STEST");
         }
 
         [TestMethod]

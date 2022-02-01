@@ -20,9 +20,6 @@ namespace Controllers
     {
         public SizeListController()
         {
-            //ClearInputs();
-            //_inputList = new ObservableCollection<string>();
-            //_inputList.CollectionChanged += _inputList_CollectionChanged;
             SetStatusInitialValues();
         }
 
@@ -105,10 +102,8 @@ namespace Controllers
 
         private void SetInputList(List<string> value)
         {
-            //_inputList.CollectionChanged -= _inputList_CollectionChanged;
             _inputList = value;
-            //_inputList.CollectionChanged += _inputList_CollectionChanged;
-            
+
             CheckListValidity(value);
         }
         #endregion
@@ -121,9 +116,9 @@ namespace Controllers
             {
                 _statusID = value;
 
-                // raise event for status change
-                //  (OnIdStatusChange, value);
-                OnIdStatusChange.CheckedInvoke(value, !DISABLE_STATUS_RAISE_EVENT);
+                // raise #event
+                OnIdStatusChange.CheckedInvoke(value,
+                    !DISABLE_STATUS_RAISE_EVENT);
 
                 // check all inputs status
                 CheckReadyStatus();
@@ -136,8 +131,9 @@ namespace Controllers
             {
                 _statusName = value;
 
-                // raise event for status change
-                OnNameStatusChange.CheckedInvoke(value, !DISABLE_STATUS_RAISE_EVENT);
+                // raise #event
+                OnNameStatusChange.CheckedInvoke(value,
+                    !DISABLE_STATUS_RAISE_EVENT);
 
                 // check all inputs status
                 CheckReadyStatus();
@@ -150,8 +146,9 @@ namespace Controllers
             {
                 _statusList = value;
 
-                // raise event for status change
-                OnListStatusChange.CheckedInvoke(value, !DISABLE_STATUS_RAISE_EVENT);
+                // raise #event
+                OnListStatusChange.CheckedInvoke(value,
+                    !DISABLE_STATUS_RAISE_EVENT);
 
                 // check all inputs status
                 CheckReadyStatus();
@@ -173,20 +170,23 @@ namespace Controllers
             //if (STATE_LOADED)
             //    throw new Exception("Operation already called.");
 
+            // set flags
+            STATE_LOADED = true;
+
             LoadEventArgs args =
                 new LoadEventArgs(sizeDP.GetList().ToGenericView());
             
             // raise #event
             OnLoad?.Invoke(this, args);
-
-            // set flags
-            STATE_LOADED = true;
         }
 
         public void Select(string objectId)
         {
             if (objectId == null)
                 throw new ArgumentNullException(nameof(objectId));
+
+            //if (!STATE_LOADED)
+            //    throw new InvalidOperationException();
 
             selectedObject = (SizeList)broker.Read(objectId);
             selectedEntries = selectedObject.List.ToList();
