@@ -22,7 +22,8 @@ namespace Modeling.ViewModels
         //        };
         //}
 
-        public static List<SpecsItemGenericView> ToGenericView(this IEnumerable<ISpecsItem> source)
+        public static List<SpecsItemGenericView> ToGenericView(
+            this IEnumerable<ISpecsItem> source)
         {
             return
                 (from si in source
@@ -36,7 +37,8 @@ namespace Modeling.ViewModels
                  }).ToList();
         }
         
-        public static List<SizeGroupsGenericView> ToGenericView(this IEnumerable<ISizeGroup> source)
+        public static List<SizeGroupsGenericView> ToGenericView(
+            this IEnumerable<ISizeGroup> source)
         {
             return
                 source.Select(sg => new SizeGroupsGenericView
@@ -49,7 +51,8 @@ namespace Modeling.ViewModels
                 }).ToList();
         }
 
-        public static List<FieldListGenericView> ToGenericView(this IEnumerable<IFieldList> source)
+        public static List<FieldListGenericView> ToGenericView(
+            this IEnumerable<IFieldList> source)
         {
             return
                 source.Select(list => new FieldListGenericView
@@ -60,8 +63,9 @@ namespace Modeling.ViewModels
                 }).ToList();
         }
 
-        // to be relocated to the proper project
-        public static List<T> As<T>(this IEnumerable<IFieldList> source) where T : IFieldList
+        //TODO: to be relocated to the proper project
+        public static List<T> As<T>(this IEnumerable<IFieldList> source)
+            where T : IFieldList
         {
             return source.Cast<T>().ToList();
         }

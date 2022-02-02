@@ -550,6 +550,12 @@ namespace UT_Controllers
         }
 
         [TestMethod]
+        public void Should_ModifyNew()
+        {
+            ui.New();
+        }
+
+        [TestMethod]
         public void Should_Edit_AddNewEntry()
         {
             ui.Select("STEST");
