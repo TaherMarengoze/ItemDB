@@ -553,8 +553,39 @@ namespace UT_Controllers
         public void Should_ModifyNew()
         {
             ui.New();
-        }
+            ui.InputID = "TSL00";
+            ui.InputName = "Test Size List TSL00";
 
+            ui.Load_Entries();
+            #region New Entry Add
+            SKIP_LOG = true;
+
+            ui.New_Entry();
+            ui.InputEntry = "Test Entry 01";
+            ui.CommitChanges_Entry();
+
+            ui.New_Entry();
+            ui.InputEntry = "Test Entry 002";
+            ui.CommitChanges_Entry();
+
+            ui.New_Entry();
+            ui.InputEntry = "Test Entry 003";
+            ui.CommitChanges_Entry();
+
+            ui.New_Entry();
+            ui.InputEntry = "Test Entry 004";
+            ui.CommitChanges_Entry();
+
+            ui.New_Entry();
+            ui.InputEntry = "Test Entry 005";
+            SKIP_LOG = false;
+            ui.CommitChanges_Entry();
+            #endregion
+
+            ui.SelectEntry("Test Entry 005");
+            ui.RemoveEntry();
+        }
+        
         [TestMethod]
         public void Should_Edit_AddNewEntry()
         {

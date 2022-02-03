@@ -29,8 +29,8 @@ namespace Controllers
             {
                 if (!ALLOW_INPUT_Entries)
                 {
-                    //throw new Exception("Input is not allowed in the current state.");
                     System.Diagnostics.Debug.Print("Input is not allowed in the current state.");
+                    throw new Exception("Input is not allowed in the current state.");
                     return;
                 }
 
@@ -98,17 +98,17 @@ namespace Controllers
             if (selectedObject == null)
                 throw new Exception("No object selected");
 
-            selectedObject.List = _inputList.ToObservableCollection();
+            selectedObject.List = inputList.ToObservableCollection();
             broker.Update(selectedObject.ID, selectedObject);
 
-            FlaggedInvoke(delegate { _inputList.Clear(); },
+            FlaggedInvoke(delegate { inputList.Clear(); },
                 out DISABLE_STATUS_RAISE_EVENT);
         }
         public void Revert_Entries()
         {
             FlaggedInvoke(delegate
             {
-                _inputList.Clear();
+                inputList.Clear();
             }, out DISABLE_STATUS_RAISE_EVENT);
         }
 
@@ -119,8 +119,8 @@ namespace Controllers
 
             if (STATE_LOADED_Entries)
                 throw new Exception("Operation already called.");
-            
-            inputListDraft = _inputList.ToObservableCollection();
+
+            NewOrCloneInputList();
 
             LoadEventArgs args = new LoadEventArgs(inputListDraft);
 
@@ -130,6 +130,7 @@ namespace Controllers
             // set flags
             STATE_LOADED_Entries = true;
         }
+
         public void Save_Entries()
         {
             if (!STATE_LOADED_Entries)
@@ -166,10 +167,11 @@ namespace Controllers
             action.Invoke();
             flag = !initValue;
         }
-        
+
         public void SelectEntry(string entry)
         {
-            selectedEntry = selectedEntries
+            //FIX: if adding new entry, selectedEntries is null
+            selectedEntry = /*selectedEntries*/inputListDraft
                 .First(lstEntry => lstEntry == entry);
 
             SelectEventArgs<string> args = new SelectEventArgs<string>
@@ -184,19 +186,28 @@ namespace Controllers
 
         public void New_Entry()
         {
+            if (STATE_MODIFY_Entries)
+                throw new Exception("Modify state is already set.");
+
+            // set flags
+            STATE_MODIFY_Entries = true;
             ALLOW_INPUT_Entries = true;
 
             // raise #event
-
-            // set flags
-            ALLOW_INPUT_Entries = true;
         }
 
         public void Edit_Entry()
         {
+            if (STATE_MODIFY_Entries)
+                throw new Exception("Modify state is already set.");
+
             if (selectedEntry == null)
                 throw new InvalidOperationException();
-            
+
+            // set flags
+            STATE_MODIFY_Entries = true;
+            ALLOW_INPUT_Entries = true;
+
             // get and store the edit entry
             editEntry = selectedEntry;
 
@@ -205,9 +216,6 @@ namespace Controllers
             inputEntry = editEntry;
 
             // raise #event
-
-            // set flags
-            ALLOW_INPUT_Entries = true;
         }
 
         public void RemoveEntry()
@@ -254,6 +262,7 @@ namespace Controllers
             ClearInputs_Entry();
 
             // set flags
+            STATE_MODIFY_Entries = false;
             ALLOW_INPUT_Entries = false;
         }
 
@@ -294,6 +303,13 @@ namespace Controllers
 
             // raise #event
             OnEntryReadyStateChange?.Invoke(this, args);
+        }
+
+        private void NewOrCloneInputList()
+        {
+            inputListDraft =
+                inputList?.ToObservableCollection() ??
+                new ObservableCollection<string>();
         }
 
         private void ClearInputs_Entry()
@@ -361,6 +377,7 @@ namespace Controllers
         private bool ALLOW_INPUT_Entries;
         private bool isReady_Entry;
         private bool STATE_LOADED_Entries;
+        private bool STATE_MODIFY_Entries;
 
         // objects
         private List<string> selectedEntries;

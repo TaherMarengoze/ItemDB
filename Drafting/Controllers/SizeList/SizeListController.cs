@@ -102,7 +102,7 @@ namespace Controllers
 
         private void SetInputList(List<string> value)
         {
-            _inputList = value;
+            inputList = value;
 
             CheckListValidity(value);
         }
@@ -206,6 +206,7 @@ namespace Controllers
             if (STATE_MODIFY)
                 throw new Exception("Modify state is already set.");
 
+            // set flags
             STATE_MODIFY = true;
 
             PreDraftingEventArgs args = new PreDraftingEventArgs
@@ -343,7 +344,7 @@ namespace Controllers
 
             InputID = string.Empty;
             InputName = string.Empty;
-            _inputList.Clear();
+            inputList.Clear();
 
             DISABLE_STATUS_RAISE_EVENT = false;
         }
@@ -392,14 +393,14 @@ namespace Controllers
 
         private bool IsListChanged()
         {
-            if (_inputList == null || editObject == null)
+            if (inputList == null || editObject == null)
                 return false;
 
             // compare elements count
-            if (_inputList.Count != editObject.List.Count)
+            if (inputList.Count != editObject.List.Count)
                 return true;
 
-            return !_inputList.SequenceEqual(editObject.List);
+            return !inputList.SequenceEqual(editObject.List);
         }
 
         private void CreateOrUpdate()
@@ -422,7 +423,7 @@ namespace Controllers
             {
                 ID = _inputID,
                 Name = _inputName,
-                List = new ObservableCollection<string>(_inputList)
+                List = new ObservableCollection<string>(inputList)
             };
         }
         #endregion
@@ -435,7 +436,7 @@ namespace Controllers
         // inputs
         private string _inputID;
         private string _inputName;
-        private List<string> _inputList;
+        private List<string> inputList;
 
         // inputs status
         private InputStatus _statusID;
