@@ -29,9 +29,10 @@ namespace Controllers
             {
                 if (!ALLOW_INPUT_Entries)
                 {
-                    System.Diagnostics.Debug.Print("Input is not allowed in the current state.");
+                    System.Diagnostics.Debug.Print(
+                        "Input is not allowed in the current state.");
+
                     throw new Exception("Input is not allowed in the current state.");
-                    return;
                 }
 
                 inputEntry = value;
@@ -83,16 +84,6 @@ namespace Controllers
 
         #region Methods
 
-        #region To be moved to (SizeListController.cs)
-        public void PartialModify_Entries()
-        {
-            //SetParentData_Entries();
-            DISABLE_STATUS_RAISE_EVENT = true;
-
-            SetInputList(selectedEntries.ToList());
-
-            DISABLE_STATUS_RAISE_EVENT = false;
-        }
         public void PartialCommit_Entries()
         {
             if (selectedObject == null)
@@ -101,15 +92,9 @@ namespace Controllers
             selectedObject.List = inputList.ToObservableCollection();
             broker.Update(selectedObject.ID, selectedObject);
 
-            FlaggedInvoke(delegate { inputList.Clear(); },
-                out DISABLE_STATUS_RAISE_EVENT);
-        }
-        public void Revert_Entries()
-        {
-            FlaggedInvoke(delegate
-            {
-                inputList.Clear();
-            }, out DISABLE_STATUS_RAISE_EVENT);
+            DISABLE_STATUS_RAISE_EVENT = true;
+            inputList.Clear();
+            DISABLE_STATUS_RAISE_EVENT = false;
         }
 
         public void Load_Entries()
@@ -145,6 +130,7 @@ namespace Controllers
             // set flags
             STATE_LOADED_Entries = false;
         }
+
         public void Cancel_Entries()
         {
             if (!STATE_LOADED_Entries)
@@ -158,21 +144,20 @@ namespace Controllers
             // set flags
             STATE_LOADED_Entries = false;
         }
-        #endregion
-
-        private void FlaggedInvoke(Action action, out bool flag,
-            bool initValue = true)
-        {
-            flag = initValue;
-            action.Invoke();
-            flag = !initValue;
-        }
 
         public void SelectEntry(string entry)
         {
-            //FIX: if adding new entry, selectedEntries is null
-            selectedEntry = /*selectedEntries*/inputListDraft
-                .First(lstEntry => lstEntry == entry);
+            if (STATE_MODIFY_Entries)
+                throw new InvalidOperationException(
+                    "Unable to select due to the current state of the object");
+
+            if (entry == null)
+                throw new ArgumentNullException(nameof(entry));
+
+            selectedEntry =
+                inputListDraft == null
+                ? selectedEntries.First(lstEntry => lstEntry == entry)
+                : inputListDraft.First(lstEntry => lstEntry == entry);
 
             SelectEventArgs<string> args = new SelectEventArgs<string>
             {
@@ -186,6 +171,9 @@ namespace Controllers
 
         public void New_Entry()
         {
+            if (!STATE_LOADED_Entries)
+                throw new InvalidOperationException();
+
             if (STATE_MODIFY_Entries)
                 throw new Exception("Modify state is already set.");
 
@@ -198,6 +186,9 @@ namespace Controllers
 
         public void Edit_Entry()
         {
+            if (!STATE_LOADED_Entries)
+                throw new InvalidOperationException();
+
             if (STATE_MODIFY_Entries)
                 throw new Exception("Modify state is already set.");
 
@@ -220,8 +211,8 @@ namespace Controllers
 
         public void RemoveEntry()
         {
-            if (selectedEntry == null /*|| _inputList.Count < 1*/)
-                throw new InvalidOperationException(); //"No entry selected."
+            if (selectedEntry == null)
+                throw new InvalidOperationException();
 
             //if (inputListDraft == null)
             //    throw new InvalidOperationException();

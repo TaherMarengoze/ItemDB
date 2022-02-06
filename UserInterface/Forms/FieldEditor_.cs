@@ -268,9 +268,9 @@ namespace UserInterface.Forms
             lbxFieldListItems.DataSource = e.Selected?.List;
         }
 
-        private void UiControl_OnIdStatusChange(object sender, InputStatus e)
+        private void UiControl_OnIdStatusChange(object sender, StatusEventArgs e)
         {
-            Console.WriteLine($"{DateTime.Now.ToString(DT_FORMAT)} [{MethodBase.GetCurrentMethod().Name}] > ID Status: {e.ToString()}");
+            Console.WriteLine($"{DateTime.Now.ToString(DT_FORMAT)} [{MethodBase.GetCurrentMethod().Name}] > ID Status: {e.Status.ToString()}");
         }
 
         private void UiControl_OnNameStatusChange(object sender, InputStatus e)

@@ -27,7 +27,7 @@ namespace Controllers
         public event EventHandler<LoadEventArgs> OnLoad;
         public event EventHandler<SizeListSelectionEventArgs> OnSelection;
         public event EventHandler<SelectEventArgs<SizeList>> OnSelect;
-        public event EventHandler<InputStatus> OnIdStatusChange;
+        public event EventHandler<StatusEventArgs> OnIdStatusChange;
         public event EventHandler<InputStatus> OnNameStatusChange;
         public event EventHandler<InputStatus> OnListStatusChange;
         public event EventHandler<ReadyEventArgs> OnReadyStateChange;
@@ -116,8 +116,10 @@ namespace Controllers
             {
                 _statusID = value;
 
+                StatusEventArgs args = new StatusEventArgs(value, _inputID);
+
                 // raise #event
-                OnIdStatusChange.CheckedInvoke(value,
+                OnIdStatusChange.CheckedInvoke(args,
                     !DISABLE_STATUS_RAISE_EVENT);
 
                 // check all inputs status
@@ -182,6 +184,9 @@ namespace Controllers
 
         public void Select(string objectId)
         {
+            if (STATE_MODIFY)
+                throw new InvalidOperationException();
+
             if (objectId == null)
                 throw new ArgumentNullException(nameof(objectId));
 
