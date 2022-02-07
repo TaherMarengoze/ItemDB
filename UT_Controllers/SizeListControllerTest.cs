@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reflection;
@@ -64,14 +65,6 @@ namespace UT_Controllers
             //Console.WriteLine(SEPARATOR_LINE);
             Console.WriteLine();
         }
-        
-        private void Ui_OnEntryStatusChange(object sender, InputStatus e)
-        {
-            Log(delegate
-            {
-                Console.WriteLine("Entry Status: {0}", e.ToString());
-            });
-        }
 
         private void Ui_OnLoad(object sender, LoadEventArgs e)
         {
@@ -129,19 +122,29 @@ namespace UT_Controllers
         {
             Log(delegate
             {
-                Console.WriteLine("ID Status = {1} [{0}]",
-                    e.Value, e.Status.ToString());
+                Console.WriteLine("ID Status = {0}, [{1}]",
+                    e.Status.ToString(), e.Value);
             });
         }
-        private void Ui_OnNameStatusChange(object sender, InputStatus e)
-        {
-            
-        }
-        private void Ui_OnListStatusChange(object sender, InputStatus e)
+        private void Ui_OnNameStatusChange(object sender, StatusEventArgs e)
         {
             Log(delegate
             {
-                Console.WriteLine("List Status: {0}", e.ToString());
+                Console.WriteLine("Name Status = {0}, [{1}]",
+                    e.Status.ToString(), e.Value);
+            });
+        }
+        private void Ui_OnListStatusChange(object sender, StatusEventArgs e)
+        {
+            int count = ((List<string>)e.Value).Count;
+            Log(delegate
+            {
+                Console.WriteLine("List Status = {0}", e.Status.ToString());
+                Console.WriteLine("List =");
+                Console.WriteLine(" • {0}",
+                    string.Join("\n • ", (List<string>)e.Value));
+
+                Console.WriteLine($"[{count} item(s)]");
             });
         }
         private void Ui_OnReadyStateChange(object sender, ReadyEventArgs e)
@@ -176,8 +179,9 @@ namespace UT_Controllers
             {
                 Console.WriteLine("Entries loaded for modification");
                 Console.WriteLine("Entries:");
-                Console.WriteLine(" • {0}", string.Join("\n • ",
-                    (ObservableCollection<String>)e.GenericViewList));
+                Console.WriteLine(" • {0}",
+                    string.Join("\n • ",
+                    (ObservableCollection<string>)e.GenericViewList));
                 Console.WriteLine("[{0} item(s)]", e.Count);
             });
         }
@@ -209,6 +213,14 @@ namespace UT_Controllers
                 }
             });
         }
+        private void Ui_OnEntryStatusChange(object sender, StatusEventArgs e)
+        {
+            Log(delegate
+            {
+                Console.WriteLine("Entry Status = {0}, [{1}]",
+                    e.Status.ToString(), e.Value);
+            });
+        }
         private void Ui_OnEntrySet(object sender, EntrySetEventArgs e)
         {
             Log(delegate
@@ -237,22 +249,23 @@ namespace UT_Controllers
         {
             Log(delegate
             {
-                Console.WriteLine("Entry deleted [{0}]", e.RemoveID);
-                Console.WriteLine(" New List [{0} item(s)]", e.Count);
-                Console.WriteLine(" • {0}", string.Join("\n • ",
-                    (List<string>)e.NewList));
+                Console.WriteLine("Entry deleted [{0}]", e.RemoveObject);
+                Console.WriteLine("New Entries:");
+                Console.WriteLine(" • {0}",
+                    string.Join("\n • ", (List<string>)e.NewObjects));
+
+                Console.WriteLine("[{0} item(s)]", e.Count);
             });
         }
         #endregion
 
         [TestMethod]
-        public void Should_Remove()
+        public void MyTestMethod()
         {
-            ui.Select("STEST");
-            ui.Edit();
+            ui.New();
             ui.Load_Entries();
-            ui.SelectEntry("Entry 1");
-            ui.
+            ui.New_Entry();
+            ui.InputEntry = "yfsyfgyt";
         }
     }
 }
