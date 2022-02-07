@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,17 @@ namespace Controllers
 {
     public class RemoveEventArgs
     {
-        public string RemoveID { get; set; }
+        public RemoveEventArgs(string removeRef, IList newList)
+        {
+            RemoveObject = removeRef;
+            NewObjects = newList;
+            Count = newList.Count;
+        }
 
-        public object NewList { get; set; }
+        public string RemoveObject { get; }
 
-        public int Count { get; set; }
+        public object NewObjects { get; }
+
+        public int Count { get; }
     }
 }

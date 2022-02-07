@@ -5,7 +5,7 @@ namespace Controllers
 {
     public class StatusEventArgs : EventArgs
     {
-        public StatusEventArgs(InputStatus status, string value)
+        public StatusEventArgs(InputStatus status, object value)
         {
             Status = status;
             Value = value;
@@ -13,6 +13,6 @@ namespace Controllers
 
         public InputStatus Status { get; }
 
-        public string Value { get; }
+        public object Value { get; }
     }
 }
