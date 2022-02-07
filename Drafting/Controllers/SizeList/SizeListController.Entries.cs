@@ -14,7 +14,7 @@ namespace Controllers
         public event EventHandler OnSaveEntries;
         public event EventHandler OnCancelEntries;
         public event EventHandler<SelectEventArgs<string>> OnEntrySelect;
-        public event EventHandler<InputStatus> OnEntryStatusChange;
+        public event EventHandler<StatusEventArgs> OnEntryStatusChange;
         public event EventHandler<ReadyEventArgs> OnEntryReadyStateChange;
         public event EventHandler<EntrySetEventArgs> OnEntrySet;
         public event EventHandler<CancelEventArgs> OnEntryCancel;
@@ -72,8 +72,10 @@ namespace Controllers
             {
                 statusEntry = value;
 
+                StatusEventArgs args = new StatusEventArgs(value, inputEntry);
+
                 // raise event for status change
-                OnEntryStatusChange.CheckedInvoke(value,
+                OnEntryStatusChange.CheckedInvoke(args,
                     !DISABLE_STATUS_RAISE_EVENT);
 
                 // check all inputs status
@@ -175,7 +177,7 @@ namespace Controllers
                 throw new InvalidOperationException();
 
             if (STATE_MODIFY_Entries)
-                throw new Exception("Modify state is already set.");
+                throw new Exception("Modify state is already set");
 
             // set flags
             STATE_MODIFY_Entries = true;
@@ -187,13 +189,15 @@ namespace Controllers
         public void Edit_Entry()
         {
             if (!STATE_LOADED_Entries)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException(
+                    "Unable to perform operation before loading");
 
             if (STATE_MODIFY_Entries)
-                throw new Exception("Modify state is already set.");
+                throw new Exception("Modify state is already set");
 
             if (selectedEntry == null)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException(
+                    "Unable to perform operation before selection");
 
             // set flags
             STATE_MODIFY_Entries = true;
@@ -211,29 +215,27 @@ namespace Controllers
 
         public void RemoveEntry()
         {
+            if (!STATE_LOADED_Entries)
+                throw new InvalidOperationException(
+                    "Unable to perform operation before loading");
+
             if (selectedEntry == null)
-                throw new InvalidOperationException();
-
-            //if (inputListDraft == null)
-            //    throw new InvalidOperationException();
-
+                throw new InvalidOperationException(
+                    "Unable to perform the operation before selection");
+            
             inputListDraft.Remove(selectedEntry);
 
-            RemoveEventArgs e = new RemoveEventArgs
-            {
-                RemoveID = selectedEntry,
-                NewList = inputListDraft.ToList(),
-                Count = inputListDraft.Count
-            };
+            RemoveEventArgs args = new RemoveEventArgs(selectedEntry,
+                inputListDraft.ToList());
 
             // raise #event
-            OnEntryRemove?.Invoke(this, e);
+            OnEntryRemove?.Invoke(this, args);
         }
 
         public void CommitChanges_Entry()
         {
             if (!isReady_Entry)
-                throw new Exception("The entry is invalid or unchanged.");
+                throw new Exception("The entry is invalid or unchanged");
 
             CreateOrUpdate_Entry();
 
@@ -286,11 +288,7 @@ namespace Controllers
 
             isReady_Entry = isValid && isChanged;
 
-            ReadyEventArgs args = new ReadyEventArgs
-            {
-                Ready = isReady,
-                //Info = isValid ? (isChanged ? "Ready" : "Unchanged") : "Not Ready"
-            };
+            ReadyEventArgs args = new ReadyEventArgs(isReady_Entry);
 
             // raise #event
             OnEntryReadyStateChange?.Invoke(this, args);

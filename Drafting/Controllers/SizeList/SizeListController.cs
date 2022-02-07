@@ -25,11 +25,10 @@ namespace Controllers
 
         #region Events
         public event EventHandler<LoadEventArgs> OnLoad;
-        public event EventHandler<SizeListSelectionEventArgs> OnSelection;
         public event EventHandler<SelectEventArgs<SizeList>> OnSelect;
         public event EventHandler<StatusEventArgs> OnIdStatusChange;
-        public event EventHandler<InputStatus> OnNameStatusChange;
-        public event EventHandler<InputStatus> OnListStatusChange;
+        public event EventHandler<StatusEventArgs> OnNameStatusChange;
+        public event EventHandler<StatusEventArgs> OnListStatusChange;
         public event EventHandler<ReadyEventArgs> OnReadyStateChange;
         public event EventHandler<PreDraftingEventArgs> OnPreDrafting;
         public event EventHandler<SetEventArgs> OnSet;
@@ -133,8 +132,10 @@ namespace Controllers
             {
                 _statusName = value;
 
+                StatusEventArgs args = new StatusEventArgs(value, _inputName);
+
                 // raise #event
-                OnNameStatusChange.CheckedInvoke(value,
+                OnNameStatusChange.CheckedInvoke(args,
                     !DISABLE_STATUS_RAISE_EVENT);
 
                 // check all inputs status
@@ -148,8 +149,11 @@ namespace Controllers
             {
                 _statusList = value;
 
+                StatusEventArgs args = new StatusEventArgs(value,
+                    inputList.ToList());
+
                 // raise #event
-                OnListStatusChange.CheckedInvoke(value,
+                OnListStatusChange.CheckedInvoke(args,
                     !DISABLE_STATUS_RAISE_EVENT);
 
                 // check all inputs status
@@ -160,8 +164,7 @@ namespace Controllers
 
         #region Methods
 
-        // public methods
-
+        #region Public Methods
         public void Save()
         {
             ContextProvider.Save(ContextEntity.Sizes);
@@ -209,7 +212,7 @@ namespace Controllers
         public void New()
         {
             if (STATE_MODIFY)
-                throw new Exception("Modify state is already set.");
+                throw new Exception("Modify state is already set");
 
             // set flags
             STATE_MODIFY = true;
@@ -226,7 +229,7 @@ namespace Controllers
         public void Edit(string objectID = "")
         {
             if (STATE_MODIFY)
-                throw new Exception("Modify state is already set.");
+                throw new Exception("Modify state is already set");
 
             STATE_MODIFY = true;
 
@@ -241,20 +244,21 @@ namespace Controllers
             });
         }
 
-        public void Remove(string objectId)
+        public void Remove(string objectId = "")
         {
-            broker.Delete(objectId);
+            if (selectedObject == null)
+                throw new InvalidOperationException(
+                    "Unable to perform the operation before selection");
+
+            broker.Delete(/*objectId*/selectedObject.ID);
             /* SUGGEST:
-             * Instead of using a parameter, we could use the selected object field.
-             * This allow us to check whether the ID exists and throws an exception if not.
+             * Instead of using a parameter, we could use the selected object.
+             * This allow us to check whether the ID exists
+             * and throws an exception if not.
              */
 
-            RemoveEventArgs args = new RemoveEventArgs
-            {
-                RemoveID = objectId,
-                NewList = sizeDP.GetList().ToGenericView(),
-                Count = Count
-            };
+            RemoveEventArgs args = new RemoveEventArgs(/*objectId*/
+                selectedObject.ID, sizeDP.GetList().ToGenericView());
 
             // raise #event
             OnRemove?.Invoke(this, args);
@@ -264,8 +268,8 @@ namespace Controllers
 
         public void CommitChanges()
         {
-            if (!isReady)
-                throw new Exception("The draft object is invalid or unchanged.");
+            if (!STATE_DRAFT_READY)
+                throw new Exception("Draft object is invalid or unchanged");
 
             CreateOrUpdate();
 
@@ -307,25 +311,25 @@ namespace Controllers
             // set flags
             STATE_MODIFY = false;
         }
-        
-        /* private methods */
+        #endregion
 
+        #region Private Methods
         private void CheckReadyStatus()
         {
             bool isValid = IsValidInputs();
             bool isChanged = IsDraftChanged();
 
-            isReady = isValid && isChanged;
-            
-            ReadyEventArgs args = new ReadyEventArgs
-            {
-                Ready = isReady,
-                Info = isValid ? (isChanged ? "Ready" : "Unchanged") : "Not Ready"
-            };
+            // set flags // test: moved at bottom
+            //STATE_DRAFT_READY = isValid && isChanged;
+
+            ReadyEventArgs args = new ReadyEventArgs(isValid, isChanged);
 
             // raise #event
-            //OnReadyStateChange?.Invoke(this, args);
-            OnReadyStateChange?.CheckedInvoke(args, !DISABLE_STATUS_RAISE_EVENT);
+            OnReadyStateChange?.CheckedInvoke(args,
+                !DISABLE_STATUS_RAISE_EVENT);
+
+            // set flags
+            STATE_DRAFT_READY = isValid && isChanged;
         }
 
         private void CopyEditObjectDataToInputs()
@@ -367,8 +371,9 @@ namespace Controllers
             StatusList =
                 notNullOrEmpty ? InputStatus.Valid : InputStatus.Invalid;
         }
+        #endregion
 
-        // private getter methods
+        #region Private Getters
         private SizeList GetEditObject()
         {
             return (SizeList)broker.Read(selectedObject.ID);
@@ -432,6 +437,8 @@ namespace Controllers
             };
         }
         #endregion
+        
+        #endregion
 
         #region Fields
 
@@ -449,7 +456,7 @@ namespace Controllers
         private InputStatus _statusList;
 
         // flags
-        private bool isReady;
+        private bool STATE_DRAFT_READY;
         private bool STATE_LOADED;
         private bool DISABLE_STATUS_RAISE_EVENT;
         private bool STATE_MODIFY;
@@ -458,13 +465,6 @@ namespace Controllers
         private SizeList selectedObject;
         private SizeList editObject;
 
-        #endregion
-
-        #region Unit Test API
-        public SizeList _Selected => selectedObject;
-        public SizeList _EditObject => editObject;
-        public bool _IsReady => isReady;
-        public bool _IsChanged => IsDraftChanged();
         #endregion
     }
 }
