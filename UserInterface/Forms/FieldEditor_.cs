@@ -273,12 +273,12 @@ namespace UserInterface.Forms
             Console.WriteLine($"{DateTime.Now.ToString(DT_FORMAT)} [{MethodBase.GetCurrentMethod().Name}] > ID Status: {e.Status.ToString()}");
         }
 
-        private void UiControl_OnNameStatusChange(object sender, InputStatus e)
+        private void UiControl_OnNameStatusChange(object sender, StatusEventArgs e)
         {
             Console.WriteLine($"{DateTime.Now.ToString(DT_FORMAT)} [{MethodBase.GetCurrentMethod().Name}] > Name Status: {e.ToString()}");
         }
 
-        private void UiControl_OnListStatusChange(object sender, InputStatus e)
+        private void UiControl_OnListStatusChange(object sender, StatusEventArgs e)
         {
             Console.WriteLine($"{DateTime.Now.ToString(DT_FORMAT)} [{MethodBase.GetCurrentMethod().Name}] > List Status: {e.ToString()}");
         }
@@ -334,7 +334,7 @@ namespace UserInterface.Forms
             {
                 dgvListDetails.SaveAndRestoreSelection(delegate
                 {
-                    BindObjectList(e.NewList);
+                    BindObjectList(e.NewObjects);
                 });
             }
             else
@@ -345,13 +345,13 @@ namespace UserInterface.Forms
             Console.WriteLine("{0} [{1}] > {2}",
                 DateTime.Now.ToString(DT_FORMAT),
                 MethodBase.GetCurrentMethod().Name,
-                $"Removed Object ID: {e.RemoveID}");
+                $"Removed Object ID: {e.RemoveObject}");
         }
 
-        private void UiControl_OnEntryStatusChange(object sender, InputStatus e)
+        private void UiControl_OnEntryStatusChange(object sender, StatusEventArgs e)
         {
             //throw new NotImplementedException();
-            switch (e)
+            switch (e.Status)
             {
                 case InputStatus.Valid:
                     btnAddEntry.Enabled = true;
