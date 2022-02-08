@@ -12,7 +12,7 @@ namespace Controllers
         #region Events
         public event EventHandler<LoadEventArgs> OnLoadEntries;
         public event EventHandler OnSaveEntries;
-        public event EventHandler OnCancelEntries;
+        public event EventHandler<RevertEventArgs> OnRevertEntries;
         public event EventHandler<SelectEventArgs<string>> OnEntrySelect;
         public event EventHandler<StatusEventArgs> OnEntryStatusChange;
         public event EventHandler<ReadyEventArgs> OnEntryReadyStateChange;
@@ -133,15 +133,17 @@ namespace Controllers
             STATE_LOADED_Entries = false;
         }
 
-        public void Cancel_Entries()
+        public void Revert_Entries()
         {
             if (!STATE_LOADED_Entries)
                 throw new InvalidOperationException();
 
             inputListDraft = null;
 
+            RevertEventArgs args = new RevertEventArgs(inputList?.ToList());
+
             // raise #event
-            OnCancelEntries?.Invoke(this, EventArgs.Empty);
+            OnRevertEntries?.Invoke(this, args);
 
             // set flags
             STATE_LOADED_Entries = false;
@@ -155,12 +157,18 @@ namespace Controllers
 
             if (entry == null)
                 throw new ArgumentNullException(nameof(entry));
-
-            selectedEntry =
-                inputListDraft == null
-                ? selectedEntries.First(lstEntry => lstEntry == entry)
-                : inputListDraft.First(lstEntry => lstEntry == entry);
-
+            
+            if (inputListDraft == null)
+            {
+                selectedEntry = selectedObject.List
+                    .First(lstEntry => lstEntry == entry);
+            }
+            else
+            {
+                selectedEntry= inputListDraft
+                    .First(lstEntry => lstEntry == entry);
+            }
+            
             SelectEventArgs<string> args = new SelectEventArgs<string>
             {
                 Selected = selectedEntry,
@@ -222,7 +230,7 @@ namespace Controllers
             if (selectedEntry == null)
                 throw new InvalidOperationException(
                     "Unable to perform the operation before selection");
-            
+
             inputListDraft.Remove(selectedEntry);
 
             RemoveEventArgs args = new RemoveEventArgs(selectedEntry,

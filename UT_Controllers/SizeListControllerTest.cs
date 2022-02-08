@@ -31,6 +31,17 @@ namespace UT_Controllers
             SKIP_LOG = false;
         }
 
+        private void Log(Action loggingActions)
+        {
+            if (SKIP_LOG)
+                return;
+
+            //Console.WriteLine(LINE_START);
+            loggingActions.Invoke();
+            //Console.WriteLine(SEPARATOR_LINE);
+            Console.WriteLine();
+        }
+
         #region Controller Events
         private void EventSubscriber()
         {
@@ -47,25 +58,16 @@ namespace UT_Controllers
 
             ui.OnLoadEntries += Ui_OnLoadEntries;
             ui.OnSaveEntries += Ui_OnSaveEntries;
-            ui.OnCancelEntries += Ui_OnCancelEntries;
+            ui.OnRevertEntries += Ui_OnRevertEntries;
             ui.OnEntrySelect += Ui_OnEntrySelect;
             ui.OnEntryStatusChange += Ui_OnEntryStatusChange;
             ui.OnEntrySet += Ui_OnEntrySet;
             ui.OnEntryCancel += Ui_OnEntryCancel;
             ui.OnEntryRemove += Ui_OnEntryRemove;
         }
-
-        private void Log(Action loggingActions)
-        {
-            if (SKIP_LOG)
-                return;
-            
-            //Console.WriteLine(LINE_START);
-            loggingActions.Invoke();
-            //Console.WriteLine(SEPARATOR_LINE);
-            Console.WriteLine();
-        }
-
+        #endregion
+        
+        #region Controller Events Responses
         private void Ui_OnLoad(object sender, LoadEventArgs e)
         {
             var viewList = (List<FieldListGenericView>)e.GenericViewList;
@@ -192,11 +194,18 @@ namespace UT_Controllers
                 Console.WriteLine("Entries modification saved");
             });
         }
-        private void Ui_OnCancelEntries(object sender, EventArgs e)
+        private void Ui_OnRevertEntries(object sender, RevertEventArgs e)
         {
             Log(delegate
             {
-                Console.WriteLine("Entries modification canceled");
+                Console.WriteLine("Entries modification reverted");
+                Console.WriteLine("Entries:");
+                if (e.Restored != null)
+                {
+                    Console.WriteLine(" • {0}",
+                        string.Join("\n • ", (List<string>)e.Restored));
+                }
+                Console.WriteLine("[{0} item(s)]", e.Count);
             });
         }
         private void Ui_OnEntrySelect(object sender, SelectEventArgs<string> e)
@@ -260,12 +269,41 @@ namespace UT_Controllers
         #endregion
 
         [TestMethod]
-        public void MyTestMethod()
+        public void Should_SelectEntry()
+        {
+            ui.Select("STEST");
+            ui.SelectEntry("Entry 1");
+        }
+
+        [TestMethod]
+        public void Should_Edit_SelectEntry()
+        {
+            ui.Select("STEST");
+            ui.Edit();
+            ui.Load_Entries();
+            ui.SelectEntry("Entry 1");
+        }
+
+        [TestMethod]
+        public void Should_RevertEntries()
         {
             ui.New();
+
             ui.Load_Entries();
+
             ui.New_Entry();
-            ui.InputEntry = "yfsyfgyt";
+            ui.InputEntry = "test entry 1";
+            ui.CommitChanges_Entry();
+
+            ui.New_Entry();
+            ui.InputEntry = "test entry 2";
+            ui.CommitChanges_Entry();
+
+            ui.New_Entry();
+            ui.InputEntry = "test entry 3";
+            ui.CommitChanges_Entry();
+
+            ui.Revert_Entries();
         }
     }
 }
