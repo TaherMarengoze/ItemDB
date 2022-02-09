@@ -197,7 +197,6 @@ namespace Controllers
             //    throw new InvalidOperationException();
 
             selectedObject = (SizeList)broker.Read(objectId);
-            selectedEntries = selectedObject.List.ToList();
 
             SelectEventArgs<SizeList> args = new SelectEventArgs<SizeList>
             {
@@ -248,17 +247,12 @@ namespace Controllers
         {
             if (selectedObject == null)
                 throw new InvalidOperationException(
-                    "Unable to perform the operation before selection");
+                    "Unable to perform operation before selection");
 
-            broker.Delete(/*objectId*/selectedObject.ID);
-            /* SUGGEST:
-             * Instead of using a parameter, we could use the selected object.
-             * This allow us to check whether the ID exists
-             * and throws an exception if not.
-             */
+            broker.Delete(selectedObject.ID);
 
-            RemoveEventArgs args = new RemoveEventArgs(/*objectId*/
-                selectedObject.ID, sizeDP.GetList().ToGenericView());
+            RemoveEventArgs args = new RemoveEventArgs(selectedObject.ID,
+                sizeDP.GetList().ToGenericView());
 
             // raise #event
             OnRemove?.Invoke(this, args);
@@ -283,29 +277,23 @@ namespace Controllers
             // raise #event
             OnSet?.Invoke(this, args);
 
-            // clear selection
-            selectedObject = null;
+            ClearSelection();
             editObject = null;
             ClearInputs();
 
             // set flags
             STATE_MODIFY = false;
         }
-
+        
         public void CancelChanges()
         {
-            if (editObject != null)
-                editObject = null;
-
-            CancelEventArgs args = new CancelEventArgs
-            {
-                RestoreID = selectedObject?.ID,
-                EmptyList = Count < 1
-            };
-
+            CancelEventArgs args = new CancelEventArgs(selectedObject?.ID,
+                sizeDP.GetList().ToGenericView());
+            
             // raise #event
             OnCancel?.Invoke(this, args);
 
+            editObject = null;
             ClearInputs();
 
             // set flags
@@ -344,6 +332,14 @@ namespace Controllers
         }
 
         /// <summary>
+        /// Clears the selected object field.
+        /// </summary>
+        private void ClearSelection()
+        {
+            selectedObject = null;
+        }
+
+        /// <summary>
         /// Clear all inputs without raising the change event of the associated
         /// input status.
         /// </summary>
@@ -353,7 +349,7 @@ namespace Controllers
 
             InputID = string.Empty;
             InputName = string.Empty;
-            inputList.Clear();
+            inputList?.Clear();
 
             DISABLE_STATUS_RAISE_EVENT = false;
         }

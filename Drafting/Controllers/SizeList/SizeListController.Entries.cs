@@ -157,7 +157,7 @@ namespace Controllers
 
             if (entry == null)
                 throw new ArgumentNullException(nameof(entry));
-            
+
             if (inputListDraft == null)
             {
                 selectedEntry = selectedObject.List
@@ -165,10 +165,10 @@ namespace Controllers
             }
             else
             {
-                selectedEntry= inputListDraft
+                selectedEntry = inputListDraft
                     .First(lstEntry => lstEntry == entry);
             }
-            
+
             SelectEventArgs<string> args = new SelectEventArgs<string>
             {
                 Selected = selectedEntry,
@@ -243,21 +243,17 @@ namespace Controllers
         public void CommitChanges_Entry()
         {
             if (!isReady_Entry)
-                throw new Exception("The entry is invalid or unchanged");
+                throw new Exception("Entry is invalid or unchanged");
 
             CreateOrUpdate_Entry();
 
-            EntrySetEventArgs args = new EntrySetEventArgs
-            {
-                NewItem = inputEntry,
-                OldItem = editEntry,
-                SetList = inputListDraft.ToList(),
-            };
+            EntrySetEventArgs args = new EntrySetEventArgs(inputEntry,
+                editEntry, inputListDraft.ToList());
 
             // raise #event
             OnEntrySet?.Invoke(this, args);
 
-            // clear selection
+            // clear objects
             selectedEntry = null;
             editEntry = null;
             ClearInputs_Entry();
@@ -269,14 +265,10 @@ namespace Controllers
 
         public void CancelChanges_Entry()
         {
-            if (editEntry != null)
-                editEntry = null;
+            if (editEntry != null) editEntry = null;
 
-            CancelEventArgs args = new CancelEventArgs
-            {
-                RestoreID = selectedEntry,
-                EmptyList = (selectedEntries?.Count ?? 0) <= 0
-            };
+            CancelEventArgs args = new CancelEventArgs(selectedEntry,
+                inputListDraft.ToList());
 
             // raise #event
             OnEntryCancel?.Invoke(this, args);
@@ -284,6 +276,7 @@ namespace Controllers
             ClearInputs_Entry();
 
             // set flags
+            STATE_MODIFY_Entries = false;
             ALLOW_INPUT_Entries = false;
         }
 
@@ -377,7 +370,6 @@ namespace Controllers
         private bool STATE_MODIFY_Entries;
 
         // objects
-        private List<string> selectedEntries;
         private string selectedEntry;
         private string editEntry;
         #endregion

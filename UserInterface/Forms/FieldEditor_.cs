@@ -325,7 +325,7 @@ namespace UserInterface.Forms
 
         private void UiControl_OnCancel(object sender, CancelEventArgs e)
         {
-            Console.WriteLine($"{DateTime.Now.ToString(DT_FORMAT)} [{MethodBase.GetCurrentMethod().Name}] > {e.RestoreID ?? "No item"}");
+            Console.WriteLine($"{DateTime.Now.ToString(DT_FORMAT)} [{MethodBase.GetCurrentMethod().Name}] > {e.Restore ?? "No item"}");
         }
 
         private void UiControl_OnRemove(object sender, RemoveEventArgs e)

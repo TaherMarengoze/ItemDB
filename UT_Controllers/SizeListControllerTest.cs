@@ -66,14 +66,14 @@ namespace UT_Controllers
             ui.OnEntryRemove += Ui_OnEntryRemove;
         }
         #endregion
-        
+
         #region Controller Events Responses
         private void Ui_OnLoad(object sender, LoadEventArgs e)
         {
             var viewList = (List<FieldListGenericView>)e.GenericViewList;
             Log(delegate
             {
-                Console.WriteLine("{0} object(s) loaded\n", e.Count);
+                Console.WriteLine(">> {0} object(s) loaded\n", e.Count);
                 foreach (FieldListGenericView item in viewList)
                 {
                     Console.WriteLine("{0}{3}[ {2:00} item(s) ]\t{1}"
@@ -102,7 +102,7 @@ namespace UT_Controllers
 
             Log(delegate
             {
-                Console.WriteLine("{0}", mode);
+                Console.WriteLine(">> {0} object", mode);
                 if (!isNew)
                 {
                     Console.WriteLine("Edit object [ID = {0}, Name = {1}]",
@@ -118,7 +118,7 @@ namespace UT_Controllers
         }
         private void Ui_OnSelection(object sender, SizeListSelectionEventArgs e)
         {
-            
+
         }
         private void Ui_OnIdStatusChange(object sender, StatusEventArgs e)
         {
@@ -169,17 +169,39 @@ namespace UT_Controllers
         }
         private void Ui_OnCancel(object sender, CancelEventArgs e)
         {
-            
+            var viewList = (List<FieldListGenericView>)e.List;
+
+            Log(delegate
+            {
+                Console.WriteLine(">> Objects Modification Cancelled");
+                Console.WriteLine("Restore object ID = {0}", e.Restore);
+                if (!e.EmptyList)
+                {
+                    Console.WriteLine("Objects:");
+                    foreach (var item in viewList)
+                    {
+                        Console.WriteLine("{0}{3}[ {2:00} item(s) ]\t{1}",
+                            item.ID, item.Name, item.EntriesCount,
+                            item.ID.Length <= 5 ? "\t\t" : "\t");
+                    }
+                    Console.WriteLine("[{0} item(s)]", e.Count);
+                }
+                else
+                {
+                    Console.WriteLine("<No objects>");
+                }
+
+            });
         }
         private void Ui_OnRemove(object sender, RemoveEventArgs e)
         {
-            
+
         }
         private void Ui_OnLoadEntries(object sender, LoadEventArgs e)
         {
             Log(delegate
             {
-                Console.WriteLine("Entries loaded for modification");
+                Console.WriteLine(">> Entries loaded for modification");
                 Console.WriteLine("Entries:");
                 Console.WriteLine(" • {0}",
                     string.Join("\n • ",
@@ -191,14 +213,14 @@ namespace UT_Controllers
         {
             Log(delegate
             {
-                Console.WriteLine("Entries modification saved");
+                Console.WriteLine(">> Entries modification saved");
             });
         }
         private void Ui_OnRevertEntries(object sender, RevertEventArgs e)
         {
             Log(delegate
             {
-                Console.WriteLine("Entries modification reverted");
+                Console.WriteLine(">> Entries modification reverted");
                 Console.WriteLine("Entries:");
                 if (e.Restored != null)
                 {
@@ -226,14 +248,15 @@ namespace UT_Controllers
         {
             Log(delegate
             {
-                Console.WriteLine("Entry Status = {0}, [{1}]",
-                    e.Status.ToString(), e.Value);
+                Console.WriteLine("Entry Changed (Value = {0}, Status = {1})",
+                    e.Value, e.Status.ToString());
             });
         }
         private void Ui_OnEntrySet(object sender, EntrySetEventArgs e)
         {
             Log(delegate
             {
+                Console.WriteLine(">> Entries Modification Set");
                 if (e.OldItem == null)
                     Console.WriteLine("Entry Added [{0}]", e.NewItem);
                 else
@@ -249,9 +272,20 @@ namespace UT_Controllers
         {
             Log(delegate
             {
-                Console.WriteLine("Restore object: {0}", e.RestoreID);
-                Console.WriteLine("{0} List",
-                    e.EmptyList ? "Empty" : "Non-empty");
+                Console.WriteLine("Modification Cancelled");
+                Console.WriteLine("Restore entry: {0}", e.Restore);
+                if (!e.EmptyList)
+                {
+                    Console.WriteLine("Entries:");
+                    Console.WriteLine(" • {0}",
+                        string.Join("\n • ", (List<string>)e.List));
+
+                    Console.WriteLine("[{0} item(s)]", e.Count);
+                }
+                else
+                {
+                    Console.WriteLine("<No entries>");
+                }
             });
         }
         private void Ui_OnEntryRemove(object sender, RemoveEventArgs e)
@@ -276,12 +310,54 @@ namespace UT_Controllers
         }
 
         [TestMethod]
+        public void Should_NewObjectCancel()
+        {
+            ui.Load();
+            ui.Select("STEST");
+            ui.New();
+            ui.CancelChanges();
+        }
+
+        [TestMethod]
+        public void Should_EditObjectCancel()
+        {
+            ui.Load();
+            ui.Select("STEST");
+            ui.Edit();
+            ui.CancelChanges();
+        }
+
+        [TestMethod]
         public void Should_Edit_SelectEntry()
         {
             ui.Select("STEST");
             ui.Edit();
             ui.Load_Entries();
             ui.SelectEntry("Entry 1");
+        }
+
+        [TestMethod]
+        public void Should_Edit_NewEntryCancel()
+        {
+            ui.Select("STEST");
+            ui.Edit();
+            ui.Load_Entries();
+            ui.SelectEntry("Entry 1");
+            ui.New_Entry();
+            ui.InputEntry = "dummy entry";
+            ui.CancelChanges_Entry();
+        }
+
+        [TestMethod]
+        public void Should_Edit_EditEntryCancel()
+        {
+            ui.Select("STEST");
+            ui.Edit();
+            ui.Load_Entries();
+            ui.SelectEntry("Entry 1");
+            ui.Edit_Entry();
+            ui.InputEntry = "dummy entry";
+            ui.CancelChanges_Entry();
         }
 
         [TestMethod]

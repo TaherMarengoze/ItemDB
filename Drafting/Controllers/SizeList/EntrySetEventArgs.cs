@@ -5,10 +5,17 @@ namespace Controllers
 {
     public class EntrySetEventArgs : EventArgs
     {
-        public string OldItem { get; set; }
+        public EntrySetEventArgs(string newVal, string oldVal, IList newList)
+        {
+            NewItem = newVal;
+            OldItem = oldVal;
+            SetList = newList;
+        }
 
-        public string NewItem { get; set; }
+        public string OldItem { get; }
+
+        public string NewItem { get; }
         
-        public IList SetList { get; set; }
+        public IList SetList { get; }
     }
 }
