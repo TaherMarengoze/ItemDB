@@ -172,9 +172,6 @@ namespace Controllers
 
         public void Load()
         {
-            //if (STATE_LOADED)
-            //    throw new Exception("Operation already called.");
-
             // set flags
             STATE_LOADED = true;
 
@@ -188,14 +185,12 @@ namespace Controllers
         public void Select(string objectId)
         {
             if (STATE_MODIFY)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException(
+                    "Unable to select while modify state set");
 
             if (objectId == null)
                 throw new ArgumentNullException(nameof(objectId));
-
-            //if (!STATE_LOADED)
-            //    throw new InvalidOperationException();
-
+            
             selectedObject = (SizeList)broker.Read(objectId);
 
             SelectEventArgs<SizeList> args = new SelectEventArgs<SizeList>
@@ -211,9 +206,9 @@ namespace Controllers
         public void New()
         {
             if (STATE_MODIFY)
-                throw new Exception("Modify state is already set");
+                throw new Exception("Modify state already set");
 
-            // set flags
+            // set flags (pre-event)
             STATE_MODIFY = true;
 
             PreDraftingEventArgs args = new PreDraftingEventArgs
@@ -223,24 +218,33 @@ namespace Controllers
 
             // raise #event
             OnPreDrafting?.Invoke(this, args);
+
+            // set flags (post-event)
+            STATE_POST_MODIFY = true;
         }
 
         public void Edit(string objectID = "")
         {
             if (STATE_MODIFY)
-                throw new Exception("Modify state is already set");
+                throw new Exception("Modify state already set");
 
+            // set flags (pre-event)
             STATE_MODIFY = true;
 
-            editObject = GetEditObject();
-            CopyEditObjectDataToInputs();
+            SetEditObject();
+            FillInputs();
 
-            // raise #event
-            OnPreDrafting?.Invoke(this, new PreDraftingEventArgs
+            PreDraftingEventArgs args = new PreDraftingEventArgs
             {
                 DraftObject = editObject.Clone(),
                 PreList = sizeDP.GetIDs(),
-            });
+            };
+
+            // raise #event
+            OnPreDrafting?.Invoke(this, args);
+
+            // set flags (post-event)
+            STATE_POST_MODIFY = true;
         }
 
         public void Remove(string objectId = "")
@@ -262,8 +266,11 @@ namespace Controllers
 
         public void CommitChanges()
         {
+            if (!STATE_MODIFY)
+                throw new InvalidOperationException("Modify state not set");
+
             if (!STATE_DRAFT_READY)
-                throw new Exception("Draft object is invalid or unchanged");
+                throw new Exception("Invalid or unchanged draft object");
 
             CreateOrUpdate();
 
@@ -274,6 +281,9 @@ namespace Controllers
                 NewList = sizeDP.GetList().ToGenericView(),
             };
 
+            // set flags (pre-event)
+            STATE_MODIFY = false;
+
             // raise #event
             OnSet?.Invoke(this, args);
 
@@ -281,23 +291,32 @@ namespace Controllers
             editObject = null;
             ClearInputs();
 
-            // set flags
-            STATE_MODIFY = false;
+            // set flags (post-event)
         }
         
         public void CancelChanges()
         {
+            if (!STATE_POST_MODIFY)
+                throw new InvalidOperationException(/*"Modify state not set"*/
+                    "Unable to cancel before modify state is set");
+
+            if (!STATE_MODIFY)
+                throw new InvalidOperationException("Operation in progress");
+
+            // set flags (pre-event)
+            STATE_MODIFY = false;
+
             CancelEventArgs args = new CancelEventArgs(selectedObject?.ID,
                 sizeDP.GetList().ToGenericView());
-            
+
             // raise #event
             OnCancel?.Invoke(this, args);
 
             editObject = null;
             ClearInputs();
 
-            // set flags
-            STATE_MODIFY = false;
+            // set flags (post-event)
+            STATE_POST_MODIFY = false;
         }
         #endregion
 
@@ -320,7 +339,18 @@ namespace Controllers
             STATE_DRAFT_READY = isValid && isChanged;
         }
 
-        private void CopyEditObjectDataToInputs()
+        /// <summary>
+        /// Sets the edit object.
+        /// </summary>
+        private void SetEditObject()
+        {
+            editObject = (SizeList)broker.Read(selectedObject.ID);
+        }
+
+        /// <summary>
+        /// Copy the data of the edited object to the inputs.
+        /// </summary>
+        private void FillInputs()
         {
             DISABLE_STATUS_RAISE_EVENT = true;
 
@@ -370,11 +400,6 @@ namespace Controllers
         #endregion
 
         #region Private Getters
-        private SizeList GetEditObject()
-        {
-            return (SizeList)broker.Read(selectedObject.ID);
-        }
-
         private bool IsValidInputs()
         {
             InputStatus[] inputStatus = {
@@ -456,6 +481,7 @@ namespace Controllers
         private bool STATE_LOADED;
         private bool DISABLE_STATUS_RAISE_EVENT;
         private bool STATE_MODIFY;
+        private bool STATE_POST_MODIFY;
 
         // objects
         private SizeList selectedObject;

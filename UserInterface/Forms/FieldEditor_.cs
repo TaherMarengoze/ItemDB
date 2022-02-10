@@ -85,7 +85,7 @@ namespace UserInterface.Forms
 
         private void EditObject(string id)
         {
-            uiControl.Edit(id);
+            uiControl.Edit();
         }
 
         private void AcceptChanges()
@@ -681,7 +681,7 @@ namespace UserInterface.Forms
 
         private void btnAccept_Click(object sender, EventArgs e)
         {
-            uiControl.PartialCommit_Entries();
+            //uiControl.PartialCommit_Entries();
         }
 
 #pragma warning restore IDE1006 // Naming Styles

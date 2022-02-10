@@ -326,6 +326,53 @@ namespace UT_Controllers
             ui.Edit();
             ui.CancelChanges();
         }
+        
+        [TestMethod]
+        public void Should_Not_Cancel()
+        {
+            // 
+            try
+            {
+                ui.CancelChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Unable to perform operation: {0}",
+                    nameof(ui.CancelChanges));
+
+                Console.WriteLine("Error message: {0}", ex.Message);
+            }
+        }
+
+        [TestMethod]
+        public void Test_NestedCancelAction()
+        {
+            ui.OnCancel -= Ui_OnCancel;
+            ui.OnCancel += Ui_OnCancel_TestNested;
+            ui.New();
+            ui.CancelChanges();
+        }
+        
+        [TestMethod]
+        public void Test_AddNestedCancel()
+        {
+            ui.OnPreDrafting -= Ui_OnPreDrafting;
+            ui.OnCancel -= Ui_OnCancel;
+            ui.OnPreDrafting += Ui_OnPreDrafting_TestNested;
+            ui.OnCancel += Ui_OnCancel_TestNested;
+            ui.New();
+            ui.CancelChanges();
+        }
+
+        private void Ui_OnPreDrafting_TestNested(object sender, PreDraftingEventArgs e)
+        {
+            ui.CancelChanges();
+        }
+        private void Ui_OnCancel_TestNested(object sender, CancelEventArgs e)
+        {
+            //ui.New();
+            ui.CancelChanges();
+        }
 
         [TestMethod]
         public void Should_Edit_SelectEntry()
