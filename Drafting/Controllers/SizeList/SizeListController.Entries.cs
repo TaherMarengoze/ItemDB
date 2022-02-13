@@ -27,13 +27,13 @@ namespace Controllers
         {
             get => inputEntry; set
             {
-                if (!ALLOW_INPUT_Entries)
-                {
-                    System.Diagnostics.Debug.Print(
-                        "Input is not allowed in the current state.");
+                //if (!ALLOW_INPUT_Entries)
+                //{
+                //    System.Diagnostics.Debug.Print(
+                //        "Input is not allowed in the current state.");
 
-                    throw new Exception("Input is not allowed in the current state.");
-                }
+                //    throw new Exception("Input is not allowed in the current state.");
+                //}
 
                 inputEntry = value;
 
@@ -99,6 +99,13 @@ namespace Controllers
             DISABLE_STATUS_RAISE_EVENT = false;
         }
 
+        //public void PartialLoadEntries() // try to make this in an Interface
+        //{
+        //    SetEditObject();
+        //    FillInputs();
+        //    Load_Entries();
+        //}
+
         public void Load_Entries()
         {
             NewOrCloneInputList();
@@ -120,7 +127,10 @@ namespace Controllers
 
         public void Revert_Entries()
         {
+            // clear objects
             inputListDraft = null;
+            editEntry = null;
+            ClearInputs_Entry();
 
             RevertEventArgs args = new RevertEventArgs(inputList?.ToList());
 
@@ -157,7 +167,7 @@ namespace Controllers
         public void New_Entry()
         {
             // set flags
-            ALLOW_INPUT_Entries = true;
+            //ALLOW_INPUT_Entries = true;
 
             // raise #event
         }
@@ -169,7 +179,7 @@ namespace Controllers
                     "Unable to perform operation before selection");
 
             // set flags
-            ALLOW_INPUT_Entries = true;
+            //ALLOW_INPUT_Entries = true;
 
             // get and store the edit entry
             editEntry = selectedEntry;
@@ -215,23 +225,23 @@ namespace Controllers
             ClearInputs_Entry();
 
             // set flags
-            ALLOW_INPUT_Entries = false;
+            //ALLOW_INPUT_Entries = false;
         }
 
         public void CancelChanges_Entry()
         {
-            if (editEntry != null) editEntry = null;
-
             CancelEventArgs args = new CancelEventArgs(selectedEntry,
                 inputListDraft.ToList());
 
             // raise #event
             OnEntryCancel?.Invoke(this, args);
 
+            // clear objects
+            editEntry = null;
             ClearInputs_Entry();
 
             // set flags
-            ALLOW_INPUT_Entries = false;
+            //ALLOW_INPUT_Entries = false;
         }
 
         // private methods
@@ -285,7 +295,7 @@ namespace Controllers
         private bool IsDraftChanged_Entry()
         {
             bool[] draftChange = {
-                inputEntry != null ? inputEntry != editEntry : false,
+                inputEntry != null && inputEntry != editEntry,
             };
 
             return draftChange.Any(change => change);
@@ -318,7 +328,7 @@ namespace Controllers
         private InputStatus statusEntry;
 
         // flags
-        private bool ALLOW_INPUT_Entries;
+        //private bool ALLOW_INPUT_Entries;
         private bool isReady_Entry;
 
         // objects

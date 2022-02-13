@@ -35,9 +35,9 @@ namespace UserInterface.Forms
         #region Fields
         SizeListController uiControl;
         private bool editMode;
-        bool DataGridView_MODIFY_COLUMN_HIDDEN;
-        string[] actionColumns = new string[3];
-
+        private bool DataGridView_MODIFY_COLUMN_HIDDEN;
+        private bool PARTIAL_EDIT;
+        private string[] actionColumns = new string[3];
         #endregion
 
         #region Constructors and Initialization
@@ -83,7 +83,7 @@ namespace UserInterface.Forms
             uiControl.New();
         }
 
-        private void EditObject(string id)
+        private void EditObject()
         {
             uiControl.Edit();
         }
@@ -98,17 +98,27 @@ namespace UserInterface.Forms
             uiControl.CancelChanges();
         }
 
-        private void RemoveObject(string id)
+        private void RemoveObject()
         {
-            uiControl.Remove(id);
+            uiControl.Remove();
         }
 
-        private void EditListEntry(string listId)
+        private void EditListEntries()
         {
-            //uiControl.Edit_Entry();
+            PARTIAL_EDIT = true;
+            uiControl.Edit();
+            PARTIAL_EDIT = false;
+            uiControl.Load_Entries();
+        }
 
-            // set entry mode
-            SetEditMode(true);
+        private void EditListEntriesAccept()
+        {
+            uiControl.Save_Entries();
+        }
+
+        private void EditListEntriesCancel()
+        {
+            uiControl.Revert_Entries();
         }
         #endregion
 
@@ -248,6 +258,11 @@ namespace UserInterface.Forms
             uiControl.OnCancel += UiControl_OnCancel;
             uiControl.OnRemove += UiControl_OnRemove;
             uiControl.OnEntryStatusChange += UiControl_OnEntryStatusChange;
+
+            uiControl.OnLoadEntries += UiControl_OnLoadEntries;
+            uiControl.OnSaveEntries += UiControl_OnSaveEntries;
+            uiControl.OnRevertEntries += UiControl_OnRevertEntries;
+            uiControl.OnEntrySet += UiControl_OnEntrySet;
         }
 
         private void UiControl_OnLoad(object sender, LoadEventArgs e)
@@ -270,27 +285,30 @@ namespace UserInterface.Forms
 
         private void UiControl_OnIdStatusChange(object sender, StatusEventArgs e)
         {
-            Console.WriteLine($"{DateTime.Now.ToString(DT_FORMAT)} [{MethodBase.GetCurrentMethod().Name}] > ID Status: {e.Status.ToString()}");
+            Console.WriteLine($"{DateTime.Now.ToString(DT_FORMAT)} [{MethodBase.GetCurrentMethod().Name}] > ID Status: {e.Status}");
         }
 
         private void UiControl_OnNameStatusChange(object sender, StatusEventArgs e)
         {
-            Console.WriteLine($"{DateTime.Now.ToString(DT_FORMAT)} [{MethodBase.GetCurrentMethod().Name}] > Name Status: {e.ToString()}");
+            Console.WriteLine($"{DateTime.Now.ToString(DT_FORMAT)} [{MethodBase.GetCurrentMethod().Name}] > Name Status: {e}");
         }
 
         private void UiControl_OnListStatusChange(object sender, StatusEventArgs e)
         {
-            Console.WriteLine($"{DateTime.Now.ToString(DT_FORMAT)} [{MethodBase.GetCurrentMethod().Name}] > List Status: {e.ToString()}");
+            Console.WriteLine($"{DateTime.Now.ToString(DT_FORMAT)} [{MethodBase.GetCurrentMethod().Name}] > List Status: {e}");
         }
 
         private void UiControl_OnReadyStateChange(object sender, ReadyEventArgs e)
         {
-            if (e.Ready)
+            if (e.Ready && !editMode)
                 AcceptChanges();
         }
 
         private void UiControl_OnPreDrafting(object sender, PreDraftingEventArgs e)
         {
+            if (PARTIAL_EDIT)
+                return;
+
             bool isNewObject = e.DraftObject == null;
 
             ListEditor_ editor = isNewObject ?
@@ -370,6 +388,38 @@ namespace UserInterface.Forms
                     break;
             }
         }
+
+        private void UiControl_OnLoadEntries(object sender, LoadEventArgs e)
+        {
+            // set entry mode
+            SetEditMode(true);
+        }
+
+        private void UiControl_OnSaveEntries(object sender, EventArgs e)
+        {
+            SetEditMode(false);
+        }
+
+        private void UiControl_OnRevertEntries(object sender, RevertEventArgs e)
+        {
+            SetEditMode(false);
+
+            // restore the entries list to the old one
+            lbxFieldListItems.DataSource = e.Restored;
+        }
+
+        private void UiControl_OnEntrySet(object sender, EntrySetEventArgs e)
+        {
+            // clear entry input control
+            txtEntryValue.Text = string.Empty;
+
+            // update the entries list
+            lbxFieldListItems.DataSource = e.SetList;
+
+            // enable the 'Accept' button, if disabled
+            if (!btnAccept.Enabled)
+                btnAccept.Enabled = true;
+        }
         #endregion
 
         #endregion
@@ -379,12 +429,6 @@ namespace UserInterface.Forms
 
         private ObservableCollection<string> listEntries;
         #endregion
-
-        public FieldEditor_(FieldType field)
-        {
-            InitializeComponent();
-            fieldType = field;
-        }
 
         #region General
         private void AskSaveBeforeClose()
@@ -408,18 +452,6 @@ namespace UserInterface.Forms
             lbxFieldListItems.DataSource = listEntries;
         }
 
-        private void EnableControls()
-        {
-            grpListData.Enabled = true;
-            tsmiSave.Enabled = true;
-        }
-
-        private void DisableControls()
-        {
-            grpListData.Enabled = false;
-            tsmiSave.Enabled = false;
-        }
-
         private void SelectFirstListItem()
         {
             try
@@ -430,20 +462,6 @@ namespace UserInterface.Forms
             catch (Exception) { }
         }
 
-        private void SelectListItem(string item)
-        {
-            try
-            {
-                if (lbxFieldListItems.Items.Count > 1)
-                    lbxFieldListItems.Text = item;
-            }
-            catch (Exception) { }
-        }
-
-        private void DisableEntryAdd()
-        {
-            btnAddEntry.Enabled = false;
-        }
         #endregion
 
         #region File-Specific
@@ -451,13 +469,6 @@ namespace UserInterface.Forms
         private void CheckAvailableEntries()
         {
             btnDeleteEntry.Enabled = lbxFieldListItems.Items.Count > 1;
-        }
-
-        private void CheckDuplicateEntries()
-        {
-            string listId = GetSelectedListId();
-            string entryValue = txtEntryValue.Text;
-            btnAddEntry.Enabled = !listEntries.Contains(entryValue);
         }
         #endregion
 
@@ -470,23 +481,7 @@ namespace UserInterface.Forms
 
         private void btnAddEntry_Click(object sender, EventArgs e)
         {
-            // new code
             uiControl.CommitChanges_Entry();
-
-            // old code
-            //string entryValue = txtEntryValue.Text;
-
-            //if (entryValue != string.Empty)
-            //{
-            //    string fieldId = GetSelectedListId();
-            //    Data.FieldListAddEntry(fieldType, fieldId, entryValue);
-
-            //    txtEntryValue.Text = string.Empty;
-            //    UpdateEntriesList();
-            //    SelectListItem(entryValue);
-            //    CheckAvailableEntries();
-            //    txtEntryValue.Focus();
-            //}
         }
 
         private void btnDeleteEntry_Click(object sender, EventArgs e)
@@ -662,26 +657,28 @@ namespace UserInterface.Forms
             if (e.RowIndex < 0)
                 return;
 
-            string id = (string)dgvListDetails.SelectedObjectID();
-
-            if (e.ColumnIndex == (int)ActionColumn.EDIT)
-                EditObject(id);
-
-            if (e.ColumnIndex == (int)ActionColumn.DELETE)
-                RemoveObject(id);
-
-            if (e.ColumnIndex == (int)ActionColumn.LIST)
-                EditListEntry(id);
+            switch (e.ColumnIndex)
+            {
+                case (int)ActionColumn.EDIT:
+                    EditObject();
+                    break;
+                case (int)ActionColumn.DELETE:
+                    RemoveObject();
+                    break;
+                case (int)ActionColumn.LIST:
+                    EditListEntries();
+                    break;
+            }
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            SetEditMode(false);
+            EditListEntriesCancel();
         }
 
         private void btnAccept_Click(object sender, EventArgs e)
         {
-            //uiControl.PartialCommit_Entries();
+            EditListEntriesAccept();
         }
 
 #pragma warning restore IDE1006 // Naming Styles
