@@ -101,60 +101,35 @@ namespace Controllers
 
         public void Load_Entries()
         {
-            if (!STATE_MODIFY)
-                throw new InvalidOperationException();
-
-            if (STATE_LOADED_Entries)
-                throw new Exception("Operation already called.");
-
             NewOrCloneInputList();
 
             LoadEventArgs args = new LoadEventArgs(inputListDraft);
 
             // raise #event
             OnLoadEntries?.Invoke(this, args);
-
-            // set flags
-            STATE_LOADED_Entries = true;
         }
 
         public void Save_Entries()
         {
-            if (!STATE_LOADED_Entries)
-                throw new InvalidOperationException();
-
             SetInputList(inputListDraft.ToList());
             inputListDraft = null;
 
             // raise #event
             OnSaveEntries?.Invoke(this, EventArgs.Empty);
-
-            // set flags
-            STATE_LOADED_Entries = false;
         }
 
         public void Revert_Entries()
         {
-            if (!STATE_LOADED_Entries)
-                throw new InvalidOperationException();
-
             inputListDraft = null;
 
             RevertEventArgs args = new RevertEventArgs(inputList?.ToList());
 
             // raise #event
             OnRevertEntries?.Invoke(this, args);
-
-            // set flags
-            STATE_LOADED_Entries = false;
         }
 
         public void SelectEntry(string entry)
         {
-            if (STATE_MODIFY_Entries)
-                throw new InvalidOperationException(
-                    "Unable to select due to the current state of the object");
-
             if (entry == null)
                 throw new ArgumentNullException(nameof(entry));
 
@@ -181,14 +156,7 @@ namespace Controllers
 
         public void New_Entry()
         {
-            if (!STATE_LOADED_Entries)
-                throw new InvalidOperationException();
-
-            if (STATE_MODIFY_Entries)
-                throw new Exception("Modify state is already set");
-
             // set flags
-            STATE_MODIFY_Entries = true;
             ALLOW_INPUT_Entries = true;
 
             // raise #event
@@ -196,19 +164,11 @@ namespace Controllers
 
         public void Edit_Entry()
         {
-            if (!STATE_LOADED_Entries)
-                throw new InvalidOperationException(
-                    "Unable to perform operation before loading");
-
-            if (STATE_MODIFY_Entries)
-                throw new Exception("Modify state is already set");
-
             if (selectedEntry == null)
                 throw new InvalidOperationException(
                     "Unable to perform operation before selection");
 
             // set flags
-            STATE_MODIFY_Entries = true;
             ALLOW_INPUT_Entries = true;
 
             // get and store the edit entry
@@ -223,10 +183,6 @@ namespace Controllers
 
         public void RemoveEntry()
         {
-            if (!STATE_LOADED_Entries)
-                throw new InvalidOperationException(
-                    "Unable to perform operation before loading");
-
             if (selectedEntry == null)
                 throw new InvalidOperationException(
                     "Unable to perform the operation before selection");
@@ -259,7 +215,6 @@ namespace Controllers
             ClearInputs_Entry();
 
             // set flags
-            STATE_MODIFY_Entries = false;
             ALLOW_INPUT_Entries = false;
         }
 
@@ -276,7 +231,6 @@ namespace Controllers
             ClearInputs_Entry();
 
             // set flags
-            STATE_MODIFY_Entries = false;
             ALLOW_INPUT_Entries = false;
         }
 
@@ -366,8 +320,6 @@ namespace Controllers
         // flags
         private bool ALLOW_INPUT_Entries;
         private bool isReady_Entry;
-        private bool STATE_LOADED_Entries;
-        private bool STATE_MODIFY_Entries;
 
         // objects
         private string selectedEntry;
