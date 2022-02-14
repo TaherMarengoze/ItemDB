@@ -29,15 +29,16 @@ namespace UserInterface.Forms
             LIST = 2
         }
 
-        private const string DT_FORMAT = "yyyy-MM-dd HH:mm:ss.fffffff";
+        private readonly string DT_FORMAT = "yyyy-MM-dd HH:mm:ss.fffffff";
         #endregion
 
         #region Fields
-        SizeListController uiControl;
+        private readonly SizeListController uiControl;
         private bool editMode;
         private bool DataGridView_MODIFY_COLUMN_HIDDEN;
         private bool PARTIAL_EDIT;
-        private string[] actionColumns = new string[3];
+        private bool SKIP_CONTROLLER_EVENTS;
+        private readonly string[] actionColumns = new string[3];
         #endregion
 
         #region Constructors and Initialization
@@ -101,19 +102,27 @@ namespace UserInterface.Forms
         private void RemoveObject()
         {
             uiControl.Remove();
+            //response > UiControl_OnRemove
         }
 
         private void EditListEntries()
         {
             PARTIAL_EDIT = true;
-            uiControl.Edit();
+            
+            EditObject();
+            //response > UiControl_OnPreDrafting
+
             PARTIAL_EDIT = false;
+
             uiControl.Load_Entries();
+            //response > UiControl_OnLoadEntries
         }
 
         private void EditListEntriesAccept()
         {
             uiControl.Save_Entries();
+            //response > UiControl_OnReadyStateChange
+            //response > UiControl_OnSaveEntries
         }
 
         private void EditListEntriesCancel()
@@ -247,7 +256,6 @@ namespace UserInterface.Forms
         private void SubscribeControllerEvents()
         {
             uiControl.OnLoad += UiControl_OnLoad;
-            //uiControl.OnSelection += UiControl_OnSelection;
             uiControl.OnSelect += UiControl_OnSelect;
             uiControl.OnIdStatusChange += UiControl_OnIdStatusChange;
             uiControl.OnNameStatusChange += UiControl_OnNameStatusChange;
@@ -268,15 +276,15 @@ namespace UserInterface.Forms
         private void UiControl_OnLoad(object sender, LoadEventArgs e)
         {
             if (e.Count > 0)
+            {
+                //EventHandler handler = dgvListDetails_SelectionChanged;
+                //dgvListDetails.SelectionChanged -= handler;
                 BindObjectList(e.GenericViewList);
+                //dgvListDetails.SelectionChanged += handler;
+            }
             else
                 UndindObjectList();
         }
-
-        //private void UiControl_OnSelection(object sender, SizeListSelectionEventArgs e)
-        //{
-        //    lbxFieldListItems.DataSource = e.Selected?.List;
-        //}
 
         private void UiControl_OnSelect(object sender, SelectEventArgs<SizeList> e)
         {
@@ -300,8 +308,9 @@ namespace UserInterface.Forms
 
         private void UiControl_OnReadyStateChange(object sender, ReadyEventArgs e)
         {
-            if (e.Ready && !editMode)
-                AcceptChanges();
+            // revise the condition
+            //if (e.Ready && !editMode)
+            //    AcceptChanges();
         }
 
         private void UiControl_OnPreDrafting(object sender, PreDraftingEventArgs e)
@@ -322,13 +331,33 @@ namespace UserInterface.Forms
 
                 if (isNewObject)
                 {
-                    //uiControl.InputList = editor.OutputList.List; // clone or not ?
-                    //uiControl.AddEntry(editor.OutputList.List[0]);
+                    SKIP_CONTROLLER_EVENTS = true;
+
+                    uiControl.Load_Entries();
+                    //response > UiControl_OnLoadEntries
+
+                    //uiControl.New_Entry(); // not needed for now
+
+                    uiControl.InputEntry = editor.OutputList.List[0];
+                    //response > UiControl_OnEntryStatusChange
+
+                    uiControl.CommitChanges_Entry();
+                    //response > UiControl_OnEntrySet
+
+                    uiControl.Save_Entries();
+                    //response > UiControl_OnReadyStateChange
+                    //response > UiControl_OnSaveEntries
+
+                    SKIP_CONTROLLER_EVENTS = false;
                 }
+
+                AcceptChanges();
+                //response > UiControl_OnSet
             }
             else
             {
                 CancelChanges();
+                //response > UiControl_OnCancel
             }
         }
 
@@ -337,8 +366,14 @@ namespace UserInterface.Forms
             BindObjectList(e.NewList);
             //BindObjectList(e.GetType().GetProperty("NewList").GetValue(e));
 
-            // select added object
+            // select added or edited object
             dgvListDetails.SelectRow(e.NewID, "ID");
+
+            if (editMode)
+            {
+                dgvListDetails_SelectionChanged(dgvListDetails,
+                    EventArgs.Empty);
+            }
         }
 
         private void UiControl_OnCancel(object sender, CancelEventArgs e)
@@ -352,23 +387,24 @@ namespace UserInterface.Forms
             {
                 dgvListDetails.SaveAndRestoreSelection(delegate
                 {
+                    EventHandler handler = dgvListDetails_SelectionChanged;
+
+                    dgvListDetails.SelectionChanged -= handler;
                     BindObjectList(e.NewObjects);
+                    dgvListDetails.SelectionChanged += handler;
                 });
             }
             else
             {
                 UndindObjectList();
             }
-
-            Console.WriteLine("{0} [{1}] > {2}",
-                DateTime.Now.ToString(DT_FORMAT),
-                MethodBase.GetCurrentMethod().Name,
-                $"Removed Object ID: {e.RemoveObject}");
         }
 
         private void UiControl_OnEntryStatusChange(object sender, StatusEventArgs e)
         {
-            //throw new NotImplementedException();
+            if (SKIP_CONTROLLER_EVENTS)
+                return;
+
             switch (e.Status)
             {
                 case InputStatus.Valid:
@@ -391,12 +427,21 @@ namespace UserInterface.Forms
 
         private void UiControl_OnLoadEntries(object sender, LoadEventArgs e)
         {
+            if (SKIP_CONTROLLER_EVENTS)
+                return;
+
             // set entry mode
             SetEditMode(true);
         }
 
         private void UiControl_OnSaveEntries(object sender, EventArgs e)
         {
+            if (SKIP_CONTROLLER_EVENTS)
+                return;
+
+            AcceptChanges();
+            //response > UiControl_OnSet
+
             SetEditMode(false);
         }
 
@@ -410,6 +455,9 @@ namespace UserInterface.Forms
 
         private void UiControl_OnEntrySet(object sender, EntrySetEventArgs e)
         {
+            if (SKIP_CONTROLLER_EVENTS)
+                return;
+
             // clear entry input control
             txtEntryValue.Text = string.Empty;
 
@@ -425,7 +473,7 @@ namespace UserInterface.Forms
         #endregion
 
         #region Old Code
-        private FieldType fieldType;
+        private readonly FieldType fieldType;
 
         private ObservableCollection<string> listEntries;
         #endregion
@@ -671,17 +719,17 @@ namespace UserInterface.Forms
             }
         }
 
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            EditListEntriesCancel();
-        }
-
         private void btnAccept_Click(object sender, EventArgs e)
         {
             EditListEntriesAccept();
         }
 
-#pragma warning restore IDE1006 // Naming Styles
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            EditListEntriesCancel();
+        }
+
         #endregion
+#pragma warning restore IDE1006 // Naming Styles
     }
 }

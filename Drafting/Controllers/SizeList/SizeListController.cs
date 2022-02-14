@@ -39,8 +39,7 @@ namespace Controllers
         // Properties
         public List<SizeList> SizeLists => sizeDP.GetList().As<SizeList>();
 
-        public List<string> SizeListIDs =>
-            sizeDP.GetIDs();
+        public List<string> SizeListIDs => sizeDP.GetIDs();
 
         private int Count => sizeDP.Count /*SizeLists?.Count ?? 0*/;
 
@@ -48,9 +47,9 @@ namespace Controllers
 
         public string InputID
         {
-            get => _inputID; set
+            get => inputID; set
             {
-                _inputID = value;
+                inputID = value;
                 if (string.IsNullOrWhiteSpace(value))
                     StatusID = InputStatus.Blank;
                 else
@@ -81,9 +80,9 @@ namespace Controllers
 
         public string InputName
         {
-            get => _inputName; set
+            get => inputName; set
             {
-                _inputName = value;
+                inputName = value;
 
                 if (string.IsNullOrWhiteSpace(value))
                     StatusName = InputStatus.Blank;
@@ -115,7 +114,7 @@ namespace Controllers
             {
                 _statusID = value;
 
-                StatusEventArgs args = new StatusEventArgs(value, _inputID);
+                StatusEventArgs args = new StatusEventArgs(value, inputID);
 
                 // raise #event
                 OnIdStatusChange.CheckedInvoke(args,
@@ -132,7 +131,7 @@ namespace Controllers
             {
                 _statusName = value;
 
-                StatusEventArgs args = new StatusEventArgs(value, _inputName);
+                StatusEventArgs args = new StatusEventArgs(value, inputName);
 
                 // raise #event
                 OnNameStatusChange.CheckedInvoke(args,
@@ -233,10 +232,14 @@ namespace Controllers
             RemoveEventArgs args = new RemoveEventArgs(selectedObject.ID,
                 sizeDP.GetList().ToGenericView());
 
+            // Test: moved from below the event
+            selectedObject = null;
+
             // raise #event
             OnRemove?.Invoke(this, args);
 
-            selectedObject = null;
+            // Test: move above event
+            //selectedObject = null;
         }
 
         public void CommitChanges()
@@ -253,14 +256,14 @@ namespace Controllers
                 NewList = sizeDP.GetList().ToGenericView(),
             };
 
-            // raise #event
-            OnSet?.Invoke(this, args);
+            // raise #event : move below clear actions
+            //OnSet?.Invoke(this, args);
 
             ClearSelection();
             editObject = null;
             ClearInputs();
 
-            // set flags (post-event)
+            OnSet?.Invoke(this, args);
         }
         
         public void CancelChanges()
@@ -282,8 +285,8 @@ namespace Controllers
             bool isValid = IsValidInputs();
             bool isChanged = IsDraftChanged();
 
-            // set flags // test: moved at bottom
-            //STATE_DRAFT_READY = isValid && isChanged;
+            // set flags // test: moved at bottom (old caused errors)
+            STATE_DRAFT_READY = isValid && isChanged;
 
             ReadyEventArgs args = new ReadyEventArgs(isValid, isChanged);
 
@@ -291,8 +294,8 @@ namespace Controllers
             OnReadyStateChange?.CheckedInvoke(args,
                 !DISABLE_STATUS_RAISE_EVENT);
 
-            // set flags
-            STATE_DRAFT_READY = isValid && isChanged;
+            // set flags // fix: move above the event
+            // moved: STATE_DRAFT_READY = isValid && isChanged;
         }
 
         /// <summary>
@@ -370,8 +373,8 @@ namespace Controllers
         private bool IsDraftChanged()
         {
             bool[] draftChange = {
-                _inputID != null ? _inputID != editObject?.ID : false,
-                _inputName != null ? _inputName != editObject?.Name : false,
+                inputID != null && inputID != editObject?.ID,
+                inputName != null && inputName != editObject?.Name,
                 IsListChanged()
             };
 
@@ -408,8 +411,8 @@ namespace Controllers
         {
             return new SizeList
             {
-                ID = _inputID,
-                Name = _inputName,
+                ID = inputID,
+                Name = inputName,
                 List = new ObservableCollection<string>(inputList)
             };
         }
@@ -423,8 +426,8 @@ namespace Controllers
         private readonly SizeProvider sizeDP = new SizeProvider();
 
         // inputs
-        private string _inputID;
-        private string _inputName;
+        private string inputID;
+        private string inputName;
         private List<string> inputList;
 
         // inputs status
