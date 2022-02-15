@@ -1,19 +1,15 @@
 ﻿
-using CoreLibrary;
-using CoreLibrary.Enums;
-using CoreLibrary.Interfaces;
-using CoreLibrary.Models;
-using Client.Controls;
 using System;
 using System.Collections.ObjectModel;
-using System.Windows.Forms;
-using UserService;
-using Controllers;
-using Modeling.DataModels;
-using System.Collections.Generic;
-using System.Linq;
-using UserInterface.Shared;
 using System.Reflection;
+using System.Windows.Forms;
+using Client.Controls;
+using Controllers;
+using CoreLibrary;
+using CoreLibrary.Enums;
+using Modeling.DataModels;
+using UserInterface.Shared;
+using UserService;
 
 namespace UserInterface.Forms
 {
@@ -108,7 +104,7 @@ namespace UserInterface.Forms
         private void EditListEntries()
         {
             PARTIAL_EDIT = true;
-            
+
             EditObject();
             //response > UiControl_OnPreDrafting
 
@@ -270,6 +266,7 @@ namespace UserInterface.Forms
             uiControl.OnLoadEntries += UiControl_OnLoadEntries;
             uiControl.OnSaveEntries += UiControl_OnSaveEntries;
             uiControl.OnRevertEntries += UiControl_OnRevertEntries;
+            uiControl.OnEntryPreDrafting += UiControl_OnEntryPreDrafting;
             uiControl.OnEntrySet += UiControl_OnEntrySet;
         }
 
@@ -453,6 +450,17 @@ namespace UserInterface.Forms
             lbxFieldListItems.DataSource = e.Restored;
         }
 
+        private void UiControl_OnEntryPreDrafting(object sender, PreModifyEventArgs e)
+        {
+            ValueEdit valueEditBox = new ValueEdit(e.Draft.ToString());
+
+            if (valueEditBox.ShowDialog() == DialogResult.OK)
+            {
+                uiControl.InputEntry = valueEditBox.NewValue;
+                uiControl.CommitChanges_Entry();
+            }
+        }
+
         private void UiControl_OnEntrySet(object sender, EntrySetEventArgs e)
         {
             if (SKIP_CONTROLLER_EVENTS)
@@ -532,6 +540,12 @@ namespace UserInterface.Forms
             uiControl.CommitChanges_Entry();
         }
 
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            uiControl.Edit_Entry();
+            //response > UiControl_OnEntryPreDrafting
+        }
+
         private void btnDeleteEntry_Click(object sender, EventArgs e)
         {
             if (lbxFieldListItems.SelectedIndex == -1)
@@ -550,31 +564,7 @@ namespace UserInterface.Forms
                 CheckAvailableEntries();
             }
         }
-
-        private void btnEdit_Click(object sender, EventArgs e)
-        {
-            if (lbxFieldListItems.SelectedIndex == -1)
-            {
-                MessageBox.Show("No item selected");
-            }
-            else
-            {
-                string listId = GetSelectedListId();
-                string selectedEntry = lbxFieldListItems.Text;
-
-                ValueEdit valueEditBox = new ValueEdit(selectedEntry);
-
-                if (valueEditBox.ShowDialog() == DialogResult.OK)
-                {
-                    //DataService.SizeListEditEntry(listId, selectedEntry, valueEditBox.NewValue);
-                    Data.FieldListEditEntry(fieldType, listId, selectedEntry, valueEditBox.NewValue);
-
-                    UpdateEntriesList();
-                    lbxFieldListItems.Text = valueEditBox.NewValue;
-                }
-            }
-        }
-
+        
         private void btnAddNewList_Click(object sender, EventArgs e)
         {
             AddNewObject();

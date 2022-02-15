@@ -16,6 +16,7 @@ namespace Controllers
         public event EventHandler<SelectEventArgs<string>> OnEntrySelect;
         public event EventHandler<StatusEventArgs> OnEntryStatusChange;
         public event EventHandler<ReadyEventArgs> OnEntryReadyStateChange;
+        public event EventHandler<PreModifyEventArgs> OnEntryPreDrafting;
         public event EventHandler<EntrySetEventArgs> OnEntrySet;
         public event EventHandler<CancelEventArgs> OnEntryCancel;
         public event EventHandler<RemoveEventArgs> OnEntryRemove;
@@ -184,11 +185,15 @@ namespace Controllers
             // get and store the edit entry
             editEntry = selectedEntry;
 
-            //CopyEditObjectDataToInputs_Entry();
+            //FillInputs_Entry();
             // fill inputs with edit object data
             inputEntry = editEntry;
 
+            PreModifyEventArgs args = new PreModifyEventArgs(editEntry,
+                selectedObject.List.ToList());
+
             // raise #event
+            OnEntryPreDrafting?.Invoke(this, args);
         }
 
         public void RemoveEntry()
