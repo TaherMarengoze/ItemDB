@@ -237,9 +237,6 @@ namespace Controllers
 
             // raise #event
             OnRemove?.Invoke(this, args);
-
-            // Test: move above event
-            //selectedObject = null;
         }
 
         public void CommitChanges()

@@ -228,9 +228,6 @@ namespace Controllers
             selectedEntry = null;
             editEntry = null;
             ClearInputs_Entry();
-
-            // set flags
-            //ALLOW_INPUT_Entries = false;
         }
 
         public void CancelChanges_Entry()
