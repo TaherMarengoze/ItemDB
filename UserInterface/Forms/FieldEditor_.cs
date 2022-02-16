@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Windows.Forms;
@@ -78,21 +79,25 @@ namespace UserInterface.Forms
         private void AddNewObject()
         {
             uiControl.New();
+            //response > UiControl_OnPreDrafting
         }
 
         private void EditObject()
         {
             uiControl.Edit();
+            //response > UiControl_OnPreDrafting
         }
 
         private void AcceptChanges()
         {
             uiControl.CommitChanges();
+            //response > UiControl_OnSet
         }
 
         private void CancelChanges()
         {
             uiControl.CancelChanges();
+            //response > UiControl_OnCancel
         }
 
         private void RemoveObject()
@@ -144,6 +149,15 @@ namespace UserInterface.Forms
             HideModifyActionsColumns();
         }
 
+        private void BindEntryList(object source)
+        {
+            lbxFieldListItems.DataSource = source;
+        }
+
+        private void UnbindEntryList()
+        {
+            lbxFieldListItems.DataSource = null;
+        }
         #endregion
 
         #region Getters
@@ -246,6 +260,11 @@ namespace UserInterface.Forms
             foreach (string column in actionColumns)
                 dgvListDetails.Columns[column].DisplayIndex = bindDataCount;
         }
+
+        private void SelectEntry(string entry)
+        {
+            lbxFieldListItems.Text = entry;
+        }
         #endregion
 
         #region Controller Event Responses
@@ -268,6 +287,7 @@ namespace UserInterface.Forms
             uiControl.OnRevertEntries += UiControl_OnRevertEntries;
             uiControl.OnEntryPreDrafting += UiControl_OnEntryPreDrafting;
             uiControl.OnEntrySet += UiControl_OnEntrySet;
+            uiControl.OnEntryRemove += UiControl_OnEntryRemove;
         }
 
         private void UiControl_OnLoad(object sender, LoadEventArgs e)
@@ -285,7 +305,7 @@ namespace UserInterface.Forms
 
         private void UiControl_OnSelect(object sender, SelectEventArgs<SizeList> e)
         {
-            lbxFieldListItems.DataSource = e.Selected?.List;
+            BindEntryList(e.Selected?.List);
         }
 
         private void UiControl_OnIdStatusChange(object sender, StatusEventArgs e)
@@ -381,23 +401,15 @@ namespace UserInterface.Forms
         private void UiControl_OnRemove(object sender, RemoveEventArgs e)
         {
             if (e.Count > 0)
-            {
-                dgvListDetails.SaveAndRestoreSelection(delegate
-                {
-                    EventHandler handler = dgvListDetails_SelectionChanged;
-
-                    dgvListDetails.SelectionChanged -= handler;
-                    BindObjectList(e.NewObjects);
-                    dgvListDetails.SelectionChanged += handler;
-                });
-            }
+                dgvListDetails.SaveAndRestoreSelection(
+                    delegate { BindObjectList(e.NewObjects); },
+                    dgvListDetails_SelectionChanged);
             else
-            {
                 UndindObjectList();
-            }
         }
 
-        private void UiControl_OnEntryStatusChange(object sender, StatusEventArgs e)
+        private void UiControl_OnEntryStatusChange(object sender,
+            StatusEventArgs e)
         {
             if (SKIP_CONTROLLER_EVENTS)
                 return;
@@ -407,15 +419,6 @@ namespace UserInterface.Forms
                 case InputStatus.Valid:
                     btnAddEntry.Enabled = true;
                     break;
-                //case InputStatus.Duplicate:
-                //    btnAddEntry.Enabled = false;
-                //    break;
-                //case InputStatus.Blank:
-                //    btnAddEntry.Enabled = false;
-                //    break;
-                //case InputStatus.Invalid:
-                //    btnAddEntry.Enabled = false;
-                //    break;
                 default:
                     btnAddEntry.Enabled = false;
                     break;
@@ -442,22 +445,31 @@ namespace UserInterface.Forms
             SetEditMode(false);
         }
 
-        private void UiControl_OnRevertEntries(object sender, RevertEventArgs e)
+        private void UiControl_OnRevertEntries(object sender,
+            RevertEventArgs e)
         {
             SetEditMode(false);
 
             // restore the entries list to the old one
-            lbxFieldListItems.DataSource = e.Restored;
+            BindEntryList(e.Restored);
         }
 
-        private void UiControl_OnEntryPreDrafting(object sender, PreModifyEventArgs e)
+        private void UiControl_OnEntryPreDrafting(object sender,
+            PreModifyEventArgs e)
         {
-            ValueEdit valueEditBox = new ValueEdit(e.Draft.ToString());
+            ValueEdit valueEditBox = new ValueEdit(e.Draft.ToString(),
+                (List<string>)e.List);
 
             if (valueEditBox.ShowDialog() == DialogResult.OK)
             {
                 uiControl.InputEntry = valueEditBox.NewValue;
                 uiControl.CommitChanges_Entry();
+                //response > UiControl_OnEntrySet
+            }
+            else
+            {
+                uiControl.CancelChanges_Entry();
+                //response > 
             }
         }
 
@@ -467,14 +479,36 @@ namespace UserInterface.Forms
                 return;
 
             // clear entry input control
-            txtEntryValue.Text = string.Empty;
+            //txtEntryValue.Text = string.Empty;
 
             // update the entries list
-            lbxFieldListItems.DataSource = e.SetList;
+            BindEntryList(e.SetList);
+
+            // select added or edited entry
+            SelectEntry(e.NewItem);
+
+            if (string.IsNullOrWhiteSpace(e.OldItem))
+                // clear entry input control
+                txtEntryValue.Text = string.Empty;
 
             // enable the 'Accept' button, if disabled
             if (!btnAccept.Enabled)
                 btnAccept.Enabled = true;
+        }
+
+        private void UiControl_OnEntryRemove(object sender, RemoveEventArgs e)
+        {
+            lbxFieldListItems.SaveAndRestoreSelection(
+                delegate { BindEntryList(e.NewObjects); });
+
+            btnAccept.Enabled = true;
+
+            if (1 > e.Count)
+            {
+                btnEdit.Enabled = false;
+                btnDeleteEntry.Enabled = false;
+                btnAccept.Enabled = false;
+            }
         }
         #endregion
 
@@ -495,9 +529,7 @@ namespace UserInterface.Forms
                       buttons: MessageBoxButtons.YesNo,
                          icon: MessageBoxIcon.Exclamation,
                 defaultButton: MessageBoxDefaultButton.Button1) == DialogResult.Yes)
-            {
-                SaveToSource();
-            }
+            SaveToSource();
         }
 
         private void UpdateEntriesList()
@@ -506,25 +538,6 @@ namespace UserInterface.Forms
             listEntries = Data.FieldListGetEntries(fieldType, listId);
             lbxFieldListItems.DataSource = null;
             lbxFieldListItems.DataSource = listEntries;
-        }
-
-        private void SelectFirstListItem()
-        {
-            try
-            {
-                if (lbxFieldListItems.Items.Count > 1)
-                    lbxFieldListItems.SelectedIndex = 0;
-            }
-            catch (Exception) { }
-        }
-
-        #endregion
-
-        #region File-Specific
-
-        private void CheckAvailableEntries()
-        {
-            btnDeleteEntry.Enabled = lbxFieldListItems.Items.Count > 1;
         }
         #endregion
 
@@ -551,20 +564,13 @@ namespace UserInterface.Forms
             if (lbxFieldListItems.SelectedIndex == -1)
             {
                 MessageBox.Show("No item selected");
+                return;
             }
-            else
-            {
-                string listId = GetSelectedListId();
-                string selectedEntry = lbxFieldListItems.Text;
-                //DataService.SizeListDeleteEntry(listId, selectedEntry);
-                Data.FieldListDeleteEntry(fieldType, listId, selectedEntry);
 
-                UpdateEntriesList();
-                SelectFirstListItem();
-                CheckAvailableEntries();
-            }
+            uiControl.RemoveEntry();
+            // response > UiControl_OnEntryRemove
         }
-        
+
         private void btnAddNewList_Click(object sender, EventArgs e)
         {
             AddNewObject();
@@ -598,14 +604,8 @@ namespace UserInterface.Forms
 
         private void txtEntryValue_TextChanged(object sender, EventArgs e)
         {
-            // new code
             uiControl.InputEntry = ((TextBox)sender).Text;
-
-            // old code
-            //if (txtEntryValue.Text.Length > 0)
-            //    CheckDuplicateEntries();
-            //else
-            //    DisableEntryAdd();
+            // response > UiControl_OnEntryStatusChange
         }
 
         private void FieldEditor_KeyDown(object sender, KeyEventArgs e)
