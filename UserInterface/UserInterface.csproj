@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="Common\ControlsExtension.cs" />
     <Compile Include="Common\DataGridViewExtention.cs" />
+    <Compile Include="Common\ListBoxExtention.cs" />
     <Compile Include="Controllers\SimpleListController.cs" />
     <Compile Include="Controllers\SizeGroupExt.cs" />
     <Compile Include="Forms\FieldEditor_.cs">
