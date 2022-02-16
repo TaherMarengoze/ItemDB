@@ -104,7 +104,8 @@ namespace UserInterface.Shared
             }
         }
 
-        public static void SaveAndRestoreSelection(this DataGridView dataGridView, Action action)
+        public static void SaveAndRestoreSelection(
+            this DataGridView dataGridView, Action action)
         {
             int restoreIndex = dataGridView.SelectedRows[0].Index;
 
@@ -121,6 +122,41 @@ namespace UserInterface.Shared
 
                 dataGridView.Rows[restoreIndex].Selected = true;
                 dataGridView.FirstDisplayedScrollingRowIndex = restoreIndex;
+            }
+        }
+
+        public static void SaveAndRestoreSelection(
+                this DataGridView dataGridView, Action action,
+                EventHandler handler)
+        {
+            if (handler is null)
+                throw new ArgumentNullException(nameof(handler));
+
+            bool alreadySelected;
+            int restoreIndex = dataGridView.SelectedRows[0].Index;
+
+            dataGridView.SelectionChanged -= handler;
+
+            action?.Invoke();
+
+            // Get DGV number of rows
+            int itemsCount = dataGridView.RowCount;
+
+            if (restoreIndex > -1 && itemsCount > 0)
+            {
+                // Check if selection index exists in the list
+                if (restoreIndex >= itemsCount)
+                    restoreIndex = itemsCount - 1;
+
+                alreadySelected = dataGridView.Rows[restoreIndex].Selected;
+
+                dataGridView.SelectionChanged += handler;
+
+                dataGridView.Rows[restoreIndex].Selected = true;
+                dataGridView.FirstDisplayedScrollingRowIndex = restoreIndex;
+
+                if (alreadySelected)
+                    handler.Invoke(dataGridView, EventArgs.Empty);
             }
         }
     }
