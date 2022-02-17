@@ -1,6 +1,6 @@
 ﻿namespace UserInterface.Forms
 {
-    partial class FieldEditor_
+    partial class FieldEditor_<T>
     {
         /// <summary>
         /// Required designer variable.
@@ -75,6 +75,7 @@
             // 
             // btnAddEntry
             // 
+            this.btnAddEntry.Enabled = false;
             this.btnAddEntry.Location = new System.Drawing.Point(189, 17);
             this.btnAddEntry.Name = "btnAddEntry";
             this.btnAddEntry.Size = new System.Drawing.Size(75, 23);

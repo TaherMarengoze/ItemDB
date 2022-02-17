@@ -26,7 +26,7 @@ namespace UT_Controllers
         {
             Initialization.Simulate();
 
-            ui = new SizeListController();
+            //ui = new SizeListController();
             EventSubscriber();
             SKIP_LOG = false;
         }
@@ -115,10 +115,6 @@ namespace UT_Controllers
                     Console.WriteLine($"[{e.DraftObject.List.Count} item(s)]");
                 }
             });
-        }
-        private void Ui_OnSelection(object sender, SizeListSelectionEventArgs e)
-        {
-
         }
         private void Ui_OnIdStatusChange(object sender, StatusEventArgs e)
         {

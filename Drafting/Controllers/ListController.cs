@@ -9,21 +9,21 @@ using ClientService.Data;
 using CoreLibrary.Enums;
 using Interfaces.Models;
 using Interfaces.Operations;
-using Modeling.DataModels;
 using Modeling.ViewModels;
 
 namespace Controllers
 {
-    public partial class SizeListController : IController
+    public partial class ListController<T> : IController
+        where T: IFieldList, new()
     {
-        public SizeListController()
+        public ListController()
         {
             SetStatusInitialValues();
         }
 
         #region Events
         public event EventHandler<LoadEventArgs> OnLoad;
-        public event EventHandler<SelectEventArgs<SizeList>> OnSelect;
+        public event EventHandler<SelectEventArgs<T>> OnSelect;
         public event EventHandler<StatusEventArgs> OnIdStatusChange;
         public event EventHandler<StatusEventArgs> OnNameStatusChange;
         public event EventHandler<StatusEventArgs> OnListStatusChange;
@@ -175,9 +175,9 @@ namespace Controllers
             if (objectId == null)
                 throw new ArgumentNullException(nameof(objectId));
             
-            selectedObject = (SizeList)broker.Read(objectId);
+            selectedObject = (T)broker.Read(objectId);
 
-            SelectEventArgs<SizeList> args = new SelectEventArgs<SizeList>
+            SelectEventArgs<T> args = new SelectEventArgs<T>
             {
                 Selected = selectedObject,
                 RequestInfo = objectId
@@ -224,7 +224,7 @@ namespace Controllers
             RemoveEventArgs args = new RemoveEventArgs(selectedObject.ID,
                 provider.GetList().ToGenericView());
 
-            selectedObject = null;
+            selectedObject = default /*null*/;
 
             // raise #event
             OnRemove?.Invoke(this, args);
@@ -245,7 +245,7 @@ namespace Controllers
             };
 
             ClearSelection();
-            editObject = null;
+            editObject = default/*null*/;
             ClearInputs();
 
             OnSet?.Invoke(this, args);
@@ -256,7 +256,7 @@ namespace Controllers
             CancelEventArgs args = new CancelEventArgs(selectedObject?.ID,
                 provider.GetList().ToGenericView());
 
-            editObject = null;
+            editObject = default/*null*/;
             ClearInputs();
 
             // raise #event
@@ -285,7 +285,7 @@ namespace Controllers
         /// </summary>
         private void SetEditObject()
         {
-            editObject = (SizeList)broker.Read(selectedObject.ID);
+            editObject = (T)broker.Read(selectedObject.ID);
         }
 
         /// <summary>
@@ -307,7 +307,7 @@ namespace Controllers
         /// </summary>
         private void ClearSelection()
         {
-            selectedObject = null;
+            selectedObject = default/*null*/;
         }
 
         /// <summary>
@@ -377,7 +377,7 @@ namespace Controllers
 
         private void CreateOrUpdate()
         {
-            SizeList draftObject = CreateDraftObject();
+            T draftObject = CreateDraftObject();
 
             if (editObject == null)
             {
@@ -389,9 +389,9 @@ namespace Controllers
             }
         }
 
-        private SizeList CreateDraftObject()
+        private T CreateDraftObject()
         {
-            return new SizeList
+            return new T
             {
                 ID = inputID,
                 Name = inputName,
@@ -422,8 +422,8 @@ namespace Controllers
         private bool DISABLE_STATUS_RAISE_EVENT;
 
         // objects
-        private SizeList selectedObject;
-        private SizeList editObject;
+        private T selectedObject;
+        private T editObject;
 
         #endregion
     }

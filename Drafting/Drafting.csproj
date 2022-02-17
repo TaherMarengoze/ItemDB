@@ -41,7 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\ListController.cs" />
+    <Compile Include="Controllers\ListController.Entries.cs" />
     <Compile Include="Controllers\SizeList\EntrySetEventArgs.cs" />
+    <Compile Include="EventArgs\MoveEventArgs.cs" />
     <Compile Include="EventArgs\PreModifyEventArgs.cs" />
     <Compile Include="EventArgs\RevertEventArgs.cs" />
     <Compile Include="Controllers\SizeList\SizeListController.Entries.cs">
@@ -56,7 +59,6 @@
     <Compile Include="Controllers\SizeGroup\SizeGroupEvents.cs" />
     <Compile Include="Controllers\SizeGroup\SizeGroupUiController.cs" />
     <Compile Include="Controllers\SizeList\SizeListController.cs" />
-    <Compile Include="Controllers\SizeList\SizeListSelectionEventArgs.cs" />
     <Compile Include="Controllers\Specs\SpecsDrafter.cs" />
     <Compile Include="Controllers\Specs\SpecsEvent.cs" />
     <Compile Include="EventArgs\LoadEventArgs.cs" />

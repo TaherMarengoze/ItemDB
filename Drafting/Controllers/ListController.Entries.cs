@@ -6,7 +6,7 @@ using System.Collections.Custom;
 
 namespace Controllers
 {
-    public partial class SizeListController
+    public partial class ListController<T>
     {
         #region Events
         public event EventHandler<LoadEventArgs> OnLoadEntries;

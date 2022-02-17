@@ -4,13 +4,15 @@
     {
         void Save();
 
+        void Load();
+
         void Select(string refId);
 
         void New();
 
-        void Edit(string refId);
+        void Edit();
 
-        void Remove(string refId);
+        void Remove();
 
         void CommitChanges();
 

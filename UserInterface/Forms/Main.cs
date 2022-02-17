@@ -36,7 +36,7 @@ namespace UserInterface.Forms
 
         private void SizeEditor_Click(object sender, EventArgs e)
         {
-            LauchEditor(new FieldEditor_());
+            LauchEditor(new FieldEditor_<Modeling.DataModels.SizeList>());
         }
 
         private void BrandEditor_Click(object sender, EventArgs e)
@@ -97,7 +97,7 @@ namespace UserInterface.Forms
             Runtime.Test.DoSomething(PostLoading);
             //Runtime.Test.DoSomething(delegate { LauchEditor(new SpecsEditor()); });
             //Runtime.Test.DoSomething(delegate { LauchEditor(new SizeGroupEditor()); });
-            Runtime.Test.DoSomething(delegate { LauchEditor(new FieldEditor_()); });
+            Runtime.Test.DoSomething(delegate { LauchEditor(new FieldEditor_<Modeling.DataModels.SizeList>()); });
         }
 
         private void tsmiLoadAll_Click(object sender, EventArgs e)
