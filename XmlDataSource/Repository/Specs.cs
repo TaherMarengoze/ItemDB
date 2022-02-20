@@ -4,7 +4,7 @@ using Interfaces.Operations;
 using System;
 using System.Linq;
 using System.Xml.Linq;
-using XmlDataSource.Serialization;
+using XmlDataSource.IO;
 
 namespace XmlDataSource.Repository
 {
@@ -27,7 +27,7 @@ namespace XmlDataSource.Repository
 
         public void Create(ISpecs entity)
         {
-            XElement content = Entity.Serialize(entity);
+            XElement content = Serialize.SpecsEntity(entity);
             dataSource.Root.Add(content);
         }
 
@@ -35,7 +35,7 @@ namespace XmlDataSource.Repository
 
         public void Update(string refId, ISpecs entity)
         {
-            XElement newContent = Entity.Serialize(entity);
+            XElement newContent = Serialize.SpecsEntity(entity);
             XElement oldContent = GetElement(refId);
             oldContent.ReplaceWith(newContent);
         }

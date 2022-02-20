@@ -4,7 +4,7 @@ using Interfaces.Operations;
 using System;
 using System.Linq;
 using System.Xml.Linq;
-using XmlDataSource.Serialization;
+using XmlDataSource.IO;
 
 namespace XmlDataSource.Repository
 {
@@ -27,7 +27,7 @@ namespace XmlDataSource.Repository
 
         public void Create(IItem entity)
         {
-            XElement content = Entity.Serialize(entity);
+            XElement content = Serialize.ItemEntity(entity);
             //CategorizeItem(content, entity.CatID, entity.CatName);
 
             // Get the item's new category or create it if not found
@@ -56,7 +56,7 @@ namespace XmlDataSource.Repository
             // If category does not exist then create and add it
             if (category == null)
             {
-                category = Entity.SerializeCategory(item);
+                category = Serialize.CategoryEntity(item);
                 dataSource.Root.Add(category);
             }
 

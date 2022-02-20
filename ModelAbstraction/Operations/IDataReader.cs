@@ -10,6 +10,10 @@ namespace Interfaces.Operations
     /// </summary>
     public interface IDataReader
     {
+        #region test attempt
+        event System.Action OnInit;
+        #endregion
+
         IEnumerable<IItem> GetItems();
 
         IEnumerable<IItemCategory> GetCategories();

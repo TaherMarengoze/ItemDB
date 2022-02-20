@@ -1,6 +1,6 @@
 ﻿namespace UserInterface.Forms
 {
-    partial class FieldListEditor
+    partial class ListEditor_
     {
         /// <summary>
         /// Required designer variable.
@@ -68,6 +68,7 @@
             this.txtListName.Name = "txtListName";
             this.txtListName.Size = new System.Drawing.Size(206, 20);
             this.txtListName.TabIndex = 2;
+            this.txtListName.TextChanged += new System.EventHandler(this.txtListName_TextChanged);
             // 
             // lblListName
             // 
@@ -99,6 +100,7 @@
             // btnAdd
             // 
             this.btnAdd.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnAdd.Enabled = false;
             this.btnAdd.Location = new System.Drawing.Point(79, 113);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(100, 23);
@@ -145,7 +147,7 @@
             this.label1.TabIndex = 9;
             this.label1.Text = "Existing IDs";
             // 
-            // FieldListEditor
+            // FieldListEditor_
             // 
             this.AcceptButton = this.btnAdd;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -168,7 +170,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FieldListEditor";
+            this.Name = "FieldListEditor_";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "List Editor";

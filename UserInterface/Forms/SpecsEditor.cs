@@ -1,7 +1,7 @@
 ﻿using CoreLibrary.Enums;
 using Controllers.SpecsUi;
 //using Controllers.System;
-using Shared.UI;
+using Client.Controls;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -1189,7 +1189,7 @@ namespace UserInterface.Forms
 #pragma warning disable IDE1006 // Naming Styles
 
         #region Event Responses
-        private void mnuItmSaveFile_Click(object sender, EventArgs e) => drafter?.SaveToDataSource();
+        private void mnuItmSaveFile_Click(object sender, EventArgs e) => drafter?.Save();
         private void lbxSpecs_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (SpecsMode == EntryMode.View)

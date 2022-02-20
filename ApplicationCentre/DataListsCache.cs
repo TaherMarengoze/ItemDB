@@ -11,6 +11,8 @@ namespace AppCore
             Globals.ModelCache.OnSpecsChanged += ModelLists_OnSpecsChanged;
             Globals.ModelCache.OnSizeGroupsChanged += ModelLists_OnSizeGroupsChanged;
             Globals.ModelCache.OnSizeListChanged += ModelLists_OnSizeListChanged;
+            Globals.ModelCache.OnBrandListChanged += ModelCache_OnBrandListChanged;
+            Globals.ModelCache.OnEndListChanged += ModelCache_OnEndListChanged;
             Globals.ModelCache.OnCustomSizeListChanged += ModelLists_OnCustomSizeListChanged;
         }
 
@@ -35,6 +37,20 @@ namespace AppCore
                 .ToList();
         }
 
+        private void ModelCache_OnBrandListChanged(object sender, EventArgs e)
+        {
+            BrandIDs = Globals.ModelCache.BrandLists
+                .Select(size => size.ID)
+                .ToList();
+        }
+
+        private void ModelCache_OnEndListChanged(object sender, EventArgs e)
+        {
+            EndIDs = Globals.ModelCache.EndLists
+                .Select(size => size.ID)
+                .ToList();
+        }
+
         private void ModelLists_OnCustomSizeListChanged(object sender, EventArgs e)
         {
             CustomSizeIDs = Globals.ModelCache.CustomSizes;
@@ -45,6 +61,10 @@ namespace AppCore
         public List<string> SizeGroupIDs { get; set; }
 
         public List<string> SizeIDs { get; set; }
+
+        public List<string> BrandIDs { get; set; }
+
+        public List<string> EndIDs { get; set; }
 
         public List<string> CustomSizeIDs { get; set; }
     }

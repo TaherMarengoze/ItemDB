@@ -1,10 +1,9 @@
-﻿
-using Interfaces.Models;
+﻿using Interfaces.Models;
 using Interfaces.Operations;
 using System;
 using System.Linq;
 using System.Xml.Linq;
-using XmlDataSource.Serialization;
+using XmlDataSource.IO;
 
 namespace XmlDataSource.Repository
 {
@@ -12,6 +11,9 @@ namespace XmlDataSource.Repository
     {
         private readonly XDocument dataSource;
 
+        /// <summary>
+        /// Occurs when <c>this</c> <see cref="SizeGroup"/> repository is changed by any create, update or delete operation.
+        /// </summary>
         public event EventHandler OnChange;
 
         public SizeGroup(XDocument source)
@@ -27,7 +29,7 @@ namespace XmlDataSource.Repository
 
         public void Create(ISizeGroup entity)
         {
-            XElement content = Entity.Serialize(entity);
+            XElement content = Serialize.SizeGroupEntity(entity);
             dataSource.Root.Add(content);
 
             OnChange?.Invoke(this, EventArgs.Empty);
@@ -37,7 +39,7 @@ namespace XmlDataSource.Repository
 
         public void Update(string refId, ISizeGroup entity)
         {
-            XElement newContent = Entity.Serialize(entity);
+            XElement newContent = Serialize.SizeGroupEntity(entity);
             XElement oldContent = GetElement(refId);
             oldContent.ReplaceWith(newContent);
 

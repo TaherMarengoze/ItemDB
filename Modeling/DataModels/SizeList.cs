@@ -11,6 +11,7 @@ namespace Modeling.DataModels
 
         public string Name { get; set; }
 
+        //TODO: change 'ObservableCollection' to 'List'
         public ObservableCollection<string> List { get; set; }
     }
 }

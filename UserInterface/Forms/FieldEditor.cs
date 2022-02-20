@@ -1,197 +1,554 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+
+using Client.Controls;
+
+using Controllers;
+
 using CoreLibrary;
 using CoreLibrary.Enums;
-using CoreLibrary.Interfaces;
-using CoreLibrary.Models;
-using System;
-using System.Collections.ObjectModel;
-using System.Windows.Forms;
-using UserService;
 
+using UserInterface.Shared;
 
 namespace UserInterface.Forms
 {
-    public partial class FieldEditor : Form
+    public partial class FieldEditor<TEntity>: Form
+        where TEntity : Interfaces.Models.IFieldList, new()
     {
-        private FieldType fieldType;
-        private ContextEntity entity;
+        #region Constants
+        enum ActionColumn
+        {
+            EDIT = 0,
+            DELETE = 1,
+            LIST = 2
+        }
+        #endregion
 
-        private ISchema schema;
-        private ObservableCollection<string> listEntries;
+        #region Fields
+        private readonly ListController<TEntity> uiControl;
+        private bool editMode;
+        private bool DataGridView_MODIFY_COLUMN_HIDDEN;
+        private bool PARTIAL_EDIT;
+        private bool SKIP_CONTROLLER_EVENTS;
+        private readonly string[] actionColumns = new string[3];
+        #endregion
 
-
-        public FieldEditor(FieldType field)
+        #region Constructors and Initialization
+        public FieldEditor()
         {
             InitializeComponent();
-            fieldType = field;
-            schema = new FieldSchema(field);
+            ConfigureComponent();
+            InitializeFields();
+            uiControl = new ListController<TEntity>();
+            SubscribeControllerEvents();
+        }
 
-            switch (field)
+        private void ConfigureComponent()
+        {
+            dgvListDetails.DoubleBuffered(true);
+            lbxFieldListItems.DoubleBuffered(true);
+        }
+
+        private void InitializeFields()
+        {
+            actionColumns[(int)ActionColumn.EDIT] = colEdit.Name;
+            actionColumns[(int)ActionColumn.DELETE] = colDelete.Name;
+            actionColumns[(int)ActionColumn.LIST] = colListModify.Name;
+        }
+        #endregion
+
+        #region Controller Commands
+        private void SaveToSource()
+        {
+            uiControl.Save();
+        }
+
+        private void ObjectSelected()
+        {
+            string id = (string)dgvListDetails.SelectedObjectID();
+
+            if (id != null)
+                uiControl.Select(id);
+        }
+
+        private void AddNewObject()
+        {
+            uiControl.New();
+            //response > UiControl_OnPreDrafting
+        }
+
+        private void EditObject()
+        {
+            uiControl.Edit();
+            //response > UiControl_OnPreDrafting
+        }
+
+        private void AcceptChanges()
+        {
+            uiControl.CommitChanges();
+            //response > UiControl_OnSet
+        }
+
+        private void CancelChanges()
+        {
+            uiControl.CancelChanges();
+            //response > UiControl_OnCancel
+        }
+
+        private void RemoveObject()
+        {
+            uiControl.Remove();
+            //response > UiControl_OnRemove
+        }
+
+        private void EditListEntries()
+        {
+            PARTIAL_EDIT = true;
+
+            EditObject();
+            //response > UiControl_OnPreDrafting
+
+            PARTIAL_EDIT = false;
+
+            uiControl.Load_Entries();
+            //response > UiControl_OnLoadEntries
+        }
+
+        private void EditListEntriesAccept()
+        {
+            uiControl.Save_Entries();
+            //response > UiControl_OnReadyStateChange
+            //response > UiControl_OnSaveEntries
+        }
+
+        private void EditListEntriesCancel()
+        {
+            uiControl.Revert_Entries();
+        }
+        #endregion
+
+        #region Input to Controller
+
+        #endregion
+
+        #region Binding
+        private void BindObjectList(object source)
+        {
+            dgvListDetails.DataSourceResize(source);
+            PositionDataGridViewButtons();
+        }
+
+        private void UndindObjectList()
+        {
+            dgvListDetails.DataSource = null;
+            HideModifyActionsColumns();
+        }
+
+        private void BindEntryList(object source)
+        {
+            lbxFieldListItems.DataSource = source;
+        }
+        #endregion
+
+        #region Getters
+        private string GetSelectedEntry()
+        {
+            if (lbxFieldListItems.SelectedIndex == -1)
+                return null;
+
+            return
+                (string)lbxFieldListItems.SelectedItem;
+        }
+        #endregion
+
+        #region UI
+
+        public void SetEditMode(bool value)
+        {
+            editMode = value;
+
+            if (value == true)
             {
-                case FieldType.SIZE:
-                    entity = ContextEntity.Sizes;
-                    Text = "Size List Editor";
-                    break;
-                case FieldType.BRAND:
-                    entity = ContextEntity.Brands;
-                    Text = "Brand List Editor";
-                    break;
-                case FieldType.ENDS:
-                    entity = ContextEntity.Ends;
-                    Text = "Ends List Editor";
+                // do edit mode stuff
+
+                // disable object selection
+                dgvListDetails.Enabled = false;
+
+                // modify entries list
+                lbxFieldListItems.Dock = DockStyle.Left;
+
+                // show list modify controls
+                grpListData.Visible = true;
+                //btnAddEntry.Visible = true;
+                btnEdit.Visible = true;
+                btnDeleteEntry.Visible = true;
+                btnUp.Visible = true;
+                btnDown.Visible = true;
+
+                // show review controls
+                btnAccept.Visible = true;
+                btnCancel.Visible = true;
+
+                // enable list entry add controls
+                grpListData.Enabled = true;
+
+                // disable main modify controls
+                btnAddNewList.Enabled = false;
+
+                // enable list modify buttons
+                btnEdit.Enabled = true;
+                btnDeleteEntry.Enabled = true;
+
+                // disable Accept button
+                btnAccept.Enabled = false;
+
+                SetMoveButtons();
+            }
+            else
+            {
+                // enable object selection
+                dgvListDetails.Enabled = true;
+
+                // modify entries list
+                lbxFieldListItems.Dock = DockStyle.Fill;
+
+                // hide list modify controls
+                grpListData.Visible = false;
+                //btnAddEntry.Visible = false;
+                btnEdit.Visible = false;
+                btnDeleteEntry.Visible = false;
+                btnUp.Visible = false;
+                btnDown.Visible = false;
+
+                // hide review controls
+                btnAccept.Visible = false;
+                btnCancel.Visible = false;
+
+                // disable list entry add controls
+                grpListData.Enabled = false;
+
+                // enable main modify controls
+                btnAddNewList.Enabled = true;
+            }
+        }
+
+        private void ShowModifyActionsColumns()
+        {
+            foreach (string column in actionColumns)
+                dgvListDetails.Columns[column].Visible = true;
+
+            DataGridView_MODIFY_COLUMN_HIDDEN = false;
+        }
+
+        private void HideModifyActionsColumns()
+        {
+            foreach (string column in actionColumns)
+                dgvListDetails.Columns[column].Visible = false;
+
+            DataGridView_MODIFY_COLUMN_HIDDEN = true;
+        }
+
+        private void PositionDataGridViewButtons()
+        {
+            if (DataGridView_MODIFY_COLUMN_HIDDEN)
+                ShowModifyActionsColumns();
+
+            // Set the location of the delete column
+            int bindDataCount = dgvListDetails.Columns.Count - 1;
+
+            foreach (string column in actionColumns)
+                dgvListDetails.Columns[column].DisplayIndex = bindDataCount;
+        }
+
+        private void SetMoveButtons()
+        {
+            if (editMode)
+            {
+                int index = lbxFieldListItems.SelectedIndex;
+                int count = lbxFieldListItems.Items.Count - 1;
+                btnUp.Enabled = index != 0;
+                btnDown.Enabled = index != count;
+            }
+        }
+
+        private void SelectEntry(string entry)
+        {
+            lbxFieldListItems.Text = entry;
+        }
+        #endregion
+
+        #region Controller Event Responses
+        private void SubscribeControllerEvents()
+        {
+            uiControl.OnLoad += UiControl_OnLoad;
+            uiControl.OnSelect += UiControl_OnSelect;
+            uiControl.OnIdStatusChange += UiControl_OnIdStatusChange;
+            uiControl.OnNameStatusChange += UiControl_OnNameStatusChange;
+            uiControl.OnListStatusChange += UiControl_OnListStatusChange;
+            uiControl.OnReadyStateChange += UiControl_OnReadyStateChange;
+            uiControl.OnPreDrafting += UiControl_OnPreDrafting;
+            uiControl.OnSet += UiControl_OnSet;
+            uiControl.OnCancel += UiControl_OnCancel;
+            uiControl.OnRemove += UiControl_OnRemove;
+            uiControl.OnEntryStatusChange += UiControl_OnEntryStatusChange;
+
+            uiControl.OnLoadEntries += UiControl_OnLoadEntries;
+            uiControl.OnSaveEntries += UiControl_OnSaveEntries;
+            uiControl.OnRevertEntries += UiControl_OnRevertEntries;
+            uiControl.OnEntryPreDrafting += UiControl_OnEntryPreDrafting;
+            uiControl.OnEntrySet += UiControl_OnEntrySet;
+            uiControl.OnEntryRemove += UiControl_OnEntryRemove;
+            uiControl.OnEntryMove += UiControl_OnEntryMove;
+        }
+
+        private void UiControl_OnLoad(object sender, LoadEventArgs e)
+        {
+            if (e.Count > 0)
+            {
+                //EventHandler handler = dgvListDetails_SelectionChanged;
+                //dgvListDetails.SelectionChanged -= handler;
+                BindObjectList(e.GenericViewList);
+                //dgvListDetails.SelectionChanged += handler;
+            }
+            else
+                UndindObjectList();
+        }
+
+        private void UiControl_OnSelect(object sender,
+            SelectEventArgs<TEntity> e)
+        {
+            BindEntryList(e.Selected?.List);
+        }
+
+        private void UiControl_OnIdStatusChange(object sender,
+            StatusEventArgs e)
+        {
+        }
+
+        private void UiControl_OnNameStatusChange(object sender,
+            StatusEventArgs e)
+        {
+        }
+
+        private void UiControl_OnListStatusChange(object sender,
+            StatusEventArgs e)
+        {
+        }
+
+        private void UiControl_OnReadyStateChange(object sender,
+            ReadyEventArgs e)
+        {
+        }
+
+        private void UiControl_OnPreDrafting(object sender,
+            PreDraftingEventArgs e)
+        {
+            if (PARTIAL_EDIT)
+                return;
+
+            bool isNewObject = e.DraftObject == null;
+
+            ListEditor_ editor = isNewObject ?
+                new ListEditor_(e.PreList) :
+                new ListEditor_(e.PreList, e.DraftObject);
+
+            if (editor.ShowDialog() == DialogResult.OK)
+            {
+                uiControl.InputID = editor.OutputList.ID;
+                uiControl.InputName = editor.OutputList.Name;
+
+                if (isNewObject)
+                {
+                    SKIP_CONTROLLER_EVENTS = true;
+
+                    uiControl.Load_Entries();
+                    //response > UiControl_OnLoadEntries
+
+                    //uiControl.New_Entry(); // not needed for now
+
+                    uiControl.InputEntry = editor.OutputList.List[0];
+                    //response > UiControl_OnEntryStatusChange
+
+                    uiControl.CommitChanges_Entry();
+                    //response > UiControl_OnEntrySet
+
+                    uiControl.Save_Entries();
+                    //response > UiControl_OnReadyStateChange
+                    //response > UiControl_OnSaveEntries
+
+                    SKIP_CONTROLLER_EVENTS = false;
+                }
+
+                AcceptChanges();
+                //response > UiControl_OnSet
+            }
+            else
+            {
+                CancelChanges();
+                //response > UiControl_OnCancel
+            }
+        }
+
+        private void UiControl_OnSet(object sender, SetEventArgs e)
+        {
+            BindObjectList(e.NewList);
+            //BindObjectList(e.GetType().GetProperty("NewList").GetValue(e));
+
+            // select added or edited object
+            dgvListDetails.SelectRow(e.NewID, "ID");
+
+            if (editMode)
+            {
+                dgvListDetails_SelectionChanged(dgvListDetails,
+                    EventArgs.Empty);
+            }
+        }
+
+        private void UiControl_OnCancel(object sender, CancelEventArgs e)
+        {
+        }
+
+        private void UiControl_OnRemove(object sender, RemoveEventArgs e)
+        {
+            if (e.Count > 0)
+                dgvListDetails.SaveAndRestoreSelection(
+                    delegate { BindObjectList(e.NewObjects); },
+                    dgvListDetails_SelectionChanged);
+            else
+                UndindObjectList();
+        }
+
+        private void UiControl_OnEntryStatusChange(object sender,
+            StatusEventArgs e)
+        {
+            if (SKIP_CONTROLLER_EVENTS)
+                return;
+
+            switch (e.Status)
+            {
+                case InputStatus.Valid:
+                    btnAddEntry.Enabled = true;
                     break;
                 default:
+                    btnAddEntry.Enabled = false;
                     break;
             }
         }
 
-        #region General
-        private void PostLoading()
+        private void UiControl_OnLoadEntries(object sender, LoadEventArgs e)
         {
-            EnableControls();
-            //cboFieldLists.ValueMember = "ID";
-            //PopulateListSelector();
-            PopulateGrid();
-            DisableEntryAdd();
+            if (SKIP_CONTROLLER_EVENTS)
+                return;
+
+            // set entry mode
+            SetEditMode(true);
         }
 
+        private void UiControl_OnSaveEntries(object sender, EventArgs e)
+        {
+            if (SKIP_CONTROLLER_EVENTS)
+                return;
+
+            AcceptChanges();
+            //response > UiControl_OnSet
+
+            SetEditMode(false);
+        }
+
+        private void UiControl_OnRevertEntries(object sender,
+            RevertEventArgs e)
+        {
+            SetEditMode(false);
+
+            // restore the entries list to the old one
+            BindEntryList(e.Restored);
+        }
+
+        private void UiControl_OnEntryPreDrafting(object sender,
+            PreModifyEventArgs e)
+        {
+            ValueEdit valueEditBox = new ValueEdit(e.Draft.ToString(),
+                (List<string>)e.List);
+
+            if (valueEditBox.ShowDialog() == DialogResult.OK)
+            {
+                uiControl.InputEntry = valueEditBox.NewValue;
+                uiControl.CommitChanges_Entry();
+                //response > UiControl_OnEntrySet
+            }
+            else
+            {
+                uiControl.CancelChanges_Entry();
+                //response > OnEntryCancel
+            }
+
+            // refresh entry input
+            if (!string.IsNullOrWhiteSpace(txtEntryValue.Text))
+            {
+                txtEntryValue_TextChanged(txtEntryValue, EventArgs.Empty);
+            }
+        }
+
+        private void UiControl_OnEntrySet(object sender, EntrySetEventArgs e)
+        {
+            if (SKIP_CONTROLLER_EVENTS)
+                return;
+
+            // clear entry input control
+            //txtEntryValue.Text = string.Empty;
+
+            // update the entries list
+            BindEntryList(e.SetList);
+
+            // select added or edited entry
+            SelectEntry(e.NewItem);
+
+            if (string.IsNullOrWhiteSpace(e.OldItem))
+                // clear entry input control
+                txtEntryValue.Text = string.Empty;
+
+            // enable the 'Accept' button, if disabled
+            if (!btnAccept.Enabled)
+                btnAccept.Enabled = true;
+        }
+
+        private void UiControl_OnEntryRemove(object sender, RemoveEventArgs e)
+        {
+            lbxFieldListItems.SaveAndRestoreSelection(
+                delegate { BindEntryList(e.NewObjects); });
+
+            btnAccept.Enabled = true;
+
+            if (1 > e.Count)
+            {
+                btnEdit.Enabled = false;
+                btnDeleteEntry.Enabled = false;
+                btnAccept.Enabled = false;
+            }
+        }
+
+        private void UiControl_OnEntryMove(object sender, MoveEventArgs e)
+        {
+            BindEntryList(e.NewObjects);
+            SelectEntry(e.MoveObject);
+            btnAccept.Enabled = true;
+        }
+
+        #endregion
+        
+        #region General
         private void AskSaveBeforeClose()
         {
+            const DialogResult yes = DialogResult.Yes;
+
             if (MessageBox.Show(
                       caption: "Save Changes",
                          text: "Do you want to save before closing ?",
                       buttons: MessageBoxButtons.YesNo,
                          icon: MessageBoxIcon.Exclamation,
-                defaultButton: MessageBoxDefaultButton.Button1) == DialogResult.Yes)
-            {
-                SaveToSource();
-            }
-        }
-
-        private void SaveToSource()
-        {
-            //AppFactory.context.Save(entity);
-            Data.Save(entity);
-        }
-        
-        private void PopulateGrid()
-        {
-            dgvListDetails.DataSource = null;
-            object newDataSource = Data.GetFieldLists(fieldType);
-            dgvListDetails.DataSource = newDataSource;
-
-            // Auto-Size Columns and Rows
-            dgvListDetails.AutoResizeColumns();
-            dgvListDetails.AutoResizeRows();
-
-            // Set the location of the delete column
-            int bindDataCount = dgvListDetails.Columns.Count - 1;
-            dgvListDetails.Columns["colEdit"].DisplayIndex = bindDataCount;
-            dgvListDetails.Columns["colDelete"].DisplayIndex = bindDataCount;
-        }
-
-        private void UpdateEntriesList()
-        {
-            string listId = GetSelectedListId();
-            listEntries = Data.FieldListGetEntries(fieldType, listId);
-            lbxFieldListItems.DataSource = null;
-            lbxFieldListItems.DataSource = listEntries;
-        }
-
-        private void PopulateEntryList(string listId)
-        {
-            listEntries = Data.FieldListGetEntries(fieldType, listId);
-            lbxFieldListItems.DataSource = listEntries;
-        }
-
-        private void EnableControls()
-        {
-            grpListData.Enabled = true;
-            tsmiSave.Enabled = true;
-        }
-
-        private void DisableControls()
-        {
-            grpListData.Enabled = false;
-            tsmiSave.Enabled = false;
-        }
-
-        private void SelectFirstListItem()
-        {
-            try
-            {
-                if (lbxFieldListItems.Items.Count > 1)
-                    lbxFieldListItems.SelectedIndex = 0;
-            }
-            catch (Exception) { }
-        }
-
-        private void SelectListItem(string item)
-        {
-            try
-            {
-                if (lbxFieldListItems.Items.Count > 1)
-                    lbxFieldListItems.Text = item;
-            }
-            catch (Exception) { }
-        }
-
-        private void DisableEntryAdd()
-        {
-            btnAddEntry.Enabled = false;
-        }
-        #endregion
-
-        #region File-Specific
-
-        private void AddNewList()
-        {
-            FieldListEditor listEditor =
-                new FieldListEditor(Data.GetFieldIds(fieldType));
-
-            if (listEditor.ShowDialog() == DialogResult.OK)
-            {
-                Data.AddFieldList(fieldType, listEditor.FieldList);
-                PopulateGrid();
-            }
-        }
-
-        private void DeleteExistingList(string listId)
-        {
-            if (Common.ShowEntryRemoveConfirmation(false) == DialogResult.OK)
-            {
-                Data.DeleteFieldList(fieldType, listId);
-
-                PopulateGrid();
-                SelectFirstListItem();
-            }
-        }
-
-        private void EditExistingList(string listId, string listName)
-        {
-            IBasicList editList = Data.GetFieldList(fieldType, listId);
-
-            FieldListEditor listEditor =
-                new FieldListEditor(Data.GetFieldIds(fieldType), editList);
-
-            if (listEditor.ShowDialog() == DialogResult.OK)
-            {
-                Data.EditFieldList(fieldType, listId, listEditor.FieldList);
-
-                PopulateGrid();
-            }
-        }
-
-        private void CheckAvailableEntries()
-        {
-            btnDeleteEntry.Enabled = lbxFieldListItems.Items.Count > 1;
-        }
-
-        private void CheckDuplicateEntries()
-        {
-            string listId = GetSelectedListId();
-            string entryValue = txtEntryValue.Text;
-            btnAddEntry.Enabled = !listEntries.Contains(entryValue);
+                defaultButton: MessageBoxDefaultButton.Button1) == yes)
+            SaveToSource();
         }
         #endregion
 
@@ -199,25 +556,18 @@ namespace UserInterface.Forms
 #pragma warning disable IDE1006 // Naming Styles
         private void Form_Load(object sender, EventArgs e)
         {
-            //FieldSwitch();
-            PostLoading();
+            uiControl.Load();
         }
 
         private void btnAddEntry_Click(object sender, EventArgs e)
         {
-            string entryValue = txtEntryValue.Text;
+            uiControl.CommitChanges_Entry();
+        }
 
-            if (entryValue != string.Empty)
-            {
-                string fieldId = GetSelectedListId();
-                Data.FieldListAddEntry(fieldType, fieldId, entryValue);
-                
-                txtEntryValue.Text = string.Empty;
-                UpdateEntriesList();
-                SelectListItem(entryValue);
-                CheckAvailableEntries();
-                txtEntryValue.Focus();
-            }
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            uiControl.Edit_Entry();
+            //response > UiControl_OnEntryPreDrafting
         }
 
         private void btnDeleteEntry_Click(object sender, EventArgs e)
@@ -225,47 +575,16 @@ namespace UserInterface.Forms
             if (lbxFieldListItems.SelectedIndex == -1)
             {
                 MessageBox.Show("No item selected");
+                return;
             }
-            else
-            {
-                string listId = GetSelectedListId();
-                string selectedEntry = lbxFieldListItems.Text;
-                //DataService.SizeListDeleteEntry(listId, selectedEntry);
-                Data.FieldListDeleteEntry(fieldType, listId, selectedEntry);
 
-                UpdateEntriesList();
-                SelectFirstListItem();
-                CheckAvailableEntries();
-            }
-        }
-
-        private void btnEdit_Click(object sender, EventArgs e)
-        {
-            if (lbxFieldListItems.SelectedIndex == -1)
-            {
-                MessageBox.Show("No item selected");
-            }
-            else
-            {
-                string listId = GetSelectedListId();
-                string selectedEntry = lbxFieldListItems.Text;
-                
-                ValueEdit valueEditBox = new ValueEdit(selectedEntry);
-
-                if (valueEditBox.ShowDialog() == DialogResult.OK)
-                {
-                    //DataService.SizeListEditEntry(listId, selectedEntry, valueEditBox.NewValue);
-                    Data.FieldListEditEntry(fieldType, listId, selectedEntry, valueEditBox.NewValue);
-
-                    UpdateEntriesList();
-                    lbxFieldListItems.Text = valueEditBox.NewValue;
-                }
-            }
+            uiControl.RemoveEntry();
+            // response > UiControl_OnEntryRemove
         }
 
         private void btnAddNewList_Click(object sender, EventArgs e)
         {
-            AddNewList();
+            AddNewObject();
         }
 
         private void tsmiSave_Click(object sender, EventArgs e)
@@ -296,21 +615,16 @@ namespace UserInterface.Forms
 
         private void txtEntryValue_TextChanged(object sender, EventArgs e)
         {
-            if (txtEntryValue.Text.Length > 0)
-            {
-                CheckDuplicateEntries();
-            }
-            else
-            {
-                DisableEntryAdd();
-            }
-
+            uiControl.InputEntry = ((TextBox)sender).Text;
+            // response > UiControl_OnEntryStatusChange
         }
 
         private void FieldEditor_KeyDown(object sender, KeyEventArgs e)
         {
             if (!dgvListDetails.Focused && e.Modifiers == Keys.Control)
             {
+                e.Handled = true;
+
                 if (e.KeyCode == Keys.Up)
                     btnUp.PerformClick();
 
@@ -321,98 +635,60 @@ namespace UserInterface.Forms
 
         private void btnUp_Click(object sender, EventArgs e)
         {
-            string listId = GetSelectedListId();
-            string item = (string)lbxFieldListItems.SelectedValue;
-            int selecIndex = lbxFieldListItems.SelectedIndex;
-
-            //DataService.SizeListMoveEntry(listId, item, ShiftDirection.UP);
-            Data.FieldListMoveEntry(fieldType, listId, item, ShiftDirection.UP);
-            
-            UpdateEntriesList();
-            SelectShiftedItem(selecIndex, ShiftDirection.UP);
+            uiControl.MoveUp();
+            // response > UiControl_OnEntryMove
         }
 
         private void btnDown_Click(object sender, EventArgs e)
         {
-            string listId = GetSelectedListId();
-            string item = (string)lbxFieldListItems.SelectedValue;
-            int selecIndex = lbxFieldListItems.SelectedIndex;
-
-            //DataService.SizeListMoveEntry(listId, item, ShiftDirection.DOWN);
-            Data.FieldListMoveEntry(fieldType, listId, item, ShiftDirection.DOWN);
-
-            UpdateEntriesList();
-            SelectShiftedItem(selecIndex, ShiftDirection.DOWN);
+            uiControl.MoveDown();
+            // response > UiControl_OnEntryMove
         }
 
-        private void SelectShiftedItem(int selectionIndex, ShiftDirection shift)
+        private void lbxFieldListItems_SelectedIndexChanged(object sender,
+            EventArgs e)
         {
-            if (lbxFieldListItems.Focused)
-                lbxFieldListItems.SelectedIndex = selectionIndex;
-            else
-                lbxFieldListItems.SelectedIndex = selectionIndex + (int)shift;
+            uiControl.SelectEntry(GetSelectedEntry());
+            SetMoveButtons();
         }
 
-        private string GetSelectedListId()
+        private void dgvListDetails_SelectionChanged(object sender,
+            EventArgs e)
         {
-            return dgvListDetails.SelectedRows[0].Cells["ID"].Value.ToString();
+            ObjectSelected();
         }
 
-        private void lbxFieldListItems_SelectedIndexChanged(object sender, EventArgs e)
+        private void dgvListDetails_CellContentClick(object sender,
+            DataGridViewCellEventArgs e)
         {
-            int selectedIndex = lbxFieldListItems.SelectedIndex;
-            int entriesCount = lbxFieldListItems.Items.Count - 1;
+            if (e.RowIndex < 0)
+                return;
 
-            if (selectedIndex == 0)
+            switch (e.ColumnIndex)
             {
-                btnUp.Enabled = false;
-            }
-            else
-            {
-                btnUp.Enabled = true;
-            }
-
-            if (selectedIndex == entriesCount)
-            {
-                btnDown.Enabled = false;
-            }
-            else
-            {
-                btnDown.Enabled = true;
+                case (int)ActionColumn.EDIT:
+                    EditObject();
+                    break;
+                case (int)ActionColumn.DELETE:
+                    RemoveObject();
+                    break;
+                case (int)ActionColumn.LIST:
+                    EditListEntries();
+                    break;
             }
         }
 
-        private void dgvListDetails_SelectionChanged(object sender, EventArgs e)
+        private void btnAccept_Click(object sender, EventArgs e)
         {
-            if (dgvListDetails.SelectedRows.Count > 0)
-            {
-                string selectedListId = (string)dgvListDetails.SelectedRows[0].Cells["ID"].Value;
-                PopulateEntryList(selectedListId);
-            }
+            EditListEntriesAccept();
         }
 
-        private void dgvListDetails_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void btnCancel_Click(object sender, EventArgs e)
         {
-            if (e.RowIndex > -1)
-            {
-                string selectedListId = (string)dgvListDetails["ID", e.RowIndex].Value;
-
-                BasicListView selectedItem = (BasicListView)dgvListDetails.Rows[e.RowIndex].DataBoundItem;
-
-                if (e.ColumnIndex == 0) //Edit Button Column
-                {
-                    //selectedListId = (string)dgvListDetails["ID", e.RowIndex].Value;
-                    EditExistingList(selectedItem.ID, selectedItem.Name);
-                }
-
-                if (e.ColumnIndex == 1) //Delete Button Column
-                {
-                    DeleteExistingList(selectedListId);
-                }
-            }
+            EditListEntriesCancel();
         }
-#pragma warning restore IDE1006 // Naming Styles
+
         #endregion
-
+#pragma warning restore IDE1006 // Naming Styles
     }
 }

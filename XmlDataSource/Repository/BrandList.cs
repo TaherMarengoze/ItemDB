@@ -5,7 +5,7 @@ using Interfaces.Operations;
 using System;
 using System.Linq;
 using System.Xml.Linq;
-using XmlDataSource.Serialization;
+using XmlDataSource.IO;
 
 namespace XmlDataSource.Repository
 {
@@ -28,7 +28,7 @@ namespace XmlDataSource.Repository
 
         public void Create(IFieldList entity)
         {
-            XElement content = Entity.SerializeBrand(entity);
+            XElement content = Serialize.BrandListEntity(entity);
             dataSource.Root.Add(content);
         }
 
@@ -36,7 +36,7 @@ namespace XmlDataSource.Repository
 
         public void Update(string refId, IFieldList entity)
         {
-            XElement newContent = Entity.SerializeBrand(entity);
+            XElement newContent = Serialize.BrandListEntity(entity);
             XElement oldContent = GetElement(refId);
             oldContent.ReplaceWith(newContent);
         }

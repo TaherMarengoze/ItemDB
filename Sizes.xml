@@ -1,5 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <sizeLists ver="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Sizes.xsd">
+  <sizeList listID="STEST" name="Test Size List">
+    <sizes>
+      <size>Entry 1</size>
+      <size>Entry 2</size>
+      <size>Entry 3</size>
+    </sizes>
+  </sizeList>
   <sizeList listID="SHLM" name="Helmet Size">
     <sizes>
       <size>XX Small</size>

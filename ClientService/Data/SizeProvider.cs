@@ -19,7 +19,7 @@ namespace ClientService.Data
 
         public List<string> GetIDs() => Globals.DataLists.SizeIDs;
 
-        public int Count => throw new NotImplementedException();
+        public int Count => GetIDs()?.Count ?? 0;
 
         public List<string> GetEntries(string listID)
         {

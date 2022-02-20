@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Modeling.DraftModels
 {
-    public partial class SpecsDrafter : Interfaces.General.IDraftable
+    public partial class SpecsDrafter
     {
         public enum SpecType
         {

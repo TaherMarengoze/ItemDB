@@ -1,7 +1,7 @@
 ﻿
 using Interfaces.Models;
 using Modeling.Generic;
-using Shared.UI;
+using Client.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
