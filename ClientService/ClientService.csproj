@@ -52,6 +52,7 @@
     <Compile Include="Contracts\IProvider.cs" />
     <Compile Include="Data\EndProvider.cs" />
     <Compile Include="Data\CustomSizeProvider.cs" />
+    <Compile Include="Data\ItemProvider.cs" />
     <Compile Include="Data\SizeGroupProvider.cs" />
     <Compile Include="Data\SizeProvider.cs" />
     <Compile Include="Data\BrandProvider.cs" />

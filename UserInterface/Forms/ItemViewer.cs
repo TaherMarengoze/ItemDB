@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -11,7 +10,6 @@ using CoreLibrary.Interfaces;
 using CoreLibrary.Models;
 using CoreLibrary.Operation;
 using UserService;
-
 
 namespace UserInterface.Forms
 {

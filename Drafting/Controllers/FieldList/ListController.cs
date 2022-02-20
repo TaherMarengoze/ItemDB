@@ -5,7 +5,6 @@ using System.Linq;
 using ClientService;
 using ClientService.Brokers;
 using ClientService.Contracts;
-using ClientService.Data;
 using CoreLibrary.Enums;
 using Interfaces.Models;
 using Interfaces.Operations;
@@ -406,8 +405,8 @@ namespace Controllers
 
         #region Fields
 
-        private readonly IBroker<IFieldList> broker /*= new SizeListBroker()*/;
-        private readonly IProvider<IFieldList> provider /*= new SizeProvider()*/;
+        private readonly IBroker<IFieldList> broker;
+        private readonly IProvider<IFieldList> provider;
 
         // inputs
         private string inputID;
