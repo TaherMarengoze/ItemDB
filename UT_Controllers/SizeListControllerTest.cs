@@ -19,7 +19,7 @@ namespace UT_Controllers
 
         private bool SKIP_LOG;
 
-        SizeListController ui;
+        ListController<SizeList> ui;
 
         [TestInitialize]
         public void Initialize()
