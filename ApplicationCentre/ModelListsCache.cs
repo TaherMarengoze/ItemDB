@@ -13,6 +13,8 @@ namespace AppCore
         public event EventHandler OnSpecsChanged;
         public event EventHandler OnSizeGroupsChanged;
         public event EventHandler OnSizeListChanged;
+        public event EventHandler OnBrandListChanged;
+        public event EventHandler OnEndListChanged;
         public event EventHandler OnCustomSizeListChanged;
 
         public List<IItem> Items { get => _items; set => _items = value; }
@@ -47,9 +49,23 @@ namespace AppCore
             }
         }
 
-        public List<IFieldList> BrandLists { get => _brandLists; set => _brandLists = value; }
+        public List<IFieldList> BrandLists
+        {
+            get => _brandLists; set
+            {
+                _brandLists = value;
+                OnBrandListChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
 
-        public List<IFieldList> EndLists { get => _endLists; set => _endLists = value; }
+        public List<IFieldList> EndLists
+        {
+            get => _endLists; set
+            {
+                _endLists = value;
+                OnEndListChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
 
         public List<string> CustomSizes
         {

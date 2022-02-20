@@ -73,11 +73,11 @@
     <Compile Include="Common\ListBoxExtention.cs" />
     <Compile Include="Controllers\SimpleListController.cs" />
     <Compile Include="Controllers\SizeGroupExt.cs" />
-    <Compile Include="Forms\FieldEditor_.cs">
+    <Compile Include="Forms\FieldEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FieldEditor_.Designer.cs">
-      <DependentUpon>FieldEditor_.cs</DependentUpon>
+    <Compile Include="Forms\FieldEditor.Designer.cs">
+      <DependentUpon>FieldEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ListEditor_.cs">
       <SubType>Form</SubType>
@@ -127,29 +127,11 @@
     <Compile Include="Forms\FieldListAdderExtendable.Designer.cs">
       <DependentUpon>FieldListAdderExtendable.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\XML Viewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\XML Viewer.Designer.cs">
-      <DependentUpon>XML Viewer.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\AltListSelector.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\AltListSelector.Designer.cs">
       <DependentUpon>AltListSelector.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FieldEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FieldEditor.Designer.cs">
-      <DependentUpon>FieldEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FieldListEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FieldListEditor.Designer.cs">
-      <DependentUpon>FieldListEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ListEntryEditor.cs">
       <SubType>Form</SubType>
@@ -189,8 +171,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Runtime\Test.cs" />
-    <EmbeddedResource Include="Forms\FieldEditor_.resx">
-      <DependentUpon>FieldEditor_.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FieldEditor.resx">
+      <DependentUpon>FieldEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ListEditor_.resx">
       <DependentUpon>ListEditor_.cs</DependentUpon>
@@ -201,17 +183,11 @@
     <EmbeddedResource Include="Forms\AltListSelector.resx">
       <DependentUpon>AltListSelector.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FieldEditor.resx">
-      <DependentUpon>FieldEditor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\PlainBackground.resx">
       <DependentUpon>PlainBackground.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SizeGroupAdder.resx">
       <DependentUpon>SizeGroupAdder.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FieldListEditor.resx">
-      <DependentUpon>FieldListEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ImagePreviewer.resx">
       <DependentUpon>ImagePreviewer.cs</DependentUpon>
@@ -236,9 +212,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SpecsEditor.resx">
       <DependentUpon>SpecsEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\XML Viewer.resx">
-      <DependentUpon>XML Viewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

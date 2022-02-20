@@ -1,6 +1,6 @@
 ﻿namespace UserInterface.Forms
 {
-    partial class FieldEditor
+    partial class FieldEditor<TEntity>
     {
         /// <summary>
         /// Required designer variable.
@@ -34,7 +34,7 @@
             this.txtEntryValue = new System.Windows.Forms.TextBox();
             this.btnDown = new System.Windows.Forms.Button();
             this.btnUp = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.grpEntries = new System.Windows.Forms.GroupBox();
             this.lbxFieldListItems = new System.Windows.Forms.ListBox();
             this.btnAddNewList = new System.Windows.Forms.Button();
             this.btnDeleteEntry = new System.Windows.Forms.Button();
@@ -49,8 +49,11 @@
             this.dgvListDetails = new System.Windows.Forms.DataGridView();
             this.colEdit = new System.Windows.Forms.DataGridViewButtonColumn();
             this.colDelete = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.colListModify = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.btnAccept = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.grpListData.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.grpEntries.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvListDetails)).BeginInit();
             this.SuspendLayout();
@@ -68,9 +71,11 @@
             this.grpListData.TabIndex = 7;
             this.grpListData.TabStop = false;
             this.grpListData.Text = "List Entry";
+            this.grpListData.Visible = false;
             // 
             // btnAddEntry
             // 
+            this.btnAddEntry.Enabled = false;
             this.btnAddEntry.Location = new System.Drawing.Point(189, 17);
             this.btnAddEntry.Name = "btnAddEntry";
             this.btnAddEntry.Size = new System.Drawing.Size(75, 23);
@@ -90,53 +95,60 @@
             // 
             // btnDown
             // 
-            this.btnDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDown.Enabled = false;
             this.btnDown.Image = global::UserInterface.Properties.Resources.down_arrow_16x;
-            this.btnDown.Location = new System.Drawing.Point(241, 437);
-            this.btnDown.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
+            this.btnDown.Location = new System.Drawing.Point(238, 44);
+            this.btnDown.Margin = new System.Windows.Forms.Padding(1, 0, 3, 3);
             this.btnDown.Name = "btnDown";
-            this.btnDown.Size = new System.Drawing.Size(41, 23);
+            this.btnDown.Size = new System.Drawing.Size(28, 28);
             this.btnDown.TabIndex = 15;
             this.btnDown.UseVisualStyleBackColor = true;
+            this.btnDown.Visible = false;
             this.btnDown.Click += new System.EventHandler(this.btnDown_Click);
             // 
             // btnUp
             // 
-            this.btnUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnUp.Enabled = false;
             this.btnUp.Image = global::UserInterface.Properties.Resources.up_arrow_16x;
-            this.btnUp.Location = new System.Drawing.Point(241, 414);
-            this.btnUp.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
+            this.btnUp.Location = new System.Drawing.Point(238, 16);
+            this.btnUp.Margin = new System.Windows.Forms.Padding(1, 3, 1, 0);
             this.btnUp.Name = "btnUp";
-            this.btnUp.Size = new System.Drawing.Size(41, 23);
+            this.btnUp.Size = new System.Drawing.Size(28, 28);
             this.btnUp.TabIndex = 14;
             this.btnUp.UseVisualStyleBackColor = true;
+            this.btnUp.Visible = false;
             this.btnUp.Click += new System.EventHandler(this.btnUp_Click);
             // 
-            // groupBox1
+            // grpEntries
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.grpEntries.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBox1.Controls.Add(this.lbxFieldListItems);
-            this.groupBox1.Location = new System.Drawing.Point(12, 92);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(270, 316);
-            this.groupBox1.TabIndex = 13;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "List Items";
+            this.grpEntries.Controls.Add(this.lbxFieldListItems);
+            this.grpEntries.Controls.Add(this.btnUp);
+            this.grpEntries.Controls.Add(this.btnDown);
+            this.grpEntries.Location = new System.Drawing.Point(12, 92);
+            this.grpEntries.Name = "grpEntries";
+            this.grpEntries.Size = new System.Drawing.Size(270, 289);
+            this.grpEntries.TabIndex = 13;
+            this.grpEntries.TabStop = false;
+            this.grpEntries.Text = "List Items";
             // 
             // lbxFieldListItems
             // 
-            this.lbxFieldListItems.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbxFieldListItems.Dock = System.Windows.Forms.DockStyle.Left;
             this.lbxFieldListItems.FormattingEnabled = true;
             this.lbxFieldListItems.Location = new System.Drawing.Point(3, 16);
+            this.lbxFieldListItems.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
             this.lbxFieldListItems.Name = "lbxFieldListItems";
-            this.lbxFieldListItems.Size = new System.Drawing.Size(264, 297);
+            this.lbxFieldListItems.Size = new System.Drawing.Size(234, 270);
             this.lbxFieldListItems.TabIndex = 2;
             this.lbxFieldListItems.SelectedIndexChanged += new System.EventHandler(this.lbxFieldListItems_SelectedIndexChanged);
             // 
             // btnAddNewList
             // 
-            this.btnAddNewList.Location = new System.Drawing.Point(288, 27);
+            this.btnAddNewList.Location = new System.Drawing.Point(288, 79);
             this.btnAddNewList.Name = "btnAddNewList";
             this.btnAddNewList.Size = new System.Drawing.Size(75, 23);
             this.btnAddNewList.TabIndex = 11;
@@ -147,23 +159,25 @@
             // btnDeleteEntry
             // 
             this.btnDeleteEntry.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDeleteEntry.Location = new System.Drawing.Point(93, 414);
+            this.btnDeleteEntry.Location = new System.Drawing.Point(93, 387);
             this.btnDeleteEntry.Name = "btnDeleteEntry";
             this.btnDeleteEntry.Size = new System.Drawing.Size(75, 23);
             this.btnDeleteEntry.TabIndex = 7;
             this.btnDeleteEntry.Text = "Delete Entry";
             this.btnDeleteEntry.UseVisualStyleBackColor = true;
+            this.btnDeleteEntry.Visible = false;
             this.btnDeleteEntry.Click += new System.EventHandler(this.btnDeleteEntry_Click);
             // 
             // btnEdit
             // 
             this.btnEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnEdit.Location = new System.Drawing.Point(12, 414);
+            this.btnEdit.Location = new System.Drawing.Point(12, 387);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(75, 23);
             this.btnEdit.TabIndex = 7;
             this.btnEdit.Text = "Edit Entry";
             this.btnEdit.UseVisualStyleBackColor = true;
+            this.btnEdit.Visible = false;
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
             // 
             // menuStrip1
@@ -236,8 +250,9 @@
             this.dgvListDetails.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvListDetails.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colEdit,
-            this.colDelete});
-            this.dgvListDetails.Location = new System.Drawing.Point(288, 56);
+            this.colDelete,
+            this.colListModify});
+            this.dgvListDetails.Location = new System.Drawing.Point(288, 108);
             this.dgvListDetails.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
             this.dgvListDetails.MultiSelect = false;
             this.dgvListDetails.Name = "dgvListDetails";
@@ -245,7 +260,7 @@
             this.dgvListDetails.RowHeadersVisible = false;
             this.dgvListDetails.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dgvListDetails.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvListDetails.Size = new System.Drawing.Size(396, 404);
+            this.dgvListDetails.Size = new System.Drawing.Size(396, 352);
             this.dgvListDetails.TabIndex = 11;
             this.dgvListDetails.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvListDetails_CellContentClick);
             this.dgvListDetails.SelectionChanged += new System.EventHandler(this.dgvListDetails_SelectionChanged);
@@ -269,24 +284,56 @@
             this.colDelete.Text = "Delete";
             this.colDelete.UseColumnTextForButtonValue = true;
             // 
-            // FieldEditor
+            // colListModify
+            // 
+            this.colListModify.HeaderText = "List";
+            this.colListModify.Name = "colListModify";
+            this.colListModify.ReadOnly = true;
+            this.colListModify.Text = "Modify";
+            this.colListModify.UseColumnTextForButtonValue = true;
+            // 
+            // btnAccept
+            // 
+            this.btnAccept.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnAccept.Enabled = false;
+            this.btnAccept.Location = new System.Drawing.Point(207, 426);
+            this.btnAccept.Name = "btnAccept";
+            this.btnAccept.Size = new System.Drawing.Size(75, 23);
+            this.btnAccept.TabIndex = 14;
+            this.btnAccept.Text = "Accept";
+            this.btnAccept.UseVisualStyleBackColor = true;
+            this.btnAccept.Visible = false;
+            this.btnAccept.Click += new System.EventHandler(this.btnAccept_Click);
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnCancel.Location = new System.Drawing.Point(12, 426);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.TabIndex = 15;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Visible = false;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
+            // FieldEditor_
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(684, 461);
+            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnAccept);
             this.Controls.Add(this.btnDeleteEntry);
             this.Controls.Add(this.btnAddNewList);
             this.Controls.Add(this.btnEdit);
-            this.Controls.Add(this.btnDown);
             this.Controls.Add(this.dgvListDetails);
-            this.Controls.Add(this.btnUp);
             this.Controls.Add(this.grpListData);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.grpEntries);
             this.Controls.Add(this.menuStrip1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "FieldEditor";
+            this.Name = "FieldEditor_";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Field Lists Editor";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
@@ -294,7 +341,7 @@
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FieldEditor_KeyDown);
             this.grpListData.ResumeLayout(false);
             this.grpListData.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
+            this.grpEntries.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvListDetails)).EndInit();
@@ -319,11 +366,14 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiClose;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem tsmiExitApp;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox grpEntries;
         private System.Windows.Forms.Button btnDown;
         private System.Windows.Forms.Button btnUp;
         private System.Windows.Forms.DataGridView dgvListDetails;
         private System.Windows.Forms.DataGridViewButtonColumn colEdit;
         private System.Windows.Forms.DataGridViewButtonColumn colDelete;
+        private System.Windows.Forms.DataGridViewButtonColumn colListModify;
+        private System.Windows.Forms.Button btnAccept;
+        private System.Windows.Forms.Button btnCancel;
     }
 }

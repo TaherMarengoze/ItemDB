@@ -13,17 +13,19 @@ using Modeling.ViewModels;
 
 namespace Controllers
 {
-    public partial class ListController<T> : IController
-        where T: IFieldList, new()
+    public partial class ListController<TField> : IController
+        where TField: IFieldList, new()
     {
         public ListController()
         {
+            BrokerSelector<TField>.Assign(out broker, out provider);
+
             SetStatusInitialValues();
         }
 
         #region Events
         public event EventHandler<LoadEventArgs> OnLoad;
-        public event EventHandler<SelectEventArgs<T>> OnSelect;
+        public event EventHandler<SelectEventArgs<TField>> OnSelect;
         public event EventHandler<StatusEventArgs> OnIdStatusChange;
         public event EventHandler<StatusEventArgs> OnNameStatusChange;
         public event EventHandler<StatusEventArgs> OnListStatusChange;
@@ -175,9 +177,9 @@ namespace Controllers
             if (objectId == null)
                 throw new ArgumentNullException(nameof(objectId));
             
-            selectedObject = (T)broker.Read(objectId);
+            selectedObject = (TField)broker.Read(objectId);
 
-            SelectEventArgs<T> args = new SelectEventArgs<T>
+            SelectEventArgs<TField> args = new SelectEventArgs<TField>
             {
                 Selected = selectedObject,
                 RequestInfo = objectId
@@ -285,7 +287,7 @@ namespace Controllers
         /// </summary>
         private void SetEditObject()
         {
-            editObject = (T)broker.Read(selectedObject.ID);
+            editObject = (TField)broker.Read(selectedObject.ID);
         }
 
         /// <summary>
@@ -377,7 +379,7 @@ namespace Controllers
 
         private void CreateOrUpdate()
         {
-            T draftObject = CreateDraftObject();
+            TField draftObject = CreateDraftObject();
 
             if (editObject == null)
             {
@@ -389,9 +391,9 @@ namespace Controllers
             }
         }
 
-        private T CreateDraftObject()
+        private TField CreateDraftObject()
         {
-            return new T
+            return new TField
             {
                 ID = inputID,
                 Name = inputName,
@@ -404,8 +406,8 @@ namespace Controllers
 
         #region Fields
 
-        private readonly IBroker<IFieldList> broker = new SizeListBroker();
-        private readonly IProvider<IFieldList> provider = new SizeProvider();
+        private readonly IBroker<IFieldList> broker /*= new SizeListBroker()*/;
+        private readonly IProvider<IFieldList> provider /*= new SizeProvider()*/;
 
         // inputs
         private string inputID;
@@ -422,8 +424,8 @@ namespace Controllers
         private bool DISABLE_STATUS_RAISE_EVENT;
 
         // objects
-        private T selectedObject;
-        private T editObject;
+        private TField selectedObject;
+        private TField editObject;
 
         #endregion
     }

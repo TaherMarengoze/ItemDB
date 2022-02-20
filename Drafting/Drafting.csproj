@@ -44,12 +44,10 @@
     <Compile Include="Controllers\ListController.cs" />
     <Compile Include="Controllers\ListController.Entries.cs" />
     <Compile Include="Controllers\SizeList\EntrySetEventArgs.cs" />
+    <Compile Include="Controllers\SizeList\SizeListController.Entries.cs" />
     <Compile Include="EventArgs\MoveEventArgs.cs" />
     <Compile Include="EventArgs\PreModifyEventArgs.cs" />
     <Compile Include="EventArgs\RevertEventArgs.cs" />
-    <Compile Include="Controllers\SizeList\SizeListController.Entries.cs">
-      <DependentUpon>SizeListController.cs</DependentUpon>
-    </Compile>
     <Compile Include="EventArgs\PreDraftingEventArgs.cs" />
     <Compile Include="EventArgs\RemoveEventArgs.cs" />
     <Compile Include="EventArgs\SetEventArgs.cs" />
