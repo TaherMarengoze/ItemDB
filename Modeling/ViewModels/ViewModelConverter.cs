@@ -22,6 +22,16 @@ namespace Modeling.ViewModels
         //        };
         //}
 
+        public static List<string> ToGenericView(
+            this IEnumerable<IItem> source)
+        {
+            return
+                (from item in source
+                 select
+                     item.ItemID
+                 ).ToList();
+        }
+
         public static List<SpecsItemGenericView> ToGenericView(
             this IEnumerable<ISpecsItem> source)
         {

@@ -1,10 +1,10 @@
-﻿
-using Interfaces.Models;
-using Interfaces.Operations;
-using System;
+﻿using System;
 using System.Linq;
 using System.Xml.Linq;
+using Interfaces.Models;
+using Interfaces.Operations;
 using XmlDataSource.IO;
+
 
 namespace XmlDataSource.Repository
 {
@@ -36,8 +36,17 @@ namespace XmlDataSource.Repository
             // Add the item to the category
             category.Add(content);
         }
-        
-        public IItem Read(string entityId) => throw new NotImplementedException();
+
+        public IItem Read(string entityId)
+        {
+            Func<XElement, bool> idMatch =
+                node => node.Attribute("itemID").Value == entityId;
+
+            XElement element =
+                dataSource.Descendants("item").FirstOrDefault(idMatch);
+
+            return Deserialize.ItemXElement(element);
+        }
 
         public void Update(string refId, IItem entity)
         {

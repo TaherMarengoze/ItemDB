@@ -46,6 +46,7 @@
     <Compile Include="Brokers\BrokerSelector.cs" />
     <Compile Include="Brokers\SizeListBroker.cs" />
     <Compile Include="Brokers\BrandListBroker.cs" />
+    <Compile Include="Brokers\ItemBroker.cs" />
     <Compile Include="CacheIO.cs" />
     <Compile Include="Brokers\SizeGroupBroker.cs" />
     <Compile Include="ContextProvider.cs" />

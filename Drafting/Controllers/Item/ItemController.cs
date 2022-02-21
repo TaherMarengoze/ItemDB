@@ -3,7 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClientService.Brokers;
+using ClientService.Contracts;
+using ClientService.Data;
+using Interfaces.Models;
 using Interfaces.Operations;
+using Modeling.ViewModels;
 
 namespace Controllers
 {
@@ -13,7 +18,7 @@ namespace Controllers
         public void Save() { }
         public void Load()
         {
-            var args = new LoadEventArgs(null);
+            var args = new LoadEventArgs(provider.GetList().ToGenericView());
         }
         public void Select(string refId) { }
         public void New() { }
@@ -25,8 +30,8 @@ namespace Controllers
 
         #region Fields
 
-        private readonly object broker;
-        private readonly object provider;
+        private readonly IBroker<IItem> broker = new ItemBroker();
+        private readonly IProvider<IItem> provider = new ItemProvider();
         #endregion
     }
 }
