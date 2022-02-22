@@ -1,7 +1,6 @@
 ﻿using Interfaces.Models;
 using Modeling.ViewModels.Common;
 using Modeling.ViewModels.SizeGroup;
-using Modeling.ViewModels.Specs;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,22 +21,19 @@ namespace Modeling.ViewModels
         //        };
         //}
 
-        public static List<string> ToGenericView(
+        public static List<Item.GenericView> ToGenericView(
             this IEnumerable<IItem> source)
         {
             return
-                (from item in source
-                 select
-                     item.ItemID
-                 ).ToList();
+                source.Select(item => new Item.GenericView(item)).ToList();
         }
 
-        public static List<SpecsItemGenericView> ToGenericView(
+        public static List<Specs.GenericView> ToGenericView(
             this IEnumerable<ISpecsItem> source)
         {
             return
                 (from si in source
-                 select new SpecsItemGenericView
+                 select new Specs.GenericView
                  {
                      Index = si.Index,
                      Name = si.Name,

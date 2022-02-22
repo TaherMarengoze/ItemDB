@@ -17,12 +17,12 @@ namespace Controllers.SpecsUi
     {
         public int Index { get; set; }
 
-        public List<SpecsItemGenericView> SpecsItems { get; set; }
+        public List<GenericView> SpecsItems { get; set; }
     }
 
     public class SpecsItemRemoveEventArgs : EventArgs
     {
-        public List<SpecsItemGenericView> SpecsItems { get; set; }
+        public List<GenericView> SpecsItems { get; set; }
         public int Count => SpecsItems?.Count ?? 0;
     }
 

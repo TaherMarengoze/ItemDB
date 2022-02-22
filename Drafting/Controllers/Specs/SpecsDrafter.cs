@@ -36,7 +36,7 @@ namespace Controllers.SpecsUi
         // properties
         public ISpecs SelectedSpecs { get; private set; }
 
-        public List<SpecsItemGenericView> SpecsItemsView { get; private set; }
+        public List<GenericView> SpecsItemsView { get; private set; }
 
         public ISpecsItem SelectedSpecsItem { get; private set; }
 

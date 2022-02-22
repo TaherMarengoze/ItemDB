@@ -1,6 +1,6 @@
 ﻿namespace Modeling.ViewModels.Specs
 {
-    public class SpecsItemGenericView
+    public class GenericView
     {
         public int Index { get; set; }
 
