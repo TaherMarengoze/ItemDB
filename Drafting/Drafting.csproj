@@ -48,7 +48,7 @@
     <Compile Include="EventArgs\MoveEventArgs.cs" />
     <Compile Include="EventArgs\PreModifyEventArgs.cs" />
     <Compile Include="EventArgs\RevertEventArgs.cs" />
-    <Compile Include="EventArgs\PreDraftingEventArgs.cs" />
+    <Compile Include="Controllers\FieldList\PreDraftingEventArgs.cs" />
     <Compile Include="EventArgs\RemoveEventArgs.cs" />
     <Compile Include="EventArgs\SetEventArgs.cs" />
     <Compile Include="EventArgs\CancelEventArgs.cs" />

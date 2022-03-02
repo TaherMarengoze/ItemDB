@@ -5,6 +5,11 @@ namespace Controllers
 {
     public class PreModifyEventArgs : EventArgs
     {
+        public PreModifyEventArgs(IList list)
+        {
+            List = list;
+        }
+
         public PreModifyEventArgs(object draft, IList list)
         {
             Draft = draft;

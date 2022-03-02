@@ -10,6 +10,7 @@ namespace AppCore
     /// </summary>
     public class ModelListsCache
     {
+        public event EventHandler OnItemsChanged;
         public event EventHandler OnSpecsChanged;
         public event EventHandler OnSizeGroupsChanged;
         public event EventHandler OnSizeListChanged;
@@ -17,7 +18,15 @@ namespace AppCore
         public event EventHandler OnEndListChanged;
         public event EventHandler OnCustomSizeListChanged;
 
-        public List<IItem> Items { get => _items; set => _items = value; }
+        public List<IItem> Items
+        {
+            get => _items;
+            set
+            {
+                _items = value;
+                OnItemsChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
 
         public List<ISpecs> Specs
         {

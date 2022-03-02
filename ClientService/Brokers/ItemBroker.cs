@@ -1,6 +1,6 @@
 ﻿using AppCore;
-using Interfaces.Models;
 using Interfaces.Operations;
+using Interfaces.Models;
 
 namespace ClientService.Brokers
 {

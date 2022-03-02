@@ -17,24 +17,28 @@ namespace ClientService
 
         static CacheIO()
         {
-            Globals.sizeGroupRepo.OnChange += CacheIO_OnChange_SizeGroup;
+            Globals.itemsRepo.OnChange += ItemsRepo_OnChange;
+            Globals.sizeGroupRepo.OnChange += SizeGroupRepo_OnChange;
             Globals.sizesRepo.OnChange += SizesRepo_OnChange;
         }
 
-        
-
         public static void InitLists() => UpdateAllLists();
 
-        private static void CacheIO_OnChange_SizeGroup(object sender, EventArgs e)
+        private static void ItemsRepo_OnChange(object sender, EventArgs e)
+        {
+            UpdateItemList();
+        }
+
+        private static void SizeGroupRepo_OnChange(object sender, EventArgs e)
         {
             UpdateSizeGroupList();
         }
 
         private static void SizesRepo_OnChange(object sender, EventArgs e)
         {
-            Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffffff")}: Updating Sizes Repository.");
+            Console.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.ffffff}: Updating Sizes Repository.");
             UpdateSizesList();
-            Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffffff")}: Updated Sizes Repository.");
+            Console.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.ffffff}: Updated Sizes Repository.");
         }
         #region Lists Getter
         // .ToList returns a copy of the list preserving the one in the cache

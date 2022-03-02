@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using AppCore;
 using ClientService.Contracts;
 using Interfaces.Models;
 
@@ -10,7 +11,7 @@ namespace ClientService.Data
 
         public List<string> GetIDs()
         {
-            throw new System.NotImplementedException();
+            return Globals.DataLists.ItemIDs;
         }
 
         public List<IItem> GetList()

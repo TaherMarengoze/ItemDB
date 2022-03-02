@@ -55,7 +55,17 @@ namespace XmlDataSource.Repository
 
         public void Delete(string entityId)
         {
-            throw new NotImplementedException();
+            GetElement(entityId).Remove();
+
+            OnChange?.Invoke(this, EventArgs.Empty);
+        }
+
+        private XElement GetElement(string entityId)
+        {
+            return
+                dataSource.Descendants("item")
+                .FirstOrDefault(
+                    node => node.Attribute("itemID").Value == entityId);
         }
 
         private XElement GetCategoryAdd(IItem item)

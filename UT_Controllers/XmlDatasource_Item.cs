@@ -8,7 +8,7 @@ using ClientService.Brokers;
 namespace UT_Controllers
 {
     [TestClass]
-    public class XmlDatasource_ItemTest
+    public class XmlDatasource_Item
     {
         readonly ItemBroker itemBroker = new ItemBroker();
 

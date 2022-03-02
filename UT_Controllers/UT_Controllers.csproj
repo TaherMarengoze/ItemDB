@@ -54,9 +54,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Initialization.cs" />
+    <Compile Include="ListViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ListViewer.Designer.cs">
+      <DependentUpon>ListViewer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SizeListControllerTest.cs" />
-    <Compile Include="XmlDatasource_ItemTest.cs" />
+    <Compile Include="Controller_Item.cs" />
+    <Compile Include="XmlDatasource_Item.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ApplicationCentre\AppCore.csproj">
@@ -94,6 +101,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ListViewer.resx">
+      <DependentUpon>ListViewer.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
