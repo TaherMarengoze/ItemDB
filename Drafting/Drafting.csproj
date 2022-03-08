@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Operations.cs" />
     <Compile Include="Controllers\FieldList\ListController.cs" />
     <Compile Include="Controllers\FieldList\ListController.Entries.cs" />
     <Compile Include="Controllers\Item\ItemController.cs" />
