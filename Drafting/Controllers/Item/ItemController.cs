@@ -11,11 +11,17 @@ using CoreLibrary.Enums;
 using Interfaces.Models;
 using Interfaces.Operations;
 using Modeling.ViewModels;
+using Modeling.ViewModels.Item;
 
 namespace Controllers
 {
     public class ItemController : IController
     {
+        public ItemController()
+        {
+            SetStatusInitialValues();
+        }
+
         #region Events
         // common events
         public event EventHandler<LoadEventArgs> OnLoad;
@@ -28,9 +34,28 @@ namespace Controllers
 
         // specific events
         public event EventHandler<StatusEventArgs> OnIdStatusChange;
+        public event EventHandler<StatusEventArgs> OnBaseNameStatusChange;
+        public event EventHandler<StatusEventArgs> OnDisplayNameStatusChange;
+        public event EventHandler<StatusEventArgs> OnDescriptionStatusChange;
+        public event EventHandler<StatusEventArgs> OnUomStatusChange;
+        public event EventHandler<StatusEventArgs> OnCatIdStatusChange;
+        public event EventHandler<StatusEventArgs> OnCatNameStatusChange;
         #endregion
 
+
         #region Inputs
+
+        //             *CatID
+        //             *CatNam
+        //             *ItemID
+        //             *BaseName
+        //             *DisplayName
+        //List<string> CommonNames
+        //             *Description
+        //List<string> ImagesFileName
+        //IItemDetails Details
+        //             *UoM
+
         public string InputID
         {
             get => inputID;
@@ -39,7 +64,67 @@ namespace Controllers
                 inputID = value;
 
                 StatusID = Operations.GetInputStatus(value,
-                    provider.GetIDs()/*, editObject?.ID*/);
+                    GetEditObjectId(), provider.GetIDs());
+            }
+        }
+
+        public string InputBaseName
+        {
+            get => inputBaseName;
+            set
+            {
+                inputBaseName = value;
+                StatusBaseName = Operations.GetInputStatus(value);
+            }
+        }
+
+        public string InputDisplayName
+        {
+            get => inputDisplayName;
+            set
+            {
+                inputDisplayName = value;
+                StatusDisplayName = Operations.GetInputStatus(value);
+            }
+        }
+
+        public string InputDescription
+        {
+            get => inputDescription;
+            set
+            {
+                inputDescription = value;
+                StatusDescription = Operations.GetInputStatus(value);
+            }
+        }
+
+        public string InputUom
+        {
+            get => inputUom;
+            set
+            {
+                inputUom = value;
+                StatusUom = Operations.GetInputStatus(value);
+            }
+        }
+
+        public string InputCatId
+        {
+            get => inputCatId;
+            set
+            {
+                inputCatId = value;
+                StatusCatId = Operations.GetInputStatus(value);
+            }
+        }
+
+        public string InputCatName
+        {
+            get => inputCatName;
+            set
+            {
+                inputCatName = value;
+                StatusCatName = Operations.GetInputStatus(value);
             }
         }
         #endregion
@@ -62,6 +147,109 @@ namespace Controllers
                 CheckReadyStatus();
             }
         }
+
+        public InputStatus StatusBaseName
+        {
+            get => statusBaseName;
+            private set
+            {
+                statusBaseName = value;
+
+                StatusEventArgs args = new StatusEventArgs(value, inputBaseName);
+
+                // raise #event
+                OnBaseNameStatusChange.CheckedInvoke(args,
+                    !DISABLE_STATUS_RAISE_EVENT);
+
+                // check all inputs status
+                CheckReadyStatus();
+            }
+        }
+
+        public InputStatus StatusDisplayName
+        {
+            get => statusDisplayName;
+            private set
+            {
+                statusDisplayName = value;
+                StatusEventArgs args = new StatusEventArgs(value, inputDisplayName);
+
+                // raise event
+                OnDisplayNameStatusChange.CheckedInvoke(args,
+                    !DISABLE_STATUS_RAISE_EVENT);
+
+                // check all inputs status
+                CheckReadyStatus();
+            }
+        }
+
+        public InputStatus StatusDescription
+        {
+            get => statusDescription;
+            private set
+            {
+                statusDescription = value;
+                StatusEventArgs args = new StatusEventArgs(value, inputDescription);
+
+                // raise event
+                OnDescriptionStatusChange.CheckedInvoke(args,
+                    !DISABLE_STATUS_RAISE_EVENT);
+
+                // check all inputs status
+                CheckReadyStatus();
+            }
+        }
+
+        public InputStatus StatusUom
+        {
+            get => statusUom;
+            private set
+            {
+                statusUom = value;
+                StatusEventArgs args = new StatusEventArgs(value, inputUom);
+
+                // raise event
+                OnUomStatusChange.CheckedInvoke(args,
+                    !DISABLE_STATUS_RAISE_EVENT);
+
+                // check all inputs status
+                CheckReadyStatus();
+            }
+        }
+
+        public InputStatus StatusCatId
+        {
+            get => statusCatId;
+            private set
+            {
+                statusCatId = value;
+                StatusEventArgs args = new StatusEventArgs(value, inputCatId);
+
+                // raise event
+                OnCatIdStatusChange.CheckedInvoke(args,
+                    !DISABLE_STATUS_RAISE_EVENT);
+
+                // check all inputs status
+                CheckReadyStatus();
+            }
+        }
+
+        public InputStatus StatusCatName
+        {
+            get => statusCatName;
+            private set
+            {
+                statusCatName = value;
+                StatusEventArgs args = new StatusEventArgs(value, inputCatName);
+
+                // raise event
+                OnCatNameStatusChange.CheckedInvoke(args,
+                    !DISABLE_STATUS_RAISE_EVENT);
+
+                // check all inputs status
+                CheckReadyStatus();
+            }
+        }
         #endregion
 
         #region Public Methods
@@ -69,7 +257,7 @@ namespace Controllers
 
         public void Load()
         {
-            var args = new LoadEventArgs(provider.GetList().ToGenericView());
+            var args = new LoadEventArgs(GetGenericViewList());
 
             // raise event
             OnLoad?.Invoke(this, args);
@@ -108,7 +296,7 @@ namespace Controllers
             broker.Delete(selectedObject.ItemID);
 
             var args = new RemoveEventArgs(selectedObject.ItemID,
-                provider.GetList().ToGenericView());
+                GetGenericViewList());
 
             selectedObject = null;
 
@@ -182,18 +370,38 @@ namespace Controllers
 
         private void SetStatusInitialValues()
         {
-            //statusID = InputStatus.Blank;
-            //statusName = InputStatus.Blank;
+            statusID = InputStatus.Blank;
+            statusBaseName = InputStatus.Blank;
+            statusDisplayName = InputStatus.Blank;
+            statusDescription = InputStatus.Blank;
+            statusUom = InputStatus.Blank;
+            statusCatId = InputStatus.Blank;
+            statusCatName = InputStatus.Blank;
             // etc ...
         }
         #endregion
 
         #region Private Getters
+        private List<GenericView> GetGenericViewList()
+        {
+            return provider.GetList().ToGenericView();
+        }
+
+        private string GetEditObjectId()
+        {
+            return editObject?.ItemID;
+        }
+
         private bool IsValidInputs()
         {
             InputStatus[] inputStatus = {
-                //StatusID,
-                //StatusName,
+                StatusID,
+                StatusBaseName,
+                StatusDisplayName,
+                StatusDescription,
+                StatusUom,
+                StatusCatId,
+                StatusCatName,
                 // etc ...
             };
 
@@ -203,7 +411,13 @@ namespace Controllers
         private bool IsDraftChanged()
         {
             bool[] draftChange = {
-                //inputID != null && inputID != editObject?.ID,
+                Operations.IsChanged(inputID, GetEditObjectId()),
+                Operations.IsChanged(inputBaseName, editObject?.BaseName),
+                Operations.IsChanged(inputDisplayName, editObject?.DisplayName),
+                Operations.IsChanged(inputDescription, editObject?.Description),
+                Operations.IsChanged(inputUom, editObject?.UoM),
+                Operations.IsChanged(inputCatId, editObject?.CatID),
+                Operations.IsChanged(inputCatName, editObject?.CatName),
                 //inputName != null && inputName != editObject?.Name,
                 // etc ...
             };
@@ -220,6 +434,18 @@ namespace Controllers
         // backing fields
         private string inputID;
         private InputStatus statusID;
+        private string inputBaseName;
+        private InputStatus statusBaseName;
+        private string inputDisplayName;
+        private InputStatus statusDisplayName;
+        private string inputDescription;
+        private InputStatus statusDescription;
+        private string inputUom;
+        private InputStatus statusUom;
+        private string inputCatId;
+        private InputStatus statusCatId;
+        private string inputCatName;
+        private InputStatus statusCatName;
 
         // flags
         private bool STATE_DRAFT_READY;

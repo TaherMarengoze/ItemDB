@@ -7,7 +7,7 @@ namespace Controllers.Common
     internal static class Operations
     {
         internal static InputStatus GetInputStatus(string value,
-            IEnumerable<string> existingList = null, string oldValue = null)
+            string oldValue = null, IEnumerable<string> existingList = null)
         {
             InputStatus status;
             if (string.IsNullOrWhiteSpace(value))
@@ -39,6 +39,11 @@ namespace Controllers.Common
             }
 
             return status;
+        }
+
+        internal static bool IsChanged(string value, string oldValue = null)
+        {
+            return value != null && value != oldValue;
         }
     }
 }
