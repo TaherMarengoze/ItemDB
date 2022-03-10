@@ -15,7 +15,7 @@ using Modeling.ViewModels.Item;
 
 namespace Controllers
 {
-    public class ItemController : IController
+    public partial class ItemController : IController
     {
         public ItemController()
         {
@@ -127,6 +127,11 @@ namespace Controllers
                 StatusCatName = Operations.GetInputStatus(value);
             }
         }
+
+        private void SetInputCommonNames(List<string> value)
+        {
+            inputCommonNames = value;
+        }
         #endregion
 
         #region Input Status
@@ -139,9 +144,12 @@ namespace Controllers
 
                 StatusEventArgs args = new StatusEventArgs(value, inputID);
 
-                // raise #event
-                OnIdStatusChange.CheckedInvoke(args,
-                    !DISABLE_STATUS_RAISE_EVENT);
+                // raise event
+                if (!DISABLE_STATUS_RAISE_EVENT)
+                    OnIdStatusChange?.Invoke(this, args);
+
+                //OnIdStatusChange.CheckedInvoke(args,
+                //    !DISABLE_STATUS_RAISE_EVENT);
 
                 // check all inputs status
                 CheckReadyStatus();
@@ -421,7 +429,7 @@ namespace Controllers
                 //inputName != null && inputName != editObject?.Name,
                 // etc ...
             };
-
+            
             return draftChange.Any(change => change);
         }
         #endregion
@@ -446,6 +454,7 @@ namespace Controllers
         private InputStatus statusCatId;
         private string inputCatName;
         private InputStatus statusCatName;
+        private List<string> inputCommonNames;
 
         // flags
         private bool STATE_DRAFT_READY;

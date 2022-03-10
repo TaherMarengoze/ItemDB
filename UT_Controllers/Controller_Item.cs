@@ -90,6 +90,13 @@ namespace UT_Controllers
             ui.OnUomStatusChange += Ui_OnUomStatusChange;
             ui.OnCatIdStatusChange += Ui_OnCatIdStatusChange;
             ui.OnCatNameStatusChange += Ui_OnCatNameStatusChange;
+
+            ui.CommonNames.OnLoad += CommonNames_OnLoad;
+        }
+
+        private void CommonNames_OnLoad(object sender, LoadEventArgs e)
+        {
+            Console.WriteLine(e.Count);
         }
 
         private void Ui_OnCatNameStatusChange(object sender, StatusEventArgs e)
@@ -346,6 +353,14 @@ namespace UT_Controllers
             ui.InputCatId = "CATID";
             ui.InputCatName = "New Category";
             
+        }
+
+        [TestMethod]
+        public void Test_CommonNamesController()
+        {
+            ui.ModifyCommonNames();
+            ui.CommonNames.Load();
+            ui.CommonNames.Save();
         }
     }
 }
