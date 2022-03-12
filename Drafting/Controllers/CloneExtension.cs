@@ -9,6 +9,24 @@ namespace Controllers
 {
     internal static class CloneExtension
     {
+        public static IItem Clone(this IItem item)
+        {
+            return
+                new Item
+                {
+                    ItemID         = item.ItemID,
+                    BaseName       = item.BaseName,
+                    DisplayName    = item.DisplayName,
+                    Description    = item.Description,
+                    UoM            = item.UoM,
+                    CatID          = item.CatID,
+                    CatName        = item.CatName,
+                    CommonNames    = item.CommonNames.ToList(),
+                    Details        = item.Details,
+                    ImagesFileName = item.ImagesFileName.ToList(),
+                };
+        }
+
         public static ISpecs Clone(this ISpecs specs)
         {
             return

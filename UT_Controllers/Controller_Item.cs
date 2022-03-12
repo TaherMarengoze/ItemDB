@@ -11,43 +11,6 @@ using XmlDataSource.Repository;
 
 namespace UT_Controllers
 {
-    public static class Extension
-    {
-        public static void WriteList(this IList list, string bullet = " * ")
-        {
-            foreach (var listItem in list)
-            {
-                Console.WriteLine("{1}{0}", listItem, bullet);
-            }
-            Console.WriteLine();
-        }
-
-        public static void DrawTable(this IEnumerable<GenericView> list)
-        {
-            var length = list.Max(s => s.BaseName.Length);
-
-            Console.WriteLine("╔════════╦═{0}═╗", "═".PadRight(length, '═'));
-            Console.WriteLine("║ ItemID ║ {0} ║", "Base Name".PadBoth(length));
-            Console.WriteLine("╠════════╬═{0}═╣", "═".PadRight(length, '═'));
-            foreach (var item in list)
-            {
-                Console.WriteLine("║ {0} ║ {1} ║",
-                    item.ID.PadRight(6),
-                    item.BaseName.PadRight(length));
-            }
-            Console.WriteLine("╚════════╩═{0}═╝", "═".PadRight(length, '═'));
-            Console.WriteLine("{0} item(s)", list.Count());
-        }
-
-
-        public static string PadBoth(this string str, int length)
-        {
-            int spaces = length - str.Length;
-            int padLeft = spaces / 2 + str.Length;
-            return str.PadLeft(padLeft).PadRight(length);
-        }
-
-    }
 
     [TestClass]
     public class Controller_Item
@@ -61,7 +24,7 @@ namespace UT_Controllers
         {
             Initialization.Simulate();
             ui = new ItemController();
-            
+
             EventSubscriber();
         }
 
@@ -90,13 +53,17 @@ namespace UT_Controllers
             ui.OnUomStatusChange += Ui_OnUomStatusChange;
             ui.OnCatIdStatusChange += Ui_OnCatIdStatusChange;
             ui.OnCatNameStatusChange += Ui_OnCatNameStatusChange;
-
-            ui.CommonNames.OnLoad += CommonNames_OnLoad;
+            ui.OnCommonNamesStatusChange += Ui_OnCommonNamesStatusChange;
         }
 
-        private void CommonNames_OnLoad(object sender, LoadEventArgs e)
+        private void Ui_OnCommonNamesStatusChange(object sender, StatusEventArgs e)
         {
-            Console.WriteLine(e.Count);
+            Log(delegate
+            {
+                Console.WriteLine("Input Common Names = {0}, Status = {1}",
+                    ((IList)e.Value).Count,
+                    e.Status/*.ToString()*/);
+            });
         }
 
         private void Ui_OnCatNameStatusChange(object sender, StatusEventArgs e)
@@ -164,7 +131,7 @@ namespace UT_Controllers
             Log(delegate
             {
                 Console.WriteLine("Input ID = {0}, Status = {1}",
-                    e.Value.ToString().PadRight(5,'_'),
+                    e.Value.ToString().PadRight(5, '_'),
                     e.Status.ToString());
             });
         }
@@ -181,7 +148,27 @@ namespace UT_Controllers
         {
             Log(delegate
             {
-                e.List.WriteList();
+                if (e.Draft != null)
+                {
+                    var item = (IItem)e.Draft;
+                    int l = new List<string> {
+                        item.ItemID,
+                        item.BaseName,
+                        item.DisplayName,
+                        item.CatID,
+                        item.CatName,
+                    }.Max(s => s.Length);
+
+                    Console.WriteLine("╔═ EDIT ITEM ═════{0}═╗", "═".PadRight(l, '═'));
+                    Console.WriteLine("║ ID            = {0} ║", item.ItemID.PadRight(l));
+                    Console.WriteLine("║ Name          = {0} ║", item.BaseName.PadRight(l));
+                    Console.WriteLine("║ Display       = {0} ║", item.DisplayName.PadRight(l));
+                    Console.WriteLine("║ Category ID   = {0} ║", item.CatID.PadRight(l));
+                    Console.WriteLine("║ Category Name = {0} ║", item.CatName.PadRight(l));
+                    Console.WriteLine("║ Common Names  = {0} ║", item.CommonNames.Count.ToString().PadRight(l));
+                    Console.WriteLine("╚═════════════════{0}═╝", "═".PadRight(l, '═'));
+                }
+                e.List.WriteList(" • ");
             });
         }
 
@@ -352,15 +339,58 @@ namespace UT_Controllers
             ui.InputUom = "UoM";
             ui.InputCatId = "CATID";
             ui.InputCatName = "New Category";
-            
+
         }
 
         [TestMethod]
-        public void Test_CommonNamesController()
+        public void Test_ItemEdit()
         {
-            ui.ModifyCommonNames();
-            ui.CommonNames.Load();
-            ui.CommonNames.Save();
+            SKIP_LOG = true;
+            ui.Select("CPRP1");
+            SKIP_LOG = false;
+            ui.Edit();
+        }
+
+        internal static InputStatus GetInputStatus(IEnumerable<string> list)
+        {
+            InputStatus status;
+
+            if (list == null || list.Any(s => string.IsNullOrWhiteSpace(s)))
+            {
+                status = InputStatus.Invalid;
+            }
+            else
+            {
+                if (list.Any())
+                {
+                    if (list.Count() != list.Distinct().Count())
+                    {
+                        status = InputStatus.Duplicate;
+                    }
+                    else
+                    {
+                        status = InputStatus.Valid;
+                    }
+                }
+                else
+                {
+                    status = InputStatus.Blank;
+                }
+            }
+
+            return status;
+        }
+
+        [TestMethod]
+        public void MyTestMethod()
+        {
+            Console.WriteLine(GetInputStatus(null));
+            Console.WriteLine(GetInputStatus(new List<string>()));
+            Console.WriteLine(GetInputStatus(new List<string> { "test1", "test2" }));
+            Console.WriteLine(GetInputStatus(new List<string> { "test1", "test1" }));
+            Console.WriteLine(GetInputStatus(new List<string> { "test1", "test1", "test2" }));
+            Console.WriteLine(GetInputStatus(new List<string> { "", "test1", "test2" }));
+            Console.WriteLine(GetInputStatus(new List<string> { null, "test1", "test2" }));
         }
     }
 }

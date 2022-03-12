@@ -40,6 +40,7 @@ namespace Controllers
         public event EventHandler<StatusEventArgs> OnUomStatusChange;
         public event EventHandler<StatusEventArgs> OnCatIdStatusChange;
         public event EventHandler<StatusEventArgs> OnCatNameStatusChange;
+        public event EventHandler<StatusEventArgs> OnCommonNamesStatusChange;
         #endregion
 
 
@@ -131,9 +132,11 @@ namespace Controllers
         private void SetInputCommonNames(List<string> value)
         {
             inputCommonNames = value;
+            SetStatusCommonNames(Operations.GetInputStatus(value));
         }
-        #endregion
 
+        #endregion
+        
         #region Input Status
         public InputStatus StatusID
         {
@@ -258,6 +261,20 @@ namespace Controllers
                 CheckReadyStatus();
             }
         }
+
+        private void SetStatusCommonNames(InputStatus value)
+        {
+            statusCommonNames = value;
+
+            var args = new StatusEventArgs(value, inputCommonNames);
+
+            // raise event
+            if (!DISABLE_STATUS_RAISE_EVENT)
+                OnCommonNamesStatusChange?.Invoke(this, args);
+
+            // check all inputs status
+            CheckReadyStatus();
+        }
         #endregion
 
         #region Public Methods
@@ -294,7 +311,18 @@ namespace Controllers
             // raise event
             OnPreDrafting?.Invoke(this, args);
         }
-        public void Edit() { }
+        
+        public void Edit() {
+            SetEditObject();
+            FillInputs();
+
+            var args = new PreModifyEventArgs(editObject.Clone(),
+                provider.GetIDs());
+
+            // raise #event
+            OnPreDrafting?.Invoke(this, args);
+        }
+
         public void Remove()
         {
             if (selectedObject == null)
@@ -346,9 +374,19 @@ namespace Controllers
         {
             DISABLE_STATUS_RAISE_EVENT = true;
 
-            //InputID = editObject.ID;
-            //InputName = editObject.Name;
-            // etc ...
+            //List<string> CommonNames
+            //List<string> ImagesFileName
+            //IItemDetails Details
+
+            InputID = editObject.ItemID;
+            InputBaseName = editObject.BaseName;
+            InputDisplayName = editObject.DisplayName;
+            InputDescription = editObject.Description;
+            InputUom = editObject.UoM;
+            InputCatId = editObject.CatID;
+            InputCatName = editObject.CatName;
+
+            SetInputCommonNames(editObject.CommonNames.ToList());
 
             DISABLE_STATUS_RAISE_EVENT = false;
         }
@@ -403,13 +441,14 @@ namespace Controllers
         private bool IsValidInputs()
         {
             InputStatus[] inputStatus = {
-                StatusID,
-                StatusBaseName,
-                StatusDisplayName,
-                StatusDescription,
-                StatusUom,
-                StatusCatId,
-                StatusCatName,
+                statusID,
+                statusBaseName,
+                statusDisplayName,
+                statusDescription,
+                statusUom,
+                statusCatId,
+                statusCatName,
+                statusCommonNames,
                 // etc ...
             };
 
@@ -426,10 +465,9 @@ namespace Controllers
                 Operations.IsChanged(inputUom, editObject?.UoM),
                 Operations.IsChanged(inputCatId, editObject?.CatID),
                 Operations.IsChanged(inputCatName, editObject?.CatName),
-                //inputName != null && inputName != editObject?.Name,
-                // etc ...
+                //Operations.IsChanged(inputCommonNames, editObject?.CommonNames),
             };
-            
+
             return draftChange.Any(change => change);
         }
         #endregion
@@ -438,7 +476,7 @@ namespace Controllers
 
         private readonly IBroker<IItem> broker = new ItemBroker();
         private readonly IProvider<IItem> provider = new ItemProvider();
-        
+
         // backing fields
         private string inputID;
         private InputStatus statusID;
@@ -455,6 +493,7 @@ namespace Controllers
         private string inputCatName;
         private InputStatus statusCatName;
         private List<string> inputCommonNames;
+        private InputStatus statusCommonNames;
 
         // flags
         private bool STATE_DRAFT_READY;

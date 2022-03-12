@@ -22,7 +22,11 @@ namespace ClientService.Brokers
             repos.Add(content);
         }
 
-        public string Read(string entityId) => throw new System.NotImplementedException();
+        public string Read(string entityId)
+        {
+            return repos.Find(entry => entry == entityId);
+        }
+
         public void Update(string refId, string content) => throw new System.NotImplementedException();
         public void Delete(string entityId) => throw new System.NotImplementedException();
 

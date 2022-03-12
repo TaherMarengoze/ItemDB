@@ -42,7 +42,8 @@ namespace Controllers
             set
             {
                 inputCommonName = value;
-                SetStatusCommonName(Operations.GetInputStatus(value));
+                SetStatusCommonName(Operations.GetInputStatus(value,
+                    GetEditObjectId(), provider.GetList()));
             }
         }
 
@@ -72,7 +73,8 @@ namespace Controllers
             setAction = set;
         }
 
-        public void Save() {
+        public void Save()
+        {
             setAction(provider.GetList());
             sourceList = null;
             broker = null;
@@ -81,22 +83,99 @@ namespace Controllers
             // raise event
         }
 
-        public void Load() {
+        public void Load()
+        {
             LoadEventArgs args = new LoadEventArgs(GetGenericViewList());
 
             // raise event
             OnLoad?.Invoke(this, args);
         }
 
-        public void Select(string refId) { }
-        public void New() { }
-        public void Edit() { }
+        public void Select(string refId)
+        {
+            if (refId == null)
+                throw new ArgumentNullException(nameof(refId));
+
+            selectedObject = broker.Read(refId);
+
+            var args = new SelectEventArgs<string>
+            {
+                Selected = selectedObject,
+                RequestInfo = refId
+            };
+
+            // raise #event
+            OnSelect?.Invoke(this, args);
+        }
+
+        public void New()
+        {
+            var args = new PreModifyEventArgs(provider.GetList());
+
+            // raise event
+            OnPreDrafting?.Invoke(this, args);
+        }
+
+        public void Edit()
+        {
+            SetEditObject();
+            FillInputs();
+
+            var args = new PreModifyEventArgs(editObject.Clone(),
+                provider.GetIDs());
+
+            // raise #event
+            OnPreDrafting?.Invoke(this, args);
+        }
+
         public void Remove() { }
-        public void CommitChanges() { }
+
+        public void CommitChanges()
+        {
+            if (!STATE_DRAFT_READY)
+                throw new Exception("Entry is invalid or unchanged");
+
+            CreateOrUpdate();
+
+            var args = new SetEventArgs
+            {
+                NewID = inputCommonName,
+                OldID = editObject,
+                NewList = provider.GetList().ToList()
+            };
+
+            // clear objects
+            selectedObject = null;
+            editObject = null;
+            ClearInputs();
+
+            // raise #event
+            OnSet?.Invoke(this, args);
+        }
+
         public void CancelChanges() { }
         #endregion
 
         #region Private Methods
+        /// <summary>
+        /// Sets the edit object.
+        /// </summary>
+        private void SetEditObject()
+        {
+            editObject = /*broker.Read(selectedObject)*/selectedObject;
+        }
+
+        /// <summary>
+        /// Copy the data of the edited object to the inputs.
+        /// </summary>
+        private void FillInputs()
+        {
+            DISABLE_STATUS_RAISE_EVENT = true;
+
+            InputCommonName = editObject;
+
+            DISABLE_STATUS_RAISE_EVENT = false;
+        }
         private void CheckReadyStatus()
         {
             bool isValid = IsValidInputs();
@@ -110,6 +189,29 @@ namespace Controllers
             // raise #event
             OnReadyStateChange?.CheckedInvoke(args,
                 !DISABLE_STATUS_RAISE_EVENT);
+        }
+
+        private void CreateOrUpdate()
+        {
+            string draftObject = CreateDraftObject();
+
+            if (editObject == null)
+            {
+                broker.Create(draftObject);
+            }
+            else
+            {
+                broker.Update(editObject, draftObject);
+            }
+        }
+
+        private void ClearInputs()
+        {
+            DISABLE_STATUS_RAISE_EVENT = true;
+
+            InputCommonName = string.Empty;
+
+            DISABLE_STATUS_RAISE_EVENT = false;
         }
         #endregion
 
@@ -128,7 +230,6 @@ namespace Controllers
         {
             InputStatus[] inputStatus = {
                 statusCommonName,
-                // etc ...
             };
 
             return inputStatus.All(status => status == InputStatus.Valid);
@@ -138,11 +239,14 @@ namespace Controllers
         {
             bool[] draftChange = {
                 Operations.IsChanged(inputCommonName, GetEditObjectId()),
-                //inputName != null && inputName != editObject?.Name,
-                // etc ...
             };
 
             return draftChange.Any(change => change);
+        }
+
+        private string CreateDraftObject()
+        {
+            return inputCommonName;
         }
         #endregion
 

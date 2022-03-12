@@ -41,6 +41,36 @@ namespace Controllers.Common
             return status;
         }
 
+        internal static InputStatus GetInputStatus(IEnumerable<string> list)
+        {
+            InputStatus status;
+
+            if (list == null || list.Any(s => string.IsNullOrWhiteSpace(s)))
+            {
+                status = InputStatus.Invalid;
+            }
+            else
+            {
+                if (list.Any())
+                {
+                    if (list.Count() != list.Distinct().Count())
+                    {
+                        status = InputStatus.Duplicate;
+                    }
+                    else
+                    {
+                        status = InputStatus.Valid;
+                    }
+                }
+                else
+                {
+                    status = InputStatus.Blank;
+                }
+            }
+
+            return status;
+        }
+
         internal static bool IsChanged(string value, string oldValue = null)
         {
             return value != null && value != oldValue;

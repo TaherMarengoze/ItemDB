@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ClientService.Contracts;
 
 namespace ClientService.Data
@@ -21,7 +22,7 @@ namespace ClientService.Data
 
         public List<string> GetIDs()
         {
-            throw new System.NotImplementedException();
+            return source.ToList();
         }
 
         public List<string> GetList()

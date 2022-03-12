@@ -17,7 +17,7 @@ namespace Controllers
             //CommonNames = new ItemCommonNamesController(this,
             //    inputCommonNames ?? new List<string>());
 
-            CommonNames.SetSource(inputCommonNames ?? new List<string>(),
+            CommonNames.SetSource(inputCommonNames /*?? new List<string>()*/,
                 SetInputCommonNames);
         }
     }

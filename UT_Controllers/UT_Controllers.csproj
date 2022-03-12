@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extension.cs" />
     <Compile Include="Initialization.cs" />
     <Compile Include="ListViewer.cs">
       <SubType>Form</SubType>
@@ -63,6 +64,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SizeListControllerTest.cs" />
     <Compile Include="Controller_Item.cs" />
+    <Compile Include="Controller_ItemCommonNames.cs" />
     <Compile Include="XmlDatasource_Item.cs" />
   </ItemGroup>
   <ItemGroup>
