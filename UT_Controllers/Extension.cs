@@ -18,6 +18,16 @@ namespace UT_Controllers
             Console.WriteLine();
         }
 
+        public static void WriteStringList(this IList list, char bullet = '*')
+        {
+            Console.WriteLine("List: [{0} Item(s)]", list.Count);
+            foreach (var entry in list)
+            {
+                Console.WriteLine(" {1} {0}", entry, bullet);
+            }
+            Console.WriteLine();
+        }
+
         public static void DrawTable(this IEnumerable<GenericView> list)
         {
             var length = list.Max(s => s.BaseName.Length);

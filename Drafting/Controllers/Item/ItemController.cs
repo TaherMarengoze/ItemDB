@@ -266,6 +266,10 @@ namespace Controllers
         {
             statusCommonNames = value;
 
+            // common name list can be blank, so an empty list is valid
+            if (value == InputStatus.Blank)
+                statusCommonNames = InputStatus.Valid;
+
             var args = new StatusEventArgs(value, inputCommonNames);
 
             // raise event
@@ -339,6 +343,7 @@ namespace Controllers
             // raise event
             OnRemove?.Invoke(this, args);
         }
+
         public void CommitChanges() { }
         public void CancelChanges() { }
         #endregion
@@ -423,6 +428,7 @@ namespace Controllers
             statusUom = InputStatus.Blank;
             statusCatId = InputStatus.Blank;
             statusCatName = InputStatus.Blank;
+            statusCommonNames = InputStatus.Valid;
             // etc ...
         }
         #endregion
@@ -465,7 +471,7 @@ namespace Controllers
                 Operations.IsChanged(inputUom, editObject?.UoM),
                 Operations.IsChanged(inputCatId, editObject?.CatID),
                 Operations.IsChanged(inputCatName, editObject?.CatName),
-                //Operations.IsChanged(inputCommonNames, editObject?.CommonNames),
+                Operations.IsChanged(inputCommonNames, editObject?.CommonNames),
             };
 
             return draftChange.Any(change => change);

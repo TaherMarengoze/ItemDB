@@ -18,6 +18,7 @@ namespace UT_Controllers
         bool SKIP_LOG = false;
 
         ItemController ui;
+        private bool commitReady;
 
         [TestInitialize]
         public void Initialize()
@@ -142,6 +143,7 @@ namespace UT_Controllers
             {
                 Console.WriteLine("Ready = {0}, Info = {1}", e.Ready, e.Info);
             });
+            commitReady = e.Ready;
         }
 
         private void Ui_OnPreDrafting(object sender, PreModifyEventArgs e)
@@ -331,7 +333,6 @@ namespace UT_Controllers
         {
             SKIP_LOG = true;
             ui.New();
-            SKIP_LOG = false;
             ui.InputID = "TEST0";
             ui.InputBaseName = "Base Name";
             ui.InputDisplayName = "Display Name";
@@ -340,6 +341,17 @@ namespace UT_Controllers
             ui.InputCatId = "CATID";
             ui.InputCatName = "New Category";
 
+            ui.ModifyCommonNames();
+            ui.CommonNames.New();
+            ui.CommonNames.InputCommonName = "Common Name 1";
+            ui.CommonNames.CommitChanges();
+            ui.CommonNames.New();
+            ui.CommonNames.InputCommonName = "Common Name 2";
+            ui.CommonNames.CommitChanges();
+            ui.CommonNames.Save();
+            SKIP_LOG = false;
+
+            Assert.IsTrue(commitReady, "Invalid object");
         }
 
         [TestMethod]
@@ -349,6 +361,50 @@ namespace UT_Controllers
             ui.Select("CPRP1");
             SKIP_LOG = false;
             ui.Edit();
+        }
+
+        internal static InputStatus GetInputStatus(string value,
+            string oldValue = null, IEnumerable<string> existingList = null)
+        {
+            InputStatus status;
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                status = InputStatus.Blank;
+            }
+            else
+            {
+                // check for duplicate
+                bool isDuplicate = existingList?.Contains(value) ?? false;
+                bool isNotAsEdit = oldValue == null || value != oldValue;
+
+                if (isDuplicate)
+                {
+                    if (isNotAsEdit)
+                        status = InputStatus.Duplicate;
+                    else
+                        status = InputStatus.Valid;
+                }
+                else
+                {
+                    bool isValidChar = true; // valid characters check
+
+                    if (isValidChar)
+                        status = InputStatus.Valid;
+                    else
+                        status = InputStatus.Invalid;
+                }
+            }
+
+            return status;
+        }
+
+        [TestMethod]
+        public void Test_GetInputStatus_String()
+        {
+            Console.WriteLine(GetInputStatus("A",null, new List<string>()));
+            Console.WriteLine(GetInputStatus("A", null, null));
+            Console.WriteLine(GetInputStatus("A", "A", null));
+            Console.WriteLine(GetInputStatus("A"));
         }
 
         internal static InputStatus GetInputStatus(IEnumerable<string> list)
@@ -391,6 +447,44 @@ namespace UT_Controllers
             Console.WriteLine(GetInputStatus(new List<string> { "test1", "test1", "test2" }));
             Console.WriteLine(GetInputStatus(new List<string> { "", "test1", "test2" }));
             Console.WriteLine(GetInputStatus(new List<string> { null, "test1", "test2" }));
+        }
+
+        internal static bool IsChanged(List<string> newList, List<string> oldList = null)
+        {
+            if (oldList == null)
+                return !(newList == null);
+
+            // compare elements count
+            if (newList.Count != oldList.Count)
+                return true;
+
+            return !newList.SequenceEqual(oldList);
+        }
+
+        [TestMethod]
+        public void Test_IsChanged_List()
+        {
+            List<string> newList = new List<string> { "a", "b" };
+            List<string> oldList = new List<string> { "a", "b" };
+
+            // unchanged (both lists are not given)
+            Assert.AreEqual(false, IsChanged(null, null));
+
+            // changed (old list is not given)
+            Assert.AreEqual(true, IsChanged(newList, null));
+
+            // both lists are given:
+            // unchanged (similar)
+            Assert.AreEqual(false, IsChanged(newList, oldList));
+
+            // changed (different item counts)
+            newList = new List<string> { "a", "b", "c" };
+            Assert.AreEqual(true, IsChanged(newList, oldList));
+
+            // changed (same item counts but different elements)
+            newList = new List<string> { "a", "c" };
+            Assert.AreEqual(true, IsChanged(newList, oldList));
+
         }
     }
 }

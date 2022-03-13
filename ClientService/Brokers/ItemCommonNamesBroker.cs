@@ -27,8 +27,16 @@ namespace ClientService.Brokers
             return repos.Find(entry => entry == entityId);
         }
 
-        public void Update(string refId, string content) => throw new System.NotImplementedException();
-        public void Delete(string entityId) => throw new System.NotImplementedException();
+        public void Update(string refId, string content)
+        {
+            int index = repos.IndexOf(refId);
+            repos[index] = content;
+        }
+
+        public void Delete(string entityId)
+        {
+            repos.Remove(entityId);
+        }
 
         public void ModiftSource(List<string> newRepos)
         {

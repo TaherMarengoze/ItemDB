@@ -24,6 +24,7 @@ namespace Controllers
         #region Events
         // common events
         public event EventHandler<LoadEventArgs> OnLoad;
+        public event EventHandler OnSave;
         public event EventHandler<SelectEventArgs<string>> OnSelect;
         public event EventHandler<ReadyEventArgs> OnReadyStateChange;
         public event EventHandler<PreModifyEventArgs> OnPreDrafting;
@@ -56,8 +57,8 @@ namespace Controllers
             StatusEventArgs args = new StatusEventArgs(value, inputCommonName);
 
             // raise event
-            OnCommonNameStatusChange.CheckedInvoke(args,
-                !DISABLE_STATUS_RAISE_EVENT);
+            if (!DISABLE_STATUS_RAISE_EVENT)
+                OnCommonNameStatusChange?.Invoke(this, args);
 
             // check all inputs status
             CheckReadyStatus();
@@ -65,22 +66,15 @@ namespace Controllers
         #endregion
 
         #region Public Methods
-        internal void SetSource(List<string> source, Action<List<string>> set)
-        {
-            sourceList = source.AsReadOnly();
-            broker = new ItemCommonNamesBroker(source);
-            provider = new ItemCommonNamesProvider(source);
-            setAction = set;
-        }
-
         public void Save()
         {
-            setAction(provider.GetList());
+            ModifyParent();
             sourceList = null;
             broker = null;
             provider = null;
 
             // raise event
+            OnSave?.Invoke(this, EventArgs.Empty);
         }
 
         public void Load()
@@ -89,6 +83,15 @@ namespace Controllers
 
             // raise event
             OnLoad?.Invoke(this, args);
+        }
+
+        public void Revert()
+        {
+            sourceList = null;
+            broker = null;
+            provider = null;
+
+            // raise event
         }
 
         public void Select(string refId)
@@ -121,19 +124,34 @@ namespace Controllers
             SetEditObject();
             FillInputs();
 
-            var args = new PreModifyEventArgs(editObject.Clone(),
+            var args = new PreModifyEventArgs(editObject/*.Clone()*/,
                 provider.GetIDs());
 
             // raise #event
             OnPreDrafting?.Invoke(this, args);
         }
 
-        public void Remove() { }
+        public void Remove()
+        {
+            if (selectedObject == null)
+                throw new InvalidOperationException(
+                    "Unable to perform operation before selection");
+
+            broker.Delete(selectedObject);
+
+            var args = new RemoveEventArgs(selectedObject,
+                GetGenericViewList());
+
+            selectedObject = null;
+
+            // raise event
+            OnRemove?.Invoke(this, args);
+        }
 
         public void CommitChanges()
         {
             if (!STATE_DRAFT_READY)
-                throw new Exception("Entry is invalid or unchanged");
+                throw new Exception("Value is invalid or unchanged");
 
             CreateOrUpdate();
 
@@ -153,7 +171,18 @@ namespace Controllers
             OnSet?.Invoke(this, args);
         }
 
-        public void CancelChanges() { }
+        public void CancelChanges()
+        {
+            CancelEventArgs args = new CancelEventArgs(selectedObject,
+                GetGenericViewList());
+
+            // clear objects
+            editObject = null;
+            ClearInputs();
+
+            // raise #event
+            OnCancel?.Invoke(this, args);
+        }
         #endregion
 
         #region Private Methods
@@ -207,6 +236,7 @@ namespace Controllers
 
         private void ClearInputs()
         {
+            // disable status change events triggering
             DISABLE_STATUS_RAISE_EVENT = true;
 
             InputCommonName = string.Empty;
@@ -218,7 +248,7 @@ namespace Controllers
         #region Private Getters
         private List<string> GetGenericViewList()
         {
-            return provider.GetList();
+            return provider.GetList().ToList();
         }
 
         private string GetEditObjectId()
@@ -250,14 +280,26 @@ namespace Controllers
         }
         #endregion
 
+        #region Parent and Source
+        internal void SetSource(List<string> source, Action<List<string>> set)
+        {
+            sourceList = source.AsReadOnly();
+            broker = new ItemCommonNamesBroker(source);
+            provider = new ItemCommonNamesProvider(source);
+            setAction = set;
+        }
+
+        private void ModifyParent()
+        {
+            setAction(provider.GetList());
+        }
+        #endregion
+
         #region Fields
         private IBroker<string> broker;
         private IProvider<string> provider;
-        private ReadOnlyCollection<string> sourceList;
+        private ReadOnlyCollection<string> sourceList; // will be needed in revert actions
         private Action<List<string>> setAction;
-
-        //private readonly ItemController parent;
-        //private ObservableCollection<string> inputCommonNamesDraft;
 
         // backing fields
         private string inputCommonName;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CoreLibrary.Enums;
 
@@ -75,5 +76,18 @@ namespace Controllers.Common
         {
             return value != null && value != oldValue;
         }
+
+        internal static bool IsChanged(List<string> newList, List<string> oldList = null)
+        {
+            if (oldList == null)
+                return !(newList == null);
+
+            // compare elements count
+            if (newList.Count != oldList.Count)
+                return true;
+
+            return !newList.SequenceEqual(oldList);
+        }
+
     }
 }

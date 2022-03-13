@@ -14,10 +14,7 @@ namespace Controllers
 
         public void ModifyCommonNames()
         {
-            //CommonNames = new ItemCommonNamesController(this,
-            //    inputCommonNames ?? new List<string>());
-
-            CommonNames.SetSource(inputCommonNames /*?? new List<string>()*/,
+            CommonNames.SetSource(inputCommonNames ?? new List<string>(),
                 SetInputCommonNames);
         }
     }
