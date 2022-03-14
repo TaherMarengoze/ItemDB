@@ -26,7 +26,9 @@ namespace ClientService
 
         private static void ItemsRepo_OnChange(object sender, EventArgs e)
         {
+            Console.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.ffffff}: Updating Items Repository.");
             UpdateItemList();
+            Console.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.ffffff}: Updated Items Repository.");
         }
 
         private static void SizeGroupRepo_OnChange(object sender, EventArgs e)

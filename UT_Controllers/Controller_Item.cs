@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Controllers;
-using CoreLibrary.Enums;
 using Interfaces.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Modeling.ViewModels.Item;
@@ -55,6 +54,25 @@ namespace UT_Controllers
             ui.OnCatIdStatusChange += Ui_OnCatIdStatusChange;
             ui.OnCatNameStatusChange += Ui_OnCatNameStatusChange;
             ui.OnCommonNamesStatusChange += Ui_OnCommonNamesStatusChange;
+            ui.OnSet += Ui_OnSet;
+        }
+
+        private void Ui_OnSet(object sender, SetEventArgs e)
+        {
+            Log(delegate
+            {
+                if (e.OldID == null)
+                {
+                    Console.WriteLine("New item added [ID = {0}]", e.NewID);
+                }
+                else
+                {
+                    Console.WriteLine("Item edited [ID = {0}{1}]",
+                        e.NewID,
+                        e.NewID != e.OldID ? ", Old ID = " + e.OldID : "");
+                }
+                e.NewList.WriteList();
+            });
         }
 
         private void Ui_OnCommonNamesStatusChange(object sender, StatusEventArgs e)
@@ -355,6 +373,52 @@ namespace UT_Controllers
         }
 
         [TestMethod]
+        [DataRow(true, "TEST0", "Base Name", "Display Name", "UoM", "CATID", "New Category",
+            "Description", true , DisplayName = "All given")]
+        [DataRow(true, "TEST0", "Base Name", "Display Name", "UoM", "CATID", "New Category",
+            ""           , true , DisplayName = "Blank description")]
+        [DataRow(true, "TEST0", "Base Name", "Display Name", "UoM", "CATID", "New Category",
+            ""           , false, DisplayName = "Blank common names")]
+        [DataRow(true, "TEST0", "Base Name", "Display Name", "UoM", "CATID", "New Category",
+            null         , false , DisplayName = "null description")]
+        public void MyTestMethod(bool expected,
+            string id,
+            string baseName,
+            string displayName,
+            string uom,
+            string catId,
+            string catName,
+            string desc,
+            bool commonNames)
+        {
+            SKIP_LOG = true;
+            ui.New();
+            ui.InputID = id;
+            ui.InputBaseName = baseName;
+            ui.InputDisplayName = displayName;
+            ui.InputDescription = desc;
+            ui.InputUom = uom;
+            ui.InputCatId = catId;
+            ui.InputCatName = catName;
+
+            if (commonNames)
+            {
+                ui.ModifyCommonNames();
+                ui.CommonNames.New();
+                ui.CommonNames.InputCommonName = "Common Name 1";
+                ui.CommonNames.CommitChanges();
+                ui.CommonNames.New();
+                ui.CommonNames.InputCommonName = "Common Name 2";
+                ui.CommonNames.CommitChanges();
+                ui.CommonNames.Save();
+            }
+
+            SKIP_LOG = false;
+
+            Assert.IsTrue(expected, "Invalid object");
+        }
+
+        [TestMethod]
         public void Test_ItemEdit()
         {
             SKIP_LOG = true;
@@ -363,128 +427,37 @@ namespace UT_Controllers
             ui.Edit();
         }
 
-        internal static InputStatus GetInputStatus(string value,
-            string oldValue = null, IEnumerable<string> existingList = null)
-        {
-            InputStatus status;
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                status = InputStatus.Blank;
-            }
-            else
-            {
-                // check for duplicate
-                bool isDuplicate = existingList?.Contains(value) ?? false;
-                bool isNotAsEdit = oldValue == null || value != oldValue;
-
-                if (isDuplicate)
-                {
-                    if (isNotAsEdit)
-                        status = InputStatus.Duplicate;
-                    else
-                        status = InputStatus.Valid;
-                }
-                else
-                {
-                    bool isValidChar = true; // valid characters check
-
-                    if (isValidChar)
-                        status = InputStatus.Valid;
-                    else
-                        status = InputStatus.Invalid;
-                }
-            }
-
-            return status;
-        }
-
         [TestMethod]
-        public void Test_GetInputStatus_String()
+        public void CommitChangesTest()
         {
-            Console.WriteLine(GetInputStatus("A",null, new List<string>()));
-            Console.WriteLine(GetInputStatus("A", null, null));
-            Console.WriteLine(GetInputStatus("A", "A", null));
-            Console.WriteLine(GetInputStatus("A"));
-        }
+            SKIP_LOG = true;
 
-        internal static InputStatus GetInputStatus(IEnumerable<string> list)
-        {
-            InputStatus status;
+            ui.New();
 
-            if (list == null || list.Any(s => string.IsNullOrWhiteSpace(s)))
-            {
-                status = InputStatus.Invalid;
-            }
-            else
-            {
-                if (list.Any())
-                {
-                    if (list.Count() != list.Distinct().Count())
-                    {
-                        status = InputStatus.Duplicate;
-                    }
-                    else
-                    {
-                        status = InputStatus.Valid;
-                    }
-                }
-                else
-                {
-                    status = InputStatus.Blank;
-                }
-            }
+            // mandatory inputs
+            ui.InputID = "TEST0";
+            ui.InputBaseName = "Base Name";
+            ui.InputDisplayName = "Display Name";
+            ui.InputUom = "UoM";
+            ui.InputCatId = "CATID";
+            ui.InputCatName = "New Category";
 
-            return status;
-        }
+            // optional inputs
+            ui.InputDescription = "Description";
 
-        [TestMethod]
-        public void MyTestMethod()
-        {
-            Console.WriteLine(GetInputStatus(null));
-            Console.WriteLine(GetInputStatus(new List<string>()));
-            Console.WriteLine(GetInputStatus(new List<string> { "test1", "test2" }));
-            Console.WriteLine(GetInputStatus(new List<string> { "test1", "test1" }));
-            Console.WriteLine(GetInputStatus(new List<string> { "test1", "test1", "test2" }));
-            Console.WriteLine(GetInputStatus(new List<string> { "", "test1", "test2" }));
-            Console.WriteLine(GetInputStatus(new List<string> { null, "test1", "test2" }));
-        }
+            // optional list inputs
+            ui.ModifyCommonNames();
+            ui.CommonNames.New();
+            ui.CommonNames.InputCommonName = "Common Name 1";
+            ui.CommonNames.CommitChanges();
+            ui.CommonNames.New();
+            ui.CommonNames.InputCommonName = "Common Name 2";
+            ui.CommonNames.CommitChanges();
+            ui.CommonNames.Save();
 
-        internal static bool IsChanged(List<string> newList, List<string> oldList = null)
-        {
-            if (oldList == null)
-                return !(newList == null);
+            SKIP_LOG = false;
 
-            // compare elements count
-            if (newList.Count != oldList.Count)
-                return true;
-
-            return !newList.SequenceEqual(oldList);
-        }
-
-        [TestMethod]
-        public void Test_IsChanged_List()
-        {
-            List<string> newList = new List<string> { "a", "b" };
-            List<string> oldList = new List<string> { "a", "b" };
-
-            // unchanged (both lists are not given)
-            Assert.AreEqual(false, IsChanged(null, null));
-
-            // changed (old list is not given)
-            Assert.AreEqual(true, IsChanged(newList, null));
-
-            // both lists are given:
-            // unchanged (similar)
-            Assert.AreEqual(false, IsChanged(newList, oldList));
-
-            // changed (different item counts)
-            newList = new List<string> { "a", "b", "c" };
-            Assert.AreEqual(true, IsChanged(newList, oldList));
-
-            // changed (same item counts but different elements)
-            newList = new List<string> { "a", "c" };
-            Assert.AreEqual(true, IsChanged(newList, oldList));
-
+            ui.CommitChanges(); // fired event: 
         }
     }
 }

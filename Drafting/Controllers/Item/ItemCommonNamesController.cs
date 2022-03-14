@@ -159,7 +159,7 @@ namespace Controllers
             {
                 NewID = inputCommonName,
                 OldID = editObject,
-                NewList = provider.GetList().ToList()
+                NewList = GetGenericViewList()
             };
 
             // clear objects

@@ -10,6 +10,7 @@ using Controllers.Common;
 using CoreLibrary.Enums;
 using Interfaces.Models;
 using Interfaces.Operations;
+using Modeling.DataModels;
 using Modeling.ViewModels;
 using Modeling.ViewModels.Item;
 
@@ -136,7 +137,7 @@ namespace Controllers
         }
 
         #endregion
-        
+
         #region Input Status
         public InputStatus StatusID
         {
@@ -315,8 +316,9 @@ namespace Controllers
             // raise event
             OnPreDrafting?.Invoke(this, args);
         }
-        
-        public void Edit() {
+
+        public void Edit()
+        {
             SetEditObject();
             FillInputs();
 
@@ -344,8 +346,32 @@ namespace Controllers
             OnRemove?.Invoke(this, args);
         }
 
-        public void CommitChanges() { }
-        public void CancelChanges() { }
+        public void CommitChanges() {
+            if (!STATE_DRAFT_READY)
+                throw new Exception("Invalid or unchanged draft object");
+
+            CreateOrUpdate();
+
+            var args = new SetEventArgs(inputID,
+                selectedObject?.ItemID, GetGenericViewList());
+
+            ClearSelection();
+            editObject = null;
+            ClearInputs();
+
+            // raise event
+            OnSet?.Invoke(this, args);
+        }
+        public void CancelChanges() {
+            var args = new CancelEventArgs(selectedObject?.ItemID,
+                GetGenericViewList());
+
+            editObject = null;
+            ClearInputs();
+
+            // raise event
+            OnCancel?.Invoke(this, args);
+        }
         #endregion
 
         #region Private Methods
@@ -362,6 +388,20 @@ namespace Controllers
             // raise #event
             OnReadyStateChange?.CheckedInvoke(args,
                 !DISABLE_STATUS_RAISE_EVENT);
+        }
+
+        private void CreateOrUpdate()
+        {
+            IItem draftObject = CreateDraftObject();
+
+            if (editObject == null)
+            {
+                broker.Create(draftObject);
+            }
+            else
+            {
+                broker.Update(editObject.ItemID, draftObject);
+            }
         }
 
         /// <summary>
@@ -412,8 +452,18 @@ namespace Controllers
         {
             DISABLE_STATUS_RAISE_EVENT = true;
 
-            //InputID = string.Empty;
-            //InputName = string.Empty;
+            InputCatId = null;
+            InputCatName = null;
+            InputID = null;
+            InputBaseName = null;
+            InputDisplayName = null;
+            InputDescription = null;
+            InputUom = null;
+
+            SetInputCommonNames(null);
+            //inputCommonNames = null;
+            //statusCommonNames = InputStatus.Blank;
+
             // etc ...
 
             DISABLE_STATUS_RAISE_EVENT = false;
@@ -450,11 +500,11 @@ namespace Controllers
                 statusID,
                 statusBaseName,
                 statusDisplayName,
-                statusDescription,
+                statusDescription.Validate(InputStatus.Blank),
                 statusUom,
                 statusCatId,
                 statusCatName,
-                statusCommonNames,
+                statusCommonNames.Validate(InputStatus.Blank),
                 // etc ...
             };
 
@@ -475,6 +525,29 @@ namespace Controllers
             };
 
             return draftChange.Any(change => change);
+        }
+
+        private IItem CreateDraftObject()
+        {
+            return new Item
+            {
+                CatID = inputCatId,
+                CatName = inputCatName,
+                ItemID = inputID,
+                BaseName = inputBaseName,
+                DisplayName = inputDisplayName,
+                UoM = inputUom,
+                Description = inputDescription,
+                CommonNames = inputCommonNames.ToList(),
+                ImagesFileName = null ?? new List<string>(),
+                Details = new ItemDetails
+                {
+                    SpecsRequired = false,
+                    SizeRequired = false,
+                    BrandRequired = false,
+                    EndsRequired = false,
+                }
+            };
         }
         #endregion
 

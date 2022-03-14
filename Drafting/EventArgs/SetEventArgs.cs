@@ -4,6 +4,18 @@ namespace Controllers
 {
     public class SetEventArgs
     {
+        public SetEventArgs()
+        {
+
+        }
+
+        public SetEventArgs(string newId, string oldId, IList newList)
+        {
+            OldID = oldId;
+            NewID = newId;
+            NewList = newList;
+        }
+
         public string OldID { get; set; }
 
         public string NewID { get; set; }

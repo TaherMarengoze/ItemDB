@@ -30,10 +30,15 @@ namespace Controllers.Common
                 }
                 else
                 {
-                    bool isValidChar = true; // valid characters check
+                    bool isValidChar = true; // valid characters check, a function with regex will be provided later
 
                     if (isValidChar)
-                        status = InputStatus.Valid;
+                    {
+                        if (isNotAsEdit)
+                            status = InputStatus.Valid;
+                        else
+                            status = InputStatus.Duplicate;
+                    }
                     else
                         status = InputStatus.Invalid;
                 }
@@ -72,12 +77,19 @@ namespace Controllers.Common
             return status;
         }
 
+        internal static InputStatus Validate(this InputStatus source,
+            params InputStatus[] allowedStatus)
+        {
+            return allowedStatus.Contains(source) ? InputStatus.Valid : source;
+        }
+
         internal static bool IsChanged(string value, string oldValue = null)
         {
             return value != null && value != oldValue;
         }
 
-        internal static bool IsChanged(List<string> newList, List<string> oldList = null)
+        internal static bool IsChanged(List<string> newList,
+            List<string> oldList = null)
         {
             if (oldList == null)
                 return !(newList == null);

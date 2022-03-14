@@ -8,6 +8,11 @@ namespace UT_Controllers
 {
     public static class Extension
     {
+        /// <summary>
+        /// Writes a non-generic list objects using the object string method.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="bullet"></param>
         public static void WriteList(this IList list, string bullet = " * ")
         {
             Console.WriteLine("Existing IDs:");

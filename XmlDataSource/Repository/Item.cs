@@ -35,6 +35,8 @@ namespace XmlDataSource.Repository
 
             // Add the item to the category
             category.Add(content);
+
+            OnChange?.Invoke(this, EventArgs.Empty);
         }
 
         public IItem Read(string entityId)
