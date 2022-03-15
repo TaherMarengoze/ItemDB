@@ -91,6 +91,9 @@ namespace Controllers.Common
         internal static bool IsChanged(List<string> newList,
             List<string> oldList = null)
         {
+            if (newList == null)
+                return false;
+
             if (oldList == null)
                 return !(newList == null);
 

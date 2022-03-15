@@ -4,11 +4,6 @@ namespace Controllers
 {
     public class SetEventArgs
     {
-        public SetEventArgs()
-        {
-
-        }
-
         public SetEventArgs(string newId, string oldId, IList newList)
         {
             OldID = oldId;
@@ -21,5 +16,7 @@ namespace Controllers
         public string NewID { get; set; }
 
         public IList NewList { get; set; }
+
+        public int Count => NewList.Count;
     }
 }

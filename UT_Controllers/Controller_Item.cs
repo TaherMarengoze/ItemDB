@@ -57,8 +57,10 @@ namespace UT_Controllers
             ui.OnSet += Ui_OnSet;
         }
 
+        SetEventArgs setEventArgs;
         private void Ui_OnSet(object sender, SetEventArgs e)
         {
+            setEventArgs = e;
             Log(delegate
             {
                 if (e.OldID == null)
@@ -427,8 +429,12 @@ namespace UT_Controllers
             ui.Edit();
         }
 
+        /// <summary>
+        /// Tests <see cref="ItemController.CommitChanges"/> method when adding
+        /// a new item.
+        /// </summary>
         [TestMethod]
-        public void CommitChangesTest()
+        public void NewCommitChangesTest()
         {
             SKIP_LOG = true;
 
@@ -457,7 +463,123 @@ namespace UT_Controllers
 
             SKIP_LOG = false;
 
-            ui.CommitChanges(); // fired event: 
+            ui.CommitChanges(); // event response: Ui_OnSet
+
+            Assert.AreEqual("TEST0", setEventArgs.NewID);
+            Assert.IsNull(setEventArgs.OldID);
+            Assert.AreEqual(56, setEventArgs.Count);
+        }
+
+        /// <summary>
+        /// Tests <see cref="ItemController.CommitChanges"/> method when
+        /// editing an existing item.
+        /// </summary>
+        [TestMethod]
+        public void EditCommitChanges()
+        {
+            string oldId = "BSP01";
+            CategoryCase catCase = CategoryCase.NEW;
+            InputCase itemCase = InputCase.UNCHANGED;
+            string newId =
+                ((itemCase & (InputCase.FIELDS | InputCase.UNCHANGED)) != 0)
+                ? oldId : "TEST0";
+
+            SKIP_LOG = true;
+
+            ui.Select(oldId);
+            ui.Edit();
+
+            CategoryInputs(catCase);
+            ItemInputs(itemCase);
+
+            SKIP_LOG = false;
+
+            ui.CommitChanges(); // event response: Ui_OnSet
+
+            Assert.AreEqual(newId, setEventArgs.NewID);
+            Assert.AreEqual(oldId, setEventArgs.OldID);
+            Assert.AreEqual(3, setEventArgs.Count);
+        }
+
+        enum CategoryCase
+        {
+            UNCHANGED,
+            NEW,
+            EXISTING
+        }
+
+        [Flags]
+        enum InputCase
+        {
+            UNCHANGED = 1,
+            ALL = 2,
+            FIELDS = 4,
+            ID = 8
+        }
+
+        private void CategoryInputs(CategoryCase categoryCase)
+        {
+            switch (categoryCase)
+            {
+                case CategoryCase.NEW:
+                    // new category
+                    ui.InputCatId = "CATID";
+                    ui.InputCatName = "New Category";
+                    break;
+                case CategoryCase.EXISTING:
+                    // existing category
+                    ui.InputCatId = "STPLT";
+                    ui.InputCatName = "Steel Plates";
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void ItemInputs(InputCase inputCase)
+        {
+            switch (inputCase)
+            {
+                case InputCase.ALL:
+                    // mandatory inputs
+                    ui.InputID = "TEST0";
+                    ui.InputBaseName = "Test Base Name";
+                    ui.InputDisplayName = "Display Name";
+                    ui.InputUom = "UoM";
+
+                    // optional inputs
+                    ui.InputDescription = "Description";
+
+                    // optional list inputs
+                    ui.ModifyCommonNames();
+                    ui.CommonNames.New();
+                    ui.CommonNames.InputCommonName = "Carbon Steel Pipe";
+                    ui.CommonNames.CommitChanges();
+                    ui.CommonNames.Save();
+                    break;
+                case InputCase.FIELDS:
+                    // mandatory inputs
+                    ui.InputBaseName = "Base Name";
+                    ui.InputDisplayName = "Display Name";
+                    ui.InputUom = "UoM";
+
+                    // optional inputs
+                    ui.InputDescription = "Description";
+
+                    // optional list inputs
+                    ui.ModifyCommonNames();
+                    ui.CommonNames.New();
+                    ui.CommonNames.InputCommonName = "Carbon Steel Pipe";
+                    ui.CommonNames.CommitChanges();
+                    ui.CommonNames.Save();
+                    break;
+                case InputCase.ID:
+                    ui.InputID = "TEST0";
+                    break;
+                default:
+                    break;
+            }
+
         }
     }
 }

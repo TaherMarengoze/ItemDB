@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClientService;
 using ClientService.Brokers;
 using ClientService.Contracts;
 using ClientService.Data;
@@ -47,16 +48,16 @@ namespace Controllers
 
         #region Inputs
 
-        //             *CatID
-        //             *CatNam
-        //             *ItemID
-        //             *BaseName
-        //             *DisplayName
-        //List<string> CommonNames
-        //             *Description
-        //List<string> ImagesFileName
-        //IItemDetails Details
-        //             *UoM
+        // string       *CatID
+        // string       *CatNam
+        // string       *ItemID
+        // string       *BaseName
+        // string       *DisplayName
+        // List<string> *CommonNames
+        // string       *Description
+        // List<string> ImagesFileName
+        // IItemDetails Details
+        // string       *UoM
 
         public string InputID
         {
@@ -151,9 +152,6 @@ namespace Controllers
                 // raise event
                 if (!DISABLE_STATUS_RAISE_EVENT)
                     OnIdStatusChange?.Invoke(this, args);
-
-                //OnIdStatusChange.CheckedInvoke(args,
-                //    !DISABLE_STATUS_RAISE_EVENT);
 
                 // check all inputs status
                 CheckReadyStatus();
@@ -283,7 +281,10 @@ namespace Controllers
         #endregion
 
         #region Public Methods
-        public void Save() { }
+        public void Save()
+        {
+            ContextProvider.Save(ContextEntity.Items);
+        }
 
         public void Load()
         {
@@ -306,9 +307,10 @@ namespace Controllers
                 RequestInfo = refId
             };
 
-            // raise #event
+            // raise event
             OnSelect?.Invoke(this, args);
         }
+        
         public void New()
         {
             var args = new PreModifyEventArgs(provider.GetIDs());
@@ -346,7 +348,8 @@ namespace Controllers
             OnRemove?.Invoke(this, args);
         }
 
-        public void CommitChanges() {
+        public void CommitChanges()
+        {
             if (!STATE_DRAFT_READY)
                 throw new Exception("Invalid or unchanged draft object");
 
@@ -362,7 +365,9 @@ namespace Controllers
             // raise event
             OnSet?.Invoke(this, args);
         }
-        public void CancelChanges() {
+
+        public void CancelChanges()
+        {
             var args = new CancelEventArgs(selectedObject?.ItemID,
                 GetGenericViewList());
 

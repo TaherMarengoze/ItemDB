@@ -155,12 +155,8 @@ namespace Controllers
 
             CreateOrUpdate();
 
-            var args = new SetEventArgs
-            {
-                NewID = inputCommonName,
-                OldID = editObject,
-                NewList = GetGenericViewList()
-            };
+            var args = new SetEventArgs(inputCommonName,
+                editObject, GetGenericViewList());
 
             // clear objects
             selectedObject = null;

@@ -15,7 +15,7 @@ namespace UT_Controllers
         /// <param name="bullet"></param>
         public static void WriteList(this IList list, string bullet = " * ")
         {
-            Console.WriteLine("Existing IDs:");
+            Console.WriteLine("List Items [{0} item(s)]:", list.Count);
             foreach (var listItem in list)
             {
                 Console.WriteLine("{1}{0}", listItem, bullet);
