@@ -420,15 +420,6 @@ namespace UT_Controllers
             Assert.IsTrue(expected, "Invalid object");
         }
 
-        [TestMethod]
-        public void Test_ItemEdit()
-        {
-            SKIP_LOG = true;
-            ui.Select("CPRP1");
-            SKIP_LOG = false;
-            ui.Edit();
-        }
-
         /// <summary>
         /// Tests <see cref="ItemController.CommitChanges"/> method when adding
         /// a new item.
@@ -461,9 +452,17 @@ namespace UT_Controllers
             ui.CommonNames.CommitChanges();
             ui.CommonNames.Save();
 
+            ui.ModifyImageNames();
+            ui.ImageNames.New();
+            ui.ImageNames.InputImageName = "Test Image.jpg";
+            ui.ImageNames.CommitChanges();
+            ui.ImageNames.Save();
+
             SKIP_LOG = false;
 
             ui.CommitChanges(); // event response: Ui_OnSet
+
+            ui.Save();
 
             Assert.AreEqual("TEST0", setEventArgs.NewID);
             Assert.IsNull(setEventArgs.OldID);

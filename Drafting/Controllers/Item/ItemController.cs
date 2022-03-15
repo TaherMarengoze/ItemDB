@@ -43,6 +43,7 @@ namespace Controllers
         public event EventHandler<StatusEventArgs> OnCatIdStatusChange;
         public event EventHandler<StatusEventArgs> OnCatNameStatusChange;
         public event EventHandler<StatusEventArgs> OnCommonNamesStatusChange;
+        public event EventHandler<StatusEventArgs> OnImageNamesStatusChange;
         #endregion
 
 
@@ -137,6 +138,11 @@ namespace Controllers
             SetStatusCommonNames(Operations.GetInputStatus(value));
         }
 
+        private void SetInputImageNames(List<string> value)
+        {
+            inputImageNames = value;
+            SetStatusImageNames(Operations.GetInputStatus(value));
+        }
         #endregion
 
         #region Input Status
@@ -274,6 +280,24 @@ namespace Controllers
             // raise event
             if (!DISABLE_STATUS_RAISE_EVENT)
                 OnCommonNamesStatusChange?.Invoke(this, args);
+
+            // check all inputs status
+            CheckReadyStatus();
+        }
+
+        private void SetStatusImageNames(InputStatus value)
+        {
+            statusImageNames = value;
+
+            // image names list can be blank, so an empty list is valid
+            if (value == InputStatus.Blank)
+                statusImageNames = InputStatus.Valid;
+
+            var args = new StatusEventArgs(value, inputImageNames);
+
+            // raise event
+            if (!DISABLE_STATUS_RAISE_EVENT)
+                OnImageNamesStatusChange?.Invoke(this, args);
 
             // check all inputs status
             CheckReadyStatus();
@@ -437,6 +461,7 @@ namespace Controllers
             InputCatName = editObject.CatName;
 
             SetInputCommonNames(editObject.CommonNames.ToList());
+            SetInputImageNames(editObject.ImagesFileName.ToList());
 
             DISABLE_STATUS_RAISE_EVENT = false;
         }
@@ -466,6 +491,7 @@ namespace Controllers
             InputUom = null;
 
             SetInputCommonNames(null);
+            SetInputImageNames(null);
             //inputCommonNames = null;
             //statusCommonNames = InputStatus.Blank;
 
@@ -484,6 +510,7 @@ namespace Controllers
             statusCatId = InputStatus.Blank;
             statusCatName = InputStatus.Blank;
             statusCommonNames = InputStatus.Valid;
+            statusImageNames = InputStatus.Valid;
             // etc ...
         }
         #endregion
@@ -510,6 +537,7 @@ namespace Controllers
                 statusCatId,
                 statusCatName,
                 statusCommonNames.Validate(InputStatus.Blank),
+                statusImageNames.Validate(InputStatus.Blank),
                 // etc ...
             };
 
@@ -527,6 +555,7 @@ namespace Controllers
                 Operations.IsChanged(inputCatId, editObject?.CatID),
                 Operations.IsChanged(inputCatName, editObject?.CatName),
                 Operations.IsChanged(inputCommonNames, editObject?.CommonNames),
+                Operations.IsChanged(inputImageNames, editObject?.ImagesFileName),
             };
 
             return draftChange.Any(change => change);
@@ -543,8 +572,8 @@ namespace Controllers
                 DisplayName = inputDisplayName,
                 UoM = inputUom,
                 Description = inputDescription,
-                CommonNames = inputCommonNames.ToList(),
-                ImagesFileName = null ?? new List<string>(),
+                CommonNames = inputCommonNames?.ToList() ?? new List<string>(),
+                ImagesFileName = inputImageNames?.ToList() ?? new List<string>(),
                 Details = new ItemDetails
                 {
                     SpecsRequired = false,
@@ -578,6 +607,8 @@ namespace Controllers
         private InputStatus statusCatName;
         private List<string> inputCommonNames;
         private InputStatus statusCommonNames;
+        private List<string> inputImageNames;
+        private InputStatus statusImageNames;
 
         // flags
         private bool STATE_DRAFT_READY;

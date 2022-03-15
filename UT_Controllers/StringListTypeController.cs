@@ -6,21 +6,19 @@ using System.Collections;
 namespace UT_Controllers
 {
     [TestClass]
-    public class Controller_ItemCommonNames
+    public class StringListTypeController
     {
         bool SKIP_LOG = false;
 
         ItemController ui;
-        ItemCommonNamesController ui_ComnName;
+        ItemCommonNamesController ui_Child;
 
         private void Log(Action loggingActions)
         {
             if (SKIP_LOG)
                 return;
 
-            //Console.WriteLine(LINE_START);
             loggingActions.Invoke();
-            //Console.WriteLine(SEPARATOR_LINE);
             Console.WriteLine();
         }
 
@@ -29,7 +27,7 @@ namespace UT_Controllers
         {
             Initialization.Simulate();
             ui = new ItemController();
-            ui_ComnName = ui.CommonNames;
+            ui_Child = ui.CommonNames;
 
             EventSubscriber();
         }
@@ -39,18 +37,18 @@ namespace UT_Controllers
             // parent
             ui.OnCommonNamesStatusChange += Ui_OnCommonNamesStatusChange;
 
-            ui.CommonNames.OnLoad += CommonNames_OnLoad;
-            ui.CommonNames.OnSet += CommonNames_OnSet;
-            ui.CommonNames.OnSelect += CommonNames_OnSelect;
-            ui.CommonNames.OnPreDrafting += CommonNames_OnPreDrafting;
-            ui.CommonNames.OnCommonNameStatusChange += CommonNames_OnCommonNameStatusChange;
-            ui.CommonNames.OnReadyStateChange += CommonNames_OnReadyStateChange;
-            ui.CommonNames.OnRemove += CommonNames_OnRemove;
-            ui.CommonNames.OnCancel += CommonNames_OnCancel;
-            ui.CommonNames.OnSave += CommonNames_OnSave;
+            ui_Child.OnLoad                   += Ui_Child_OnLoad;
+            ui_Child.OnSet                    += Ui_Child_OnSet;
+            ui_Child.OnSelect                 += Ui_Child_OnSelect;
+            ui_Child.OnPreDrafting            += Ui_Child_OnPreDrafting;
+            ui_Child.OnCommonNameStatusChange += Ui_Child_OnCommonNameStatusChange;
+            ui_Child.OnReadyStateChange       += Ui_Child_OnReadyStateChange;
+            ui_Child.OnRemove                 += Ui_Child_OnRemove;
+            ui_Child.OnCancel                 += Ui_Child_OnCancel;
+            ui_Child.OnSave                   += Ui_Child_OnSave;
         }
 
-        private void CommonNames_OnSave(object sender, EventArgs e)
+        private void Ui_Child_OnSave(object sender, EventArgs e)
         {
             Log(delegate { Console.WriteLine("Common Names Saved"); });
         }
@@ -64,7 +62,7 @@ namespace UT_Controllers
             });
         }
 
-        private void CommonNames_OnCancel(object sender, CancelEventArgs e)
+        private void Ui_Child_OnCancel(object sender, CancelEventArgs e)
         {
             Log(delegate
             {
@@ -94,7 +92,7 @@ namespace UT_Controllers
             ui.ModifyCommonNames();
         }
 
-        private void CommonNames_OnRemove(object sender, RemoveEventArgs e)
+        private void Ui_Child_OnRemove(object sender, RemoveEventArgs e)
         {
             Log(delegate
             {
@@ -103,7 +101,7 @@ namespace UT_Controllers
             });
         }
 
-        private void CommonNames_OnReadyStateChange(object sender, ReadyEventArgs e)
+        private void Ui_Child_OnReadyStateChange(object sender, ReadyEventArgs e)
         {
             Log(delegate
             {
@@ -111,7 +109,7 @@ namespace UT_Controllers
             });
         }
 
-        private void CommonNames_OnCommonNameStatusChange(object sender, StatusEventArgs e)
+        private void Ui_Child_OnCommonNameStatusChange(object sender, StatusEventArgs e)
         {
             Log(delegate
             {
@@ -123,7 +121,7 @@ namespace UT_Controllers
             });
         }
 
-        private void CommonNames_OnPreDrafting(object sender, PreModifyEventArgs e)
+        private void Ui_Child_OnPreDrafting(object sender, PreModifyEventArgs e)
         {
             Log(delegate
             {
@@ -139,7 +137,7 @@ namespace UT_Controllers
             });
         }
 
-        private void CommonNames_OnSelect(object sender, SelectEventArgs<string> e)
+        private void Ui_Child_OnSelect(object sender, SelectEventArgs<string> e)
         {
             Log(delegate
             {
@@ -147,7 +145,7 @@ namespace UT_Controllers
             });
         }
 
-        private void CommonNames_OnSet(object sender, SetEventArgs e)
+        private void Ui_Child_OnSet(object sender, SetEventArgs e)
         {
             Log(delegate
             {
@@ -157,7 +155,7 @@ namespace UT_Controllers
             });
         }
 
-        private void CommonNames_OnLoad(object sender, LoadEventArgs e)
+        private void Ui_Child_OnLoad(object sender, LoadEventArgs e)
         {
             Console.WriteLine(e.Count);
         }
@@ -258,10 +256,10 @@ namespace UT_Controllers
             SetParent();
 
             SKIP_LOG = true;
-            ui_ComnName.New();
-            ui_ComnName.InputCommonName = "Whatever name doesn't matter";
+            ui_Child.New();
+            ui_Child.InputCommonName = "Whatever name doesn't matter";
             SKIP_LOG = false;
-            ui_ComnName.CancelChanges();
+            ui_Child.CancelChanges();
         }
 
         [TestMethod]
@@ -270,11 +268,11 @@ namespace UT_Controllers
             SetParent();
 
             SKIP_LOG = true;
-            ui_ComnName.Select("Copper Tube");
-            ui_ComnName.New();
-            ui_ComnName.InputCommonName = "Whatever name doesn't matter";
+            ui_Child.Select("Copper Tube");
+            ui_Child.New();
+            ui_Child.InputCommonName = "Whatever name doesn't matter";
             SKIP_LOG = false;
-            ui_ComnName.CancelChanges();
+            ui_Child.CancelChanges();
         }
 
         [TestMethod]
@@ -283,11 +281,11 @@ namespace UT_Controllers
             SetParent();
 
             SKIP_LOG = true;
-            ui_ComnName.Select("ماسورة نحاس");
-            ui_ComnName.Edit();
-            ui_ComnName.InputCommonName = "Whatever name doesn't matter";
+            ui_Child.Select("ماسورة نحاس");
+            ui_Child.Edit();
+            ui_Child.InputCommonName = "Whatever name doesn't matter";
             SKIP_LOG = false;
-            ui_ComnName.CancelChanges();
+            ui_Child.CancelChanges();
         }
 
         [TestMethod]
@@ -299,7 +297,7 @@ namespace UT_Controllers
             ui.CommonNames.InputCommonName = "Copper Tubing";
             ui.CommonNames.CommitChanges();
 
-            ui_ComnName.Save();
+            ui_Child.Save();
         }
     }
 }

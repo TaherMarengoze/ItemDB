@@ -12,10 +12,19 @@ namespace Controllers
         public ItemCommonNamesController CommonNames
             = new ItemCommonNamesController();
 
+        public ItemImageNamesController ImageNames
+            = new ItemImageNamesController();
+
         public void ModifyCommonNames()
         {
             CommonNames.SetSource(inputCommonNames ?? new List<string>(),
                 SetInputCommonNames);
+        }
+
+        public void ModifyImageNames()
+        {
+            ImageNames.SetSource(inputImageNames ?? new List<string>(),
+                SetInputImageNames);
         }
     }
 }
