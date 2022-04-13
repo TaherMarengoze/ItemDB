@@ -20,6 +20,11 @@ namespace ClientService.Data
             return Globals.DataLists.CustomSizeIDs;
         }
 
+        public List<TViewModel> View<TViewModel>() where TViewModel : IConvertable<TViewModel, string>, new()
+        {
+            throw new NotImplementedException();
+        }
+
         public int Count => throw new NotImplementedException();
     }
 }

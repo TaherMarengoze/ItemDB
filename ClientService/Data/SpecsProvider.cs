@@ -18,6 +18,10 @@ namespace ClientService.Data
         public int Count => GetIDs().Count;
 
         public List<string> FilterSpecsIds(string exactId) => Globals.DataLists.SpecsIDs.Where(id => id.Contains(exactId)).ToList();
-        
+
+        public List<TViewModel> View<TViewModel>() where TViewModel : IConvertable<TViewModel, ISpecs>, new()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

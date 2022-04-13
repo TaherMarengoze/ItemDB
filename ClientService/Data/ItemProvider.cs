@@ -18,5 +18,10 @@ namespace ClientService.Data
         {
             return CacheIO.GetItemList();
         }
+
+        public List<TViewModel> View<TViewModel>() where TViewModel : IConvertable<TViewModel, IItem>, new()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

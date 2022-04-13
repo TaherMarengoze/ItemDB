@@ -25,6 +25,11 @@ namespace ClientService.Data
             return Globals.DataLists.SizeGroupIDs;
         }
 
+        public List<TViewModel> View<TViewModel>() where TViewModel : IConvertable<TViewModel, ISizeGroup>, new()
+        {
+            throw new NotImplementedException();
+        }
+
         public int Count => throw new NotImplementedException();
     }
 }

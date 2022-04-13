@@ -29,5 +29,10 @@ namespace ClientService.Data
         {
             return source;
         }
+
+        public List<TViewModel> View<TViewModel>() where TViewModel : IConvertable<TViewModel, string>, new()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace ClientService.Contracts
 {
-    public interface IProvider<T>
+    public interface IProvider<T> : ITransformable<T>
     {
         List<T> GetList();
 
