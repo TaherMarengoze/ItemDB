@@ -44,7 +44,10 @@
     <Compile Include="Common\Operations.cs" />
     <Compile Include="Controllers\FieldList\ListController.cs" />
     <Compile Include="Controllers\FieldList\ListController.Entries.cs" />
+    <Compile Include="Controllers\Item\ItemCommonNamesController.cs" />
+    <Compile Include="Controllers\Item\ItemImageNamesController.cs" />
     <Compile Include="Controllers\Item\ItemController.cs" />
+    <Compile Include="Controllers\Item\ItemController.Extensions.cs" />
     <Compile Include="EventArgs\EntrySetEventArgs.cs" />
     <Compile Include="EventArgs\MoveEventArgs.cs" />
     <Compile Include="EventArgs\PreModifyEventArgs.cs" />

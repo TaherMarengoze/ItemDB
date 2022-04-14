@@ -58,6 +58,7 @@
     <Compile Include="Operations\IController.cs" />
     <Compile Include="Operations\IDataReader.cs" />
     <Compile Include="Operations\IEntityNotify.cs" />
+    <Compile Include="Operations\IProvider.cs" />
     <Compile Include="Operations\IRepo.cs" />
     <Compile Include="Operations\ISourceContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

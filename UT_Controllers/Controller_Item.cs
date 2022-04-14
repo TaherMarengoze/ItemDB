@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Controllers;
-using CoreLibrary.Enums;
 using Interfaces.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Modeling.ViewModels.Item;
@@ -11,43 +10,6 @@ using XmlDataSource.Repository;
 
 namespace UT_Controllers
 {
-    public static class Extension
-    {
-        public static void WriteList(this IList list, string bullet = " * ")
-        {
-            foreach (var listItem in list)
-            {
-                Console.WriteLine("{1}{0}", listItem, bullet);
-            }
-            Console.WriteLine();
-        }
-
-        public static void DrawTable(this IEnumerable<GenericView> list)
-        {
-            var length = list.Max(s => s.BaseName.Length);
-
-            Console.WriteLine("╔════════╦═{0}═╗", "═".PadRight(length, '═'));
-            Console.WriteLine("║ ItemID ║ {0} ║", "Base Name".PadBoth(length));
-            Console.WriteLine("╠════════╬═{0}═╣", "═".PadRight(length, '═'));
-            foreach (var item in list)
-            {
-                Console.WriteLine("║ {0} ║ {1} ║",
-                    item.ID.PadRight(6),
-                    item.BaseName.PadRight(length));
-            }
-            Console.WriteLine("╚════════╩═{0}═╝", "═".PadRight(length, '═'));
-            Console.WriteLine("{0} item(s)", list.Count());
-        }
-
-
-        public static string PadBoth(this string str, int length)
-        {
-            int spaces = length - str.Length;
-            int padLeft = spaces / 2 + str.Length;
-            return str.PadLeft(padLeft).PadRight(length);
-        }
-
-    }
 
     [TestClass]
     public class Controller_Item
@@ -55,13 +17,14 @@ namespace UT_Controllers
         bool SKIP_LOG = false;
 
         ItemController ui;
+        private bool commitReady;
 
         [TestInitialize]
         public void Initialize()
         {
             Initialization.Simulate();
             ui = new ItemController();
-            
+
             EventSubscriber();
         }
 
@@ -90,6 +53,38 @@ namespace UT_Controllers
             ui.OnUomStatusChange += Ui_OnUomStatusChange;
             ui.OnCatIdStatusChange += Ui_OnCatIdStatusChange;
             ui.OnCatNameStatusChange += Ui_OnCatNameStatusChange;
+            ui.OnCommonNamesStatusChange += Ui_OnCommonNamesStatusChange;
+            ui.OnSet += Ui_OnSet;
+        }
+
+        SetEventArgs setEventArgs;
+        private void Ui_OnSet(object sender, SetEventArgs e)
+        {
+            setEventArgs = e;
+            Log(delegate
+            {
+                if (e.OldID == null)
+                {
+                    Console.WriteLine("New item added [ID = {0}]", e.NewID);
+                }
+                else
+                {
+                    Console.WriteLine("Item edited [ID = {0}{1}]",
+                        e.NewID,
+                        e.NewID != e.OldID ? ", Old ID = " + e.OldID : "");
+                }
+                e.NewList.WriteList();
+            });
+        }
+
+        private void Ui_OnCommonNamesStatusChange(object sender, StatusEventArgs e)
+        {
+            Log(delegate
+            {
+                Console.WriteLine("Input Common Names = {0}, Status = {1}",
+                    ((IList)e.Value).Count,
+                    e.Status/*.ToString()*/);
+            });
         }
 
         private void Ui_OnCatNameStatusChange(object sender, StatusEventArgs e)
@@ -157,7 +152,7 @@ namespace UT_Controllers
             Log(delegate
             {
                 Console.WriteLine("Input ID = {0}, Status = {1}",
-                    e.Value.ToString().PadRight(5,'_'),
+                    e.Value.ToString().PadRight(5, '_'),
                     e.Status.ToString());
             });
         }
@@ -168,13 +163,34 @@ namespace UT_Controllers
             {
                 Console.WriteLine("Ready = {0}, Info = {1}", e.Ready, e.Info);
             });
+            commitReady = e.Ready;
         }
 
         private void Ui_OnPreDrafting(object sender, PreModifyEventArgs e)
         {
             Log(delegate
             {
-                e.List.WriteList();
+                if (e.Draft != null)
+                {
+                    var item = (IItem)e.Draft;
+                    int l = new List<string> {
+                        item.ItemID,
+                        item.BaseName,
+                        item.DisplayName,
+                        item.CatID,
+                        item.CatName,
+                    }.Max(s => s.Length);
+
+                    Console.WriteLine("╔═ EDIT ITEM ═════{0}═╗", "═".PadRight(l, '═'));
+                    Console.WriteLine("║ ID            = {0} ║", item.ItemID.PadRight(l));
+                    Console.WriteLine("║ Name          = {0} ║", item.BaseName.PadRight(l));
+                    Console.WriteLine("║ Display       = {0} ║", item.DisplayName.PadRight(l));
+                    Console.WriteLine("║ Category ID   = {0} ║", item.CatID.PadRight(l));
+                    Console.WriteLine("║ Category Name = {0} ║", item.CatName.PadRight(l));
+                    Console.WriteLine("║ Common Names  = {0} ║", item.CommonNames.Count.ToString().PadRight(l));
+                    Console.WriteLine("╚═════════════════{0}═╝", "═".PadRight(l, '═'));
+                }
+                e.List.WriteList(" • ");
             });
         }
 
@@ -337,7 +353,6 @@ namespace UT_Controllers
         {
             SKIP_LOG = true;
             ui.New();
-            SKIP_LOG = false;
             ui.InputID = "TEST0";
             ui.InputBaseName = "Base Name";
             ui.InputDisplayName = "Display Name";
@@ -345,7 +360,225 @@ namespace UT_Controllers
             ui.InputUom = "UoM";
             ui.InputCatId = "CATID";
             ui.InputCatName = "New Category";
-            
+
+            ui.ModifyCommonNames();
+            ui.CommonNames.New();
+            ui.CommonNames.InputCommonName = "Common Name 1";
+            ui.CommonNames.CommitChanges();
+            ui.CommonNames.New();
+            ui.CommonNames.InputCommonName = "Common Name 2";
+            ui.CommonNames.CommitChanges();
+            ui.CommonNames.Save();
+            SKIP_LOG = false;
+
+            Assert.IsTrue(commitReady, "Invalid object");
+        }
+
+        [TestMethod]
+        [DataRow(true, "TEST0", "Base Name", "Display Name", "UoM", "CATID", "New Category",
+            "Description", true , DisplayName = "All given")]
+        [DataRow(true, "TEST0", "Base Name", "Display Name", "UoM", "CATID", "New Category",
+            ""           , true , DisplayName = "Blank description")]
+        [DataRow(true, "TEST0", "Base Name", "Display Name", "UoM", "CATID", "New Category",
+            ""           , false, DisplayName = "Blank common names")]
+        [DataRow(true, "TEST0", "Base Name", "Display Name", "UoM", "CATID", "New Category",
+            null         , false , DisplayName = "null description")]
+        public void MyTestMethod(bool expected,
+            string id,
+            string baseName,
+            string displayName,
+            string uom,
+            string catId,
+            string catName,
+            string desc,
+            bool commonNames)
+        {
+            SKIP_LOG = true;
+            ui.New();
+            ui.InputID = id;
+            ui.InputBaseName = baseName;
+            ui.InputDisplayName = displayName;
+            ui.InputDescription = desc;
+            ui.InputUom = uom;
+            ui.InputCatId = catId;
+            ui.InputCatName = catName;
+
+            if (commonNames)
+            {
+                ui.ModifyCommonNames();
+                ui.CommonNames.New();
+                ui.CommonNames.InputCommonName = "Common Name 1";
+                ui.CommonNames.CommitChanges();
+                ui.CommonNames.New();
+                ui.CommonNames.InputCommonName = "Common Name 2";
+                ui.CommonNames.CommitChanges();
+                ui.CommonNames.Save();
+            }
+
+            SKIP_LOG = false;
+
+            Assert.IsTrue(expected, "Invalid object");
+        }
+
+        /// <summary>
+        /// Tests <see cref="ItemController.CommitChanges"/> method when adding
+        /// a new item.
+        /// </summary>
+        [TestMethod]
+        public void NewCommitChangesTest()
+        {
+            SKIP_LOG = true;
+
+            ui.New();
+
+            // mandatory inputs
+            ui.InputID = "TEST0";
+            ui.InputBaseName = "Base Name";
+            ui.InputDisplayName = "Display Name";
+            ui.InputUom = "UoM";
+            ui.InputCatId = "CATID";
+            ui.InputCatName = "New Category";
+
+            // optional inputs
+            ui.InputDescription = "Description";
+
+            // optional list inputs
+            ui.ModifyCommonNames();
+            ui.CommonNames.New();
+            ui.CommonNames.InputCommonName = "Common Name 1";
+            ui.CommonNames.CommitChanges();
+            ui.CommonNames.New();
+            ui.CommonNames.InputCommonName = "Common Name 2";
+            ui.CommonNames.CommitChanges();
+            ui.CommonNames.Save();
+
+            ui.ModifyImageNames();
+            ui.ImageNames.New();
+            ui.ImageNames.InputImageName = "Test Image.jpg";
+            ui.ImageNames.CommitChanges();
+            ui.ImageNames.Save();
+
+            SKIP_LOG = false;
+
+            ui.CommitChanges(); // event response: Ui_OnSet
+
+            ui.Save();
+
+            Assert.AreEqual("TEST0", setEventArgs.NewID);
+            Assert.IsNull(setEventArgs.OldID);
+            Assert.AreEqual(56, setEventArgs.Count);
+        }
+
+        /// <summary>
+        /// Tests <see cref="ItemController.CommitChanges"/> method when
+        /// editing an existing item.
+        /// </summary>
+        [TestMethod]
+        public void EditCommitChanges()
+        {
+            string oldId = "BSP01";
+            CategoryCase catCase = CategoryCase.NEW;
+            InputCase itemCase = InputCase.UNCHANGED;
+            string newId =
+                ((itemCase & (InputCase.FIELDS | InputCase.UNCHANGED)) != 0)
+                ? oldId : "TEST0";
+
+            SKIP_LOG = true;
+
+            ui.Select(oldId);
+            ui.Edit();
+
+            CategoryInputs(catCase);
+            ItemInputs(itemCase);
+
+            SKIP_LOG = false;
+
+            ui.CommitChanges(); // event response: Ui_OnSet
+
+            Assert.AreEqual(newId, setEventArgs.NewID);
+            Assert.AreEqual(oldId, setEventArgs.OldID);
+            Assert.AreEqual(3, setEventArgs.Count);
+        }
+
+        enum CategoryCase
+        {
+            UNCHANGED,
+            NEW,
+            EXISTING
+        }
+
+        [Flags]
+        enum InputCase
+        {
+            UNCHANGED = 1,
+            ALL = 2,
+            FIELDS = 4,
+            ID = 8
+        }
+
+        private void CategoryInputs(CategoryCase categoryCase)
+        {
+            switch (categoryCase)
+            {
+                case CategoryCase.NEW:
+                    // new category
+                    ui.InputCatId = "CATID";
+                    ui.InputCatName = "New Category";
+                    break;
+                case CategoryCase.EXISTING:
+                    // existing category
+                    ui.InputCatId = "STPLT";
+                    ui.InputCatName = "Steel Plates";
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void ItemInputs(InputCase inputCase)
+        {
+            switch (inputCase)
+            {
+                case InputCase.ALL:
+                    // mandatory inputs
+                    ui.InputID = "TEST0";
+                    ui.InputBaseName = "Test Base Name";
+                    ui.InputDisplayName = "Display Name";
+                    ui.InputUom = "UoM";
+
+                    // optional inputs
+                    ui.InputDescription = "Description";
+
+                    // optional list inputs
+                    ui.ModifyCommonNames();
+                    ui.CommonNames.New();
+                    ui.CommonNames.InputCommonName = "Carbon Steel Pipe";
+                    ui.CommonNames.CommitChanges();
+                    ui.CommonNames.Save();
+                    break;
+                case InputCase.FIELDS:
+                    // mandatory inputs
+                    ui.InputBaseName = "Base Name";
+                    ui.InputDisplayName = "Display Name";
+                    ui.InputUom = "UoM";
+
+                    // optional inputs
+                    ui.InputDescription = "Description";
+
+                    // optional list inputs
+                    ui.ModifyCommonNames();
+                    ui.CommonNames.New();
+                    ui.CommonNames.InputCommonName = "Carbon Steel Pipe";
+                    ui.CommonNames.CommitChanges();
+                    ui.CommonNames.Save();
+                    break;
+                case InputCase.ID:
+                    ui.InputID = "TEST0";
+                    break;
+                default:
+                    break;
+            }
+
         }
     }
 }

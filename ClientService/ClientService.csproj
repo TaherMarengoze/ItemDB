@@ -44,15 +44,21 @@
   <ItemGroup>
     <Compile Include="Brokers\EndListBroker.cs" />
     <Compile Include="Brokers\BrokerSelector.cs" />
+    <Compile Include="Brokers\ItemCommonNamesBroker.cs" />
+    <Compile Include="Brokers\ItemImageNamesBroker.cs" />
     <Compile Include="Brokers\SizeListBroker.cs" />
     <Compile Include="Brokers\BrandListBroker.cs" />
     <Compile Include="Brokers\ItemBroker.cs" />
     <Compile Include="CacheIO.cs" />
     <Compile Include="Brokers\SizeGroupBroker.cs" />
     <Compile Include="ContextProvider.cs" />
+    <Compile Include="Contracts\IConvertable.cs" />
     <Compile Include="Contracts\IProvider.cs" />
+    <Compile Include="Contracts\ITransformable.cs" />
     <Compile Include="Data\EndProvider.cs" />
     <Compile Include="Data\CustomSizeProvider.cs" />
+    <Compile Include="Data\ItemCommonNamesProvider.cs" />
+    <Compile Include="Data\ItemImageNamesProvider.cs" />
     <Compile Include="Data\ItemProvider.cs" />
     <Compile Include="Data\SizeGroupProvider.cs" />
     <Compile Include="Data\SizeProvider.cs" />

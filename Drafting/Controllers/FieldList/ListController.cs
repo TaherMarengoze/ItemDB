@@ -238,13 +238,9 @@ namespace Controllers
 
             CreateOrUpdate();
 
-            SetEventArgs args = new SetEventArgs
-            {
-                OldID = selectedObject?.ID,
-                NewID = InputID,
-                NewList = provider.GetList().ToGenericView(),
-            };
-
+            var args = new SetEventArgs(InputID,
+                selectedObject?.ID, provider.GetList().ToGenericView());
+            
             ClearSelection();
             editObject = default/*null*/;
             ClearInputs();

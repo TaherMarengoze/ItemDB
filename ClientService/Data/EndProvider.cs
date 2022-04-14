@@ -43,5 +43,10 @@ namespace ClientService.Data
             exList.RemoveAll(item => item.ID == excludeId);
             return exList;
         }
+
+        public List<TViewModel> View<TViewModel>() where TViewModel : IConvertable<TViewModel, IFieldList>, new()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

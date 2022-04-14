@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace ClientService.Contracts
+namespace Interfaces.Operations.Info
 {
-    public interface IProvider<T> : ITransformable<T>
+    public interface IProvider<T>
     {
         List<T> GetList();
 
