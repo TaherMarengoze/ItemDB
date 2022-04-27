@@ -618,5 +618,122 @@ namespace Controllers
         private IItem selectedObject;
         private IItem editObject;
         #endregion
+
+        #region Item Details Code
+
+        public event EventHandler<StatusEventArgs> OnSpecsStatusChange;
+
+        private void InitDetailInputs()
+        {
+            InputsSpecs = new ItemDetailInput(SetStatusSpecs);
+        }
+
+        public ItemDetailInput InputsSpecs;
+
+        private InputStatus statusSpecs;
+        private void SetStatusSpecs(InputStatus status)
+        {
+            statusSpecs = status;
+
+            StatusEventArgs args = new StatusEventArgs(status, statusSpecs);
+
+            // raise event
+            if (!DISABLE_STATUS_RAISE_EVENT)
+                OnSpecsStatusChange?.Invoke(this, args);
+
+            // check all inputs status
+            CheckReadyStatus();
+        }
+        
+        private bool inputRequiredSizeGroup;
+        public bool InputRequiredSizeGroup
+        {
+            get => inputRequiredSizeGroup;
+            set
+            {
+                inputRequiredSizeGroup = value;
+            }
+        }
+
+        private string inputSizeGroupId;
+        public string InputSizeGroupId
+        {
+            get => inputSizeGroupId;
+            set
+            {
+                inputSizeGroupId = value;
+            }
+        }
+
+        private bool inputRequiredBrand;
+        public bool InputRequiredBrand
+        {
+            get => inputRequiredBrand;
+            set
+            {
+                inputRequiredBrand = value;
+            }
+        }
+
+        private string inputBrandId;
+        public string InputBrandId
+        {
+            get => inputBrandId;
+            set
+            {
+                inputBrandId = value;
+            }
+        }
+
+        private bool inputRequiredEnds;
+        public bool InputRequiredEnds
+        {
+            get => inputRequiredEnds;
+            set
+            {
+                inputRequiredEnds = value;
+            }
+        }
+
+        private string endsId;
+        public string EndsId
+        {
+            get => endsId;
+            set
+            {
+                endsId = value;
+            }
+        }
+
+        private InputStatus statusSizeGroup;
+        public InputStatus StatusSizeGroup
+        {
+            get => statusSizeGroup;
+            set
+            {
+                statusSizeGroup = value;
+            }
+        }
+
+        private InputStatus statusBrand;
+        public InputStatus StatusBrand
+        {
+            get => statusBrand;
+            set
+            {
+                statusBrand = value;
+            }
+        }
+
+        private InputStatus statusEnd;
+        public InputStatus StatusEnd
+        {
+            get => statusEnd;
+            set
+            {
+                statusEnd = value;
+            }
+        }
+        #endregion
     }
 }
