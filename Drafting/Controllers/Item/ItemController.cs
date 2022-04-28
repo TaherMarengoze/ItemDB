@@ -15,6 +15,8 @@ using Modeling.DataModels;
 using Modeling.ViewModels;
 using Modeling.ViewModels.Item;
 
+#pragma warning disable IDE0090 // Use 'new(...)'
+
 namespace Controllers
 {
     public partial class ItemController : IController
@@ -541,6 +543,13 @@ namespace Controllers
                 // etc ...
             };
 
+            return inputStatus.All(status => status == InputStatus.Valid)
+                && IsValidInputsStatus(); // solution 1
+
+            // solution 2: add inputs status to the list
+            var tempInputStatus = inputStatus.ToList();
+            tempInputStatus.AddRange(inputStatuses.Select(input => input.Status));
+            inputStatus = tempInputStatus.ToArray();
             return inputStatus.All(status => status == InputStatus.Valid);
         }
 
@@ -735,5 +744,45 @@ namespace Controllers
             }
         }
         #endregion
+
+        List<InputStatusObject> inputStatuses;
+        private InputStatusObject StatusSpecsObject;
+        private void InitInputStatusObjects()
+        {
+            inputStatuses = new();
+            StatusSpecsObject = new(inputStatuses);
+        }
+
+        private void SetStatusSpecs2(InputStatus status)
+        {
+            StatusSpecsObject.Status = status;
+
+            StatusEventArgs args = new StatusEventArgs(status, null);
+
+            // raise event
+            if (!DISABLE_STATUS_RAISE_EVENT)
+                OnSpecsStatusChange?.Invoke(this, args);
+
+            // check all inputs status
+            CheckReadyStatus();
+        }
+
+        private bool IsValidInputsStatus()
+        {
+            return inputStatuses.All(input =>
+                input.Status == InputStatus.Valid);
+        }
+    }
+
+    public class InputStatusObject
+    {
+        public InputStatusObject(List<InputStatusObject> statusCheckList,
+            InputStatus defaultValue = InputStatus.Blank)
+        {
+            statusCheckList.Add(this);
+            Status = defaultValue;
+        }
+
+        public InputStatus Status { get; set; }
     }
 }
