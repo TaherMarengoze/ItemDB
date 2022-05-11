@@ -361,6 +361,11 @@ namespace UT_Controllers
             ui.InputCatId = "CATID";
             ui.InputCatName = "New Category";
 
+            ui.InputSpecs.Id = "SPC00";
+            ui.InputSizeGroup.Id = "SZG00";
+            ui.InputBrand.Id = "BRD00";
+            ui.InputEnd.Id = "END00";
+
             ui.ModifyCommonNames();
             ui.CommonNames.New();
             ui.CommonNames.InputCommonName = "Common Name 1";
@@ -441,6 +446,12 @@ namespace UT_Controllers
 
             // optional inputs
             ui.InputDescription = "Description";
+
+            // details
+            //ui.InputSpecs.Id = "SPC00";
+            //ui.InputSizeGroup.Id = "SZG00";
+            //ui.InputBrand.Id = "BRD00";
+            //ui.InputEnd.Id = "END00";
 
             // optional list inputs
             ui.ModifyCommonNames();

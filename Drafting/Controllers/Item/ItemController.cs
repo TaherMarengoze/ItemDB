@@ -24,6 +24,9 @@ namespace Controllers
         public ItemController()
         {
             SetStatusInitialValues();
+
+            InitDetailInputs();
+            InitInputStatusObjects();
         }
 
         #region Events
@@ -544,13 +547,7 @@ namespace Controllers
             };
 
             return inputStatus.All(status => status == InputStatus.Valid)
-                && IsValidInputsStatus(); // solution 1
-
-            // solution 2: add inputs status to the list
-            var tempInputStatus = inputStatus.ToList();
-            tempInputStatus.AddRange(inputStatuses.Select(input => input.Status));
-            inputStatus = tempInputStatus.ToArray();
-            return inputStatus.All(status => status == InputStatus.Valid);
+                && IsValidInputsStatus();
         }
 
         private bool IsDraftChanged()
@@ -585,10 +582,15 @@ namespace Controllers
                 ImagesFileName = inputImageNames?.ToList() ?? new List<string>(),
                 Details = new ItemDetails
                 {
-                    SpecsRequired = false,
-                    SizeRequired = false,
-                    BrandRequired = false,
-                    EndsRequired = false,
+                    SpecsID = InputSpecs.Id,
+                    SizeGroupID = InputSizeGroup.Id,
+                    BrandListID = InputBrand.Id,
+                    EndsListID = InputEnd.Id,
+
+                    SpecsRequired = InputSpecs.Required,
+                    SizeRequired = InputSizeGroup.Required,
+                    BrandRequired = InputBrand.Required,
+                    EndsRequired = InputEnd.Required
                 }
             };
         }
@@ -631,131 +633,42 @@ namespace Controllers
         #region Item Details Code
 
         public event EventHandler<StatusEventArgs> OnSpecsStatusChange;
+        public event EventHandler<StatusEventArgs> OnSizeGroupStatusChange;
+        public event EventHandler<StatusEventArgs> OnBrandStatusChange;
+        public event EventHandler<StatusEventArgs> OnEndStatusChange;
+
+        public ItemDetailInput InputSpecs;
+        public ItemDetailInput InputSizeGroup;
+        public ItemDetailInput InputBrand;
+        public ItemDetailInput InputEnd;
+
+        private List<InputStatusObject> inputStatuses;
+
+        private InputStatusObject StatusSpecs;
+        private InputStatusObject StatusSizeGroup;
+        private InputStatusObject StatusBrand;
+        private InputStatusObject StatusEnd;
 
         private void InitDetailInputs()
         {
-            InputsSpecs = new ItemDetailInput(SetStatusSpecs);
+            InputSpecs = new ItemDetailInput(SetStatusSpecs);
+            InputSizeGroup = new ItemDetailInput(SetStatusSizeGroup);
+            InputBrand = new ItemDetailInput(SetStatusBrand);
+            InputEnd = new ItemDetailInput(SetStatusEnd);
         }
 
-        public ItemDetailInput InputsSpecs;
-
-        private InputStatus statusSpecs;
-        private void SetStatusSpecs(InputStatus status)
-        {
-            statusSpecs = status;
-
-            StatusEventArgs args = new StatusEventArgs(status, statusSpecs);
-
-            // raise event
-            if (!DISABLE_STATUS_RAISE_EVENT)
-                OnSpecsStatusChange?.Invoke(this, args);
-
-            // check all inputs status
-            CheckReadyStatus();
-        }
-        
-        private bool inputRequiredSizeGroup;
-        public bool InputRequiredSizeGroup
-        {
-            get => inputRequiredSizeGroup;
-            set
-            {
-                inputRequiredSizeGroup = value;
-            }
-        }
-
-        private string inputSizeGroupId;
-        public string InputSizeGroupId
-        {
-            get => inputSizeGroupId;
-            set
-            {
-                inputSizeGroupId = value;
-            }
-        }
-
-        private bool inputRequiredBrand;
-        public bool InputRequiredBrand
-        {
-            get => inputRequiredBrand;
-            set
-            {
-                inputRequiredBrand = value;
-            }
-        }
-
-        private string inputBrandId;
-        public string InputBrandId
-        {
-            get => inputBrandId;
-            set
-            {
-                inputBrandId = value;
-            }
-        }
-
-        private bool inputRequiredEnds;
-        public bool InputRequiredEnds
-        {
-            get => inputRequiredEnds;
-            set
-            {
-                inputRequiredEnds = value;
-            }
-        }
-
-        private string endsId;
-        public string EndsId
-        {
-            get => endsId;
-            set
-            {
-                endsId = value;
-            }
-        }
-
-        private InputStatus statusSizeGroup;
-        public InputStatus StatusSizeGroup
-        {
-            get => statusSizeGroup;
-            set
-            {
-                statusSizeGroup = value;
-            }
-        }
-
-        private InputStatus statusBrand;
-        public InputStatus StatusBrand
-        {
-            get => statusBrand;
-            set
-            {
-                statusBrand = value;
-            }
-        }
-
-        private InputStatus statusEnd;
-        public InputStatus StatusEnd
-        {
-            get => statusEnd;
-            set
-            {
-                statusEnd = value;
-            }
-        }
-        #endregion
-
-        List<InputStatusObject> inputStatuses;
-        private InputStatusObject StatusSpecsObject;
         private void InitInputStatusObjects()
         {
             inputStatuses = new();
-            StatusSpecsObject = new(inputStatuses);
+            StatusSpecs = new(inputStatuses, InputStatus.Valid);
+            StatusSizeGroup = new(inputStatuses, InputStatus.Valid);
+            StatusBrand = new(inputStatuses, InputStatus.Valid);
+            StatusEnd = new(inputStatuses, InputStatus.Valid);
         }
 
-        private void SetStatusSpecs2(InputStatus status)
+        private void SetStatusSpecs(InputStatus status)
         {
-            StatusSpecsObject.Status = status;
+            StatusSpecs.Status = status.Validate(InputStatus.Blank);
 
             StatusEventArgs args = new StatusEventArgs(status, null);
 
@@ -767,11 +680,54 @@ namespace Controllers
             CheckReadyStatus();
         }
 
+        private void SetStatusSizeGroup(InputStatus status)
+        {
+            StatusSizeGroup.Status = status.Validate(InputStatus.Blank);
+
+            StatusEventArgs args = new StatusEventArgs(status, null);
+
+            // raise event
+            if (!DISABLE_STATUS_RAISE_EVENT)
+                OnSizeGroupStatusChange?.Invoke(this, args);
+
+            // check all inputs status
+            CheckReadyStatus();
+        }
+
+        private void SetStatusBrand(InputStatus status)
+        {
+            StatusBrand.Status = status.Validate(InputStatus.Blank);
+
+            StatusEventArgs args = new StatusEventArgs(status, null);
+
+            // raise event
+            if (!DISABLE_STATUS_RAISE_EVENT)
+                OnBrandStatusChange?.Invoke(this, args);
+
+            // check all inputs status
+            CheckReadyStatus();
+        }
+
+        private void SetStatusEnd(InputStatus status)
+        {
+            StatusEnd.Status = status.Validate(InputStatus.Blank);
+
+            StatusEventArgs args = new StatusEventArgs(status, null);
+
+            // raise event
+            if (!DISABLE_STATUS_RAISE_EVENT)
+                OnEndStatusChange?.Invoke(this, args);
+
+            // check all inputs status
+            CheckReadyStatus();
+        }
+
         private bool IsValidInputsStatus()
         {
             return inputStatuses.All(input =>
                 input.Status == InputStatus.Valid);
         }
+        #endregion
     }
 
     public class InputStatusObject
