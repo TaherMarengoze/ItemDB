@@ -465,6 +465,18 @@ namespace Controllers
             InputCatId = editObject.CatID;
             InputCatName = editObject.CatName;
 
+            // item details IDs
+            InputSpecs.Id = editObject.Details.SpecsID;
+            InputSizeGroup.Id = editObject.Details.SizeGroupID;
+            InputBrand.Id = editObject.Details.BrandListID;
+            InputEnd.Id = editObject.Details.EndsListID;
+
+            // item detail required flag
+            InputSpecs.Required = editObject.Details.SpecsRequired;
+            InputSizeGroup.Required = editObject.Details.SizeRequired;
+            InputBrand.Required = editObject.Details.BrandRequired;
+            InputEnd.Required = editObject.Details.EndsRequired;
+
             SetInputCommonNames(editObject.CommonNames.ToList());
             SetInputImageNames(editObject.ImagesFileName.ToList());
 
@@ -494,6 +506,17 @@ namespace Controllers
             InputDisplayName = null;
             InputDescription = null;
             InputUom = null;
+
+            // clear item details value
+            InputSpecs.Id = null;
+            InputSizeGroup.Id = null;
+            InputBrand.Id = null;
+            InputEnd.Id = null;
+
+            InputSpecs.Required = false;
+            InputSizeGroup.Required = false;
+            InputBrand.Required = false;
+            InputEnd.Required = false;
 
             SetInputCommonNames(null);
             SetInputImageNames(null);
@@ -642,7 +665,7 @@ namespace Controllers
         public ItemDetailInput InputBrand;
         public ItemDetailInput InputEnd;
 
-        private List<InputStatusObject> inputStatuses;
+        private readonly List<InputStatusObject> inputStatuses = new();
 
         private InputStatusObject StatusSpecs;
         private InputStatusObject StatusSizeGroup;
@@ -659,7 +682,7 @@ namespace Controllers
 
         private void InitInputStatusObjects()
         {
-            inputStatuses = new();
+            //inputStatuses = new();
             StatusSpecs = new(inputStatuses, InputStatus.Valid);
             StatusSizeGroup = new(inputStatuses, InputStatus.Valid);
             StatusBrand = new(inputStatuses, InputStatus.Valid);
