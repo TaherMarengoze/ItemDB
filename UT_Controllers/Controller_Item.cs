@@ -573,6 +573,27 @@ namespace UT_Controllers
             ui.Save();
         }
 
+        [TestMethod]
+        public void Should_EditNoChange()
+        {
+            string oldId = "BSP01";
+
+            SKIP_LOG = true;
+
+            ui.Select(oldId);
+            ui.Edit();
+
+            // item details input (same as edited object)
+            ui.InputSpecs.Id = "S010";
+            //ui.InputSizeGroup.Id = "G010";
+            //ui.InputBrand.Id = "B010";
+            //ui.InputEnd.Id = "C010";
+
+            SKIP_LOG = false;
+
+            ui.CommitChanges(); // event response: Ui_OnSet
+        }
+
         enum CategoryCase
         {
             UNCHANGED,
