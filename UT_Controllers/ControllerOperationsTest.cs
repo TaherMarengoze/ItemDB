@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Controllers;
 using Controllers.Common;
 using CoreLibrary.Enums;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -93,6 +94,110 @@ namespace UT_Controllers
 
         }
 
+        internal static bool IsChanged_ItemDetailInput(ItemDetailInput value, ItemDetailInput oldValue = null)
+        {
+            if (value is null)
+                return false;
+
+            if (value.Id != oldValue?.Id || (value.Required != oldValue?.Required))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        [TestMethod]
+        public void Test_IsChanged_DetailInputObject()
+        {
+            ItemDetailInput inputNew = new ItemDetailInput(null) { Id = "NEWID", Required = true };
+            ItemDetailInput inputOld = new ItemDetailInput(null) { Id = "OLDID", Required = true };
+
+            // unchanged
+            Assert.AreEqual(false, IsChanged_ItemDetailInput(null, null));
+            Assert.AreEqual(false, IsChanged_ItemDetailInput(null));
+            Assert.AreEqual(false, IsChanged_ItemDetailInput(null, inputOld));
+
+            // changed → old object not given
+            Assert.AreEqual(true, IsChanged_ItemDetailInput(inputNew));
+
+            // both objects given
+            // changed
+            Assert.AreEqual(true, IsChanged_ItemDetailInput(inputNew, inputOld));
+
+            // unchanged → both objects are similar
+            inputNew.Id = "OLDID";
+            Assert.AreEqual(false, IsChanged_ItemDetailInput(inputNew, inputOld));
+
+            // changed
+            inputNew.Required = false;
+            Assert.AreEqual(true, IsChanged_ItemDetailInput(inputNew, inputOld));
+        }
+
+        internal static bool IsChanged_ItemDetailInput2(ItemDetailInput value, string oldId = null, bool oldRequired = false)
+        {
+            if (value is null)
+                return false;
+
+            if (value.Id != oldId || (value.Required != oldRequired))
+                return true;
+
+            return false;
+        }
+
+        [TestMethod]
+        public void Test_IsChanged_DetailInputObject2()
+        {
+            ItemDetailInput input = new ItemDetailInput(null) { Id = "NEWID", Required = true };
+            string oldId = null;
+            bool oldRequired = false;
+
+            // unchanged
+            Assert.AreEqual(false, IsChanged_ItemDetailInput2(null));
+            Assert.AreEqual(false, IsChanged_ItemDetailInput2(null, oldId, oldRequired));
+
+            // all parameters given
+            // old value parameters not given
+            Assert.AreEqual(true, IsChanged_ItemDetailInput2(input)); // → changed
+            Assert.AreEqual(false, IsChanged_ItemDetailInput2(input, "NEWID", true)); // → unchanged
+            Assert.AreEqual(true, IsChanged_ItemDetailInput2(input, "NEWID", false)); // → changed
+            Assert.AreEqual(true, IsChanged_ItemDetailInput2(input, "OLDID", true)); // → changed
+            Assert.AreEqual(true, IsChanged_ItemDetailInput2(input, null, true)); // → changed
+        }
+
+        private bool IsChanged_(ItemDetailInput value, string oldId = null, bool oldRequired = false)
+        {
+            if (value is null)
+                return false;
+
+            if (value.Id != oldId || (value.Required != oldRequired))
+                return true;
+
+            return false;
+        }
+
+        private bool IsDraftDetailsChanged()
+        {
+            ItemDetailInput InputSpecs = new ItemDetailInput(null) { Id = "SPC00" };
+            ItemDetailInput InputSizeGroup = new ItemDetailInput(null) { Id = "SZG00" };
+            ItemDetailInput InputBrand = new ItemDetailInput(null) { Id = "BRD00" };
+            ItemDetailInput InputEnd = new ItemDetailInput(null) { Id = "END00" };
+
+            bool[] detailsChanged = {
+                IsChanged_(InputSpecs     , "SPC00", false),
+                IsChanged_(InputSizeGroup , "SZG00", false),
+                IsChanged_(InputBrand     , "BRD00", false),
+                IsChanged_(InputEnd       , "END00", false),
+            };
+
+            return detailsChanged.Any(change => change);
+        }
+
+        [TestMethod]
+        public void Test_IsDraftDetailsChanged()
+        {
+            Assert.AreEqual(false, IsDraftDetailsChanged());
+        }
 
     }
 }
