@@ -20,7 +20,7 @@ namespace Controllers
             set
             {
                 required = value;
-                _statusCallback(GetDetailInputs(id, required));
+                _statusCallback?.Invoke(GetDetailInputs(id, required));
             }
         }
 
@@ -30,7 +30,7 @@ namespace Controllers
             set
             {
                 id = value;
-                _statusCallback(GetDetailInputs(id, required));
+                _statusCallback?.Invoke(GetDetailInputs(id, required));
             }
         }
 
