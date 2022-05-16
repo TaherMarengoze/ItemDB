@@ -411,6 +411,9 @@ namespace Controllers
         #region Private Methods
         private void CheckReadyStatus()
         {
+            if (DISABLE_READY_STATUS_CHECK)
+                return;
+
             bool isValid = IsValidInputs();
             bool isChanged = IsDraftChanged();
 
@@ -452,6 +455,7 @@ namespace Controllers
         private void FillInputs()
         {
             DISABLE_STATUS_RAISE_EVENT = true;
+            DISABLE_READY_STATUS_CHECK = true;
 
             //List<string> CommonNames
             //List<string> ImagesFileName
@@ -481,6 +485,7 @@ namespace Controllers
             SetInputImageNames(editObject.ImagesFileName.ToList());
 
             DISABLE_STATUS_RAISE_EVENT = false;
+            DISABLE_READY_STATUS_CHECK = false;
         }
 
         /// <summary>
@@ -587,7 +592,8 @@ namespace Controllers
                 Operations.IsChanged(inputImageNames, editObject?.ImagesFileName),
             };
 
-            return draftChange.Any(change => change);
+            return draftChange.Any(change => change)
+                || IsDraftDetailsChanged();
         }
 
         private IItem CreateDraftObject()
@@ -647,6 +653,7 @@ namespace Controllers
         // flags
         private bool STATE_DRAFT_READY;
         private bool DISABLE_STATUS_RAISE_EVENT;
+        private bool DISABLE_READY_STATUS_CHECK;
 
         // objects
         private IItem selectedObject;
@@ -749,6 +756,29 @@ namespace Controllers
         {
             return inputStatuses.All(input =>
                 input.Status == InputStatus.Valid);
+        }
+
+        private bool IsDraftDetailsChanged()
+        {
+            bool[] detailsChanged = {
+                Operations.IsChanged(InputSpecs,
+                    editObject?.Details.SpecsID,
+                    editObject?.Details.SpecsRequired ?? false),
+
+                Operations.IsChanged(InputSizeGroup,
+                    editObject?.Details.SizeGroupID,
+                    editObject?.Details.SizeRequired ?? false),
+
+                Operations.IsChanged(InputBrand,
+                    editObject?.Details.BrandListID,
+                    editObject?.Details.BrandRequired ?? false),
+
+                Operations.IsChanged(InputEnd,
+                    editObject?.Details.EndsListID,
+                    editObject?.Details.EndsRequired ?? false),
+            };
+
+            return detailsChanged.Any(change => change);
         }
         #endregion
     }
