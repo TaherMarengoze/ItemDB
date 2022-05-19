@@ -66,6 +66,7 @@
     <Compile Include="SizeListControllerTest.cs" />
     <Compile Include="Controller_Item.cs" />
     <Compile Include="StringListTypeController.cs" />
+    <Compile Include="ItemDetailInputTest.cs" />
     <Compile Include="XmlDatasource_Item.cs" />
   </ItemGroup>
   <ItemGroup>
