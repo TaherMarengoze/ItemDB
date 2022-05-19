@@ -79,6 +79,12 @@
     <Compile Include="Forms\FieldEditor.Designer.cs">
       <DependentUpon>FieldEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ItemViewer2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ItemViewer2.Designer.cs">
+      <DependentUpon>ItemViewer2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ListEditor_.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -173,6 +179,9 @@
     <Compile Include="Runtime\Test.cs" />
     <EmbeddedResource Include="Forms\FieldEditor.resx">
       <DependentUpon>FieldEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ItemViewer2.resx">
+      <DependentUpon>ItemViewer2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ListEditor_.resx">
       <DependentUpon>ListEditor_.cs</DependentUpon>
