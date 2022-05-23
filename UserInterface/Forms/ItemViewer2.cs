@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Controllers;
 using CoreLibrary;
 using CoreLibrary.Enums;
 using CoreLibrary.Interfaces;
@@ -20,9 +21,15 @@ namespace UserInterface.Forms
         private int itemSelectionIndex;
         private ToolTip helperTip = new ToolTip();
 
+        private ItemController uiController = new ItemController();
+
         public ItemViewer2()
         {
             InitializeComponent();
+
+            // new code
+            //uiController = new ItemController();
+            SubscribeControllerEvents();
 
             // Reference: https://stackoverflow.com/questions/4941766/picturebox-tooltip-changing-c-sharp
             // The ToolTip setting. You can do this as many times as you want
@@ -30,6 +37,26 @@ namespace UserInterface.Forms
 
             // Double buffering for DGV to prevent slow/flickering scroll
             dgvItems.DoubleBuffer(true);
+        }
+
+        private void SubscribeControllerEvents()
+        {
+            uiController.OnLoad += UiController_OnLoad;
+        }
+
+        private void UiController_OnLoad(object sender, LoadEventArgs e)
+        {
+            dgvItems.DataSource = e.GenericViewList;
+            HideItemsDataGridViewColumn("CatID");
+
+            // bind item categories filter combo-box
+            cboFilterCategory.DataSource = null;
+        }
+
+        private void HideItemsDataGridViewColumn(string columnName)
+        {
+            if (dgvItems.Columns.Contains(columnName))
+                dgvItems.Columns[columnName].Visible = false;
         }
 
         #region File Management
