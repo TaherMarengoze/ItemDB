@@ -55,6 +55,7 @@
     <Compile Include="Contracts\IConvertable.cs" />
     <Compile Include="Contracts\IProvider.cs" />
     <Compile Include="Contracts\ITransformable.cs" />
+    <Compile Include="Data\CategoryProvider .cs" />
     <Compile Include="Data\EndProvider.cs" />
     <Compile Include="Data\CustomSizeProvider.cs" />
     <Compile Include="Data\ItemCommonNamesProvider.cs" />
