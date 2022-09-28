@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ClientService.Contracts
+namespace Interfaces.Operations
 {
     public interface IConvertable<TOut, TSource>
     {

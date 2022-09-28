@@ -10,7 +10,7 @@ namespace ClientService.Brokers
     public class EndListBroker : IBroker<IFieldList>
     {
         private readonly IRepo<IFieldList> repos = Globals.endsRepo;
-        private readonly ModelListsCache cache = Globals.ModelCache;
+        private readonly ModelsDataCache cache = Globals.ModelCache;
 
         public void Create(IFieldList content)
             => repos.Create(content);

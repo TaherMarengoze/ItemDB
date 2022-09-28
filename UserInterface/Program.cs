@@ -47,12 +47,10 @@ namespace UserInterface
         {
             // Set app context to use XML data source
             // which can be changed to database source if applicable
-            CoreLibrary.GlobalsX.context =
-                new CoreLibrary.XmlContext();
+            CoreLibrary.GlobalsX.context = new CoreLibrary.XmlContext();
 
             // Test New libraries implementation
-            AppCore.Globals.context =
-                new XmlDataSource.XmlContext();
+            AppCore.Globals.context = new XmlDataSource.XmlContext();
         }
     }   
 }

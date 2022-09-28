@@ -1,7 +1,7 @@
 ﻿
 namespace Interfaces.Models
 {
-    public interface IIdentity
+    public interface IIdentifiable
     {
         string ID { get; set; }
 

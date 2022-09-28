@@ -55,6 +55,16 @@ namespace UT_Controllers
             ui.OnCatNameStatusChange += Ui_OnCatNameStatusChange;
             ui.OnCommonNamesStatusChange += Ui_OnCommonNamesStatusChange;
             ui.OnSet += Ui_OnSet;
+            ui.OnFilter += Ui_OnFilter;
+        }
+
+        private void Ui_OnFilter(object sender, LoadEventArgs<GenericView> e)
+        {
+            Console.WriteLine("{0} item(s)", e.Count);
+            foreach (var item in e.ViewList)
+            {
+                Console.WriteLine(" • {0}", item);
+            }
         }
 
         SetEventArgs setEventArgs;
@@ -231,11 +241,14 @@ namespace UT_Controllers
         {
             //new ListViewer(e.GenericViewList).ShowDialog();
 
-            Console.WriteLine("{0} item(s)", e.Count);
-            foreach (var item in (IList)e.GenericViewList)
+            Log(delegate
             {
-                Console.WriteLine(" • {0}", item);
-            }
+                Console.WriteLine("{0} item(s)", e.Count);
+                foreach (var item in (IList)e.GenericViewList)
+                {
+                    Console.WriteLine(" • {0}", item);
+                }
+            });
         }
 
         [TestMethod]
@@ -361,6 +374,11 @@ namespace UT_Controllers
             ui.InputCatId = "CATID";
             ui.InputCatName = "New Category";
 
+            ui.InputSpecs.Id = "SPC00";
+            ui.InputSizeGroup.Id = "SZG00";
+            ui.InputBrand.Id = "BRD00";
+            ui.InputEnd.Id = "END00";
+
             ui.ModifyCommonNames();
             ui.CommonNames.New();
             ui.CommonNames.InputCommonName = "Common Name 1";
@@ -442,6 +460,17 @@ namespace UT_Controllers
             // optional inputs
             ui.InputDescription = "Description";
 
+            // details
+            ui.InputSpecs.Id = "SPC00";
+            ui.InputSizeGroup.Id = "SZG00";
+            ui.InputBrand.Id = "BRD00";
+            ui.InputEnd.Id = "END00";
+
+            ui.InputSpecs.Required = true;
+            ui.InputSizeGroup.Required = true;
+            ui.InputBrand.Required = true;
+            ui.InputEnd.Required = true;
+
             // optional list inputs
             ui.ModifyCommonNames();
             ui.CommonNames.New();
@@ -498,6 +527,103 @@ namespace UT_Controllers
             Assert.AreEqual(newId, setEventArgs.NewID);
             Assert.AreEqual(oldId, setEventArgs.OldID);
             Assert.AreEqual(3, setEventArgs.Count);
+        }
+
+        [TestMethod]
+        public void Should_EditItem()
+        {
+            string oldId = "BSP01";
+            CategoryCase catCase = CategoryCase.UNCHANGED;
+
+            SKIP_LOG = true;
+
+            ui.Select(oldId);
+            ui.Edit();
+
+            CategoryInputs(catCase);
+
+            // mandatory inputs
+            ui.InputID = "TEST0";
+            ui.InputBaseName = "Test Base Name";
+            ui.InputDisplayName = "Display Name";
+            ui.InputUom = "UoM";
+
+            // item details input
+            ui.InputSpecs.Id = "SPC00";
+            ui.InputSizeGroup.Id = "SZG00";
+            ui.InputBrand.Id = "BRD00";
+            ui.InputEnd.Id = "END00";
+
+            ui.InputSpecs.Required = true;
+            ui.InputSizeGroup.Required = true;
+            ui.InputBrand.Required = true;
+            ui.InputEnd.Required = true;
+
+            // optional inputs
+            ui.InputDescription = "Description";
+
+            // optional list inputs
+            ui.ModifyCommonNames();
+            
+            // remove existing name
+            ui.CommonNames.Select("ماسورة حديد اسود");
+            ui.CommonNames.Remove();
+
+            // add new common names
+            ui.CommonNames.New();
+            ui.CommonNames.InputCommonName = "Test Item Common Name 1";
+            ui.CommonNames.CommitChanges();
+            ui.CommonNames.New();
+
+            ui.CommonNames.InputCommonName = "Test Item Common Name 2";
+            ui.CommonNames.CommitChanges();
+
+            ui.CommonNames.Save();
+
+            SKIP_LOG = false;
+
+            ui.CommitChanges(); // event response: Ui_OnSet
+            ui.Save();
+        }
+
+        [TestMethod]
+        public void Should_EditNoChange()
+        {
+            string oldId = "BSP01";
+
+            SKIP_LOG = true;
+
+            ui.Select(oldId);
+            ui.Edit();
+
+            // item details input (same as edited object)
+            ui.InputSpecs.Id = "S010";
+            //ui.InputSizeGroup.Id = "G010";
+            //ui.InputBrand.Id = "B010";
+            //ui.InputEnd.Id = "C010";
+
+            SKIP_LOG = false;
+
+            ui.CommitChanges(); // event response: Ui_OnSet
+        }
+
+        [TestMethod]
+        public void Should_Filter()
+        {
+            ui.Filter("", "", "*", false);
+        }
+
+        /// <summary>
+        /// Tests <see cref="ItemController.TotalCount"/> get-only property.
+        /// </summary>
+        [TestMethod]
+        public void Should_OnLoadGetTotalCount()
+        {
+            SKIP_LOG = true;
+            ui.Load();
+            SKIP_LOG = false;
+
+            Assert.AreEqual(55, ui.TotalCount);
         }
 
         enum CategoryCase

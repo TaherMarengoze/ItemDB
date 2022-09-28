@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="DataDocuments.cs" />
     <Compile Include="DocumentProcessor.cs" />
+    <Compile Include="Repository\Category.cs" />
     <Compile Include="Repository\Item.cs" />
     <Compile Include="Repository\EndList.cs" />
     <Compile Include="Repository\SizeGroup.cs" />
@@ -75,6 +76,5 @@
       <Name>Modeling</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

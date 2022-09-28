@@ -10,6 +10,7 @@
     <RootNamespace>Drafting</RootNamespace>
     <AssemblyName>Drafting</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <LangVersion>latest</LangVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
@@ -45,6 +46,7 @@
     <Compile Include="Controllers\FieldList\ListController.cs" />
     <Compile Include="Controllers\FieldList\ListController.Entries.cs" />
     <Compile Include="Controllers\Item\ItemCommonNamesController.cs" />
+    <Compile Include="Controllers\Item\ItemDetailInput.cs" />
     <Compile Include="Controllers\Item\ItemImageNamesController.cs" />
     <Compile Include="Controllers\Item\ItemController.cs" />
     <Compile Include="Controllers\Item\ItemController.Extensions.cs" />

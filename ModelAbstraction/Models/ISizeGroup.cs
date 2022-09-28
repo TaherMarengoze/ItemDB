@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Interfaces.Models
 {
-    public interface ISizeGroup : IIdentity
+    public interface ISizeGroup : IIdentifiable
     {
         string DefaultListID { get; set; }
 

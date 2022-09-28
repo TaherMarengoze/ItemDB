@@ -6,6 +6,7 @@ using AppCore;
 using ClientService.Contracts;
 
 using Interfaces.Models;
+using Interfaces.Operations;
 
 namespace ClientService.Data
 {
@@ -16,7 +17,7 @@ namespace ClientService.Data
             return CacheIO.GetEndList();
         }
 
-        public List<string> GetIDs() => Globals.DataLists.EndIDs;
+        public List<string> GetIDs() => Globals.ModelCache.EndListsIDs;
 
         public int Count => GetIDs()?.Count ?? 0;
 
@@ -44,7 +45,8 @@ namespace ClientService.Data
             return exList;
         }
 
-        public List<TViewModel> View<TViewModel>() where TViewModel : IConvertable<TViewModel, IFieldList>, new()
+        public List<TViewModel> View<TViewModel>()
+            where TViewModel : IConvertable<TViewModel, IFieldList>, new()
         {
             throw new System.NotImplementedException();
         }

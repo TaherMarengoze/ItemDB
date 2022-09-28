@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Interfaces.Operations;
+
 namespace Interfaces.Models
 {
-    public interface IItemCategory //: IIdentity
+    public interface IItemBasicView
     {
-        string CatID { get; set; }
+        string ID { get; set; }
 
-        string CatName { get; set; }
+        string Name { get; set; }
     }
 }

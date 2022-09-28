@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Interfaces.Models
 {
-    public interface ISpecs : IIdentity
+    public interface ISpecs : IIdentifiable
     {
         string TextPattern { get; set; }
 

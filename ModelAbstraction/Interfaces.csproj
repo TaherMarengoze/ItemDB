@@ -45,24 +45,24 @@
   <ItemGroup>
     <Compile Include="General\IDraftable.cs" />
     <Compile Include="Models\IFieldList.cs" />
-    <Compile Include="Models\IIdentity.cs" />
+    <Compile Include="Models\IIdentifiable.cs" />
     <Compile Include="Models\IItem.cs" />
     <Compile Include="Models\IItemCategory.cs" />
     <Compile Include="Models\IItemDetails.cs" />
     <Compile Include="General\IListEntry.cs" />
+    <Compile Include="Models\IItemBasicView.cs" />
     <Compile Include="Models\ISizeGroup.cs" />
     <Compile Include="Models\ISpecListEntry.cs" />
     <Compile Include="Models\ISpecs.cs" />
     <Compile Include="Models\ISpecsItem.cs" />
     <Compile Include="Operations\IBroker.cs" />
     <Compile Include="Operations\IController.cs" />
+    <Compile Include="Operations\IConvertable.cs" />
     <Compile Include="Operations\IDataReader.cs" />
     <Compile Include="Operations\IEntityNotify.cs" />
-    <Compile Include="Operations\IProvider.cs" />
     <Compile Include="Operations\IRepo.cs" />
     <Compile Include="Operations\ISourceContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

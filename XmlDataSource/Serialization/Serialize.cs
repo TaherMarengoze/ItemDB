@@ -146,9 +146,22 @@ namespace XmlDataSource.IO
         /// <summary>
         /// Serializes an item category object to XML.
         /// </summary>
-        /// <param name="specs">The object instance to serialize.</param>
+        /// <param name="entity">The object instance to serialize.</param>
         /// <returns>The serialized XML of the object.</returns>
         internal static XElement CategoryEntity(IItem entity)
+        {
+            return
+                new XElement("category",
+                    new XAttribute("catID", entity.CatID),
+                    new XAttribute("name", entity.CatName));
+        }
+
+        /// <summary>
+        /// Serializes an item category object to XML.
+        /// </summary>
+        /// <param name="entity">The object instance to serialize.</param>
+        /// <returns>The serialized XML of the object.</returns>
+        internal static XElement CategoryEntity(IItemCategory entity)
         {
             return
                 new XElement("category",

@@ -35,7 +35,7 @@ namespace UT_Controllers
 
         public static void DrawTable(this IEnumerable<GenericView> list)
         {
-            var length = list.Max(s => s.BaseName.Length);
+            var length = list.Max(s => s./*Base*/DisplayName.Length);
 
             Console.WriteLine("╔════════╦═{0}═╗", "═".PadRight(length, '═'));
             Console.WriteLine("║ ItemID ║ {0} ║", "Base Name".PadBoth(length));
@@ -44,7 +44,7 @@ namespace UT_Controllers
             {
                 Console.WriteLine("║ {0} ║ {1} ║",
                     item.ID.PadRight(6),
-                    item.BaseName.PadRight(length));
+                    item./*Base*/DisplayName.PadRight(length));
             }
             Console.WriteLine("╚════════╩═{0}═╝", "═".PadRight(length, '═'));
             Console.WriteLine("{0} item(s)", list.Count());

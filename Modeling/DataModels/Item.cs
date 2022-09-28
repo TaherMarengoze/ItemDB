@@ -27,5 +27,19 @@ namespace Modeling.DataModels
         public IItemDetails Details { get; set; }
 
         public string UoM { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format(format: "{0}\\{1}: {2} ({4}|{5}|{6}|{7}) [{3}]"
+                , CatID
+                , ItemID
+                , BaseName
+                , UoM
+                , Details.SpecsID + (Details.SpecsRequired ? "*" : "")
+                , Details.SizeGroupID + (Details.SizeRequired ? "*" : "")
+                , Details.BrandListID + (Details.BrandRequired ? "*" : "")
+                , Details.EndsListID + (Details.EndsRequired ? "*" : "")
+                );
+        }
     }
 }

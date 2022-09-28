@@ -3,6 +3,7 @@ using System.Linq;
 using AppCore;
 using ClientService.Contracts;
 using Interfaces.Models;
+using Interfaces.Operations;
 
 namespace ClientService.Data
 {
@@ -13,7 +14,7 @@ namespace ClientService.Data
             return CacheIO.GetSizeList();
         }
 
-        public List<string> GetIDs() => Globals.DataLists.SizeIDs;
+        public List<string> GetIDs() => Globals.ModelCache.SizeListsIDs;
 
         public int Count => GetIDs()?.Count ?? 0;
 
@@ -41,7 +42,8 @@ namespace ClientService.Data
             return exList;
         }
 
-        public List<TViewModel> View<TViewModel>() where TViewModel : IConvertable<TViewModel, IFieldList>, new()
+        public List<TViewModel> View<TViewModel>()
+            where TViewModel : IConvertable<TViewModel, IFieldList>, new()
         {
             throw new System.NotImplementedException();
         }

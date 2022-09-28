@@ -104,5 +104,15 @@ namespace Controllers.Common
             return !newList.SequenceEqual(oldList);
         }
 
+        internal static bool IsChanged(ItemDetailInput value, string oldId = null, bool oldRequired = false)
+        {
+            if (value is null)
+                return false;
+
+            if (value.Id != oldId || (value.Required != oldRequired))
+                return true;
+
+            return false;
+        }
     }
 }
