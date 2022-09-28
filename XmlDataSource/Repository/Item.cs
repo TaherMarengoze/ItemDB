@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Xml.Linq;
+using AppCore;
 using Interfaces.Models;
 using Interfaces.Operations;
+using Modeling.DataModels;
 using XmlDataSource.IO;
 
 namespace XmlDataSource.Repository
@@ -20,19 +22,17 @@ namespace XmlDataSource.Repository
 
         public Item()
         {
-            dataSource =
-                ((XmlContext)AppCore.Globals.context).DataDocs.Items;
+            dataSource = ((XmlContext)Globals.context).DataDocs.Items;
         }
 
         public void Create(IItem entity)
         {
             XElement content = Serialize.ItemEntity(entity);
-            //CategorizeItem(content, entity.CatID, entity.CatName);
 
-            // Get the item's new category or create it if not found
-            XElement category = GetCategoryAdd(entity);
+            // get the item's new category or create it if not found
+            XElement category = MustGetItemCategoryXElement(entity);
 
-            // Add the item to the category
+            // add the item to the category
             category.Add(content);
 
             OnChange?.Invoke(this, EventArgs.Empty);
@@ -52,9 +52,9 @@ namespace XmlDataSource.Repository
         public void Update(string refId, IItem entity)
         {
             XElement newContent = Serialize.ItemEntity(entity);
-            XElement oldContent = GetElement(refId);
-            XElement category = GetCategoryAdd(entity);
-            XElement oldCategory = GetItemCategory(refId);
+            XElement oldContent = GetXElement(refId);
+            XElement category = MustGetItemCategoryXElement(entity);
+            XElement oldCategory = GetItemCategoryXElement(refId);
 
             if (IsSameCategory(category, oldCategory))
             {
@@ -71,56 +71,48 @@ namespace XmlDataSource.Repository
 
         public void Delete(string entityId)
         {
-            GetElement(entityId).Remove();
+            GetXElement(entityId).Remove();
 
             OnChange?.Invoke(this, EventArgs.Empty);
         }
 
-        private XElement GetElement(string entityId)
+        private XElement GetXElement(string entityId)
         {
             return
-                dataSource.Descendants("item")
-                .FirstOrDefault(
-                    node => node.Attribute("itemID").Value == entityId);
+                dataSource.Descendants("item").FirstOrDefault(node =>
+                node.Attribute("itemID").Value == entityId);
         }
 
         /// <summary>
-        /// Gets the item's category and create it if not found.
+        /// Gets an item's category and create it if not found.
         /// </summary>
-        /// <param name="item">The item object that its category to be quired.</param>
-        /// <returns></returns>
-        private XElement GetCategoryAdd(IItem item)
+        /// <param name="item">The item object that its category to be found.</param>
+        /// <returns>The <see cref="XElement"/> of the category.</returns>
+        private XElement MustGetItemCategoryXElement(IItem item)
         {
-            XElement category = GetCategory(item.CatID);
-
-            // If category does not exist then create and add it
-            if (category == null)
-                category = CreateCategory(item);
-
-            return category;
-        }
-
-        private XElement GetCategory(string catID)
-        {
-            return
-                (from cat in dataSource.Descendants("category")
-                 where cat.Attribute("catID").Value == catID
-                 select cat).FirstOrDefault();
+            return GetCategoryXElement(item.CatID) ?? CreateCategory(item);
         }
 
         private XElement CreateCategory(IItem item)
         {
-            XElement category = Serialize.CategoryEntity(item);
-            dataSource.Root.Add(category);
-            return category;
+            Globals.categoryRepo
+                .Create(new ItemCategory(item.CatID, item.CatName));
+
+            return GetCategoryXElement(item.CatID);
         }
 
-        private XElement GetItemCategory(string itemID)
+        private XElement GetCategoryXElement(string catID)
         {
             return
-                (from item in dataSource.Descendants("item")
-                 where item.Attribute("itemID").Value == itemID
-                 select item.Parent).FirstOrDefault();
+                dataSource.Descendants("category").FirstOrDefault(cat =>
+                cat.Attribute("catID").Value == catID);
+        }
+
+        private XElement GetItemCategoryXElement(string itemID)
+        {
+            return
+                dataSource.Descendants("item").FirstOrDefault(item =>
+                item.Attribute("itemID").Value == itemID).Parent;
         }
 
         /// <summary>

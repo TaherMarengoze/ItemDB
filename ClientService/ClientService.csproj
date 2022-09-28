@@ -52,7 +52,7 @@
     <Compile Include="CacheIO.cs" />
     <Compile Include="Brokers\SizeGroupBroker.cs" />
     <Compile Include="ContextProvider.cs" />
-    <Compile Include="Contracts\IConvertable.cs" />
+    <Compile Include="Contracts\IBaseProvider.cs" />
     <Compile Include="Contracts\IProvider.cs" />
     <Compile Include="Contracts\ITransformable.cs" />
     <Compile Include="Data\CategoryProvider .cs" />

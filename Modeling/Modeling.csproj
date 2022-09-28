@@ -58,6 +58,7 @@
     <Compile Include="DataModels\ItemDetails.cs" />
     <Compile Include="ViewModels\Common\FieldListGenericView.cs" />
     <Compile Include="ViewModels\Item\GenericView.cs" />
+    <Compile Include="ViewModels\Item\ItemBasicView.cs" />
     <Compile Include="ViewModels\SizeGroup\SizeGroupsGenericView.cs" />
     <Compile Include="ViewModels\Specs\BasicView.cs" />
     <Compile Include="ViewModels\Specs\GenericView.cs" />
@@ -70,6 +71,5 @@
       <Name>Interfaces</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -22,7 +22,7 @@ namespace UserInterface.Forms
 
         private void ItemViewer_Click(object sender, EventArgs e)
         {
-            LauchEditor(new ItemViewer());
+            LauchEditor(new ItemViewer2());
         }
 
         private void SpecsEditor_Click(object sender, EventArgs e)

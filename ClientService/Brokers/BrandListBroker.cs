@@ -8,7 +8,7 @@ namespace ClientService.Brokers
     public class BrandListBroker : IBroker<IFieldList>
     {
         private readonly IRepo<IFieldList> repos = Globals.brandsRepo;
-        private readonly ModelListsCache cache = Globals.ModelCache;
+        private readonly ModelsDataCache cache = Globals.ModelCache;
 
         public void Create(IFieldList content)
             => repos.Create(content);

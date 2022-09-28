@@ -41,9 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataListsCache.cs" />
     <Compile Include="Globals.cs" />
-    <Compile Include="ModelListsCache.cs" />
+    <Compile Include="ModelsDataCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

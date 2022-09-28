@@ -2,6 +2,8 @@
 using System.Linq;
 using ClientService.Contracts;
 
+using Interfaces.Operations;
+
 namespace ClientService.Data
 {
     public class ItemImageNamesProvider : IProvider<string>
@@ -30,7 +32,8 @@ namespace ClientService.Data
             return source;
         }
 
-        public List<TViewModel> View<TViewModel>() where TViewModel : IConvertable<TViewModel, string>, new()
+        public List<TViewModel> View<TViewModel>()
+            where TViewModel : IConvertable<TViewModel, string>, new()
         {
             throw new System.NotImplementedException();
         }

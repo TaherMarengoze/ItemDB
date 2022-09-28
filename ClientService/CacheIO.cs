@@ -12,14 +12,18 @@ namespace ClientService
     /// </summary>
     public static class CacheIO
     {
-        private static ModelListsCache cache = Globals.ModelCache;
+        private static readonly ModelsDataCache cache = Globals.ModelCache;
         private static IDataReader reader = Globals.reader;
 
         static CacheIO()
         {
             Globals.itemsRepo.OnChange += ItemsRepo_OnChange;
+            Globals.categoryRepo.OnChange += CategoryRepo_OnChange;
+            Globals.specsRepo.OnChange += SpecsRepo_OnChange;
             Globals.sizeGroupRepo.OnChange += SizeGroupRepo_OnChange;
             Globals.sizesRepo.OnChange += SizesRepo_OnChange;
+            Globals.brandsRepo.OnChange += BrandsRepo_OnChange;
+            Globals.endsRepo.OnChange += EndsRepo_OnChange;
         }
 
         public static void InitLists() => UpdateAllLists();
@@ -31,9 +35,25 @@ namespace ClientService
             Console.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.ffffff}: Updated Items Repository.");
         }
 
+        private static void CategoryRepo_OnChange(object sender, EventArgs e)
+        {
+            Console.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.ffffff}: Updating Items Categories Repository.");
+            UpdateCategoryList();
+            Console.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.ffffff}: Updated Items Categories Repository.");
+        }
+
+        private static void SpecsRepo_OnChange(object sender, EventArgs e)
+        {
+            Console.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.ffffff}: Updating Specs Repository.");
+            UpdateSpecsList();
+            Console.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.ffffff}: Updated Specs Repository.");
+        }
+
         private static void SizeGroupRepo_OnChange(object sender, EventArgs e)
         {
+            Console.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.ffffff}: Updating Size Groups Repository.");
             UpdateSizeGroupList();
+            Console.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.ffffff}: Updated Size Groups Repository.");
         }
 
         private static void SizesRepo_OnChange(object sender, EventArgs e)
@@ -42,6 +62,21 @@ namespace ClientService
             UpdateSizesList();
             Console.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.ffffff}: Updated Sizes Repository.");
         }
+
+        private static void BrandsRepo_OnChange(object sender, EventArgs e)
+        {
+            Console.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.ffffff}: Updating Brands Repository.");
+            UpdateBrandsList();
+            Console.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.ffffff}: Updated Brands Repository.");
+        }
+
+        private static void EndsRepo_OnChange(object sender, EventArgs e)
+        {
+            Console.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.ffffff}: Updating Ends Repository.");
+            UpdateEndsList();
+            Console.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.ffffff}: Updated Ends Repository.");
+        }
+
         #region Lists Getter
         // .ToList returns a copy of the list preserving the one in the cache
 
@@ -60,12 +95,15 @@ namespace ClientService
         public static List<string> GetCustomSpecsList() => cache.CustomSpecs.ToList();
 
         public static List<string> GetCustomSizeList() => Globals.ModelCache.CustomSizes.ToList();
+
+        public static List<IItemCategory> GetItemCategories() => cache.Categories.ToList();
         #endregion
 
         #region Lists Updater
         private static void UpdateAllLists()
         {
             UpdateItemList();
+            UpdateCategoryList();
             UpdateSpecsList();
             UpdateSizeGroupList();
             UpdateSizesList();
@@ -77,6 +115,9 @@ namespace ClientService
 
         private static void UpdateItemList() =>
             cache.Items = reader.GetItems().ToList();
+
+        private static void UpdateCategoryList() =>
+            cache.Categories = reader.GetCategories().ToList();
 
         internal static void UpdateSpecsList() =>
             cache.Specs = reader.GetSpecs().ToList();

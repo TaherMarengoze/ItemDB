@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using ClientService;
@@ -319,6 +320,9 @@ namespace Controllers
         {
             var args = new LoadEventArgs(GetGenericViewList());
 
+            // update item total count
+            UpdateTotalCount();
+
             // raise event
             OnLoad?.Invoke(this, args);
         }
@@ -339,10 +343,10 @@ namespace Controllers
             // raise event
             OnSelect?.Invoke(this, args);
         }
-        
+
         public void New()
         {
-            var args = new PreModifyEventArgs(provider.GetIDs());
+            var args = new PreModifyEventArgs(provider.View<ItemBasicView>());
 
             // raise event
             OnPreDrafting?.Invoke(this, args);
@@ -406,6 +410,51 @@ namespace Controllers
             // raise event
             OnCancel?.Invoke(this, args);
         }
+
+        public event EventHandler<LoadEventArgs<GenericView>> OnFilter;
+
+        public void Filter(string critItemId
+                         , string critItemName
+                         , string critCategoryId
+                          , bool? critHasImage)
+        {
+            critItemId = critItemId.Trim();
+            critItemName = critItemName.Trim().ToLower();
+            critCategoryId = critCategoryId.Trim();
+
+            List<Func<IItem, bool>> matchFunctions = new()
+            {
+                qryItem => critItemId == "" || qryItem.ItemID.Contains(critItemId)
+               ,
+                qryItem => critItemName == "" || qryItem.DisplayName.ToLower().Contains(critItemName)
+               ,
+                qryItem => critCategoryId == "*" || qryItem.CatID == critCategoryId
+               ,
+                qryItem => critHasImage == null || ((bool)critHasImage ? qryItem.ImagesFileName?.Count > 0 : (qryItem.ImagesFileName?.Count ?? 0) <= 0)
+            };
+
+            bool _AllCriteriaMatched(IItem qryItem)
+            {
+                foreach (var criteria in matchFunctions)
+                {
+                    if (!criteria(qryItem))
+                        return false;
+                }
+                return true;
+            }
+
+            var result = provider.GetList()
+                .Where(_AllCriteriaMatched)
+                .Select(item => item)
+                .ToList()
+                .ToGenericView();
+
+            var args =
+                new LoadEventArgs<GenericView> { ViewList = result };
+
+            OnFilter?.Invoke(this, args);
+        }
+
         #endregion
 
         #region Private Methods
@@ -629,6 +678,8 @@ namespace Controllers
 
         private readonly IBroker<IItem> broker = new ItemBroker();
         private readonly IProvider<IItem> provider = new ItemProvider();
+        private readonly IProvider<IItemCategory> categoryProvider = new CategoryProvider();
+        private readonly IProvider<ISpecs> specsProvider = new SpecsProvider();
 
         // backing fields
         private string inputID;
@@ -780,6 +831,24 @@ namespace Controllers
 
             return detailsChanged.Any(change => change);
         }
+        #endregion
+
+        #region Code Under Test
+        public List<IItemCategory> ListItemCategories(bool addGenericCat = false)
+        {
+            List<IItemCategory> categories = new List<IItemCategory>();
+
+            if (addGenericCat)
+                categories.Add(new ItemCategory("*", "<All categories>"));
+
+            categories.AddRange(categoryProvider.GetList());
+
+            return categories;
+        }
+
+        private int totalCount;
+        public int TotalCount => totalCount;
+        private void UpdateTotalCount() => totalCount = provider.Count;
         #endregion
     }
 

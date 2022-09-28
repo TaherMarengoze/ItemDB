@@ -13,6 +13,14 @@ namespace XmlDataSource.IO
 {
     internal static class Deserialize
     {
+        internal static IItemCategory CategoryXElement(XElement category)
+        {
+            if (category is null)
+                return null;
+
+            return new ItemCategory(category.Attribute("catID").Value,
+                                    category.Attribute("name").Value);
+        }
         internal static IItem ItemXElement(XElement item)
         {
             /*

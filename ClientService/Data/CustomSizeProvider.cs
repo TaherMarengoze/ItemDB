@@ -1,5 +1,8 @@
 ﻿using AppCore;
 using ClientService.Contracts;
+
+using Interfaces.Operations;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +20,11 @@ namespace ClientService.Data
 
         public List<string> GetIDs()
         {
-            return Globals.DataLists.CustomSizeIDs;
+            return Globals.ModelCache.CustomSizesIDs;
         }
 
-        public List<TViewModel> View<TViewModel>() where TViewModel : IConvertable<TViewModel, string>, new()
+        public List<TViewModel> View<TViewModel>()
+            where TViewModel : IConvertable<TViewModel, string>, new()
         {
             throw new NotImplementedException();
         }

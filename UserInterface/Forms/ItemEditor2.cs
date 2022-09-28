@@ -1,9 +1,4 @@
 ﻿
-using CoreLibrary;
-using CoreLibrary.Enums;
-using CoreLibrary.Interfaces;
-using CoreLibrary.Models;
-using CoreLibrary.Operation;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,12 +7,21 @@ using System.IO;
 using System.Linq;
 using System.Media;
 using System.Windows.Forms;
+
+using Controllers;
+
+using CoreLibrary;
+using CoreLibrary.Enums;
+using CoreLibrary.Interfaces;
+using CoreLibrary.Models;
+using CoreLibrary.Operation;
+
 using UserService;
 
 
 namespace UserInterface.Forms
 {
-    public partial class ItemEditor : Form
+    public partial class ItemEditor2 : Form
     {
         public ItemRawData DraftItemData { get; private set; }
 
@@ -35,22 +39,56 @@ namespace UserInterface.Forms
         private ItemImage draftImage;
 
         private string editItemId;
+
+        private readonly ItemController uiController;
+
         //private Item editItem;
         #endregion
 
-        /// <summary>
-        /// Constructor for a new Item addition.
-        /// </summary>
-        public ItemEditor()
+
+        public ItemEditor2(ItemController controller)
         {
-            CommonInitialization();
+            InitializeComponent();
+            DoubleBufferDataGridViewControls(dgvItemsId
+                , dgvCategories
+                , dgvSpecs
+                , dgvSpecsItems
+                , dgvSpecListEntries
+                , dgvSizeGroup
+                , dgvBrandsLists
+                , dgvEndsLists
+                );
+
+            uiController = controller;
+            uiController.OnPreDrafting += Controller_OnPreDrafting;
+            uiController.New();
         }
+
+        private void DoubleBufferDataGridViewControls(params DataGridView[] grids)
+        {
+            for (int i = 0; i < grids.Length; i++)
+                grids[i].DoubleBuffer(true);
+        }
+
+        #region Controller Event Responses
+        private void Controller_OnPreDrafting(object sender, PreModifyEventArgs e)
+        {
+            // bind items ID DGV
+            dgvItemsId.DataSource = e.List;
+
+            // bind items categories DataGridView
+            dgvCategories.DataSourceResize(uiController.ListItemCategories());
+            dgvCategories.Columns[0].DisplayIndex = 2;
+
+            // bind specs selector ComboBox
+        }
+        #endregion
 
         /// <summary>
         /// Constructor for editing an existing item.
         /// </summary>
         /// <param name="editId">The ID of the item being edited.</param>
-        public ItemEditor(string editId)
+        public ItemEditor2(string editId)
         {
             CommonInitialization();
             IItem item = Data.GetItem(editId);
@@ -122,21 +160,6 @@ namespace UserInterface.Forms
 
         private void CommonInitialization()
         {
-            InitializeComponent();
-
-            dgvItemsId.DoubleBuffer(true);
-            dgvCategories.DoubleBuffer(true);
-            dgvSpecs.DoubleBuffer(true);
-            dgvSpecsItems.DoubleBuffer(true);
-            dgvSpecListEntries.DoubleBuffer(true);
-            dgvSizeGroup.DoubleBuffer(true);
-            dgvBrandsLists.DoubleBuffer(true);
-            dgvEndsLists.DoubleBuffer(true);
-
-            checkList = new ItemCheckList();
-            checkList.OnComplete += CheckList_OnComplete;
-            checkList.OnIncomplete += CheckList_OnIncomplete;
-
             existingImages = GlobalsX.reader.GetImageNames().ToList();
             imagesReposPath = GlobalsX.fpp.ImageRepos;
             BindControlsToDatasources();
@@ -149,9 +172,7 @@ namespace UserInterface.Forms
             dgvItemsId.DataSourceResize(Data.GetAllItemsBrief());
 
             // Bind item categories DGV
-            //Common.SetDataGridViewDataSource(dgvCategories, Data.GetCategories());
             dgvCategories.DataSourceResize(Data.GetCategories());
-
             dgvCategories.Columns[0].DisplayIndex = 2;
 
             // Bind Specs ID selector combobox
@@ -173,20 +194,10 @@ namespace UserInterface.Forms
             cboEndsListId.DataSource = Data.GetFieldIds(FieldType.ENDS).ToList();
             cboEndsListId.SelectedIndex = -1;
             dgvEndsLists.DataSource = Data.GetFieldLists(FieldType.ENDS);
-                //GetEndsInterface();
+            //GetEndsInterface();
 
             // Images ListBox
             lbxImages.DisplayMember = "DraftDisplayName";
-        }
-
-        private void CheckList_OnComplete()
-        {
-            btnAccept.Enabled = true;
-        }
-
-        private void CheckList_OnIncomplete()
-        {
-            btnAccept.Enabled = false;
         }
 
         private OpenFileDialog ShowImageFileBrowser()
@@ -436,8 +447,8 @@ namespace UserInterface.Forms
             }
         }
 
+        #region UI Event Responses
 #pragma warning disable IDE1006 // Naming Styles
-
         private void ItemEditor_Load(object sender, EventArgs e)
         {
             //SetDatasources();
@@ -1267,6 +1278,7 @@ namespace UserInterface.Forms
             QuickAddField(fieldType);
             UpdateFieldUI(fieldType, cboEndsListId, dgvEndsLists);
         }
+        #endregion
 
         void QuickAddField(FieldType fieldType)
         {

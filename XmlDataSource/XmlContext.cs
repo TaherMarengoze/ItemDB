@@ -74,6 +74,7 @@ namespace XmlDataSource
             Globals.reader = new XmlReader(DataDocs);
 
             // Instantiate the repositories
+            Globals.categoryRepo = new Category();
             Globals.itemsRepo = new Item();
             Globals.specsRepo = new Specs();
             Globals.sizeGroupRepo = new SizeGroup();

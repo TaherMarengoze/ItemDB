@@ -7,7 +7,7 @@ namespace ClientService.Brokers
     public class ItemBroker : IBroker<IItem>
     {
         private readonly IRepo<IItem> repos = Globals.itemsRepo;
-        private readonly ModelListsCache cache = Globals.ModelCache;
+        private readonly ModelsDataCache cache = Globals.ModelCache;
 
         public void Create(IItem content)
             => repos.Create(content);

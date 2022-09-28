@@ -10,6 +10,7 @@ namespace AppCore
         public static IDataReader reader;
 
         public static IRepo<IItem> itemsRepo;
+        public static IRepo<IItemCategory> categoryRepo;
         public static IRepo<ISpecs> specsRepo;
         public static IRepo<ISizeGroup> sizeGroupRepo;
         public static IRepo<IFieldList> sizesRepo;
@@ -19,10 +20,9 @@ namespace AppCore
         public static bool disableEditors = true;
 
         /// <summary>
-        /// The global instance of the <see cref="ModelListsCache"/> class.
+        /// Returns a global instance of <see cref="ModelsDataCache"/>; which
+        /// contains cached collections of the application's domain models.
         /// </summary>
-        public static ModelListsCache ModelCache { get; } = new ModelListsCache();
-
-        public static DataListsCache DataLists { get; } = new DataListsCache();
+        public static ModelsDataCache ModelCache { get; } = new ModelsDataCache();
     }
 }

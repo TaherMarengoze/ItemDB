@@ -55,6 +55,16 @@ namespace UT_Controllers
             ui.OnCatNameStatusChange += Ui_OnCatNameStatusChange;
             ui.OnCommonNamesStatusChange += Ui_OnCommonNamesStatusChange;
             ui.OnSet += Ui_OnSet;
+            ui.OnFilter += Ui_OnFilter;
+        }
+
+        private void Ui_OnFilter(object sender, LoadEventArgs<GenericView> e)
+        {
+            Console.WriteLine("{0} item(s)", e.Count);
+            foreach (var item in e.ViewList)
+            {
+                Console.WriteLine(" • {0}", item);
+            }
         }
 
         SetEventArgs setEventArgs;
@@ -231,11 +241,14 @@ namespace UT_Controllers
         {
             //new ListViewer(e.GenericViewList).ShowDialog();
 
-            Console.WriteLine("{0} item(s)", e.Count);
-            foreach (var item in (IList)e.GenericViewList)
+            Log(delegate
             {
-                Console.WriteLine(" • {0}", item);
-            }
+                Console.WriteLine("{0} item(s)", e.Count);
+                foreach (var item in (IList)e.GenericViewList)
+                {
+                    Console.WriteLine(" • {0}", item);
+                }
+            });
         }
 
         [TestMethod]
@@ -592,6 +605,25 @@ namespace UT_Controllers
             SKIP_LOG = false;
 
             ui.CommitChanges(); // event response: Ui_OnSet
+        }
+
+        [TestMethod]
+        public void Should_Filter()
+        {
+            ui.Filter("", "", "*", false);
+        }
+
+        /// <summary>
+        /// Tests <see cref="ItemController.TotalCount"/> get-only property.
+        /// </summary>
+        [TestMethod]
+        public void Should_OnLoadGetTotalCount()
+        {
+            SKIP_LOG = true;
+            ui.Load();
+            SKIP_LOG = false;
+
+            Assert.AreEqual(55, ui.TotalCount);
         }
 
         enum CategoryCase

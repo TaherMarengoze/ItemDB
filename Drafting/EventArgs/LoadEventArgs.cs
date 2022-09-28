@@ -22,8 +22,11 @@ namespace Controllers
 
     public class LoadEventArgs<TView> : EventArgs
     {
-        public List<TView> GenericViewList { get; set; }
+        public List<TView> ViewList { get; set; }
 
-        public int ItemCount => GenericViewList.Count();
+        /// <summary>
+        /// Returns the number of items in the <see cref="ViewList"/>.
+        /// </summary>
+        public int Count => ViewList.Count();
     }
 }

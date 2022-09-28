@@ -7,9 +7,9 @@ using System.Windows.Forms;
 using Controllers;
 using CoreLibrary;
 using CoreLibrary.Enums;
-using CoreLibrary.Interfaces;
 using CoreLibrary.Models;
 using CoreLibrary.Operation;
+using Interfaces.Models;
 using UserService;
 
 namespace UserInterface.Forms
@@ -22,6 +22,8 @@ namespace UserInterface.Forms
         private ToolTip helperTip = new ToolTip();
 
         private ItemController uiController = new ItemController();
+        private bool ignoreDataGridViewSelectionFlush;
+        private bool prevFilterHasItems = true;
 
         public ItemViewer2()
         {
@@ -39,19 +41,77 @@ namespace UserInterface.Forms
             dgvItems.DoubleBuffer(true);
         }
 
+        #region Controller Event Responses
         private void SubscribeControllerEvents()
         {
             uiController.OnLoad += UiController_OnLoad;
+            uiController.OnFilter += UiController_OnFilter;
+            uiController.OnSelect += UiController_OnSelect;
         }
 
         private void UiController_OnLoad(object sender, LoadEventArgs e)
         {
+            string nameOfCatID = nameof(IItemCategory.CatID);
+
             dgvItems.DataSource = e.GenericViewList;
-            HideItemsDataGridViewColumn("CatID");
+
+            DataGridViewArrangeColumns(dgvItems,
+                "ID",
+                "DisplayName",
+                "SpecsID",
+                "SizeGroupID",
+                "BrandsID",
+                "EndsID",
+                "CatName",
+                "CatID");
+
+            HideItemsDataGridViewColumn(nameOfCatID);
+
+            UpdateStatusBar(e.Count);
+
+            cboFilterCategory.DisplayMember = nameof(IItemCategory.CatName);
+
+            cboFilterCategory.ValueMember = nameOfCatID;
 
             // bind item categories filter combo-box
-            cboFilterCategory.DataSource = null;
+            cboFilterCategory.DataSource =
+                uiController.ListItemCategories(true);
+
+            EnableUI();
+
+            // auto resize items' DGV rows and columns
+            dgvItems.AutoResizeColumns();
+            dgvItems.AutoResizeRows();
         }
+
+        private void UiController_OnFilter(object sender, LoadEventArgs<Modeling.ViewModels.Item.GenericView> e)
+        {
+            bool filterContainItems = e.Count > 0;
+
+            ignoreDataGridViewSelectionFlush = filterContainItems;
+            dgvItems.DataSourceResize(e.ViewList);
+
+            if (filterContainItems)
+            {
+                prevFilterHasItems = true;
+                lblNoItems.Visible = false;
+                grpData.Enabled = true;
+            }
+            else
+            {
+                prevFilterHasItems = false;
+                lblNoItems.Visible = true;
+                grpData.Enabled = false;
+            }
+
+            UpdateStatusBar(e.Count);
+        }
+
+        private void UiController_OnSelect(object sender, SelectEventArgs<IItem> e)
+        {
+            DisplayItemInfo(e.Selected);
+        }
+        #endregion
 
         private void HideItemsDataGridViewColumn(string columnName)
         {
@@ -59,58 +119,28 @@ namespace UserInterface.Forms
                 dgvItems.Columns[columnName].Visible = false;
         }
 
+        /// <summary>
+        /// Updates the status bar with the items info.
+        /// </summary>
+        /// <param name="filteredCount">The number of items currently displayed.</param>
+        private void UpdateStatusBar(int filteredCount)
+        {
+            int totalCount = uiController.TotalCount;
+
+            tslblItemsCount.Text = $"Items: { totalCount }";
+            tslblShownItemsCount.Text = $"Shown: { filteredCount }";
+
+            tslblShownItemsCount.ForeColor =
+                filteredCount > 0 ? filteredCount == totalCount ?
+                    Color.Black : Color.Blue : Color.Red;
+        }
+
         #region File Management
         private void SaveToSource()
         {
-            //AppFactory.context.Save(ContextEntity.Items);
             Data.Save(ContextEntity.Items);
         }
-        #endregion
-
-        private void PostLoading()
-        {
-            dgvItems.DataSource = Data.GetAllItemsVO();
-            dgvItems.Columns["CatID"].Visible = false;
-
-            // Update Status bar
-            //UpdateStatusBar();
-
-            cboFilterCategory.DataSource = Data.GetAllCategories();
-            cboFilterCategory.DisplayMember = "Name"; //"CatName";
-            cboFilterCategory.ValueMember = "ID"; //"CatID";
-
-            EnableUI();
-
-            // Auto Resize Rows and Columns
-            dgvItems.AutoResizeColumns();
-            dgvItems.AutoResizeRows();
-        }
-
-        private void UpdateStatusBar()
-        {
-            int items = Data.GetItemsCount();
-            int filtered = dgvItems.RowCount;
-
-            tslblItemsCount.Text = $"Items: { items }";
-            tslblShownItemsCount.Text = $"Shown: { filtered }";
-
-            if (filtered > 0)
-            {
-                if (filtered == items)
-                {
-                    tslblShownItemsCount.ForeColor = Color.Black;
-                }
-                else
-                {
-                    tslblShownItemsCount.ForeColor = Color.Blue;
-                }
-            }
-            else
-            {
-                tslblShownItemsCount.ForeColor = Color.Red;
-            }
-
-        }
+        #endregion 
 
         private void EnableUI()
         {
@@ -120,7 +150,7 @@ namespace UserInterface.Forms
         }
 
         /// <summary>
-        /// Enables or disable the modify (Add, Edit and Remove) buttons.
+        /// Enables or disable the modify (<i>Add, Edit and Remove</i>) buttons.
         /// </summary>
         /// <param name="enable">True to enable the buttons, otherwise, false.</param>
         private void EnableDisableModifyButtons(bool enable)
@@ -130,7 +160,7 @@ namespace UserInterface.Forms
             btnDelete.Enabled = enable;
         }
 
-        private void ShowItemData(IItem item)
+        private void DisplayItemInfo(IItem item)
         {
             txtItemId.Text = item.ItemID;
 
@@ -202,9 +232,10 @@ namespace UserInterface.Forms
             if (skipFilter)
                 return;
 
+            // collect filtering criteria values
             string id = txtFilterId.Text;
             string name = txtFilterName.Text;
-            string cat = GetSelectedCatId();
+            string catId = GetSelectedCategoryID();
             bool? image = null;
 
             if (rdoFilterHasImage.Checked)
@@ -217,32 +248,12 @@ namespace UserInterface.Forms
                 image = false;
             }
 
-            if (cat == "*")
-            {
-                dgvItems.Columns["Category"].Visible = true;
-            }
+            if (catId == "*")
+                dgvItems.Columns["CatName"].Visible = true;
             else
-            {
-                dgvItems.Columns["Category"].Visible = false;
-            }
+                dgvItems.Columns["CatName"].Visible = false;
 
-            List<ItemVO> filteredItems =
-                Data.GetFilteredItemsView(id, name, image, cat);
-
-            //dgvItems.DataSource = filteredItems;
-            dgvItems.DataSourceResize(filteredItems);
-            if (filteredItems.Count <= 0 /* and in filter mode */)
-            {
-                lblNoItems.Visible = true;
-                grpData.Enabled = false;
-            }
-            else
-            {
-                lblNoItems.Visible = false;
-                grpData.Enabled = true;
-            }
-            
-            //UpdateStatusBar();
+            uiController.Filter(id, name, catId, image);
         }
 
         private void DeleteItem()
@@ -280,172 +291,77 @@ namespace UserInterface.Forms
             //UpdateStatusBar();
         }
 
-        private void SetAbilityItemEditUI(bool enable)
+        private void EnableEditUI()
+        {
+            EnableOrDisableEditUI(true);
+        }
+
+        private void DisableEditUI()
+        {
+            EnableOrDisableEditUI(false);
+        }
+
+        private void EnableOrDisableEditUI(bool enable)
         {
             btnEdit.Enabled = enable;
             tsmiEditItem.Enabled = enable;
         }
 
-        #region Getters
-        private string GetSelectedCatId()
+        private void DataGridViewArrangeColumns(DataGridView dgv, params string[] columnNames)
         {
-            return ((ItemCategory)cboFilterCategory.SelectedItem).ID;
+            int orderIndex = 0;
+
+            for (int i = 0; i < columnNames.Length; i++)
+            {
+                if (dgv.Columns.Contains(columnNames[i]))
+                {
+                    dgv.Columns[columnNames[i]].DisplayIndex = orderIndex++;
+                }
+            }
+        }
+
+        #region Getters
+        private string GetSelectedCategoryID()
+        {
+            return cboFilterCategory.SelectedValue.ToString();
         }
         #endregion
 
 #pragma warning disable IDE1006 // Naming Styles
+
         #region Event Generated
 
         // Form
         private void ItemEditor_Load(object sender, EventArgs e)
         {
-            PostLoading();
-        }
-
-        // Main Menu
-        private void tsmiSaveXmlFile_Click(object sender, EventArgs e)
-        {
-            SaveToSource();
-            CopyService.ExecutePendingCopyOrders();
+            uiController.Load();
         }
 
         // DataGridView
         private void dgvItems_SelectionChanged(object sender, EventArgs e)
         {
-            DataGridView dgv = sender as DataGridView;
-            if (dgv.SelectedRows.Count <= 0)
+            if (ignoreDataGridViewSelectionFlush && prevFilterHasItems)
             {
-                SetAbilityItemEditUI(enable: false);
-                ClearItemData();
-            }
-            else
-            {
-                SetAbilityItemEditUI(enable: true);
-                string id = (string)dgv.SelectedRows[0].Cells[0].Value;
-                ShowItemData(Data.GetItem(id));
-            }
-        }
-
-        // Filtering
-        private void txtFilterId_TextChanged(object sender, EventArgs e)
-        {
-            ApplyItemFilter();
-        }
-        private void txtFilterName_TextChanged(object sender, EventArgs e)
-        {
-            ApplyItemFilter();
-        }
-        private void rdoFilterAnyImage_CheckedChanged(object sender, EventArgs e)
-        {
-            ApplyItemFilter();
-        }
-        private void rdoFilterHasImage_CheckedChanged(object sender, EventArgs e)
-        {
-            ApplyItemFilter();
-        }
-        private void rdoFilterNoImage_CheckedChanged(object sender, EventArgs e)
-        {
-            ApplyItemFilter();
-        }
-        private void cboFilterCategory_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cboFilterCategory.SelectedIndex != -1)
-            {
-                txtFilterCatId.Text = GetSelectedCatId();
-                ApplyItemFilter();
-            }
-        }
-        private void btnFilterClear_Click(object sender, EventArgs e)
-        {
-            skipFilter = true;
-            txtFilterId.Clear();
-            txtFilterName.Clear();
-            rdoFilterAnyImage.Checked = true;
-            cboFilterCategory.SelectedIndex = 0;
-            skipFilter = false;
-            ApplyItemFilter();
-        }
-
-        // Modify
-        private void btnAdd_Click(object sender, EventArgs e)
-        {
-            Hide();
-            ItemEditor itemEditor = new ItemEditor();
-            if (itemEditor.ShowDialog() == DialogResult.OK)
-            {
-                Data.AddNewItem(itemEditor.DraftItemData);
-                PostLoading();
-            }
-            Show();
-        }
-        private void btnEdit_Click(object sender, EventArgs e)
-        {
-            if (dgvItems.SelectedRows.Count <= 0)
+                ignoreDataGridViewSelectionFlush = false;
                 return;
-
-            DataGridViewRow row = dgvItems.SelectedRows[0];
-            string id = row.Cells[0].Value.ToString();
-
-            Hide();
-            ItemEditor itemEditor = new ItemEditor(id);
-            if (itemEditor.ShowDialog() == DialogResult.OK)
-            {
-                // Modify edited item with new one
-                Data.ModifyItem(id, itemEditor.DraftItemData);
-                PostLoading();
             }
-            Show();
-        }
-        private void btnDelete_Click(object sender, EventArgs e)
-        {
-            DeleteItem();
-        }
 
-        private void lbxImages_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (lbxImages.SelectedItem != null)
+            DataGridView dgv = sender as DataGridView;
+
+            if (dgv.SelectedRows.Count > 0)
             {
-                string imageFile = Path.Combine(GlobalsX.fpp.ImageRepos, lbxImages.Text);
-
-                if (File.Exists(imageFile))
-                {
-                    picImage.Image = Image.FromFile(imageFile);
-                }
-                else
-                {
-                    picImage.Image = null;
-                }
+                string id = (string)dgv.SelectedRows[0].Cells["ID"].Value;
+                uiController.Select(id);
+                EnableEditUI();
             }
             else
             {
-                picImage.Image = null;
+                ClearItemData();
+                DisableEditUI();
             }
-        }
-
-        private void tsmiEnlargeImage_Click(object sender, EventArgs e)
-        {
-            ImagePreviewer ip = new ImagePreviewer() { ItemImage = picImage.Image };
-
-            ip.ShowDialog();
-        }
-
-        private void tsmiCloseForm_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
-        private void tsmiExitApp_Click(object sender, EventArgs e)
-        {
-            Close();
-            Application.Exit();
         }
 
         private void dgvItems_DataSourceChanged(object sender, EventArgs e)
-        {
-            UpdateStatusBar();
-        }
-
-        private void picImage_MouseHover(object sender, EventArgs e)
         {
 
         }
@@ -475,6 +391,133 @@ namespace UserInterface.Forms
                     cell.ToolTipText = "Required";
                 }
             }
+        }
+
+        // Filtering
+        private void txtFilterId_TextChanged(object sender, EventArgs e)
+        {
+            ApplyItemFilter();
+        }
+        private void txtFilterName_TextChanged(object sender, EventArgs e)
+        {
+            ApplyItemFilter();
+        }
+        private void rdoFilterAnyImage_CheckedChanged(object sender, EventArgs e)
+        {
+            ApplyItemFilter();
+        }
+        private void rdoFilterHasImage_CheckedChanged(object sender, EventArgs e)
+        {
+            ApplyItemFilter();
+        }
+        private void rdoFilterNoImage_CheckedChanged(object sender, EventArgs e)
+        {
+            ApplyItemFilter();
+        }
+        private void cboFilterCategory_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboFilterCategory.SelectedIndex != -1)
+            {
+                txtFilterCatId.Text = GetSelectedCategoryID();
+                ApplyItemFilter();
+            }
+        }
+        private void btnFilterClear_Click(object sender, EventArgs e)
+        {
+            skipFilter = true;
+            txtFilterId.Clear();
+            txtFilterName.Clear();
+            rdoFilterAnyImage.Checked = true;
+            cboFilterCategory.SelectedIndex = 0;
+            skipFilter = false;
+            ApplyItemFilter();
+        }
+
+        // Modify Actions
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            Hide();
+            new ItemEditor2(uiController).ShowDialog();
+            //ItemEditor itemEditor = new ItemEditor();
+            //if (itemEditor.ShowDialog() == DialogResult.OK)
+            //{
+            //    Data.AddNewItem(itemEditor.DraftItemData);
+            //}
+            Show();
+        }
+
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            if (dgvItems.SelectedRows.Count <= 0)
+                return;
+
+            DataGridViewRow row = dgvItems.SelectedRows[0];
+            string id = row.Cells[0].Value.ToString();
+
+            Hide();
+            ItemEditor itemEditor = new ItemEditor(id);
+            if (itemEditor.ShowDialog() == DialogResult.OK)
+            {
+                // Modify edited item with new one
+                Data.ModifyItem(id, itemEditor.DraftItemData);
+            }
+            Show();
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            DeleteItem();
+        }
+
+        private void lbxImages_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lbxImages.SelectedItem != null)
+            {
+                string imageFile = Path.Combine(GlobalsX.fpp.ImageRepos, lbxImages.Text);
+
+                if (File.Exists(imageFile))
+                {
+                    picImage.Image = Image.FromFile(imageFile);
+                }
+                else
+                {
+                    picImage.Image = null;
+                }
+            }
+            else
+            {
+                picImage.Image = null;
+            }
+        }
+
+        private void picImage_MouseHover(object sender, EventArgs e)
+        {
+
+        }
+
+        // Main Menu
+        private void tsmiSaveXmlFile_Click(object sender, EventArgs e)
+        {
+            SaveToSource();
+            CopyService.ExecutePendingCopyOrders();
+        }
+
+        private void tsmiEnlargeImage_Click(object sender, EventArgs e)
+        {
+            ImagePreviewer ip = new ImagePreviewer() { ItemImage = picImage.Image };
+
+            ip.ShowDialog();
+        }
+
+        private void tsmiCloseForm_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void tsmiExitApp_Click(object sender, EventArgs e)
+        {
+            Close();
+            Application.Exit();
         }
 
         private void tsmiEditItem_Click(object sender, EventArgs e)

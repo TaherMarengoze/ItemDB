@@ -80,8 +80,8 @@ namespace XmlDataSource
                 from cat in dataDocs.Items.Descendants("category")
                 select new ItemCategory()
                 {
-                    ID = cat.Attribute("catID").Value,
-                    Name = cat.Attribute("name").Value
+                    CatID = cat.Attribute("catID").Value,
+                    CatName = cat.Attribute("name").Value
                 };
         }
 

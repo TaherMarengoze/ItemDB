@@ -2,16 +2,17 @@
 using AppCore;
 using ClientService.Contracts;
 using Interfaces.Models;
+using Interfaces.Operations;
 
 namespace ClientService.Data
 {
     public class ItemProvider : IProvider<IItem>
     {
-        public int Count => throw new System.NotImplementedException();
+        public int Count => GetIDs()?.Count ?? 0;
 
         public List<string> GetIDs()
         {
-            return Globals.DataLists.ItemIDs;
+            return Globals.ModelCache.ItemsIDs;
         }
 
         public List<IItem> GetList()
@@ -19,9 +20,12 @@ namespace ClientService.Data
             return CacheIO.GetItemList();
         }
 
-        public List<TViewModel> View<TViewModel>() where TViewModel : IConvertable<TViewModel, IItem>, new()
+        public List<TViewModel> View<TViewModel>()
+            where TViewModel : IConvertable<TViewModel, IItem>, new()
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
+            TViewModel model = new TViewModel();
+            return model.Transform(GetList());
         }
     }
 }

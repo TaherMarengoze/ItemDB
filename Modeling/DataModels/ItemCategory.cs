@@ -6,8 +6,19 @@ namespace Modeling.DataModels
 {
     public class ItemCategory : IItemCategory
     {
-        public string ID { get; set; }
+        public ItemCategory()
+        {
 
-        public string Name { get; set; }
+        }
+
+        public ItemCategory(string id, string name)
+        {
+            CatID = id;
+            CatName = name;
+        }
+
+        public string CatID { get; set; }
+
+        public string CatName { get; set; }
     }
 }
